@@ -119,9 +119,9 @@ export class IsometricGrid extends PIXI.Container {
   }
 
   /**
-   * 엔티티 Z-정렬
+   * 엔티티 Z-정렬 (public으로 변경하여 GameEngine에서 호출 가능)
    */
-  private sortEntities(): void {
+  sortEntities(): void {
     this.entities.children.sort((a, b) => a.y - b.y);
   }
 

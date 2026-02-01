@@ -5,15 +5,42 @@
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
+// 토큰 저장소
+let accessToken: string | null = null;
+let refreshToken: string | null = null;
+
 /**
- * API 요청 기본 옵션
+ * 토큰 관리 함수
  */
-const defaultOptions: RequestInit = {
-  headers: {
-    'Content-Type': 'application/json',
+export const tokenManager = {
+  getAccessToken: () => accessToken,
+  getRefreshToken: () => refreshToken,
+
+  setTokens: (access: string, refresh: string) => {
+    accessToken = access;
+    refreshToken = refresh;
+    localStorage.setItem('accessToken', access);
+    localStorage.setItem('refreshToken', refresh);
   },
-  credentials: 'include',
+
+  loadTokens: () => {
+    accessToken = localStorage.getItem('accessToken');
+    refreshToken = localStorage.getItem('refreshToken');
+    return { accessToken, refreshToken };
+  },
+
+  clearTokens: () => {
+    accessToken = null;
+    refreshToken = null;
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  },
+
+  isAuthenticated: () => !!accessToken,
 };
+
+// 앱 시작 시 토큰 로드
+tokenManager.loadTokens();
 
 /**
  * API 에러 클래스
@@ -31,22 +58,70 @@ export class ApiError extends Error {
 }
 
 /**
+ * 토큰 리프레시 함수
+ */
+async function refreshAccessToken(): Promise<boolean> {
+  const currentRefreshToken = tokenManager.getRefreshToken();
+  if (!currentRefreshToken) return false;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken: currentRefreshToken }),
+    });
+
+    if (!response.ok) {
+      tokenManager.clearTokens();
+      return false;
+    }
+
+    const data = await response.json();
+    tokenManager.setTokens(data.accessToken, data.refreshToken);
+    return true;
+  } catch {
+    tokenManager.clearTokens();
+    return false;
+  }
+}
+
+/**
  * API 요청 함수
  */
 async function request<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  retry = true
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
+
+  // 토큰이 있으면 Authorization 헤더 추가
+  const token = tokenManager.getAccessToken();
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const response = await fetch(url, {
-    ...defaultOptions,
     ...options,
-    headers: {
-      ...defaultOptions.headers,
-      ...options.headers,
-    },
+    headers,
+    credentials: 'include',
   });
+
+  // 401 에러 시 토큰 리프레시 시도
+  if (response.status === 401 && retry) {
+    const refreshed = await refreshAccessToken();
+    if (refreshed) {
+      return request<T>(endpoint, options, false);
+    }
+    // 리프레시 실패 시 로그아웃 이벤트 발생
+    window.dispatchEvent(new CustomEvent('auth:logout'));
+    throw new ApiError(401, 'UNAUTHORIZED', '인증이 만료되었습니다.');
+  }
 
   // 에러 응답 처리
   if (!response.ok) {

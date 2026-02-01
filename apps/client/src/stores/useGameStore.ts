@@ -1,89 +1,126 @@
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { INITIAL_GOLD, INITIAL_DIAMOND } from '@dino-park/shared';
+import { devtools } from 'zustand/middleware';
+
+// 게임 모드
+export type GameMode = 'view' | 'build' | 'place_dinosaur' | 'place_building';
+
+// 선택된 엔티티 타입
+interface SelectedEntity {
+  type: 'dinosaur' | 'building';
+  id: string;
+}
+
+// 배치 모드 데이터
+interface PlacementData {
+  type: 'dinosaur' | 'building';
+  speciesId?: string; // 공룡 배치 시
+  typeId?: string; // 건물 배치 시
+}
 
 interface GameState {
-  // 유저 정보
-  userId: string | null;
-  nickname: string;
-  parkLevel: number;
-  parkExp: number;
+  // 게임 모드
+  mode: GameMode;
+  setMode: (mode: GameMode) => void;
 
-  // 재화
-  gold: number;
-  diamond: number;
-  dna: number;
-  explorationEnergy: number;
+  // 선택된 엔티티
+  selectedEntity: SelectedEntity | null;
+  selectEntity: (entity: SelectedEntity | null) => void;
 
-  // 액션
-  setUser: (userId: string, nickname: string) => void;
-  addGold: (amount: number) => void;
-  spendGold: (amount: number) => boolean;
-  addDiamond: (amount: number) => void;
-  spendDiamond: (amount: number) => boolean;
-  addExp: (amount: number) => void;
+  // 배치 모드
+  placementData: PlacementData | null;
+  startPlacement: (data: PlacementData) => void;
+  cancelPlacement: () => void;
+
+  // 카메라/뷰포트
+  cameraPosition: { x: number; y: number };
+  cameraZoom: number;
+  setCameraPosition: (x: number, y: number) => void;
+  setCameraZoom: (zoom: number) => void;
+
+  // 그리드 상태
+  showGrid: boolean;
+  toggleGrid: () => void;
+
+  // 게임 시간 (방치형 수익 계산용)
+  lastActiveTime: number;
+  updateLastActiveTime: () => void;
+
+  // 리셋
   reset: () => void;
 }
 
 const initialState = {
-  userId: null,
-  nickname: '신입 사육사',
-  parkLevel: 1,
-  parkExp: 0,
-  gold: INITIAL_GOLD,
-  diamond: INITIAL_DIAMOND,
-  dna: 0,
-  explorationEnergy: 30,
+  mode: 'view' as GameMode,
+  selectedEntity: null,
+  placementData: null,
+  cameraPosition: { x: 0, y: 0 },
+  cameraZoom: 1,
+  showGrid: false,
+  lastActiveTime: Date.now(),
 };
 
 export const useGameStore = create<GameState>()(
   devtools(
-    persist(
-      (set, get) => ({
-        ...initialState,
+    (set) => ({
+      ...initialState,
 
-        setUser: (userId, nickname) => set({ userId, nickname }),
-
-        addGold: (amount) => set((state) => ({ gold: state.gold + amount })),
-
-        spendGold: (amount) => {
-          const { gold } = get();
-          if (gold < amount) return false;
-          set({ gold: gold - amount });
-          return true;
-        },
-
-        addDiamond: (amount) => set((state) => ({ diamond: state.diamond + amount })),
-
-        spendDiamond: (amount) => {
-          const { diamond } = get();
-          if (diamond < amount) return false;
-          set({ diamond: diamond - amount });
-          return true;
-        },
-
-        addExp: (amount) => {
-          const { parkExp, parkLevel } = get();
-          const newExp = parkExp + amount;
-          // TODO: 레벨업 로직 (exp 테이블 참조)
-          set({ parkExp: newExp });
-        },
-
-        reset: () => set(initialState),
-      }),
-      {
-        name: 'dino-park-game',
-        partialize: (state) => ({
-          userId: state.userId,
-          nickname: state.nickname,
-          parkLevel: state.parkLevel,
-          parkExp: state.parkExp,
-          gold: state.gold,
-          diamond: state.diamond,
-          dna: state.dna,
+      // 게임 모드 변경
+      setMode: (mode) =>
+        set({
+          mode,
+          // 모드 변경 시 선택 초기화
+          selectedEntity: mode === 'view' ? null : undefined,
         }),
-      },
-    ),
-    { name: 'GameStore' },
-  ),
+
+      // 엔티티 선택
+      selectEntity: (entity) =>
+        set({
+          selectedEntity: entity,
+          mode: entity ? 'view' : 'view',
+        }),
+
+      // 배치 시작
+      startPlacement: (data) =>
+        set({
+          mode: data.type === 'dinosaur' ? 'place_dinosaur' : 'place_building',
+          placementData: data,
+          selectedEntity: null,
+        }),
+
+      // 배치 취소
+      cancelPlacement: () =>
+        set({
+          mode: 'view',
+          placementData: null,
+        }),
+
+      // 카메라 위치
+      setCameraPosition: (x, y) =>
+        set({
+          cameraPosition: { x, y },
+        }),
+
+      // 카메라 줌
+      setCameraZoom: (zoom) =>
+        set({
+          cameraZoom: Math.max(0.5, Math.min(2, zoom)),
+        }),
+
+      // 그리드 토글
+      toggleGrid: () =>
+        set((state) => ({
+          showGrid: !state.showGrid,
+        })),
+
+      // 마지막 활성 시간 업데이트
+      updateLastActiveTime: () =>
+        set({
+          lastActiveTime: Date.now(),
+        }),
+
+      // 리셋
+      reset: () => set(initialState),
+    }),
+    { name: 'GameStore' }
+  )
 );
