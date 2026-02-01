@@ -1,0 +1,274 @@
+// Dino Park Tycoon - Database Schema
+// 참조: docs/dino_park_technical_design.md, CLAUDE.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// 유저 & 인증
+// ========================================
+
+model User {
+  id            String   @id @default(cuid())
+  tossId        String   @unique
+  nickname      String
+  level         Int      @default(1)
+  exp           Int      @default(0)
+  tutorialStep  Int      @default(0)
+  lastLoginAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  park          Park?
+  currency      Currency?
+  greatFigures  UserGreatFigure[]
+  storyProgress StoryProgress[]
+  explorations  Exploration[]
+  hatchingQueue HatchingQueue[]
+  transactions  Transaction[]
+  seasonPasses  SeasonPass[]
+
+  @@map("users")
+}
+
+// ========================================
+// 재화
+// ========================================
+
+model Currency {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  gold                  Int      @default(10000)
+  diamond               Int      @default(100)
+  dna                   Int      @default(0)
+  explorationEnergy     Int      @default(30)
+  energyLastRechargedAt DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("currencies")
+}
+
+// ========================================
+// 파크
+// ========================================
+
+model Park {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  name      String   @default("My Dino Park")
+  level     Int      @default(1)
+  exp       Int      @default(0)
+  gridSizeX Int      @default(20)
+  gridSizeY Int      @default(20)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dinosaurs Dinosaur[]
+  buildings Building[]
+
+  @@map("parks")
+}
+
+// ========================================
+// 공룡
+// ========================================
+
+model Dinosaur {
+  id        String   @id @default(cuid())
+  parkId    String
+  speciesId String   // game-data 참조 (예: "triceratops")
+  nickname  String?
+  level     Int      @default(1)
+  exp       Int      @default(0)
+  happiness Int      @default(100)
+  hunger    Int      @default(0)
+  intimacy  Int      @default(0)
+  positionX Int
+  positionY Int
+  isInPark  Boolean  @default(true)
+  lastFedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+
+  @@map("dinosaurs")
+}
+
+// ========================================
+// 건물
+// ========================================
+
+model Building {
+  id                    String         @id @default(cuid())
+  parkId                String
+  typeId                String         // game-data 참조 (예: "visitor_center")
+  level                 Int            @default(1)
+  positionX             Int
+  positionY             Int
+  status                BuildingStatus @default(ACTIVE)
+  assignedGreatFigureId String?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  // Relations
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+
+  @@map("buildings")
+}
+
+enum BuildingStatus {
+  CONSTRUCTING
+  ACTIVE
+  UPGRADING
+}
+
+// ========================================
+// 위인
+// ========================================
+
+model UserGreatFigure {
+  id                 String   @id @default(cuid())
+  userId             String
+  figureId           String   // game-data 참조 (예: "darwin")
+  level              Int      @default(1)
+  exp                Int      @default(0)
+  assignedBuildingId String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, figureId])
+  @@map("user_great_figures")
+}
+
+// ========================================
+// 스토리 진행
+// ========================================
+
+model StoryProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  chapterId String
+  sceneId   String?
+  completed Boolean  @default(false)
+  choices   Json     @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@map("story_progress")
+}
+
+// ========================================
+// 탐험
+// ========================================
+
+model Exploration {
+  id          String            @id @default(cuid())
+  userId      String
+  regionId    String
+  status      ExplorationStatus @default(IN_PROGRESS)
+  startedAt   DateTime          @default(now())
+  completedAt DateTime?
+  rewards     Json?
+  createdAt   DateTime          @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("explorations")
+}
+
+enum ExplorationStatus {
+  IN_PROGRESS
+  COMPLETED
+  CLAIMED
+}
+
+// ========================================
+// 부화
+// ========================================
+
+model HatchingQueue {
+  id          String   @id @default(cuid())
+  userId      String
+  eggType     String
+  speciesId   String?
+  startedAt   DateTime @default(now())
+  completesAt DateTime
+  completed   Boolean  @default(false)
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("hatching_queue")
+}
+
+// ========================================
+// 거래 기록
+// ========================================
+
+model Transaction {
+  id           String          @id @default(cuid())
+  userId       String
+  type         TransactionType
+  currencyType String          // "gold", "diamond", "dna"
+  amount       Int
+  reason       String
+  balanceAfter Int
+  createdAt    DateTime        @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("transactions")
+}
+
+enum TransactionType {
+  EARN
+  SPEND
+  PURCHASE
+  REWARD
+}
+
+// ========================================
+// 시즌 패스
+// ========================================
+
+model SeasonPass {
+  id             String   @id @default(cuid())
+  userId         String
+  seasonId       String
+  level          Int      @default(1)
+  exp            Int      @default(0)
+  isPremium      Boolean  @default(false)
+  claimedRewards Json     @default("[]")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, seasonId])
+  @@map("season_passes")
+}
