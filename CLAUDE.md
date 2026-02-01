@@ -22,21 +22,21 @@
 
 | 문서 | 경로 | 핵심 용도 |
 |------|------|----------|
-| **GDD** | `dino_park_tycoon_gdd.md` | 전체 기획, 기능 명세, 시스템 규칙 |
-| **밸런스** | `dino_park_balance_simulation.md` | 모든 수치, 공식, 경제 설정 |
-| **UI/UX** | `dino_park_ui_wireframe.md` | 화면 구조, 컴포넌트, 플로우 |
-| **공룡 도감** | `dino_park_dinosaur_codex.md` | 공룡 82종 상세 스펙 |
-| **위인 도감** | `dino_park_great_figures.md` | 위인 50명 상세 스펙, 시너지 |
-| **스토리** | `dino_park_story_scenario.md` | 스토리 6챕터, 전체 대사 |
-| **기술 설계** | `dino_park_technical_design.md` | 아키텍처, DB, API 설계 |
-| **사운드** | `dino_park_sound_guide.md` | BGM 31곡, SFX 500개 |
-| **수익 모델** | `dino_park_revenue_model.md` | IAP 상품, 가격, ARPU |
-| **시즌** | `dino_park_season_content.md` | 시즌 1~4 스토리, 보상 |
-| **액션 플랜** | `dino_park_action_plan.md` | 개발 순서, Phase별 작업 |
-| **UI & 아트 가이드** | `dino_park_ui_art_guide.md` | 픽셀 설계, 와이어프레임, 그래픽 스타일 |
-| **에셋 - 메인** | `dino_park_asset_main.md` | 마스터 스타일, Placeholder |
-| **에셋 - 공룡** | `dino_park_asset_dinosaurs.md` | 공룡 82종 + AI 프롬프트 |
-| **에셋 - 건물/캐릭터** | `dino_park_asset_buildings_characters.md` | 건물 50종, 위인 50명, 환경, UI |
+| **GDD** | `docs/dino_park_tycoon_gdd.md` | 전체 기획, 기능 명세, 시스템 규칙 |
+| **밸런스** | `docs/dino_park_balance_simulation.md` | 모든 수치, 공식, 경제 설정 |
+| **UI/UX** | `docs/dino_park_ui_wireframe.md` | 화면 구조, 컴포넌트, 플로우 |
+| **공룡 도감** | `docs/dino_park_dinosaur_codex.md` | 공룡 82종 상세 스펙 |
+| **위인 도감** | `docs/dino_park_great_figures.md` | 위인 50명 상세 스펙, 시너지 |
+| **스토리** | `docs/dino_park_story_scenario.md` | 스토리 6챕터, 전체 대사 |
+| **기술 설계** | `docs/dino_park_technical_design.md` | 아키텍처, DB, API 설계 |
+| **사운드** | `docs/dino_park_sound_guide.md` | BGM 31곡, SFX 500개 |
+| **수익 모델** | `docs/dino_park_revenue_model.md` | IAP 상품, 가격, ARPU |
+| **시즌** | `docs/dino_park_season_content.md` | 시즌 1~4 스토리, 보상 |
+| **액션 플랜** | `docs/dino_park_action_plan.md` | 개발 순서, Phase별 작업 |
+| **UI & 아트 가이드** | `docs/dino_park_ui_art_guide.md` | 픽셀 설계, 와이어프레임, 그래픽 스타일 |
+| **에셋 - 메인** | `docs/dino_park_asset_main.md` | 마스터 스타일, Placeholder |
+| **에셋 - 공룡** | `docs/dino_park_asset_dinosaurs.md` | 공룡 82종 + AI 프롬프트 |
+| **에셋 - 건물/캐릭터** | `docs/dino_park_asset_buildings_characters.md` | 건물 50종, 위인 50명, 환경, UI |
 
 ### 문서 참조 규칙
 

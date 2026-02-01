@@ -1,0 +1,48 @@
+{
+  "name": "@dino-park/game-data",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dinosaurs": {
+      "import": "./dist/dinosaurs/index.mjs",
+      "require": "./dist/dinosaurs/index.js",
+      "types": "./dist/dinosaurs/index.d.ts"
+    },
+    "./buildings": {
+      "import": "./dist/buildings/index.mjs",
+      "require": "./dist/buildings/index.js",
+      "types": "./dist/buildings/index.d.ts"
+    },
+    "./great-figures": {
+      "import": "./dist/great-figures/index.mjs",
+      "require": "./dist/great-figures/index.js",
+      "types": "./dist/great-figures/index.d.ts"
+    },
+    "./balance": {
+      "import": "./dist/balance/index.mjs",
+      "require": "./dist/balance/index.js",
+      "types": "./dist/balance/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@dino-park/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}
