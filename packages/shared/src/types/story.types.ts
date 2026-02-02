@@ -4,6 +4,8 @@
 
 import { BaseEntity } from './common.types';
 
+export type StoryUnlockType = 'none' | 'chapter' | 'parkLevel' | 'building' | 'dinosaur';
+
 export interface StoryChapter {
   id: string;
   title: string;
@@ -11,14 +13,15 @@ export interface StoryChapter {
   order: number;
   scenes: StoryScene[];
   unlockCondition: {
-    parkLevel?: number;
-    previousChapter?: string;
+    type: StoryUnlockType;
+    value?: string | number;
   };
   rewards: StoryReward[];
 }
 
 export interface StoryScene {
   id: string;
+  title?: string;
   dialogues: StoryDialogue[];
   choices?: StoryChoice[];
 }
@@ -32,14 +35,24 @@ export interface StoryDialogue {
 export interface StoryChoice {
   id: string;
   text: string;
-  effect: Record<string, number>;
-  nextSceneId: string;
+  effect: Record<string, number | string | boolean>;
+  nextSceneId: string | null;
 }
 
+export type StoryRewardType =
+  | 'dinosaur'
+  | 'gold'
+  | 'diamond'
+  | 'greatFigure'
+  | 'item'
+  | 'character'
+  | 'building'
+  | 'title';
+
 export interface StoryReward {
-  type: 'dinosaur' | 'gold' | 'diamond' | 'greatFigure' | 'item';
-  id: string;
-  quantity: number;
+  type: StoryRewardType;
+  id?: string;
+  amount?: number;
 }
 
 export interface StoryProgress extends BaseEntity {
