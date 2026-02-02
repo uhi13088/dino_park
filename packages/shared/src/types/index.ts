@@ -16,6 +16,8 @@ export * from './economy.types';
 export * from './exploration.types';
 export * from './story.types';
 export * from './season.types';
+export * from './shop.types';
+export * from './social.types';
 
 // API types
 export * from './api.types';
