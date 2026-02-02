@@ -42,7 +42,7 @@ export interface PassiveAbility {
   id: string;
   name: string;
   description: string;
-  effect: Record<string, number>;
+  effect: Record<string, number | string>;  // number: 수치 효과, string: 시너지 대상 등
 }
 
 // 공룡 종 (정적 데이터)

@@ -32,6 +32,18 @@ export interface Synergy {
   bonus: Record<string, number>;
 }
 
+// 해금 조건 타입
+export type UnlockConditionType =
+  | 'tutorial'      // 튜토리얼 완료
+  | 'story'         // 챕터 클리어
+  | 'building'      // 건물 건설/레벨
+  | 'collection'    // 공룡/위인 수집
+  | 'achievement'   // 업적 달성 (탐험 횟수, 쇼 성공 등)
+  | 'level'         // 파크/건물 레벨
+  | 'season'        // 시즌 보상
+  | 'event'         // 이벤트 전용
+  | 'revenue';      // 수익 달성
+
 // 위인 타입 (정적 데이터)
 export interface GreatFigureType {
   id: string;
@@ -42,8 +54,9 @@ export interface GreatFigureType {
   abilities: GreatFigureAbility[];
   synergies: Synergy[];
   unlockCondition: {
-    type: 'story' | 'season' | 'shop' | 'event';
+    type: UnlockConditionType;
     value: string;
+    description: string;
   };
   recruitCost: number;        // 위인 포인트
   description: string;
