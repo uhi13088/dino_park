@@ -60,7 +60,7 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   isNewUser: boolean;
-  user: Pick<User, 'id' | 'nickname' | 'level'>;
+  user: Pick<User, 'id' | 'nickname' | 'level' | 'exp'>;
   currency: Pick<Currency, 'gold' | 'diamond' | 'dna' | 'explorationEnergy'>;
   park: Pick<Park, 'id' | 'name' | 'level'>;
 }
@@ -278,6 +278,62 @@ export interface ClaimExplorationResponse {
 }
 
 // ========================================
+// 위인 API
+// ========================================
+
+export interface GreatFigureResponse {
+  id: string;
+  figureId: string;
+  name: string;
+  nameKo: string;
+  job: string;
+  rarity: string;
+  level: number;
+  exp: number;
+  assignedBuildingId: string | null;
+  description: string;
+  quote: string;
+}
+
+export interface GreatFigureListResponse {
+  greatFigures: GreatFigureResponse[];
+  total: number;
+}
+
+export interface GreatFigureTypeResponse {
+  id: string;
+  name: string;
+  nameKo: string;
+  job: string;
+  rarity: string;
+  recruitCost: number;
+  description: string;
+  quote: string;
+  isOwned: boolean;
+  canRecruit: boolean;
+}
+
+export interface AvailableGreatFiguresResponse {
+  greatFigures: GreatFigureTypeResponse[];
+}
+
+export interface RecruitGreatFigureRequest {
+  figureId: string;
+}
+
+export interface RecruitGreatFigureResponse {
+  greatFigure: GreatFigureResponse;
+}
+
+export interface AssignGreatFigureToBuildingRequest {
+  buildingId: string;
+}
+
+export interface GreatFigurePointsResponse {
+  points: number;
+}
+
+// ========================================
 // 부화 API
 // ========================================
 
@@ -293,4 +349,64 @@ export interface HatchingItemResponse {
 
 export interface HatchingQueueResponse {
   queue: HatchingItemResponse[];
+}
+
+// ========================================
+// 스토리 API
+// ========================================
+
+export interface StoryChapterResponse {
+  id: string;
+  number: number;
+  title: string;
+  description: string;
+  totalScenes: number;
+  completedScenes: number;
+  isCompleted: boolean;
+  isLocked: boolean;
+  unlockRequirement?: string;
+}
+
+export interface StoryChapterListResponse {
+  chapters: StoryChapterResponse[];
+}
+
+export interface StorySceneResponse {
+  id: string;
+  chapterId: string;
+  dialogues: Array<{
+    speaker: string;
+    text: string;
+    emotion?: string;
+  }>;
+  choices?: Array<{
+    id: string;
+    text: string;
+  }>;
+  isLastScene: boolean;
+}
+
+export interface StoryProgressResponse {
+  chapterId: string;
+  currentSceneId: string | null;
+  completedScenes: string[];
+  choices: Record<string, string>;
+}
+
+export interface StartChapterResponse {
+  scene: StorySceneResponse;
+}
+
+export interface AdvanceSceneRequest {
+  choiceId?: string;
+}
+
+export interface AdvanceSceneResponse {
+  scene: StorySceneResponse | null;
+  rewards?: Array<{
+    type: string;
+    id: string;
+    quantity: number;
+  }>;
+  isChapterComplete: boolean;
 }

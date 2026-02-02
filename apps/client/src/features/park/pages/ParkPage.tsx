@@ -1,6 +1,5 @@
 import { useGameEngine } from '@/hooks';
 import { useGameStore, useUIStore } from '@/stores';
-import { Button } from '@/components/ui';
 import { cn } from '@/utils/cn';
 
 /**
@@ -8,7 +7,7 @@ import { cn } from '@/utils/cn';
  */
 export default function ParkPage() {
   const { containerRef, isReady, error } = useGameEngine();
-  const { mode, startPlacement, cancelPlacement, showGrid, toggleGrid } = useGameStore();
+  const { mode, cancelPlacement, showGrid, toggleGrid } = useGameStore();
   const { openSidePanel } = useUIStore();
 
   if (error) {

@@ -68,10 +68,10 @@ export const useUIStore = create<UIState>()(
       // 모달 상태
       activeModal: null,
       modalData: null,
-      openModal: (type, data = null) =>
+      openModal: (type, data) =>
         set({
           activeModal: type,
-          modalData: data,
+          modalData: data ?? null,
         }),
       closeModal: () =>
         set({
@@ -112,10 +112,10 @@ export const useUIStore = create<UIState>()(
       // 로딩 상태
       isGlobalLoading: false,
       loadingMessage: null,
-      showLoading: (message = null) =>
+      showLoading: (message) =>
         set({
           isGlobalLoading: true,
-          loadingMessage: message,
+          loadingMessage: message ?? null,
         }),
       hideLoading: () =>
         set({

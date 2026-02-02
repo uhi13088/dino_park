@@ -45,6 +45,14 @@ interface GameState {
   lastActiveTime: number;
   updateLastActiveTime: () => void;
 
+  // 재화 (로컬 캐시)
+  gold: number;
+  diamond: number;
+  explorationEnergy: number;
+  setGold: (gold: number) => void;
+  setDiamond: (diamond: number) => void;
+  setExplorationEnergy: (energy: number) => void;
+
   // 리셋
   reset: () => void;
 }
@@ -57,6 +65,9 @@ const initialState = {
   cameraZoom: 1,
   showGrid: false,
   lastActiveTime: Date.now(),
+  gold: 10000,
+  diamond: 100,
+  explorationEnergy: 30,
 };
 
 export const useGameStore = create<GameState>()(
@@ -117,6 +128,11 @@ export const useGameStore = create<GameState>()(
         set({
           lastActiveTime: Date.now(),
         }),
+
+      // 재화 설정
+      setGold: (gold) => set({ gold }),
+      setDiamond: (diamond) => set({ diamond }),
+      setExplorationEnergy: (energy) => set({ explorationEnergy: energy }),
 
       // 리셋
       reset: () => set(initialState),

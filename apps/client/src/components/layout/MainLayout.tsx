@@ -4,7 +4,7 @@ import BottomNav from './BottomNav';
 import TopBar from './TopBar';
 import { ToastContainer } from '@/components/ui';
 import { useAuthStore } from '@/stores';
-import { useProfile, useCollectOfflineRevenue, tokenManager } from '@/api';
+import { useProfile, useCollectOfflineRevenue } from '@/api';
 import LoadingOverlay from './LoadingOverlay';
 
 /**
@@ -15,7 +15,7 @@ import LoadingOverlay from './LoadingOverlay';
  */
 export default function MainLayout() {
   const { setAuth, isAuthenticated } = useAuthStore();
-  const { data: profileData, isLoading } = useProfile();
+  const { data: profileData } = useProfile();
   const { mutate: collectOfflineRevenue } = useCollectOfflineRevenue();
 
   // 프로필 데이터 동기화

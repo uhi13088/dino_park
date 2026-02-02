@@ -36,13 +36,23 @@ import type {
   TransactionListResponse,
   OfflineRevenueResponse,
   // Exploration
-  ExplorationRegionResponse,
   ExplorationRegionsResponse,
   ExplorationResponse,
   ExplorationListResponse,
   ClaimExplorationResponse,
   // Hatching
   HatchingQueueResponse,
+  // Great Figures
+  GreatFigureResponse,
+  GreatFigureListResponse,
+  AvailableGreatFiguresResponse,
+  RecruitGreatFigureRequest,
+  RecruitGreatFigureResponse,
+  GreatFigurePointsResponse,
+  // Story
+  StoryChapterListResponse,
+  StartChapterResponse,
+  AdvanceSceneResponse,
 } from '@dino-park/shared';
 
 // ========================================
@@ -531,6 +541,60 @@ export function useClaimExploration() {
 }
 
 // ========================================
+// Great Figure Queries & Mutations
+// ========================================
+
+export function useGreatFigures() {
+  return useQuery({
+    queryKey: queryKeys.greatFigureList(),
+    queryFn: () => api.get<GreatFigureListResponse>('/great-figures'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useAvailableGreatFigures() {
+  return useQuery({
+    queryKey: ['greatFigures', 'available'],
+    queryFn: () => api.get<AvailableGreatFiguresResponse>('/great-figures/available'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useGreatFigurePoints() {
+  return useQuery({
+    queryKey: ['greatFigures', 'points'],
+    queryFn: () => api.get<GreatFigurePointsResponse>('/great-figures/points'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useRecruitGreatFigure() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: RecruitGreatFigureRequest) =>
+      api.post<RecruitGreatFigureResponse>('/great-figures/recruit', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.greatFigures });
+      queryClient.invalidateQueries({ queryKey: ['greatFigures', 'available'] });
+      queryClient.invalidateQueries({ queryKey: ['greatFigures', 'points'] });
+    },
+  });
+}
+
+export function useLevelUpGreatFigure() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (figureId: string) =>
+      api.post<GreatFigureResponse>(`/great-figures/${figureId}/level-up`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.greatFigures });
+    },
+  });
+}
+
+// ========================================
 // Hatching Queries
 // ========================================
 
@@ -540,5 +604,44 @@ export function useHatchingQueue() {
     queryFn: () => api.get<HatchingQueueResponse>('/explorations/hatching'),
     enabled: tokenManager.isAuthenticated(),
     refetchInterval: 10000, // 10초마다 갱신
+  });
+}
+
+// ========================================
+// Story Queries & Mutations
+// ========================================
+
+export function useStoryChapters() {
+  return useQuery({
+    queryKey: queryKeys.stories,
+    queryFn: () => api.get<StoryChapterListResponse>('/stories/chapters'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useStoryProgress() {
+  return useQuery({
+    queryKey: queryKeys.storyProgress(),
+    queryFn: () => api.get<{ progress: Record<string, { completedScenes: number; isCompleted: boolean }> }>('/stories/progress'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useStartChapter() {
+  return useMutation({
+    mutationFn: (chapterId: string) =>
+      api.post<StartChapterResponse>(`/stories/${chapterId}/start`),
+  });
+}
+
+export function useAdvanceScene() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ chapterId, sceneId, choiceId }: { chapterId: string; sceneId: string; choiceId?: string }) =>
+      api.post<AdvanceSceneResponse>(`/stories/${chapterId}/scenes/${sceneId}/advance`, { choiceId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.storyProgress() });
+    },
   });
 }

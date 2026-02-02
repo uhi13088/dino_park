@@ -12,7 +12,7 @@ export function useGameEngine() {
   const [error, setError] = useState<Error | null>(null);
 
   // 스토어
-  const { selectEntity, startPlacement, mode, placementData } = useGameStore();
+  const { selectEntity, mode, placementData } = useGameStore();
   const { openModal } = useUIStore();
 
   // API 데이터

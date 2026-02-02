@@ -54,3 +54,30 @@ export const RARITY_REVENUE_MULTIPLIER = {
   epic: 4.0,
   legendary: 7.0,
 } as const;
+
+// === 공룡 상태 위험 기준 ===
+export const DANGER_HAPPINESS_THRESHOLD = 30;
+export const DANGER_HUNGER_THRESHOLD = 80;
+export const DANGER_STATE_REVENUE_PENALTY = 0.5;
+
+// === 수익 계산 ===
+export const REVENUE_LEVEL_MULTIPLIER = 0.1; // 레벨당 10% 증가
+export const GAME_TICK_INTERVAL = 1000; // 1초
+
+// === 친밀도 ===
+export const INTERACTION_INTIMACY_GAIN = 5;
+export const INTERACTION_EXP_GAIN = 10;
+export const INTERACTION_COOLDOWN_MINUTES = 30;
+
+// === 광고 시간 단축 (레벨별) ===
+export const AD_TIME_REDUCTION_HOURS = {
+  tier1: 1, // Lv.1~10
+  tier2: 2, // Lv.11~15
+  tier3: 3, // Lv.16~20
+  tier4: 4, // Lv.21~25
+} as const;
+
+// === 건설 슬롯 ===
+export const INITIAL_BUILD_SLOTS = 1;
+export const MAX_BUILD_SLOTS = 5;
+export const BUILD_SLOT_DIAMOND_COST = 500;

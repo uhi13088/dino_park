@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui';
 import { useAuthStore } from '@/stores';
-import { useLogin, tokenManager } from '@/api';
+import { useLogin } from '@/api';
 
 /**
  * 홈 페이지 - 게임 시작/로딩 화면
