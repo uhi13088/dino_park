@@ -1,8 +1,49 @@
 /**
  * TanStack Query 쿼리/뮤테이션 정의
+ * 타입은 @dino-park/shared에서 import
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, tokenManager } from '../client';
+
+// ========================================
+// Shared Types Import
+// ========================================
+import type {
+  // Auth
+  LoginResponse,
+  ProfileResponse,
+  TossLoginRequest,
+  // User
+  UserResponse,
+  UserStatsResponse,
+  // Park
+  ParkResponse,
+  ParkSummaryResponse,
+  ParkRevenueResponse,
+  // Dinosaur
+  DinosaurResponse,
+  DinosaurListResponse,
+  CreateDinosaurRequest,
+  UpdateDinosaurRequest,
+  InteractDinosaurResponse,
+  // Building
+  BuildingResponse,
+  BuildingListResponse,
+  CreateBuildingRequest,
+  AssignGreatFigureRequest,
+  // Economy
+  CurrencyResponse,
+  TransactionListResponse,
+  OfflineRevenueResponse,
+  // Exploration
+  ExplorationRegionResponse,
+  ExplorationRegionsResponse,
+  ExplorationResponse,
+  ExplorationListResponse,
+  ClaimExplorationResponse,
+  // Hatching
+  HatchingQueueResponse,
+} from '@dino-park/shared';
 
 // ========================================
 // Query Keys
@@ -68,26 +109,12 @@ export const queryKeys = {
 // ========================================
 // Auth Queries & Mutations
 // ========================================
-interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  isNewUser: boolean;
-  user: { id: string; nickname: string; level: number };
-  currency: { gold: number; diamond: number; dna: number; explorationEnergy: number };
-  park: { id: string; name: string; level: number };
-}
-
-interface ProfileResponse {
-  user: { id: string; nickname: string; level: number; exp: number };
-  currency: { gold: number; diamond: number; dna: number; explorationEnergy: number };
-  park: { id: string; name: string; level: number };
-}
 
 export function useLogin() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { tossId: string; nickname?: string }) => {
+    mutationFn: async (data: TossLoginRequest) => {
       const response = await api.post<LoginResponse>('/auth/toss/login', data);
       tokenManager.setTokens(response.accessToken, response.refreshToken);
       return response;
@@ -125,21 +152,6 @@ export function useLogout() {
 // ========================================
 // User Queries & Mutations
 // ========================================
-interface UserResponse {
-  id: string;
-  nickname: string;
-  level: number;
-  exp: number;
-  tutorialStep: number;
-  lastLoginAt: string;
-}
-
-interface UserStatsResponse {
-  totalDinosaurs: number;
-  totalBuildings: number;
-  totalGreatFigures: number;
-  hourlyRevenue: number;
-}
 
 export function useUserMe() {
   return useQuery({
@@ -184,26 +196,6 @@ export function useUpdateTutorial() {
 // ========================================
 // Park Queries & Mutations
 // ========================================
-interface ParkResponse {
-  id: string;
-  name: string;
-  level: number;
-  exp: number;
-  gridSizeX: number;
-  gridSizeY: number;
-}
-
-interface ParkSummaryResponse extends ParkResponse {
-  dinosaurCount: number;
-  buildingCount: number;
-}
-
-interface ParkRevenueResponse {
-  hourlyRevenue: number;
-  maintenanceCost: number;
-  netRevenue: number;
-  offlineRevenue?: number;
-}
 
 export function useParkMe() {
   return useQuery({
@@ -245,24 +237,6 @@ export function useUpdateParkName() {
 // ========================================
 // Dinosaur Queries & Mutations
 // ========================================
-interface DinosaurResponse {
-  id: string;
-  speciesId: string;
-  nickname: string | null;
-  level: number;
-  exp: number;
-  happiness: number;
-  hunger: number;
-  intimacy: number;
-  positionX: number;
-  positionY: number;
-  isInPark: boolean;
-}
-
-interface DinosaurListResponse {
-  dinosaurs: DinosaurResponse[];
-  total: number;
-}
 
 export function useDinosaurs() {
   return useQuery({
@@ -284,7 +258,7 @@ export function useCreateDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { speciesId: string; positionX: number; positionY: number; nickname?: string }) =>
+    mutationFn: (data: CreateDinosaurRequest) =>
       api.post<DinosaurResponse>('/dinosaurs', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurs });
@@ -297,7 +271,7 @@ export function useUpdateDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, ...data }: { id: string; nickname?: string; positionX?: number; positionY?: number }) =>
+    mutationFn: ({ id, ...data }: { id: string } & UpdateDinosaurRequest) =>
       api.patch<DinosaurResponse>(`/dinosaurs/${id}`, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurDetail(variables.id) });
@@ -325,7 +299,7 @@ export function useInteractDinosaur() {
 
   return useMutation({
     mutationFn: (id: string) =>
-      api.post<{ dinosaur: DinosaurResponse; intimacyGain: number; expGain: number }>(`/dinosaurs/${id}/interact`),
+      api.post<InteractDinosaurResponse>(`/dinosaurs/${id}/interact`),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurDetail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurList() });
@@ -348,20 +322,6 @@ export function useDeleteDinosaur() {
 // ========================================
 // Building Queries & Mutations
 // ========================================
-interface BuildingResponse {
-  id: string;
-  typeId: string;
-  level: number;
-  positionX: number;
-  positionY: number;
-  status: 'CONSTRUCTING' | 'ACTIVE' | 'UPGRADING';
-  assignedGreatFigureId: string | null;
-}
-
-interface BuildingListResponse {
-  buildings: BuildingResponse[];
-  total: number;
-}
 
 export function useBuildings() {
   return useQuery({
@@ -383,7 +343,7 @@ export function useCreateBuilding() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { typeId: string; positionX: number; positionY: number }) =>
+    mutationFn: (data: CreateBuildingRequest) =>
       api.post<BuildingResponse>('/buildings', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
@@ -411,7 +371,7 @@ export function useAssignGreatFigure() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ buildingId, greatFigureId }: { buildingId: string; greatFigureId: string }) =>
+    mutationFn: ({ buildingId, greatFigureId }: { buildingId: string } & AssignGreatFigureRequest) =>
       api.post<BuildingResponse>(`/buildings/${buildingId}/assign-great-figure`, { greatFigureId }),
     onSuccess: (_, { buildingId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(buildingId) });
@@ -448,31 +408,6 @@ export function useDeleteBuilding() {
 // ========================================
 // Economy Queries & Mutations
 // ========================================
-interface CurrencyResponse {
-  gold: number;
-  diamond: number;
-  dna: number;
-  explorationEnergy: number;
-  maxEnergy: number;
-  energyRechargeAt: string | null;
-}
-
-interface TransactionResponse {
-  id: string;
-  type: 'EARN' | 'SPEND' | 'PURCHASE' | 'REWARD';
-  currencyType: string;
-  amount: number;
-  reason: string;
-  balanceAfter: number;
-  createdAt: string;
-}
-
-interface TransactionListResponse {
-  transactions: TransactionResponse[];
-  total: number;
-  page: number;
-  limit: number;
-}
 
 export function useCurrency() {
   return useQuery({
@@ -495,7 +430,7 @@ export function useCollectOfflineRevenue() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => api.post<{ collected: number; hours: number }>('/economy/offline-revenue'),
+    mutationFn: () => api.post<OfflineRevenueResponse>('/economy/offline-revenue'),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
       queryClient.invalidateQueries({ queryKey: queryKeys.transactions() });
@@ -517,35 +452,11 @@ export function useRefillEnergy() {
 // ========================================
 // Exploration Queries & Mutations
 // ========================================
-interface ExplorationRegion {
-  id: string;
-  name: string;
-  description: string;
-  duration: number;
-  unlockLevel: number;
-  isUnlocked: boolean;
-  energyCost: number;
-  possibleRewards: string[];
-}
-
-interface ExplorationResponse {
-  id: string;
-  regionId: string;
-  status: 'IN_PROGRESS' | 'COMPLETED' | 'CLAIMED';
-  startedAt: string;
-  completedAt: string | null;
-  rewards: {
-    gold?: number;
-    dna?: number;
-    egg?: { type: string; hatchTime: number };
-  } | null;
-  remainingSeconds?: number;
-}
 
 export function useExplorationRegions() {
   return useQuery({
     queryKey: queryKeys.explorationRegions(),
-    queryFn: () => api.get<{ regions: ExplorationRegion[] }>('/explorations/regions'),
+    queryFn: () => api.get<ExplorationRegionsResponse>('/explorations/regions'),
     enabled: tokenManager.isAuthenticated(),
   });
 }
@@ -553,7 +464,7 @@ export function useExplorationRegions() {
 export function useExplorations() {
   return useQuery({
     queryKey: queryKeys.explorationList(),
-    queryFn: () => api.get<{ explorations: ExplorationResponse[] }>('/explorations'),
+    queryFn: () => api.get<ExplorationListResponse>('/explorations'),
     enabled: tokenManager.isAuthenticated(),
   });
 }
@@ -610,7 +521,7 @@ export function useClaimExploration() {
 
   return useMutation({
     mutationFn: (id: string) =>
-      api.post<{ exploration: ExplorationResponse; rewards: ExplorationResponse['rewards'] }>(`/explorations/${id}/claim`),
+      api.post<ClaimExplorationResponse>(`/explorations/${id}/claim`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
@@ -622,20 +533,11 @@ export function useClaimExploration() {
 // ========================================
 // Hatching Queries
 // ========================================
-interface HatchingItem {
-  id: string;
-  eggType: string;
-  speciesId: string | null;
-  startedAt: string;
-  completesAt: string;
-  completed: boolean;
-  remainingSeconds?: number;
-}
 
 export function useHatchingQueue() {
   return useQuery({
     queryKey: queryKeys.hatchingQueue(),
-    queryFn: () => api.get<{ queue: HatchingItem[] }>('/explorations/hatching'),
+    queryFn: () => api.get<HatchingQueueResponse>('/explorations/hatching'),
     enabled: tokenManager.isAuthenticated(),
     refetchInterval: 10000, // 10초마다 갱신
   });
