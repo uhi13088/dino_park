@@ -17,12 +17,197 @@
 
 # 1. 사용법
 
+## Step 1: AI 이미지 생성
+
+### 권장 도구
+- **Midjourney** (v6 추천) - 프롬프트가 Midjourney 문법으로 작성됨
+- **Leonardo AI** - `--ar`, `--v`, `--s`, `--q` 파라미터 제거 후 사용
+- **Stable Diffusion** - 파라미터 제거 후 사용
+
+### MVP 공룡 (완전한 프롬프트 있음)
+1. 아래 섹션 2에서 원하는 공룡 찾기
+2. 원하는 상태(Idle/Walk/Portrait) 프롬프트 전체 복사
+3. Midjourney에 `/imagine prompt:` 후 붙여넣기
+
+### 나머지 공룡 (특성표만 있음)
 ```
 Step 1: asset_main.md에서 마스터 스타일 복사
-Step 2: 아래 표에서 해당 공룡의 "개별 특성" 복사
-Step 3: 원하는 상태(Idle/Walk/Eat) 키워드 추가
-Step 4: 사이즈 템플릿 추가
+Step 2: 아래 특성표에서 해당 공룡의 "개별 특성" 복사
+Step 3: 원하는 상태(Idle/Walk/Eat) 키워드 추가 (asset_main.md 참조)
+Step 4: 사이즈 템플릿 추가 (asset_main.md 참조)
 Step 5: --ar 1:1 --v 6 --s 250 --q 2 추가
+```
+
+## Step 2: 파일명 규칙
+
+### 기본 형식
+```
+dino_{id}_{영문이름}_{상태}.png
+```
+
+### 상태 접미사
+```
+_idle     - 서있는 기본 상태
+_walk     - 걷는 상태
+_eat      - 먹는 상태
+_happy    - 기쁜 상태
+_portrait - 초상화 (UI용)
+```
+
+### 예시
+```
+dino_001_stegosaurus_idle.png
+dino_001_stegosaurus_walk.png
+dino_001_stegosaurus_portrait.png
+dino_002_triceratops_idle.png
+dino_015_tyrannosaurus_idle.png
+```
+
+## Step 3: 폴더 구조
+
+```
+apps/client/src/assets/dinosaurs/
+├── herbivore/                    # 초식 공룡 25종
+│   ├── dino_001_stegosaurus_idle.png
+│   ├── dino_001_stegosaurus_walk.png
+│   ├── dino_001_stegosaurus_portrait.png
+│   ├── dino_002_triceratops_idle.png
+│   └── ...
+├── carnivore/                    # 육식 공룡 25종
+│   ├── dino_015_tyrannosaurus_idle.png
+│   └── ...
+├── pterosaur/                    # 익룡 12종
+│   ├── dino_040_pteranodon_idle.png
+│   └── ...
+├── marine/                       # 해양 파충류 10종
+│   ├── dino_052_mosasaurus_idle.png
+│   └── ...
+└── hybrid/                       # 하이브리드 10종
+    ├── dino_072_indominus_idle.png
+    └── ...
+```
+
+## Step 4: 권장 크기
+
+| 공룡 크기 | 그리드 | 픽셀 | 대상 |
+|-----------|--------|------|------|
+| XS | 1×1 | 64×64 | 소형 (콤프소그나투스) |
+| S | 1×1 | 96×96 | 중소형 (벨로키랍토르) |
+| M | 2×2 | 128×128 | 중형 (스테고사우루스) |
+| L | 3×3 | 192×192 | 대형 (브라키오사우루스) |
+| XL | 4×4 | 256×256 | 초대형 (티라노사우루스) |
+| XXL | 6×6 | 384×384 | 거대형 (모사사우루스) |
+
+## Step 5: 이미지 후처리
+
+### 필수 작업
+1. **배경 제거** - 투명 PNG로 저장
+2. **크기 조정** - 프롬프트에 명시된 픽셀 크기로 리사이즈
+3. **파일 형식** - PNG-24 (투명도 포함)
+
+## 🔖 빠른 참조: 전체 공룡 ID 목록
+
+### 초식 공룡 (001-025)
+```
+dino_001_stegosaurus
+dino_002_triceratops
+dino_003_brachiosaurus
+dino_004_parasaurolophus
+dino_005_ankylosaurus
+dino_006_diplodocus
+dino_007_apatosaurus
+dino_008_iguanodon
+dino_009_pachycephalosaurus
+dino_010_gallimimus
+dino_011_therizinosaurus
+dino_012_maiasaura
+dino_013_edmontosaurus
+dino_014_corythosaurus
+dino_021_kentrosaurus
+dino_022_styracosaurus
+dino_023_protoceratops
+dino_024_camarasaurus
+dino_025_plateosaurus
+dino_026_lambeosaurus
+dino_027_ouranosaurus
+dino_028_nigersaurus
+dino_029_amargasaurus
+dino_030_muttaburrasaurus
+dino_031_psittacosaurus
+```
+
+### 육식 공룡 (015-020, 032-050)
+```
+dino_015_tyrannosaurus
+dino_016_velociraptor
+dino_017_spinosaurus
+dino_018_allosaurus
+dino_019_carnotaurus
+dino_020_dilophosaurus
+dino_032_giganotosaurus
+dino_033_carcharodontosaurus
+dino_034_baryonyx
+dino_035_suchomimus
+dino_036_acrocanthosaurus
+dino_037_ceratosaurus
+dino_038_megalosaurus
+dino_039_herrerasaurus
+dino_040_coelophysis
+dino_041_compsognathus
+dino_042_deinonychus
+dino_043_utahraptor
+dino_044_microraptor
+dino_045_oviraptor
+dino_046_troodon
+dino_047_majungasaurus
+dino_048_irritator
+dino_049_metriacanthosaurus
+dino_050_proceratosaurus
+dino_051_monolophosaurus
+```
+
+### 익룡 (052-063)
+```
+dino_052_pteranodon
+dino_053_quetzalcoatlus
+dino_054_dimorphodon
+dino_055_rhamphorhynchus
+dino_056_tapejara
+dino_057_pterodactylus
+dino_058_tropeognathus
+dino_059_anhanguera
+dino_060_dsungaripterus
+dino_061_ornithocheirus
+dino_062_hatzegopteryx
+dino_063_nyctosaurus
+```
+
+### 해양 파충류 (064-073)
+```
+dino_064_mosasaurus
+dino_065_plesiosaurus
+dino_066_elasmosaurus
+dino_067_liopleurodon
+dino_068_ichthyosaurus
+dino_069_kronosaurus
+dino_070_tylosaurus
+dino_071_shonisaurus
+dino_072_nothosaurus
+dino_073_dakosaurus
+```
+
+### 하이브리드 (074-083)
+```
+dino_074_indominus_rex
+dino_075_indoraptor
+dino_076_stegoceratops
+dino_077_spinoraptor
+dino_078_ankylodocus
+dino_079_carnoraptor
+dino_080_pyrittator
+dino_081_diplotator
+dino_082_giganocephalus
+dino_083_ultimasaurus
 ```
 
 ---

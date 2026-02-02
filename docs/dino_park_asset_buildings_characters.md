@@ -5,12 +5,321 @@
 
 # 📋 목차
 
+0. [📖 사용 가이드](#-사용-가이드)
 1. [건물 MVP 프롬프트](#1-건물-mvp-프롬프트)
 2. [건물 50종 특성표](#2-건물-50종-특성표)
 3. [위인 MVP 프롬프트](#3-위인-mvp-프롬프트)
 4. [위인 50명 특성표](#4-위인-50명-특성표)
 5. [환경 & 타일](#5-환경--타일)
 6. [UI 에셋](#6-ui-에셋)
+
+---
+
+# 📖 사용 가이드
+
+## Step 1: AI 이미지 생성
+
+### 권장 도구
+- **Midjourney** (v6 추천) - 프롬프트가 Midjourney 문법으로 작성됨
+- **Leonardo AI** - `--ar`, `--v`, `--s`, `--q` 파라미터 제거 후 사용
+- **Stable Diffusion** - 파라미터 제거 후 사용
+
+### Midjourney 사용법
+```
+/imagine prompt: [프롬프트 전체 복사]
+```
+
+### 다른 도구 사용 시
+프롬프트 끝의 파라미터 제거:
+```
+❌ --ar 4:5 --v 6 --s 250 --q 2
+```
+
+## Step 2: 파일명 규칙
+
+### 건물 파일명
+
+#### 기본 형식
+```
+building_{id}_{영문이름}_lv{레벨}.png
+```
+
+#### 예시
+```
+building_001_hatchery_lv1.png
+building_001_hatchery_lv2.png
+building_001_hatchery_lv3.png
+building_002_dna_lab_lv1.png
+building_010_gift_shop_lv1.png
+```
+
+### 위인 파일명
+
+#### 기본 형식
+```
+figure_{id}_{영문이름}_{상태}.png
+```
+
+#### 상태 접미사
+```
+_idle     - 서있는 기본 상태
+_work     - 일하는 상태
+_happy    - 기쁜 상태
+_portrait - 초상화 (UI용)
+```
+
+#### 예시
+```
+figure_001_charles_darwin_idle.png
+figure_001_charles_darwin_portrait.png
+figure_002_mary_anning_idle.png
+figure_010_marie_curie_portrait.png
+```
+
+## Step 3: 폴더 구조
+
+```
+apps/client/src/assets/
+├── buildings/
+│   ├── core/                         # 핵심 시설
+│   │   ├── building_001_hatchery_lv1.png
+│   │   ├── building_001_hatchery_lv2.png
+│   │   ├── building_001_hatchery_lv3.png
+│   │   ├── building_002_dna_lab_lv1.png
+│   │   └── ...
+│   ├── habitats/                     # 서식지
+│   │   ├── building_010_grassland_lv1.png
+│   │   └── ...
+│   ├── research/                     # 연구 시설
+│   │   ├── building_020_fossil_center_lv1.png
+│   │   └── ...
+│   ├── viewing/                      # 관람 시설
+│   │   ├── building_030_observation_lv1.png
+│   │   └── ...
+│   ├── amenities/                    # 편의 시설
+│   │   ├── building_035_restroom_lv1.png
+│   │   └── ...
+│   ├── production/                   # 생산 시설
+│   │   ├── building_040_food_factory_lv1.png
+│   │   └── ...
+│   ├── operations/                   # 운영 시설
+│   │   ├── building_045_ranger_station_lv1.png
+│   │   └── ...
+│   └── decorations/                  # 장식물
+│       ├── building_050_statue_lv1.png
+│       └── ...
+│
+└── characters/
+    ├── great_figures/
+    │   ├── scientists/               # 과학자
+    │   │   ├── figure_001_charles_darwin_idle.png
+    │   │   ├── figure_001_charles_darwin_portrait.png
+    │   │   └── ...
+    │   ├── trainers/                 # 조련사
+    │   │   ├── figure_010_owen_grady_idle.png
+    │   │   └── ...
+    │   ├── management/               # 경영진
+    │   │   ├── figure_020_john_hammond_idle.png
+    │   │   └── ...
+    │   ├── explorers/                # 탐험가
+    │   │   ├── figure_030_alan_grant_idle.png
+    │   │   └── ...
+    │   └── special/                  # 특별 인물
+    │       ├── figure_045_time_traveler_idle.png
+    │       └── ...
+    │
+    ├── visitors/                     # 방문객 → asset_items_environment.md 참조
+    │
+    └── staff/                        # 직원 → asset_items_environment.md 참조
+```
+
+## Step 4: 권장 크기
+
+### 건물
+
+| 건물 크기 | 그리드 | 픽셀 | 대상 |
+|-----------|--------|------|------|
+| S | 1×1 | 64×96 | 소형 (장식, 울타리) |
+| M | 2×2 | 128×160 | 중형 (부화장, 연구소) |
+| L | 3×3 | 192×240 | 대형 (서식지, 관람시설) |
+| XL | 4×4 | 256×320 | 초대형 (메인 시설) |
+
+### 캐릭터
+
+| 용도 | 픽셀 | 비율 |
+|------|------|------|
+| 미니 (파크 내) | 48×64 | 3:4 |
+| 표준 | 96×128 | 3:4 |
+| 초상화 (UI) | 256×320 | 4:5 |
+
+## Step 5: 이미지 후처리
+
+### 필수 작업
+1. **배경 제거** - 투명 PNG로 저장
+2. **크기 조정** - 프롬프트에 명시된 픽셀 크기로 리사이즈
+3. **파일 형식** - PNG-24 (투명도 포함)
+
+### 건물 주의사항
+- 건물은 아래 정렬 (bottom-aligned) - 바닥면이 이미지 하단에 위치
+- 그림자 없음 - 게임에서 동적 그림자 처리
+
+## 🔖 빠른 참조: 전체 ID 목록
+
+### 건물 (50종)
+
+#### 핵심 시설 (001-005)
+```
+building_001_hatchery
+building_002_dna_lab
+building_003_fossil_center
+building_004_research_center
+building_005_expedition_center
+```
+
+#### 서식지 (006-015)
+```
+building_006_grassland_habitat
+building_007_forest_habitat
+building_008_desert_habitat
+building_009_tropical_habitat
+building_010_aquatic_habitat
+building_011_volcanic_habitat
+building_012_ice_habitat
+building_013_swamp_habitat
+building_014_aviary
+building_015_petting_zoo
+```
+
+#### 연구 시설 (016-020)
+```
+building_016_genetics_lab
+building_017_paleontology_lab
+building_018_behavior_lab
+building_019_medical_center
+building_020_archives
+```
+
+#### 관람 시설 (021-030)
+```
+building_021_observation_deck
+building_022_safari_tour
+building_023_underwater_tunnel
+building_024_vr_experience
+building_025_photo_spot
+building_026_amphitheater
+building_027_museum
+building_028_education_center
+building_029_playground
+building_030_mini_train
+```
+
+#### 편의 시설 (031-035)
+```
+building_031_restaurant
+building_032_cafe
+building_033_gift_shop
+building_034_restroom
+building_035_first_aid
+```
+
+#### 생산 시설 (036-040)
+```
+building_036_food_factory
+building_037_egg_storage
+building_038_dna_storage
+building_039_power_plant
+building_040_water_treatment
+```
+
+#### 운영 시설 (041-045)
+```
+building_041_ranger_station
+building_042_security_center
+building_043_staff_center
+building_044_warehouse
+building_045_helipad
+```
+
+#### 장식물 (046-050)
+```
+building_046_fountain
+building_047_statue
+building_048_flower_garden
+building_049_bench
+building_050_lamp_post
+```
+
+### 위인 (50명)
+
+#### 과학자 (001-015)
+```
+figure_001_charles_darwin
+figure_002_mary_anning
+figure_003_richard_owen
+figure_004_gideon_mantell
+figure_005_othniel_marsh
+figure_006_edward_cope
+figure_007_barnum_brown
+figure_008_jack_horner
+figure_009_paul_sereno
+figure_010_xu_xing
+figure_011_marie_curie
+figure_012_albert_einstein
+figure_013_isaac_newton
+figure_014_jane_goodall
+figure_015_david_attenborough
+```
+
+#### 조련사 (016-025)
+```
+figure_016_owen_grady
+figure_017_claire_dearing
+figure_018_alan_grant
+figure_019_ellie_sattler
+figure_020_ian_malcolm
+figure_021_muldoon
+figure_022_wu_henry
+figure_023_roland_tembo
+figure_024_billy_brennan
+figure_025_sarah_harding
+```
+
+#### 경영진 (026-035)
+```
+figure_026_john_hammond
+figure_027_simon_masrani
+figure_028_benjamin_lockwood
+figure_029_eli_mills
+figure_030_peter_ludlow
+figure_031_henry_wu_ceo
+figure_032_mills_corporate
+figure_033_ingen_director
+figure_034_masrani_executive
+figure_035_park_manager
+```
+
+#### 탐험가 (036-045)
+```
+figure_036_adventurer_01
+figure_037_adventurer_02
+figure_038_fossil_hunter_01
+figure_039_fossil_hunter_02
+figure_040_expedition_leader
+figure_041_jungle_guide
+figure_042_marine_explorer
+figure_043_cave_diver
+figure_044_aerial_scout
+figure_045_tracker
+```
+
+#### 특별 인물 (046-050)
+```
+figure_046_time_traveler
+figure_047_future_scientist
+figure_048_dino_whisperer
+figure_049_legend_tamer
+figure_050_ultimate_keeper
+```
 
 ---
 
