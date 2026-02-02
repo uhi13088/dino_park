@@ -23,13 +23,13 @@
 ## 건물_01 부화장 (Hatchery) - M, Lv.1
 
 ```
-2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, blend of modern and natural materials, cozy inviting atmosphere, miniature diorama feel, Hatchery building level 1, egg incubation facility, dome structure with glass panels, eggs visible inside, warm interior lighting, scientific equipment, green accent #4CAF50, basic design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, blend of modern and natural materials, cozy inviting atmosphere, miniature diorama feel, Hatchery building level 1, egg incubation facility, dome structure with glass panels, eggs visible inside, warm interior lighting, scientific equipment, green accent #4CAF50, basic design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
 ```
 
 ## 건물_02 부화장 Lv.3
 
 ```
-2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, blend of modern and natural materials, cozy inviting atmosphere, miniature diorama feel, Hatchery building level 3 maximum upgrade, egg incubation facility, large elaborate dome structure with multiple glass panels, many eggs visible inside, advanced scientific equipment, golden trim decorations, green accent #4CAF50, subtle glow effect, premium quality, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, blend of modern and natural materials, cozy inviting atmosphere, miniature diorama feel, Hatchery building level 3 maximum upgrade, egg incubation facility, large elaborate dome structure with multiple glass panels, many eggs visible inside, advanced scientific equipment, golden trim decorations, green accent #4CAF50, subtle glow effect, premium quality, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -37,7 +37,7 @@
 ## 건물_03 초원 서식지 (Grassland Habitat) - L, Lv.1
 
 ```
-2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, natural environment features, Grassland Habitat enclosure level 1, dinosaur enclosure with wooden fence perimeter, lush green grass interior, small trees, feeding trough, water pond, green accent #4CAF50, welcoming natural space, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, natural environment features, Grassland Habitat enclosure level 1, dinosaur enclosure with wooden fence perimeter, lush green grass interior, small trees, feeding trough, water pond, green accent #4CAF50, welcoming natural space, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -45,7 +45,7 @@
 ## 건물_04 DNA 연구소 (DNA Lab) - M, Lv.1
 
 ```
-2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, modern scientific facility, DNA Research Lab level 1, modern laboratory building, glass windows, DNA helix logo on building, scientific equipment visible inside, blue accent #2196F3, clean professional design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, modern scientific facility, DNA Research Lab level 1, modern laboratory building, glass windows, DNA helix logo on building, scientific equipment visible inside, blue accent #2196F3, clean professional design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -53,7 +53,7 @@
 ## 건물_05 푸드코트 (Food Court) - M, Lv.1
 
 ```
-2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, visitor service building, Food Court level 1, outdoor dining area with umbrella tables, food stalls, dinosaur-themed decorations, colorful signage, orange accent #FF9800, welcoming atmosphere, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, visitor service building, Food Court level 1, outdoor dining area with umbrella tables, food stalls, dinosaur-themed decorations, colorful signage, orange accent #FF9800, welcoming atmosphere, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -61,7 +61,7 @@
 ## 건물_06 입구 게이트 (Entrance Gate) - XL, Lv.1
 
 ```
-2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, grand entrance, Park Entrance Gate level 1, large stone archway with DINO PARK text, wooden doors, torch decorations, dinosaur skull ornaments, prehistoric theme, green and brown natural colors, welcoming grand entrance, building size 256x320 pixels, 4x4 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, grand entrance, Park Entrance Gate level 1, large stone archway with DINO PARK text, wooden doors, torch decorations, dinosaur skull ornaments, prehistoric theme, green and brown natural colors, welcoming grand entrance, building size 256x320 pixels, 4x4 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -69,7 +69,7 @@
 ## 건물_07 기념품샵 (Gift Shop) - S, Lv.1
 
 ```
-2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, retail building, Gift Shop level 1, small cute shop building, large display windows with plushies visible, dinosaur logo sign, colorful awning, amber gold accent #FFC107, inviting retail space, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell and Clash of Clans art style, theme park architecture, retail building, Gift Shop level 1, small cute shop building, large display windows with plushies visible, dinosaur logo sign, colorful awning, amber gold accent #FFC107, inviting retail space, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -363,18 +363,837 @@
 
 ---
 
+# 7. 건물 완전한 프롬프트 (43종)
+
+> MVP 7종을 제외한 나머지 43종의 완전한 프롬프트입니다.
+
+---
+
+## 7.1 공룡 서식지 (7종)
+
+---
+
+### 건물_02 숲 서식지 (Forest Habitat) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, natural environment features, Forest Habitat dinosaur enclosure, dense tree coverage enclosure, tall trees inside, shaded areas, forest floor with leaves, brown and green natural colors, welcoming natural space, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_03 육식 서식지 (Carnivore Habitat) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, secure enclosure features, Carnivore Habitat dinosaur enclosure, reinforced steel fence enclosure, rocky terrain inside, meat feeding station, warning signs, red accent #F44336, high security design, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_04 익룡 돔 (Pterosaur Dome) - XL
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, aviary structure, Pterosaur Dome large glass dome aviary, tall interior space, perching platforms at various heights, flying space, blue sky visible through dome, blue accent #2196F3, impressive dome structure, building size 256x320 pixels, 4x4 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_05 해양관 (Marine Aquarium) - XL
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, aquarium structure, Marine Aquarium large glass tank structure, underwater viewing area, blue water interior, coral decorations, fish visible, teal accent #00BCD4, impressive aquatic facility, building size 256x320 pixels, 4x4 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_06 사막 서식지 (Desert Habitat) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, desert environment features, Desert Habitat dinosaur enclosure, sandy terrain enclosure, cacti and rocks, shade structures, water oasis, orange and tan colors #FF9800, warm desert atmosphere, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_07 화산 서식지 (Volcanic Habitat) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, volcanic environment features, Volcanic Habitat dinosaur enclosure, dark rocky terrain, lava accents, heat-resistant fencing, smoke effects, red and black colors #D84315, dramatic volcanic atmosphere, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_08 빙하 서식지 (Glacier Habitat) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, arctic environment features, Glacier Habitat dinosaur enclosure, snowy terrain enclosure, ice formations, heated shelters, cool blue lighting, white and blue colors #B3E5FC, cold atmospheric design, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 7.2 연구 시설 (4종)
+
+---
+
+### 건물_11 화석 연구소 (Fossil Research Lab) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, research facility, Fossil Research Lab archaeological building, fossil displays visible, excavation tools, amber and brown colors #8D6E63, scientific discovery atmosphere, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_12 유전자 센터 (Genetics Center) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, advanced research facility, Genetics Center advanced research building, multiple lab sections, high-tech equipment visible, purple accent #9C27B0, cutting-edge science design, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_13 진화 연구소 (Evolution Lab) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, research facility, Evolution Lab specialized research building, evolution charts visible through windows, specimen jars, green and blue scientific colors, educational atmosphere, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_14 행동 연구소 (Behavior Research Lab) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, research facility, Behavior Research Lab observation facility, one-way glass windows, monitoring equipment visible, gray and green colors #607D8B, scientific observation design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 7.3 관람 시설 (6종)
+
+---
+
+### 건물_15 관람대 (Viewing Platform) - S
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, viewing structure, Viewing Platform elevated wooden platform, safety railings, binocular stations, scenic overlook design, brown wood colors #8D6E63, tourist-friendly design, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_16 관람 열차 (Tour Train) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, transportation station, Tour Train Station small train station building, cute locomotive visible, passenger cars on track, colorful train design, fun transportation, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_17 관람 지프 (Safari Jeep Station) - S
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, vehicle station, Safari Jeep Station jeep garage structure, safari jeeps visible, adventure equipment, khaki and green colors, outdoor adventure design, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_18 수중 터널 (Underwater Tunnel) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, underwater viewing structure, Underwater Tunnel glass tunnel structure, underwater viewing area, fish swimming around, blue lighting, teal accent #00BCD4, immersive aquatic experience, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_19 스카이워크 (Skywalk) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, elevated walkway, Skywalk elevated glass walkway structure, tree-top level, panoramic views, modern design, transparent glass elements, scenic viewing design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_20 포토존 (Photo Zone) - S
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, photo opportunity area, Photo Zone decorative backdrop area, dinosaur statue props, camera spot markers, colorful and fun design, tourist attraction, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 7.4 편의 시설 (10종)
+
+---
+
+### 건물_23 화장실 (Restroom) - S
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, utility building, Restroom small utility building, male and female symbols on door, clean modern design, gray and white colors, functional clean design, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_24 음수대 (Drinking Fountain) - XS
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, water fixture, Drinking Fountain small fountain fixture, dinosaur-shaped spout, stone base, blue water accent, cute functional design, building size 32x48 pixels, decorative item, centered, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_25 벤치 (Park Bench) - XS
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, seating, Park Bench wooden bench, comfortable seating design, dinosaur footprint decorations, brown wood color #795548, welcoming rest spot, building size 32x48 pixels, decorative item, centered, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_26 디노 카페 (Dino Cafe) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, food service building, Dino Cafe coffee shop building, outdoor seating area, dinosaur-themed cups logo, cozy warm atmosphere, brown accent #795548, inviting cafe design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_27 아이스크림샵 (Ice Cream Shop) - S
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, treat shop, Ice Cream Shop small cute shop building, ice cream cone sign on roof, colorful decorations, pink and white colors #E91E63, sweet inviting design, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_28 디노 레스토랑 (Dino Restaurant) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, dining establishment, Dino Restaurant large dining building, dinosaur skeleton decoration inside, elegant design, warm amber interior lighting, premium dining atmosphere, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_29 구급소 (First Aid Station) - S
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, medical facility, First Aid Station medical facility building, red cross symbol on front, clean white building, emergency equipment visible, red accent #F44336, safety focused design, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_30 정보센터 (Information Center) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, visitor services, Information Center visitor services building, large info sign, maps available display, helpful staff silhouette visible, blue accent #2196F3, welcoming information hub, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_31 물품보관소 (Locker Storage) - S
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, storage facility, Locker Storage small utility building, numbered lockers visible, secure storage design, gray metal colors #757575, practical secure design, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_32 ATM - XS
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, financial kiosk, ATM Machine small kiosk structure, screen visible, card slot, bank logo, gray and blue colors, modern banking design, building size 32x48 pixels, decorative item, centered, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 7.5 생산 시설 (6종)
+
+---
+
+### 건물_33 사료 공장 (Feed Factory) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, industrial building, Feed Factory industrial production building, silos visible, conveyor elements, production facility design, brown and gray colors, functional industrial design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_34 육류 저장소 (Meat Storage) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, cold storage facility, Meat Storage cold storage building, refrigeration units on exterior, meat hanging visible through window, steel structure, cool blue-gray colors, industrial cold storage design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_35 어류 양식장 (Fish Farm) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, aquaculture facility, Fish Farm aquaculture building, fish tanks visible, water filtration systems, blue and silver colors #03A9F4, aquatic production design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_36 발전소 (Power Plant) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, power facility, Power Plant electrical facility building, power lines extending, generator building structure, industrial design, yellow warning accents #FFC107, energy production design, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_37 저수지 (Water Reservoir) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, water facility, Water Reservoir large water tank structure, pump station, pipe network visible, blue water tank, industrial clean design, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_38 창고 (Storage Warehouse) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, storage facility, Storage Warehouse large storage building, loading dock, boxes and crates visible, brown and gray industrial colors, functional storage design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 7.6 운영 시설 (5종)
+
+---
+
+### 건물_39 관리사무소 (Admin Office) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, office building, Admin Office professional office building, STAFF sign on front, parking area, gray and blue colors, professional management design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_40 보안센터 (Security Center) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, security facility, Security Center monitoring facility building, security cameras on exterior, guard station, warning lights, dark blue accent #1A237E, secure vigilant design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_41 동물병원 (Veterinary Hospital) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, medical facility, Veterinary Hospital medical facility for dinosaurs, large entrance for big dinosaurs, medical equipment visible, white and green colors, caring medical design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_42 직원 숙소 (Staff Quarters) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, residential building, Staff Quarters dormitory building, multiple room windows, residential design, comfortable appearance, warm friendly colors, homey staff housing design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_44 주차장 (Parking Lot) - L
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park architecture, parking facility, Parking Lot paved parking area, car spaces marked, entry booth, directional signs, gray asphalt, functional parking design, building size 192x240 pixels, 3x3 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 7.7 장식 (6종)
+
+---
+
+### 건물_45 공룡 동상 (Dinosaur Statue) - S
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park decoration, Dinosaur Statue bronze or stone dinosaur sculpture, dramatic pose, decorative pedestal, impressive landmark design, building size 64x96 pixels, 1x1 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_46 분수대 (Fountain) - M
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park decoration, Fountain decorative water fountain, dinosaur or prehistoric theme sculpture, water jets, circular pool, blue water, beautiful centerpiece design, building size 128x160 pixels, 2x2 grid, bottom-aligned, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_47 화단 (Flower Bed) - XS
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park decoration, Flower Bed colorful flowers arrangement, prehistoric fern accents, stone border, vibrant flower colors, beautiful garden element, building size 32x48 pixels, decorative item, centered, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_48 가로등 (Street Lamp) - XS
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park decoration, Street Lamp decorative lamp post, dinosaur-themed design elements, warm light glow, bronze or iron material, atmospheric lighting element, building size 32x64 pixels, decorative item, centered, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_49 울타리 (Fence Section) - XS
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park decoration, Fence Section decorative fence segment, wooden or stone material, path border, natural colors #795548, functional decorative element, building size 32x32 pixels, decorative item, centered, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 건물_50 길 (Path Tile) - XS
+
+```
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell art style, theme park path element, Path Tile stone or wooden walkway segment, pathway section, natural integration, gray cobblestone or brown wood, functional path element, building size 32x32 pixels, decorative item, centered, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+# 8. 위인 완전한 프롬프트 (45명)
+
+> MVP 5명을 제외한 나머지 45명의 완전한 프롬프트입니다.
+
+---
+
+## 8.1 과학자 (12명)
+
+---
+
+### 위인_03 아키라 (Akira) - 생물학자 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Akira character, biologist, young Japanese man, lab coat with nature patches, binoculars around neck, messy black hair, curious enthusiastic expression, green accent #4CAF50, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_04 엘레나 (Elena) - 유전공학자 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Elena character, genetic engineer, Eastern European woman, modern white lab coat, tablet with gene sequences, blonde ponytail, precise focused expression, blue accent #2196F3, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_05 사이먼 (Simon) - 화학자 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Simon character, chemist, British man, lab coat with safety goggles on head, holding test tubes, ginger hair, cautious meticulous expression, teal accent #00BCD4, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_06 미라 (Mira) - 진화생물학자 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Mira character, evolutionary biologist, Indian woman, casual lab attire, evolution chart in background, long dark hair, thoughtful analytical expression, purple accent #7E57C2, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_08 그레이스 (Grace) - 수의생물학자 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Grace character, veterinary biologist, friendly woman, medical scrubs, stethoscope around neck, curly brown hair, caring gentle expression, teal accent #26A69A, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_09 마르코 (Marco) - 해양생물학자 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Marco character, marine biologist, Italian man, wetsuit top, underwater tablet device, short dark hair, adventurous passionate expression, blue accent #0097A7, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_10 소피아 (Sophia) - 행동학자 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Sophia character, behavioral scientist, young woman, casual smart attire, observation notebook in hand, auburn hair, patient observant expression, green accent #8BC34A, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_11 빅터 (Victor) - 생체공학자 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Victor character, biomedical engineer, Eastern European man, tech-enhanced lab coat, cybernetic tools, gray temples hair, innovative brilliant expression, silver accent #607D8B, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_12 로즈 (Rose) - 식물학자 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Rose character, botanist, older woman, gardening apron over lab coat, holding plant samples, white hair, nurturing knowledgeable expression, green accent #689F38, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_13 레오 (Leo) - 영양학자 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Leo character, nutritionist, young man, chef coat hybrid uniform, food analysis tools, blonde hair, health-focused friendly expression, orange accent #FF9800, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_14 에이다 (Ada) - AI 연구원 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Ada character, AI researcher, young woman, modern tech wear, holographic interface visual, short purple-dyed hair, futuristic innovative expression, cyan accent #00BCD4, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_15 오스카 (Oscar) - 기상학자 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Oscar character, meteorologist, middle-aged man, weather station uniform, radar tablet device, receding brown hair, analytical precise expression, blue accent #1976D2, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 8.2 조련사 (9명)
+
+---
+
+### 위인_17 잭 (Jack) - 육식 전문 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Jack character, carnivore specialist trainer, rugged man, reinforced protective gear, protective gloves, stubble beard, fearless tough expression, red accent #E53935, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_18 유나 (Yuna) - 초식 전문 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Yuna character, herbivore specialist trainer, Korean woman, soft colored safari uniform, treat bag on belt, long black hair, gentle patient expression, green accent #66BB6A, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_19 카를로스 (Carlos) - 익룡 전문 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Carlos character, pterosaur specialist trainer, Hispanic man, climbing gear vest, wing-shaped whistle, dark curly hair, agile daring expression, blue accent #42A5F5, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_20 마리나 (Marina) - 해양 전문 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Marina character, marine specialist trainer, athletic woman, wetsuit, underwater communication device, collected wet hair, daring aquatic expression, teal accent #00ACC1, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_21 데릭 (Derek) - 조련 보조 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Derek character, training assistant, young eager man, basic khaki trainer uniform, clipboard in hand, short brown hair, eager learning expression, khaki colors, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_22 니나 (Nina) - 하이브리드 전문가 ⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Nina character, hybrid specialist, mysterious woman, specialized containment gear, scanner device in hand, silver-white hair, cautious expert expression, purple accent #9C27B0, premium quality subtle glow, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_23 톰 (Tom) - 야간 조련사 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Tom character, night trainer, man with night vision goggles on forehead, dark uniform, flashlight, tired but alert expression, dark blue accent #1A237E, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_24 아이샤 (Aisha) - 부화 전문 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Aisha character, hatching specialist, African woman, incubation technician uniform, egg monitoring device in hand, warm caring smile, amber accent #FFB300, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_25 루이스 박사 (Dr. Louis) - 수석 수의사 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Dr. Louis character, head veterinarian, older man, veterinarian white coat, medical bag, gray distinguished hair, compassionate skilled expression, white and green colors, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 8.3 운영진 (9명)
+
+---
+
+### 위인_27 캐서린 (Catherine) - CEO ⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Catherine character, CEO, professional woman, elegant executive suit, tablet device, elegant updo hair, decisive leader expression, navy blue accent #1A237E, premium quality subtle glow, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_28 제임스 (James) - COO ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, James character, COO, business man, suit with operations badge, walkie-talkie, neat brown hair, efficient organized expression, gray accent #546E7A, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_29 나탈리 (Natalie) - 마케팅 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Natalie character, marketing director, creative woman, stylish business casual outfit, presentation tablet, trendy hairstyle, enthusiastic persuasive expression, pink accent #E91E63, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_30 마이클 (Michael) - 재무 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Michael character, finance director, conservative man, formal business suit, calculator and financial charts, glasses, analytical careful expression, green money accent #4CAF50, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_31 에밀리 (Emily) - HR ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Emily character, HR manager, friendly woman, professional attire, employee files folder, warm welcoming smile, approachable supportive expression, light blue accent #64B5F6, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_32 다니엘 (Daniel) - 보안 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Daniel character, security chief, serious man, security uniform, radio earpiece, military bearing stance, protective vigilant expression, dark blue accent #1A237E, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_33 사라 (Sarah) - 고객서비스 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Sarah character, guest services representative, cheerful woman, park uniform with name tag, info tablet, bright welcoming smile, helpful friendly expression, orange accent #FF9800, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_34 로버트 (Robert) - 시설 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Robert character, facilities manager, practical man, maintenance uniform, tool belt, hardhat, reliable handy expression, yellow accent #FFC107, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_35 앤젤라 (Angela) - 이벤트 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Angela character, events coordinator, energetic woman, creative business casual, event planner tablet, colorful accessories, festive organized expression, purple accent #7E57C2, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 8.4 탐험가 (10명)
+
+---
+
+### 위인_36 인디아나 (Indiana) - 전설의 탐험가 ⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Indiana character, legendary explorer, rugged man, classic fedora hat, leather jacket, whip on belt, stubble beard, adventurous brave expression, brown accent #795548, premium quality subtle glow, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_37 라라 (Lara) - 고고학자 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Lara character, archaeologist adventurer, athletic woman, exploration gear, dual holsters, braid hair, determined resourceful expression, teal accent #009688, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_38 알렉스 (Alex) - 정글 탐험가 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Alex character, jungle explorer, young adventurous man, safari gear, machete, compass, wild messy hair, fearless curious expression, green accent #388E3C, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_39 에바 (Eva) - 극지 탐험가 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Eva character, polar explorer, Nordic woman, cold weather insulated gear, ice pick, fur-lined hood, resilient tough expression, ice blue accent #B3E5FC, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_40 한 (Han) - 동굴 탐험가 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Han character, cave explorer, Asian man, caving helmet with headlamp light, climbing gear, rope coiled, cautious methodical expression, gray accent #757575, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_41 이사벨 (Isabel) - 해저 탐험가 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Isabel character, deep sea explorer, athletic woman, advanced diving suit, underwater camera, collected tied hair, daring aquatic expression, deep blue accent #0D47A1, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_42 닐 (Neil) - 사막 탐험가 ⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Neil character, desert explorer, weathered man, desert gear, water canteen, sun hat, enduring patient expression, sand tan accent #D7CCC8, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_43 미카 (Mika) - 화산 탐험가 ⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Mika character, volcano explorer, brave woman, heat-resistant suit, temperature scanner, tied-back hair, bold scientific expression, orange red accent #FF5722, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_44 조지 (George) - 신입 탐험가 ⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, George character, rookie explorer, young eager man, basic exploration gear, map and notebook, messy hair, enthusiastic nervous expression, khaki colors, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_45 빅토리아 (Victoria) - 전설 사냥꾼 ⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, cute professional appearance, Victoria character, legendary hunter, elegant mature woman, refined expedition wear, antique rifle, silver streak hair, precise deadly expression, gold accent #FFC107, premium quality subtle glow, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+## 8.5 특수 (5명)
+
+---
+
+### 위인_46 타임키퍼 (Timekeeper) - 시간 관리자 ⭐⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, mystical appearance, Timekeeper character, time manager mystical being, androgynous ethereal figure, clock-themed robes with gear patterns, hourglass staff, ageless timeless appearance, ethereal cosmic glow, gold accent #FFC107, golden rim light majestic aura, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_47 포춘 (Fortune) - 행운의 신 ⭐⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, mystical appearance, Fortune character, luck deity mystical being, playful mischievous figure, four-leaf clover motifs on outfit, golden coin accessories, shimmering lucky appearance, magical aura, green gold accent #8BC34A #FFC107, golden rim light majestic aura, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_48 가이아 (Gaia) - 자연의 수호자 ⭐⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, mystical appearance, Gaia character, nature guardian divine being, earth mother figure, living plant dress with flowing vines, flower crown, nature integrated organic appearance, nurturing powerful expression, green accent #4CAF50, golden rim light majestic aura, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_49 아틀라스 (Atlas) - 힘의 화신 ⭐⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, mythical appearance, Atlas character, strength embodiment divine being, muscular giant figure, stone skin texture accents, carrying world sphere pose suggested, powerful eternal expression, stone gray accent #607D8B, golden rim light majestic aura, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
+### 위인_50 알케미스트 (Alchemist) - 연금술사 ⭐⭐⭐⭐⭐
+
+**Portrait**
+```
+2.5D game character portrait, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting from top-left, soft gradient background, chibi style character, 2.5 head to body proportion, big round expressive eyes, mystical appearance, Alchemist character, mystical scientist legendary being, robed mysterious figure, potion bottles accessories, transmutation circle patterns, mysterious wise expression, magical scholarly aura, purple gold accent #9C27B0 #FFC107, golden rim light majestic aura, front-facing portrait, upper body centered, portrait 256x320 pixels, --ar 4:5 --v 6 --s 250 --q 2
+```
+
+---
+
 # 📊 진행 체크리스트
 
 | 카테고리 | 수량 | 완료 |
 |----------|------|------|
-| 건물 | 50종 | □ / 50 |
-| 위인 | 50명 | □ / 50 |
-| 타일 | 15종 | □ / 15 |
-| 소품 | 15종 | □ / 15 |
-| UI | ~50종 | □ / 50 |
-| **총합** | **~180종** | **□ / 180** |
+| 건물 | 50종 | ✅ 50 / 50 |
+| 위인 | 50명 | ✅ 50 / 50 |
+| 타일 | 15종 | ✅ 15 / 15 |
+| 소품 | 15종 | ✅ 15 / 15 |
+| UI | ~50종 | ✅ 50 / 50 |
+| **총합** | **~180종** | **✅ 180 / 180** |
+
+**모든 에셋 프롬프트 작성 완료! ✅**
 
 ---
 
-*다이노 파크 타이쿤 - 에셋 프롬프트 (건물 & 위인편) v2.0*
-*최종 업데이트: 2026년 1월*
+*다이노 파크 타이쿤 - 에셋 프롬프트 (건물 & 위인편) v3.0*
+*최종 업데이트: 2026년 2월*
