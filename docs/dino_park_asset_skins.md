@@ -518,6 +518,232 @@ apps/client/src/assets/
 
 ---
 
+# 3. 위인 스킨 프롬프트 (MVP)
+
+> 핵심 위인 10명의 레어/에픽/레전드 스킨
+
+---
+
+## 3.1 찰스 다윈 스킨 (Charles Darwin)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Charles Darwin rare skin variant, Victorian explorer outfit in navy blue color scheme #1A237E, different coat pattern, silver pocket watch detail, alternate beard style slightly shorter, subtle color variation, standing idle pose thoughtful expression, distinguished scientist appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Charles Darwin epic skin variant, expedition leader outfit with golden compass emblem #FFD700, weathered adventure gear, explorer hat with feathers, glowing notebook with evolution sketches, soft knowledge aura effect, standing idle pose wise expression, legendary naturalist appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Charles Darwin legendary skin variant, transcendent evolution sage appearance, ethereal robes with DNA helix patterns, floating Origin of Species book glowing with golden light, tree of life symbol behind, golden rim light, majestic aura, evolution particle effects showing species transforming, mythical father of evolution appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.2 메리 애닝 스킨 (Mary Anning)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Mary Anning rare skin variant, Victorian fossil hunter in deep burgundy dress #880E4F, different bonnet style, weathered geology hammer, alternate fossil specimen in hand, subtle color variation, standing idle pose determined expression, pioneer paleontologist appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Mary Anning epic skin variant, master fossil hunter outfit with golden tools #FFD700, glowing ammonite pendant, ichthyosaur skeleton floating beside her, discovery aura effect, cliff backdrop hints, standing idle pose triumphant expression, legendary fossil discoverer appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Mary Anning legendary skin variant, prehistoric ocean queen appearance, ethereal dress made of fossilized patterns, plesiosaur and ichthyosaur spirits swirling around her, crystalline geological hammer, golden rim light, majestic aura, ancient sea creature particle effects, mythical mother of paleontology appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.3 오웬 그래디 스킨 (Owen Grady)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Owen Grady rare skin variant, tactical vest in desert tan color scheme #8D6E63, different camouflage pattern, alternate utility belt, rugged field gear, subtle color variation, standing idle pose confident expression, veteran raptor trainer appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Owen Grady epic skin variant, elite raptor squad leader outfit, black tactical gear with blue raptor claw emblems #2196F3, holographic raptor control interface on wrist, glowing clicker device, soft alpha pack aura, standing idle pose commanding expression, legendary dinosaur whisperer appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Owen Grady legendary skin variant, primal bond master appearance, tribal armor with raptor scales and feathers, ghostly Blue raptor spirit companion beside him, ancient pack leader markings glowing, golden rim light, majestic aura, raptor pack spirit particles swirling, mythical alpha of all dinosaurs appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.4 존 해먼드 스킨 (John Hammond)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, John Hammond rare skin variant, white linen suit in cream color scheme #FFF8E1, different panama hat style, silver-topped amber cane, alternate bow tie color, subtle safari elegance, standing idle pose welcoming expression, distinguished park founder appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, John Hammond epic skin variant, visionary founder formal attire, white and gold suit with amber buttons #FFD700, glowing amber cane with mosquito visible inside, holographic park map floating beside, dream realization aura, standing idle pose proud expression, legendary park creator appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, John Hammond legendary skin variant, genesis creator god-like appearance, ethereal white robes with DNA constellation patterns, glowing amber scepter of creation, miniature dinosaur park orbiting around him, golden rim light, majestic aura, life creation particle effects, mythical father of dinosaur resurrection appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.5 헨리 우 스킨 (Henry Wu)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Henry Wu rare skin variant, lab coat in dark gray color scheme #424242, different safety goggles style, alternate clipboard design, serious researcher aesthetic, subtle color variation, standing idle pose calculating expression, chief geneticist appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Henry Wu epic skin variant, elite geneticist outfit with purple accents #7B1FA2, holographic DNA manipulation interface, glowing test tubes with hybrid embryos, genius scientist aura, standing idle pose ambitious expression, legendary genetic engineer appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Henry Wu legendary skin variant, mad scientist god appearance, ethereal lab coat with swirling hybrid DNA patterns, Indominus Rex silhouette shadow behind, glowing genetic manipulation gauntlets, golden rim light, majestic dark aura, hybrid creature spirits swirling around, mythical creator of monsters appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.6 앨런 그랜트 스킨 (Alan Grant)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Alan Grant rare skin variant, field work outfit in khaki tan color scheme #A1887F, different fedora style, alternate bandana color, dusty expedition gear, subtle color variation, standing idle pose observant expression, veteran paleontologist appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Alan Grant epic skin variant, master paleontologist expedition leader outfit, weathered adventure gear with golden fossil badges #FFD700, raptor claw necklace glowing, field journal with living dinosaur sketches, discovery aura, standing idle pose wise expression, legendary dinosaur expert appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Alan Grant legendary skin variant, prehistoric sage appearance, tribal robes with velociraptor feather patterns, ancient bone staff with amber gem, dinosaur spirits of discovered species surrounding him, golden rim light, majestic aura, fossil-to-life transformation particles, mythical bridge between past and present appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.7 엘리 새틀러 스킨 (Ellie Sattler)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Ellie Sattler rare skin variant, botanist field outfit in forest green color scheme #2E7D32, different shorts and shirt style, alternate sun hat, plant specimen samples, subtle color variation, standing idle pose curious expression, paleobotanist researcher appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Ellie Sattler epic skin variant, expert paleobotanist expedition outfit, golden leaf brooch #FFD700, glowing prehistoric plant samples floating around, bioluminescent fern specimens, nature wisdom aura, standing idle pose determined expression, legendary plant scientist appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Ellie Sattler legendary skin variant, primordial nature guardian appearance, ethereal dress woven from prehistoric leaves and flowers, giant fern crown, ancient plant spirits blooming around her, golden rim light, majestic aura, prehistoric ecosystem particle effects, mythical mother nature of dinosaur age appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.8 이안 말콤 스킨 (Ian Malcolm)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Ian Malcolm rare skin variant, all black outfit in charcoal gray scheme #37474F, different leather jacket style, alternate sunglasses design, chaos theory book in hand, subtle color variation, standing idle pose skeptical expression, mathematician consultant appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Ian Malcolm epic skin variant, chaos prophet outfit with fractal pattern accents #9C27B0, glowing butterfly effect visualizations around him, holographic chaos equations, dramatic black coat billowing, wisdom aura, standing idle pose knowing expression, legendary chaos theorist appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Ian Malcolm legendary skin variant, avatar of chaos appearance, ethereal black robes with fractal dimension patterns, reality-bending effects around him, butterfly wings made of mathematical equations, golden rim light, majestic paradox aura, probability particle effects showing multiple outcomes, mythical prophet of nature's unpredictability appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.9 클레어 디어링 스킨 (Claire Dearing)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Claire Dearing rare skin variant, park operations outfit in navy blue scheme #1565C0, different business suit style, alternate tablet design, professional manager aesthetic, subtle color variation, standing idle pose confident expression, park operations director appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Claire Dearing epic skin variant, dinosaur sanctuary leader outfit, action-ready attire with golden DPG badge #FFD700, holographic park status displays around her, tactical radio, leadership aura, standing idle pose determined expression, legendary park savior appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Claire Dearing legendary skin variant, guardian of dinosaurs goddess appearance, ethereal armor forged from park materials, protective force field with dinosaur silhouettes, crown made of sanctuary symbol, golden rim light, majestic protective aura, rescued dinosaur spirits surrounding her, mythical defender of prehistoric life appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
+## 3.10 아서 (할아버지) 스킨 (Arthur - Grandfather)
+
+### 레어 스킨 (Rare)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Arthur grandfather rare skin variant, vintage scientist outfit in sepia brown scheme #795548, different old lab coat style, alternate round glasses, classic research journal, subtle nostalgic color variation, standing idle pose gentle expression, beloved grandfather scientist appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 에픽 스킨 (Epic)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Arthur grandfather epic skin variant, legendary researcher formal attire, white coat with golden achievement medals #FFD700, glowing research notes with dinosaur resurrection formula, holographic message device, legacy wisdom aura, standing idle pose proud expression, legendary park creator grandfather appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+### 레전드 스킨 (Legendary)
+
+```
+2.5D isometric game character sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, Arthur grandfather legendary skin variant, eternal guardian angel appearance, translucent ethereal form with warm golden glow, floating research legacy books around, watching over the park from beyond, grandfather clock symbolism, golden rim light, majestic loving aura, memory particle effects of shared moments, mythical eternal guardian of the dream appearance, sprite size 96x128 pixels, centered, --ar 3:4 --v 6 --s 250 --q 2
+```
+
+---
+
 # 4. 위인 스킨 체크리스트
 
 > 총 50명 × 3등급 × 4상태 = 600개 + 시즌 스킨
@@ -526,8 +752,8 @@ apps/client/src/assets/
 
 | ID | 위인명 | Rare | Epic | Legendary | S1 | S2 | S3 | S4 |
 |----|--------|------|------|-----------|----|----|----|----|
-| 001 | 찰스 다윈 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 002 | 메리 애닝 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 001 | 찰스 다윈 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 002 | 메리 애닝 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 003 | 리처드 오웬 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 004 | 기디언 맨텔 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 005 | 오스니얼 마쉬 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
@@ -546,13 +772,13 @@ apps/client/src/assets/
 
 | ID | 위인명 | Rare | Epic | Legendary | S1 | S2 | S3 | S4 |
 |----|--------|------|------|-----------|----|----|----|----|
-| 016 | 오웬 그래디 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 017 | 클레어 디어링 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 018 | 앨런 그랜트 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 019 | 엘리 새틀러 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 020 | 이안 말콤 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 016 | 오웬 그래디 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 017 | 클레어 디어링 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 018 | 앨런 그랜트 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 019 | 엘리 새틀러 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 020 | 이안 말콤 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 021 | 멀둔 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
-| 022 | 헨리 우 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 022 | 헨리 우 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 023 | 롤랜드 템보 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 024 | 빌리 브레넌 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 025 | 사라 하딩 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
@@ -561,7 +787,7 @@ apps/client/src/assets/
 
 | ID | 위인명 | Rare | Epic | Legendary | S1 | S2 | S3 | S4 |
 |----|--------|------|------|-----------|----|----|----|----|
-| 026 | 존 해먼드 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 026 | 존 해먼드 | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 027 | 사이먼 마스라니 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 028 | 벤저민 록우드 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 029 | 일라이 밀스 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
@@ -587,7 +813,7 @@ apps/client/src/assets/
 | 044 | 항공 정찰대 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 045 | 추적자 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 
-## 4.5 특별 인물 (5명)
+## 4.5 특별 인물 (6명)
 
 | ID | 위인명 | Rare | Epic | Legendary | S1 | S2 | S3 | S4 |
 |----|--------|------|------|-----------|----|----|----|----|
@@ -596,6 +822,7 @@ apps/client/src/assets/
 | 048 | 공룡 위스퍼러 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 049 | 전설의 조련사 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | 050 | 궁극의 관리자 | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| 051 | 아서 (할아버지) | ✅ | ✅ | ✅ | ⬜ | ⬜ | ⬜ | ⬜ |
 
 ---
 
@@ -603,12 +830,12 @@ apps/client/src/assets/
 
 | 카테고리 | 완료 | 전체 | 비율 |
 |----------|------|------|------|
-| 과학자 | 0 | 15 | 0% |
-| 조련사 | 0 | 10 | 0% |
-| 경영진 | 0 | 10 | 0% |
+| 과학자 | 2 | 15 | 13% |
+| 조련사 | 6 | 10 | 60% |
+| 경영진 | 1 | 10 | 10% |
 | 탐험가 | 0 | 10 | 0% |
-| 특별 | 0 | 5 | 0% |
-| **합계** | **0** | **50** | **0%** |
+| 특별 | 1 | 6 | 17% |
+| **합계** | **10** | **51** | **20%** |
 
 ---
 
@@ -617,10 +844,16 @@ apps/client/src/assets/
 | 항목 | MVP 완료 | 체크리스트 | 전체 |
 |------|----------|-----------|------|
 | 공룡 스킨 | 10종 × 3등급 = 30개 | ✅ | ~1,230개 |
-| 위인 스킨 | 0 | ✅ | ~600개 |
+| 위인 스킨 | 10명 × 3등급 = 30개 | ✅ | ~600개 |
 | 시즌 스킨 | 0 | ✅ | ~500개+ |
+
+**MVP 완료 위인 (10명):**
+- 찰스 다윈, 메리 애닝 (과학자)
+- 오웬 그래디, 클레어 디어링, 앨런 그랜트, 엘리 새틀러, 이안 말콤, 헨리 우 (조련사)
+- 존 해먼드 (경영진)
+- 아서 할아버지 (특별)
 
 **다음 작업:**
 - 나머지 공룡 72종 스킨 프롬프트
-- 위인 50명 기본 스킨 프롬프트
+- 나머지 위인 41명 스킨 프롬프트
 - 시즌별 특별 스킨 프롬프트
