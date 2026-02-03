@@ -38,7 +38,7 @@ export default function SocialPage() {
           id: 'friend1',
           nickname: 'DinoMaster',
           level: 25,
-          profileImage: null,
+          profileImage: undefined,
           status: 'online',
           lastOnline: new Date(),
           parkName: '다이노 마스터 파크',
@@ -49,7 +49,7 @@ export default function SocialPage() {
           id: 'friend2',
           nickname: 'JurassicFan',
           level: 18,
-          profileImage: null,
+          profileImage: undefined,
           status: 'playing',
           lastOnline: new Date(),
           parkName: '쥬라기 왕국',
@@ -60,7 +60,7 @@ export default function SocialPage() {
           id: 'friend3',
           nickname: 'ParkBuilder',
           level: 32,
-          profileImage: null,
+          profileImage: undefined,
           status: 'offline',
           lastOnline: new Date(Date.now() - 3600000 * 5),
           parkName: '빌더의 낙원',
@@ -71,7 +71,7 @@ export default function SocialPage() {
           id: 'friend4',
           nickname: 'DinoLover',
           level: 15,
-          profileImage: null,
+          profileImage: undefined,
           status: 'offline',
           lastOnline: new Date(Date.now() - 3600000 * 24),
           parkName: '공룡 사랑 파크',
@@ -86,16 +86,16 @@ export default function SocialPage() {
           fromUserId: 'user1',
           fromNickname: 'NewDinoFan',
           fromLevel: 5,
-          status: 'pending' as const,
           createdAt: new Date(),
+          profileImage: undefined,
         },
         {
           id: 'req2',
           fromUserId: 'user2',
           fromNickname: 'RexHunter',
           fromLevel: 12,
-          status: 'pending' as const,
           createdAt: new Date(Date.now() - 3600000),
+          profileImage: undefined,
         },
       ];
 
@@ -104,19 +104,19 @@ export default function SocialPage() {
           id: 'gift1',
           fromUserId: 'friend1',
           fromNickname: 'DinoMaster',
-          giftType: 'gold' as const,
-          amount: 1000,
-          claimed: false,
-          createdAt: new Date(),
+          type: 'gold',
+          quantity: 1000,
+          receivedAt: new Date(),
+          isClaimed: false,
         },
         {
           id: 'gift2',
           fromUserId: 'friend2',
           fromNickname: 'JurassicFan',
-          giftType: 'energy' as const,
-          amount: 5,
-          claimed: false,
-          createdAt: new Date(Date.now() - 3600000),
+          type: 'energy',
+          quantity: 5,
+          receivedAt: new Date(Date.now() - 3600000),
+          isClaimed: false,
         },
       ];
 
@@ -125,8 +125,10 @@ export default function SocialPage() {
           id: 'gb1',
           visitorId: 'friend1',
           visitorNickname: 'DinoMaster',
+          visitorLevel: 25,
           message: '멋진 파크네요! 다음에 또 올게요 🦕',
           createdAt: new Date(),
+          profileImage: undefined,
         },
       ];
 
@@ -158,8 +160,8 @@ export default function SocialPage() {
     }
   };
 
-  const unclaimedGiftCount = gifts.filter((g) => !g.claimed).length;
-  const pendingRequestCount = friendRequests.filter((r) => r.status === 'pending').length;
+  const unclaimedGiftCount = gifts.filter((g) => !g.isClaimed).length;
+  const pendingRequestCount = friendRequests.length; // All requests in store are pending
 
   const tabs = [
     { id: 'friends' as const, label: '친구', icon: '👥', count: friends.length },
@@ -299,13 +301,13 @@ export default function SocialPage() {
               ) : (
                 <div className="space-y-2">
                   {gifts.map((gift) => {
-                    const config = giftTypeConfig[gift.giftType];
+                    const config = giftTypeConfig[gift.type] || giftTypeConfig.gold;
                     return (
                       <motion.div
                         key={gift.id}
                         className={`
                           flex items-center justify-between rounded-lg p-4
-                          ${gift.claimed ? 'bg-gray-800/50' : 'bg-gray-800'}
+                          ${gift.isClaimed ? 'bg-gray-800/50' : 'bg-gray-800'}
                         `}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -319,16 +321,16 @@ export default function SocialPage() {
                               {gift.fromNickname}님의 선물
                             </div>
                             <div className={`text-sm ${config.color}`}>
-                              {config.label} {gift.amount.toLocaleString()}
+                              {config.label} {gift.quantity.toLocaleString()}
                             </div>
                           </div>
                         </div>
-                        {!gift.claimed && (
+                        {!gift.isClaimed && (
                           <button className="rounded-lg bg-pink-600 px-4 py-2 text-sm font-medium transition-all hover:bg-pink-500">
                             수령
                           </button>
                         )}
-                        {gift.claimed && <span className="text-sm text-gray-500">수령 완료</span>}
+                        {gift.isClaimed && <span className="text-sm text-gray-500">수령 완료</span>}
                       </motion.div>
                     );
                   })}

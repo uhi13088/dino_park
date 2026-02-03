@@ -7,7 +7,23 @@
 
 ## 📋 QUEUE (대기)
 
-_(모든 작업 완료!)_
+### 🟡 P2 - Medium (품질 개선)
+
+- [ ] **FIX-08: Prisma Social 모델 관계 추가**
+  - 위치: `apps/server/prisma/schema.prisma`
+  - 이슈: 7개 social 모델에 @relation 누락
+  - AC: 모든 관계 정의, cascade delete 설정
+  - 비고: 기존 코드와 호환성 확인 필요
+
+- [ ] **FIX-09: Mock 데이터 제거 및 API 연동**
+  - 위치: SocialPage.tsx, SeasonPage.tsx, DinosaurPage.tsx
+  - 이슈: 하드코딩된 mock 데이터
+  - AC: 실제 API 호출로 교체
+
+- [ ] **FIX-10: TODO 항목 구현 (Service 연동)**
+  - 위치: shop.service.ts, building.service.ts
+  - 이슈: game-data 연동 TODO 12개
+  - AC: 모든 TODO 해결
 
 ---
 
@@ -20,6 +36,41 @@ _(없음)_
 ---
 
 ## ✅ DONE (완료)
+
+### 버그픽스 (FIX)
+
+- [x] **FIX-01: game-data 중복 export 해결** ✅ 2026-02-03
+  - 수정 파일: `packages/game-data/src/balance/index.ts`
+  - 변경: DIAMOND_PACKS → DIAMOND_PACK_PRICES, SUBSCRIPTIONS → SUBSCRIPTION_CONFIG
+
+- [x] **FIX-02: SocialState 인터페이스 완성** ✅ 2026-02-03
+  - 수정 파일: `apps/client/src/features/social/stores/useSocialStore.ts`
+  - 추가 메서드: sendFriendRequest, removeFriend, acceptFriendRequest, rejectFriendRequest, sendGift, leaveGuestbook, guestbooks/setGuestbooks
+
+- [x] **FIX-03: Gift 타입 프로퍼티 통일** ✅ 2026-02-03
+  - 수정 파일: `apps/client/src/features/social/pages/SocialPage.tsx`
+  - 변경: giftType→type, amount→quantity, claimed→isClaimed
+
+- [x] **FIX-04: Prisma client 재생성** ✅ 2026-02-03
+  - 실행: `pnpm prisma generate`
+  - 결과: storyFlag, characterAffinity 타입 정상 생성
+
+- [x] **FIX-05: 누락된 API 엔드포인트 추가** ✅ 2026-02-03
+  - 추가 엔드포인트:
+    - GET /great-figures/points (great-figure.controller.ts)
+    - GET /explorations/hatching (exploration.controller.ts)
+    - GET /social/search (social.controller.ts)
+
+- [x] **FIX-06: API 경로 불일치 수정** ✅ 2026-02-03
+  - 수정 파일: `apps/client/src/api/queries/index.ts`
+  - 변경: /shop/iap/_ → /shop/_, /social/requests → /social/friends/requests 등 10+개 경로
+
+- [x] **FIX-07: HTTP Method 불일치 수정** ✅ 2026-02-03
+  - 변경: DELETE /buildings/:id/great-figure → POST /buildings/:id/unassign-figure
+
+- [x] **FIX-11: DTO 초기화 오류 수정** ✅ 2026-02-03
+  - 수정 파일: user, park, building, dinosaur, exploration controller DTOs
+  - 변경: 필수 프로퍼티에 `!` definite assignment 추가
 
 ### 코드 작업
 
@@ -197,6 +248,8 @@ _(없음)_
 
 ## 📊 진행 상황
 
+### 기능 개발 (완료)
+
 | 우선순위  | 티켓 수 | 완료      |
 | --------- | ------- | --------- |
 | 🔴 높음   | 3       | 3 ✅      |
@@ -204,6 +257,15 @@ _(없음)_
 | 🟡 낮음   | 6       | 6 ✅      |
 | ⚪ 인프라 | 2       | 2 ✅      |
 | **합계**  | **15**  | **15** ✅ |
+
+### 버그픽스 (진행중)
+
+| 우선순위 | 티켓 수 | 완료  |
+| -------- | ------- | ----- |
+| 🔴 P0    | 4       | 4 ✅  |
+| 🟠 P1    | 3       | 3 ✅  |
+| 🟡 P2    | 4       | 1     |
+| **합계** | **11**  | **8** |
 
 ---
 

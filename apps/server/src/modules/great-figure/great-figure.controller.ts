@@ -44,6 +44,18 @@ export class GreatFigureController {
     return this.greatFigureService.getStats(userId);
   }
 
+  @Get('points')
+  @ApiOperation({ summary: '위인 포인트 조회 (영입 재화)' })
+  async getPoints(@CurrentUser('id') userId: string) {
+    // 위인 영입에 사용되는 포인트/재화 정보
+    const stats = await this.greatFigureService.getStats(userId);
+    return {
+      totalFigures: stats.totalFigures,
+      availablePoints: 0, // TODO: 실제 포인트 시스템 연동
+      pointsToNextRecruitment: 100,
+    };
+  }
+
   @Get(':figureId')
   @ApiOperation({ summary: '특정 위인 상세 조회' })
   @ApiParam({ name: 'figureId', description: '위인 ID (darwin, einstein 등)' })

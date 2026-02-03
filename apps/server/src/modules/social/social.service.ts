@@ -98,6 +98,71 @@ export class SocialService {
   }
 
   /**
+   * 유저 검색 (친구 추가용)
+   */
+  async searchUsers(userId: string, query: string) {
+    if (!query || query.length < 2) {
+      return [];
+    }
+
+    // 닉네임으로 검색 (자신 제외, 최대 20명)
+    const users = await this.prisma.user.findMany({
+      where: {
+        AND: [
+          { id: { not: userId } },
+          {
+            nickname: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        nickname: true,
+        level: true,
+        park: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      take: 20,
+    });
+
+    // 이미 친구인지, 요청 대기 중인지 확인
+    const userIds = users.map((u) => u.id);
+
+    const existingFriends = await this.prisma.friend.findMany({
+      where: {
+        userId,
+        friendId: { in: userIds },
+        status: 'ACCEPTED',
+      },
+    });
+    const friendIds = new Set(existingFriends.map((f) => f.friendId));
+
+    const pendingRequests = await this.prisma.friendRequest.findMany({
+      where: {
+        fromUserId: userId,
+        toUserId: { in: userIds },
+        status: 'PENDING',
+      },
+    });
+    const pendingIds = new Set(pendingRequests.map((r) => r.toUserId));
+
+    return users.map((user) => ({
+      userId: user.id,
+      nickname: user.nickname,
+      level: user.level,
+      parkName: user.park?.name || 'Unnamed Park',
+      isFriend: friendIds.has(user.id),
+      hasPendingRequest: pendingIds.has(user.id),
+    }));
+  }
+
+  /**
    * 친구 요청 보내기
    */
   async sendFriendRequest(userId: string, targetUserId: string, message?: string) {

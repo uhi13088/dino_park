@@ -64,22 +64,28 @@ interface SocialState {
   // 친구 목록
   friends: Friend[];
   setFriends: (friends: Friend[]) => void;
+  removeFriend: (friendId: string) => void;
 
   // 친구 요청
   friendRequests: FriendRequest[];
   setFriendRequests: (requests: FriendRequest[]) => void;
   acceptRequest: (requestId: string) => void;
   rejectRequest: (requestId: string) => void;
+  sendFriendRequest: (userId: string) => Promise<void>;
+  acceptFriendRequest: (requestId: string) => Promise<void>;
+  rejectFriendRequest: (requestId: string) => Promise<void>;
 
-  // 방명록
-  guestbook: GuestbookEntry[];
-  setGuestbook: (entries: GuestbookEntry[]) => void;
+  // 방명록 (guestbooks로 통일 - 복수형)
+  guestbooks: GuestbookEntry[];
+  setGuestbooks: (entries: GuestbookEntry[]) => void;
   addGuestbookEntry: (entry: GuestbookEntry) => void;
+  leaveGuestbook: (friendId: string, message: string) => Promise<void>;
 
   // 선물
   gifts: Gift[];
   setGifts: (gifts: Gift[]) => void;
   claimGift: (giftId: string) => void;
+  sendGift: (friendId: string, giftType: string, amount: number) => Promise<void>;
 
   // 파크 방문
   visitingPark: ParkVisit | null;
@@ -114,7 +120,7 @@ interface SocialState {
 const initialState = {
   friends: [],
   friendRequests: [],
-  guestbook: [],
+  guestbooks: [],
   gifts: [],
   visitingPark: null,
   searchQuery: '',
@@ -133,6 +139,11 @@ export const useSocialStore = create<SocialState>()(
 
       setFriends: (friends) => set({ friends }),
 
+      removeFriend: (friendId) => {
+        const { friends } = get();
+        set({ friends: friends.filter((f) => f.id !== friendId) });
+      },
+
       setFriendRequests: (friendRequests) => set({ friendRequests }),
 
       acceptRequest: (requestId) => {
@@ -149,11 +160,37 @@ export const useSocialStore = create<SocialState>()(
         });
       },
 
-      setGuestbook: (guestbook) => set({ guestbook }),
+      sendFriendRequest: async (userId: string) => {
+        // TODO: API 호출
+        console.log('Send friend request to:', userId);
+      },
+
+      acceptFriendRequest: async (requestId: string) => {
+        const { friendRequests } = get();
+        set({
+          friendRequests: friendRequests.filter((r) => r.id !== requestId),
+        });
+        // TODO: API 호출
+      },
+
+      rejectFriendRequest: async (requestId: string) => {
+        const { friendRequests } = get();
+        set({
+          friendRequests: friendRequests.filter((r) => r.id !== requestId),
+        });
+        // TODO: API 호출
+      },
+
+      setGuestbooks: (guestbooks) => set({ guestbooks }),
 
       addGuestbookEntry: (entry) => {
-        const { guestbook } = get();
-        set({ guestbook: [entry, ...guestbook].slice(0, 50) });
+        const { guestbooks } = get();
+        set({ guestbooks: [entry, ...guestbooks].slice(0, 50) });
+      },
+
+      leaveGuestbook: async (friendId: string, message: string) => {
+        // TODO: API 호출
+        console.log('Leave guestbook for:', friendId, message);
       },
 
       setGifts: (gifts) => set({ gifts }),
@@ -163,6 +200,11 @@ export const useSocialStore = create<SocialState>()(
         set({
           gifts: gifts.map((g) => (g.id === giftId ? { ...g, isClaimed: true } : g)),
         });
+      },
+
+      sendGift: async (friendId: string, giftType: string, amount: number) => {
+        // TODO: API 호출
+        console.log('Send gift to:', friendId, giftType, amount);
       },
 
       setVisitingPark: (visitingPark) => set({ visitingPark }),

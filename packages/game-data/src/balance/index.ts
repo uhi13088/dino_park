@@ -258,10 +258,10 @@ export const OFFLINE = {
 } as const;
 
 // ========================================
-// 상점 - 다이아 패키지
+// 상점 - 다이아 패키지 가격표 (계산용)
 // ========================================
 
-export const DIAMOND_PACKS = [
+export const DIAMOND_PACK_PRICES = [
   { id: 'diamond_60', diamonds: 60, bonusDiamonds: 0, priceKRW: 1100 },
   { id: 'diamond_330', diamonds: 330, bonusDiamonds: 30, priceKRW: 5500, isPopular: true },
   { id: 'diamond_700', diamonds: 700, bonusDiamonds: 80, priceKRW: 11000 },
@@ -281,10 +281,10 @@ export const GOLD_SHOP = [
 ] as const;
 
 // ========================================
-// 구독 상품
+// 구독 상품 설정 (계산용)
 // ========================================
 
-export const SUBSCRIPTIONS = {
+export const SUBSCRIPTION_CONFIG = {
   dinoPass: {
     id: 'dino_pass',
     monthlyPriceKRW: 9900,
