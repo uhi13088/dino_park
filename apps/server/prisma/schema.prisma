@@ -272,3 +272,153 @@ model SeasonPass {
   @@unique([userId, seasonId])
   @@map("season_passes")
 }
+
+// ========================================
+// 소셜 - 친구
+// ========================================
+
+model Friend {
+  id            String       @id @default(cuid())
+  userId        String
+  friendId      String
+  status        FriendStatus @default(ACCEPTED)
+  nickname      String?      // 친구에게 붙인 별명
+  lastVisitedAt DateTime?    // 마지막 방문 시간
+  giftSentAt    DateTime?    // 마지막 선물 발송 시간
+  giftReceivedAt DateTime?   // 마지막 선물 수령 시간
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([userId, friendId])
+  @@index([userId])
+  @@index([friendId])
+  @@map("friends")
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+model FriendRequest {
+  id         String              @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  status     FriendRequestStatus @default(PENDING)
+  message    String?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  @@unique([fromUserId, toUserId])
+  @@index([toUserId])
+  @@map("friend_requests")
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+// ========================================
+// 소셜 - 친밀도
+// ========================================
+
+model FriendIntimacy {
+  id                        String   @id @default(cuid())
+  userId                    String
+  friendId                  String
+  intimacyLevel             Int      @default(1)  // 1-10
+  intimacyExp               Int      @default(0)
+  totalGiftsSent            Int      @default(0)
+  totalGiftsReceived        Int      @default(0)
+  totalVisits               Int      @default(0)
+  consecutiveInteractionDays Int     @default(0)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@unique([userId, friendId])
+  @@map("friend_intimacy")
+}
+
+// ========================================
+// 소셜 - 파크 방문
+// ========================================
+
+model ParkVisit {
+  id                String    @id @default(cuid())
+  visitorId         String
+  hostId            String
+  visitType         String    @default("friend")  // friend, random, featured
+  duration          Int       @default(0)         // 방문 시간 (초)
+  interactionsCount Int       @default(0)
+  leftLike          Boolean   @default(false)
+  leftComment       String?
+  createdAt         DateTime  @default(now())
+
+  @@index([hostId])
+  @@index([visitorId])
+  @@map("park_visits")
+}
+
+model GuestBook {
+  id            String   @id @default(cuid())
+  parkOwnerId   String
+  visitorId     String
+  visitorNickname String
+  message       String
+  likeCount     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([parkOwnerId])
+  @@map("guest_books")
+}
+
+// ========================================
+// 소셜 - 선물
+// ========================================
+
+model Gift {
+  id          String     @id @default(cuid())
+  senderId    String
+  receiverId  String
+  giftType    String     // daily, special, event, achievement
+  giftItemId  String
+  status      GiftStatus @default(PENDING)
+  expiresAt   DateTime
+  message     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([receiverId, status])
+  @@index([senderId])
+  @@map("gifts")
+}
+
+enum GiftStatus {
+  PENDING
+  CLAIMED
+  EXPIRED
+}
+
+// ========================================
+// 소셜 - 알림
+// ========================================
+
+model SocialNotification {
+  id           String   @id @default(cuid())
+  userId       String
+  type         String   // friendRequest, friendAccepted, giftReceived, parkVisited, guestbookComment, rankingChange
+  fromUserId   String?
+  fromNickname String?
+  message      String
+  data         Json?
+  isRead       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@map("social_notifications")
+}
