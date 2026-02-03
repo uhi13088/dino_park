@@ -7,10 +7,10 @@ import * as PIXI from 'pixi.js';
 
 // 아이소메트릭 설정
 export const ISO_CONFIG = {
-  TILE_WIDTH: 64,   // 타일 가로 크기
-  TILE_HEIGHT: 32,  // 타일 세로 크기 (2:1 비율)
-  ORIGIN_X: 0,      // 원점 X (화면 중앙으로 조정됨)
-  ORIGIN_Y: 0,      // 원점 Y
+  TILE_WIDTH: 64, // 타일 가로 크기
+  TILE_HEIGHT: 32, // 타일 세로 크기 (2:1 비율)
+  ORIGIN_X: 0, // 원점 X (화면 중앙으로 조정됨)
+  ORIGIN_Y: 0, // 원점 Y
 };
 
 /**
@@ -30,10 +30,10 @@ export function screenToGrid(screenX: number, screenY: number): { x: number; y: 
   const adjustedY = screenY - ISO_CONFIG.ORIGIN_Y;
 
   const gridX = Math.floor(
-    (adjustedX / (ISO_CONFIG.TILE_WIDTH / 2) + adjustedY / (ISO_CONFIG.TILE_HEIGHT / 2)) / 2
+    (adjustedX / (ISO_CONFIG.TILE_WIDTH / 2) + adjustedY / (ISO_CONFIG.TILE_HEIGHT / 2)) / 2,
   );
   const gridY = Math.floor(
-    (adjustedY / (ISO_CONFIG.TILE_HEIGHT / 2) - adjustedX / (ISO_CONFIG.TILE_WIDTH / 2)) / 2
+    (adjustedY / (ISO_CONFIG.TILE_HEIGHT / 2) - adjustedX / (ISO_CONFIG.TILE_WIDTH / 2)) / 2,
   );
 
   return { x: gridX, y: gridY };
@@ -55,8 +55,8 @@ export class IsometricGrid extends PIXI.Container {
     this.gridHeight = height;
 
     // 레이어 구조
-    this.tiles = new PIXI.Container();     // 바닥 타일
-    this.entities = new PIXI.Container();  // 공룡, 건물 등
+    this.tiles = new PIXI.Container(); // 바닥 타일
+    this.entities = new PIXI.Container(); // 공룡, 건물 등
 
     this.addChild(this.tiles);
     this.addChild(this.entities);
@@ -86,22 +86,26 @@ export class IsometricGrid extends PIXI.Container {
     const tile = new PIXI.Graphics();
 
     // 다이아몬드 형태 그리기
-    const hw = ISO_CONFIG.TILE_WIDTH / 2;  // half width
+    const hw = ISO_CONFIG.TILE_WIDTH / 2; // half width
     const hh = ISO_CONFIG.TILE_HEIGHT / 2; // half height
 
     // 잔디 색상 (약간의 변화)
-    const baseColor = 0x7CB342;
-    const variation = ((gridX + gridY) % 2 === 0) ? 0x050505 : 0;
+    const baseColor = 0x7cb342;
+    const variation = (gridX + gridY) % 2 === 0 ? 0x050505 : 0;
     const color = baseColor - variation;
 
     tile.poly([
-      x, y - hh,          // 상단
-      x + hw, y,          // 우측
-      x, y + hh,          // 하단
-      x - hw, y,          // 좌측
+      x,
+      y - hh, // 상단
+      x + hw,
+      y, // 우측
+      x,
+      y + hh, // 하단
+      x - hw,
+      y, // 좌측
     ]);
     tile.fill(color);
-    tile.stroke({ width: 1, color: 0x689F38, alpha: 0.5 });
+    tile.stroke({ width: 1, color: 0x689f38, alpha: 0.5 });
 
     return tile;
   }

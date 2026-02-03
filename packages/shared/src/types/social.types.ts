@@ -15,10 +15,10 @@ export interface Friend extends BaseEntity {
   userId: string;
   friendId: string;
   status: FriendStatus;
-  nickname?: string;          // 친구에게 붙인 별명
-  lastVisitedAt?: Date;       // 마지막 방문 시간
-  giftSentAt?: Date;          // 마지막 선물 발송 시간
-  giftReceivedAt?: Date;      // 마지막 선물 수령 시간
+  nickname?: string; // 친구에게 붙인 별명
+  lastVisitedAt?: Date; // 마지막 방문 시간
+  giftSentAt?: Date; // 마지막 선물 발송 시간
+  giftReceivedAt?: Date; // 마지막 선물 수령 시간
 }
 
 export interface FriendRequest extends BaseEntity {
@@ -45,13 +45,13 @@ export interface FriendProfile {
 // ============================================================
 
 export interface ParkVisit extends BaseEntity {
-  visitorId: string;          // 방문자 ID
-  hostId: string;             // 파크 주인 ID
+  visitorId: string; // 방문자 ID
+  hostId: string; // 파크 주인 ID
   visitType: 'friend' | 'random' | 'featured';
-  duration: number;           // 방문 시간 (초)
-  interactionsCount: number;  // 인터랙션 횟수
-  leftLike: boolean;          // 좋아요 남겼는지
-  leftComment?: string;       // 방명록 코멘트
+  duration: number; // 방문 시간 (초)
+  interactionsCount: number; // 인터랙션 횟수
+  leftLike: boolean; // 좋아요 남겼는지
+  leftComment?: string; // 방명록 코멘트
 }
 
 export interface ParkVisitReward {
@@ -95,8 +95,8 @@ export interface GiftItem {
   nameKo: string;
   type: GiftType;
   rewards: GiftReward[];
-  cooldownHours: number;      // 동일 선물 발송 쿨다운
-  maxDailyGifts: number;      // 일일 최대 발송 수
+  cooldownHours: number; // 동일 선물 발송 쿨다운
+  maxDailyGifts: number; // 일일 최대 발송 수
   requiredFriendLevel?: number; // 친밀도 요구 조건
   isActive: boolean;
 }
@@ -114,7 +114,7 @@ export interface GiftReward {
 export interface FriendIntimacy extends BaseEntity {
   userId: string;
   friendId: string;
-  intimacyLevel: number;      // 1-10
+  intimacyLevel: number; // 1-10
   intimacyExp: number;
   totalGiftsSent: number;
   totalGiftsReceived: number;
@@ -125,7 +125,7 @@ export interface FriendIntimacy extends BaseEntity {
 export interface IntimacyReward {
   level: number;
   rewards: GiftReward[];
-  unlocks: string[];          // 해금되는 기능/아이템
+  unlocks: string[]; // 해금되는 기능/아이템
 }
 
 // ============================================================
@@ -137,7 +137,7 @@ export interface FriendPointShopItem {
   name: string;
   nameKo: string;
   description: string;
-  price: number;              // 친구 포인트 가격
+  price: number; // 친구 포인트 가격
   rewards: GiftReward[];
   weeklyLimit?: number;
   isActive: boolean;

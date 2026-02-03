@@ -39,24 +39,22 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full bg-gradient-to-b from-primary-600 to-primary-800 text-white p-8">
+    <div className="from-primary-600 to-primary-800 flex h-full flex-col items-center justify-center bg-gradient-to-b p-8 text-white">
       {/* 로고 */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-12"
+        className="mb-12 text-center"
       >
         <motion.h1
-          className="text-5xl font-display font-bold mb-4"
+          className="font-display mb-4 text-5xl font-bold"
           animate={{ scale: [1, 1.02, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
           🦕 다이노 파크
         </motion.h1>
-        <h2 className="text-3xl font-display font-bold text-secondary-400">
-          타이쿤
-        </h2>
+        <h2 className="font-display text-secondary-400 text-3xl font-bold">타이쿤</h2>
       </motion.div>
 
       {/* 시작 버튼 */}
@@ -70,7 +68,7 @@ export default function HomePage() {
           size="xl"
           onClick={handleStart}
           isLoading={loginMutation.isPending}
-          className="px-12 rounded-full shadow-lg"
+          className="rounded-full px-12 shadow-lg"
         >
           게임 시작
         </Button>
@@ -81,13 +79,13 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="mt-8 text-white/70 text-center"
+        className="mt-8 text-center text-white/70"
       >
         나만의 공룡 테마파크를 만들어보세요!
       </motion.p>
 
       {/* 버전 */}
-      <p className="absolute bottom-8 text-white/50 text-sm">v0.1.0</p>
+      <p className="absolute bottom-8 text-sm text-white/50">v0.1.0</p>
     </div>
   );
 }

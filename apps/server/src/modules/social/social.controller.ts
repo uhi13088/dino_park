@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Delete,
-  Param,
-  Body,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -132,10 +123,7 @@ export class SocialController {
   @ApiOperation({ summary: '친구 요청 보내기' })
   @ApiResponse({ status: 201, description: '친구 요청 성공' })
   @ApiResponse({ status: 409, description: '이미 친구이거나 요청을 보낸 상태' })
-  async sendFriendRequest(
-    @CurrentUser('id') userId: string,
-    @Body() dto: SendFriendRequestDto,
-  ) {
+  async sendFriendRequest(@CurrentUser('id') userId: string, @Body() dto: SendFriendRequestDto) {
     return this.socialService.sendFriendRequest(userId, dto.targetUserId, dto.message);
   }
 
@@ -187,10 +175,7 @@ export class SocialController {
   @ApiOperation({ summary: '친구 삭제' })
   @ApiParam({ name: 'friendId', description: '삭제할 친구의 유저 ID' })
   @ApiResponse({ status: 200, description: '친구 삭제 완료' })
-  async removeFriend(
-    @CurrentUser('id') userId: string,
-    @Param('friendId') friendId: string,
-  ) {
+  async removeFriend(@CurrentUser('id') userId: string, @Param('friendId') friendId: string) {
     return this.socialService.removeFriend(userId, friendId);
   }
 
@@ -201,10 +186,7 @@ export class SocialController {
   @ApiOperation({ summary: '유저 차단' })
   @ApiParam({ name: 'userId', description: '차단할 유저 ID' })
   @ApiResponse({ status: 200, description: '차단 완료' })
-  async blockUser(
-    @CurrentUser('id') userId: string,
-    @Param('userId') targetUserId: string,
-  ) {
+  async blockUser(@CurrentUser('id') userId: string, @Param('userId') targetUserId: string) {
     return this.socialService.blockUser(userId, targetUserId);
   }
 
@@ -229,10 +211,7 @@ export class SocialController {
       },
     },
   })
-  async visitFriendPark(
-    @CurrentUser('id') userId: string,
-    @Param('hostId') hostId: string,
-  ) {
+  async visitFriendPark(@CurrentUser('id') userId: string, @Param('hostId') hostId: string) {
     return this.socialService.visitFriendPark(userId, hostId);
   }
 
@@ -272,10 +251,7 @@ export class SocialController {
     status: 200,
     description: '방명록 목록 (페이지네이션)',
   })
-  async getGuestBook(
-    @CurrentUser('id') userId: string,
-    @Query() query: PaginationQuery,
-  ) {
+  async getGuestBook(@CurrentUser('id') userId: string, @Query() query: PaginationQuery) {
     return this.socialService.getGuestBook(userId, query.page, query.limit);
   }
 
@@ -290,10 +266,7 @@ export class SocialController {
   @ApiOperation({ summary: '친구에게 선물 보내기' })
   @ApiResponse({ status: 201, description: '선물 발송 성공' })
   @ApiResponse({ status: 400, description: '일일 제한 초과 또는 쿨다운' })
-  async sendGift(
-    @CurrentUser('id') userId: string,
-    @Body() dto: SendGiftDto,
-  ) {
+  async sendGift(@CurrentUser('id') userId: string, @Body() dto: SendGiftDto) {
     return this.socialService.sendGift(userId, dto.receiverId, dto.giftItemId, dto.message);
   }
 
@@ -338,10 +311,7 @@ export class SocialController {
       },
     },
   })
-  async claimGift(
-    @CurrentUser('id') userId: string,
-    @Param('giftId') giftId: string,
-  ) {
+  async claimGift(@CurrentUser('id') userId: string, @Param('giftId') giftId: string) {
     return this.socialService.claimGift(userId, giftId);
   }
 

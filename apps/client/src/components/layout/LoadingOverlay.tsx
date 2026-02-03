@@ -18,8 +18,8 @@ export default function LoadingOverlay() {
         >
           {/* 로딩 스피너 */}
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-primary-200 rounded-full" />
-            <div className="absolute inset-0 w-16 h-16 border-4 border-t-primary-500 rounded-full animate-spin" />
+            <div className="border-primary-200 h-16 w-16 rounded-full border-4" />
+            <div className="border-t-primary-500 absolute inset-0 h-16 w-16 animate-spin rounded-full border-4" />
           </div>
 
           {/* 로딩 메시지 */}
@@ -27,7 +27,7 @@ export default function LoadingOverlay() {
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 text-white font-medium"
+              className="mt-4 font-medium text-white"
             >
               {loadingMessage}
             </motion.p>

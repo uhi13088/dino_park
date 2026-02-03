@@ -7,12 +7,12 @@
 
 # 🎯 프로젝트 개요
 
-| 항목 | 내용 |
-|------|------|
-| **프로젝트명** | 다이노 파크 타이쿤 (Dino Park Tycoon) |
-| **플랫폼** | 토스 앱스 (Toss Apps) |
-| **장르** | 타이쿤/경영 시뮬레이션 + 방치형 + 스토리 |
-| **목표** | 8개월 개발, MAU 300K |
+| 항목           | 내용                                     |
+| -------------- | ---------------------------------------- |
+| **프로젝트명** | 다이노 파크 타이쿤 (Dino Park Tycoon)    |
+| **플랫폼**     | 토스 앱스 (Toss Apps)                    |
+| **장르**       | 타이쿤/경영 시뮬레이션 + 방치형 + 스토리 |
+| **목표**       | 8개월 개발, MAU 300K                     |
 
 ---
 
@@ -34,6 +34,7 @@
 ```
 
 ## 규칙
+
 1. **한 번에 1개 티켓만** IN_PROGRESS
 2. **AC(Acceptance Criteria)** 기준으로 완료 판단
 3. **완료 즉시** DONE으로 이동 + 기록
@@ -41,12 +42,12 @@
 
 ## 커스텀 명령어
 
-| 명령어 | 설명 |
-|--------|------|
-| `/next` | QUEUE 최상단 티켓 작업 시작 |
-| `/status` | 현재 프로젝트 상태 요약 |
+| 명령어      | 설명                                        |
+| ----------- | ------------------------------------------- |
+| `/next`     | QUEUE 최상단 티켓 작업 시작                 |
+| `/status`   | 현재 프로젝트 상태 요약                     |
 | `/validate` | 전체 검증 (typecheck + lint + test + build) |
-| `/pr` | PR 설명 자동 생성 |
+| `/pr`       | PR 설명 자동 생성                           |
 
 ---
 
@@ -54,23 +55,23 @@
 
 > ⚠️ **모든 개발 작업 전에 관련 문서를 반드시 확인하세요.**
 
-| 문서 | 경로 | 핵심 용도 |
-|------|------|----------|
-| **GDD** | `docs/dino_park_tycoon_gdd.md` | 전체 기획, 기능 명세, 시스템 규칙 |
-| **밸런스** | `docs/dino_park_balance_simulation.md` | 모든 수치, 공식, 경제 설정 |
-| **UI/UX** | `docs/dino_park_ui_art_guide.md` | 화면 구조, 컴포넌트, 플로우 |
-| **공룡 도감** | `docs/dino_park_dinosaur_codex.md` | 공룡 82종 상세 스펙 |
-| **위인 도감** | `docs/dino_park_great_figures.md` | 위인 50명 상세 스펙, 시너지 |
-| **스토리** | `docs/dino_park_story_scenario.md` | 스토리 6챕터, 전체 대사 |
-| **기술 설계** | `docs/dino_park_technical_design.md` | 아키텍처, DB, API 설계 |
-| **사운드** | `docs/dino_park_sound_guide.md` | BGM 31곡, SFX 500개 |
-| **수익 모델** | `docs/dino_park_revenue_model.md` | IAP 상품, 가격, ARPU |
-| **시즌** | `docs/dino_park_season_content.md` | 시즌 1~4 스토리, 보상 |
-| **액션 플랜** | `docs/dino_park_action_plan.md` | 개발 순서, Phase별 작업 |
-| **UI & 아트 가이드** | `docs/dino_park_ui_art_guide.md` | 픽셀 설계, 와이어프레임, 그래픽 스타일 |
-| **에셋 - 메인** | `docs/assets/dino_park_asset_main.md` | 마스터 스타일, Placeholder |
-| **에셋 - 공룡** | `docs/assets/dino_park_asset_dinosaurs.md` | 공룡 82종 + AI 프롬프트 |
-| **에셋 - 건물/캐릭터** | `docs/assets/dino_park_asset_buildings_characters.md` | 건물 50종, 위인 50명, 환경, UI |
+| 문서                   | 경로                                                  | 핵심 용도                              |
+| ---------------------- | ----------------------------------------------------- | -------------------------------------- |
+| **GDD**                | `docs/dino_park_tycoon_gdd.md`                        | 전체 기획, 기능 명세, 시스템 규칙      |
+| **밸런스**             | `docs/dino_park_balance_simulation.md`                | 모든 수치, 공식, 경제 설정             |
+| **UI/UX**              | `docs/dino_park_ui_art_guide.md`                      | 화면 구조, 컴포넌트, 플로우            |
+| **공룡 도감**          | `docs/dino_park_dinosaur_codex.md`                    | 공룡 82종 상세 스펙                    |
+| **위인 도감**          | `docs/dino_park_great_figures.md`                     | 위인 50명 상세 스펙, 시너지            |
+| **스토리**             | `docs/dino_park_story_scenario.md`                    | 스토리 6챕터, 전체 대사                |
+| **기술 설계**          | `docs/dino_park_technical_design.md`                  | 아키텍처, DB, API 설계                 |
+| **사운드**             | `docs/dino_park_sound_guide.md`                       | BGM 31곡, SFX 500개                    |
+| **수익 모델**          | `docs/dino_park_revenue_model.md`                     | IAP 상품, 가격, ARPU                   |
+| **시즌**               | `docs/dino_park_season_content.md`                    | 시즌 1~4 스토리, 보상                  |
+| **액션 플랜**          | `docs/dino_park_action_plan.md`                       | 개발 순서, Phase별 작업                |
+| **UI & 아트 가이드**   | `docs/dino_park_ui_art_guide.md`                      | 픽셀 설계, 와이어프레임, 그래픽 스타일 |
+| **에셋 - 메인**        | `docs/assets/dino_park_asset_main.md`                 | 마스터 스타일, Placeholder             |
+| **에셋 - 공룡**        | `docs/assets/dino_park_asset_dinosaurs.md`            | 공룡 82종 + AI 프롬프트                |
+| **에셋 - 건물/캐릭터** | `docs/assets/dino_park_asset_buildings_characters.md` | 건물 50종, 위인 50명, 환경, UI         |
 
 ### 문서 참조 규칙
 
@@ -115,6 +116,7 @@ Level 4: 개발 가이드
 ```
 
 **충돌 예시:**
+
 - 공룡 수익이 GDD와 공룡 도감에서 다름 → **공룡 도감** 우선
 - 시즌 위인 수가 액션 플랜과 시즌 콘텐츠에서 다름 → **시즌 콘텐츠** 우선
 
@@ -224,58 +226,58 @@ dino-park-tycoon/
 
 ## 파일명
 
-| 대상 | 규칙 | 예시 |
-|------|------|------|
-| 컴포넌트 | PascalCase.tsx | `DinosaurCard.tsx` |
-| 훅 | use + PascalCase.ts | `useDinosaur.ts` |
-| 스토어 | use + PascalCase + Store.ts | `useDinosaurStore.ts` |
-| 유틸리티 | camelCase.ts | `calculateRevenue.ts` |
-| 타입 | camelCase.types.ts | `dinosaur.types.ts` |
-| 상수 | camelCase.constants.ts | `balance.constants.ts` |
-| NestJS 서비스 | kebab-case.service.ts | `dinosaur.service.ts` |
-| NestJS 컨트롤러 | kebab-case.controller.ts | `dinosaur.controller.ts` |
+| 대상            | 규칙                        | 예시                     |
+| --------------- | --------------------------- | ------------------------ |
+| 컴포넌트        | PascalCase.tsx              | `DinosaurCard.tsx`       |
+| 훅              | use + PascalCase.ts         | `useDinosaur.ts`         |
+| 스토어          | use + PascalCase + Store.ts | `useDinosaurStore.ts`    |
+| 유틸리티        | camelCase.ts                | `calculateRevenue.ts`    |
+| 타입            | camelCase.types.ts          | `dinosaur.types.ts`      |
+| 상수            | camelCase.constants.ts      | `balance.constants.ts`   |
+| NestJS 서비스   | kebab-case.service.ts       | `dinosaur.service.ts`    |
+| NestJS 컨트롤러 | kebab-case.controller.ts    | `dinosaur.controller.ts` |
 
 ## 변수/함수명
 
-| 대상 | 규칙 | 예시 |
-|------|------|------|
-| 변수 | camelCase | `dinosaurList`, `parkLevel` |
-| 함수 | camelCase (동사 시작) | `getDinosaur()`, `calculateRevenue()` |
-| 상수 | UPPER_SNAKE_CASE | `MAX_LEVEL`, `BASE_REVENUE` |
-| 타입/인터페이스 | PascalCase | `Dinosaur`, `DinosaurStats` |
-| Enum | PascalCase | `DinosaurCategory` |
-| Enum 값 | UPPER_SNAKE_CASE | `HERBIVORE`, `LEGENDARY` |
+| 대상            | 규칙                  | 예시                                  |
+| --------------- | --------------------- | ------------------------------------- |
+| 변수            | camelCase             | `dinosaurList`, `parkLevel`           |
+| 함수            | camelCase (동사 시작) | `getDinosaur()`, `calculateRevenue()` |
+| 상수            | UPPER_SNAKE_CASE      | `MAX_LEVEL`, `BASE_REVENUE`           |
+| 타입/인터페이스 | PascalCase            | `Dinosaur`, `DinosaurStats`           |
+| Enum            | PascalCase            | `DinosaurCategory`                    |
+| Enum 값         | UPPER_SNAKE_CASE      | `HERBIVORE`, `LEGENDARY`              |
 
 ## 도메인 용어 통일표
 
 > ⚠️ **필수**: 아래 용어를 전 프로젝트에서 통일하여 사용하세요.
 
-| 한글 | 영문 (코드) | 복수형 |
-|------|------------|--------|
-| 공룡 | `dinosaur` | `dinosaurs` |
-| 건물 | `building` | `buildings` |
-| 위인 | `greatFigure` | `greatFigures` |
-| 파크 | `park` | `parks` |
-| 탐험 | `exploration` | `explorations` |
-| 스토리 | `story` | `stories` |
-| 챕터 | `chapter` | `chapters` |
-| 시즌 | `season` | `seasons` |
-| 재화 | `currency` | - |
-| 골드 | `gold` | - |
-| 다이아 | `diamond` | - |
-| DNA | `dna` | - |
-| 부화 | `hatching` | - |
-| 등급/희귀도 | `rarity` | - |
-| 레벨 | `level` | - |
-| 경험치 | `exp` | - |
-| 행복도 | `happiness` | - |
-| 배고픔 | `hunger` | - |
-| 친밀도 | `intimacy` | - |
-| 인기도 | `popularity` | - |
-| 수익 | `revenue` | - |
-| 유지비 | `maintenanceCost` | - |
-| 탐험 에너지 | `explorationEnergy` | - |
-| 시즌 포인트 | `seasonPoint` | - |
+| 한글        | 영문 (코드)         | 복수형         |
+| ----------- | ------------------- | -------------- |
+| 공룡        | `dinosaur`          | `dinosaurs`    |
+| 건물        | `building`          | `buildings`    |
+| 위인        | `greatFigure`       | `greatFigures` |
+| 파크        | `park`              | `parks`        |
+| 탐험        | `exploration`       | `explorations` |
+| 스토리      | `story`             | `stories`      |
+| 챕터        | `chapter`           | `chapters`     |
+| 시즌        | `season`            | `seasons`      |
+| 재화        | `currency`          | -              |
+| 골드        | `gold`              | -              |
+| 다이아      | `diamond`           | -              |
+| DNA         | `dna`               | -              |
+| 부화        | `hatching`          | -              |
+| 등급/희귀도 | `rarity`            | -              |
+| 레벨        | `level`             | -              |
+| 경험치      | `exp`               | -              |
+| 행복도      | `happiness`         | -              |
+| 배고픔      | `hunger`            | -              |
+| 친밀도      | `intimacy`          | -              |
+| 인기도      | `popularity`        | -              |
+| 수익        | `revenue`           | -              |
+| 유지비      | `maintenanceCost`   | -              |
+| 탐험 에너지 | `explorationEnergy` | -              |
+| 시즌 포인트 | `seasonPoint`       | -              |
 
 ---
 
@@ -615,37 +617,45 @@ pnpm test             # 테스트 실행
 ## ✅ 작업 완료 보고
 
 ### 1. 완료한 작업
+
 - [작업 내용]
 
 ### 2. 변경/생성된 파일
+
 - `path/to/file1.ts` - [변경 내용]
 - `path/to/file2.tsx` - [변경 내용]
 
 ### 3. 자동 검증 결과
 
 #### 타입 일관성
+
 - [x] Shared Types 정의 완료
 - [x] Frontend 연동 완료
 - [x] Backend 연동 완료
 - [x] Prisma 스키마 일치
 
 #### 필드명 일관성
+
 - [x] 도메인 용어 통일
 - [x] DB/API/FE 필드명 일치
 
 #### 문서 일치
+
 - 참조 문서: `[문서명]`
 - [x] 기능 스펙 일치
 - [x] 수치 일치
 
 #### 코드 품질
+
 - [x] TypeScript 에러 없음
 - [x] ESLint 통과
 
 ### 4. ⚠️ 주의사항 (있는 경우)
+
 - [주의할 점]
 
 ### 5. 📌 다음 작업
+
 - [후속 작업 제안]
 ```
 
@@ -655,14 +665,17 @@ pnpm test             # 테스트 실행
 ## ⚠️ 불일치 발견 및 자동 수정
 
 ### 발견된 문제
+
 - [문제 설명]
 
 ### 수정 내용
-| 위치 | Before | After |
-|------|--------|-------|
+
+| 위치         | Before            | After       |
+| ------------ | ----------------- | ----------- |
 | `file.ts:10` | `happiness_level` | `happiness` |
 
 ### 영향받는 파일
+
 - `apps/client/...` - 수정 완료
 - `apps/server/...` - 수정 완료
 ```
@@ -785,13 +798,13 @@ GET    /api/seasons/current
 
 ```typescript
 // 카테고리별 Placeholder 색상
-DINOSAUR_HERBIVORE: '#4CAF50'  // 초식 - 녹색
-DINOSAUR_CARNIVORE: '#F44336'  // 육식 - 빨강
-DINOSAUR_PTEROSAUR: '#9C27B0'  // 익룡 - 보라
-DINOSAUR_MARINE: '#2196F3'     // 해양 - 파랑
-BUILDING: '#8BC34A'            // 건물 - 연두
-CHARACTER: '#E91E63'           // 캐릭터 - 분홍
-UI: '#9E9E9E'                  // UI - 회색
+DINOSAUR_HERBIVORE: '#4CAF50'; // 초식 - 녹색
+DINOSAUR_CARNIVORE: '#F44336'; // 육식 - 빨강
+DINOSAUR_PTEROSAUR: '#9C27B0'; // 익룡 - 보라
+DINOSAUR_MARINE: '#2196F3'; // 해양 - 파랑
+BUILDING: '#8BC34A'; // 건물 - 연두
+CHARACTER: '#E91E63'; // 캐릭터 - 분홍
+UI: '#9E9E9E'; // UI - 회색
 ```
 
 ## 에셋 요청 시 처리
@@ -826,16 +839,16 @@ Claude Code가 에셋이 필요할 때:
 
 # 📋 Phase별 참조 문서
 
-| Phase | 참조 문서 |
-|-------|----------|
-| Phase 1: 셋업 | 기술 설계, 액션 플랜 |
-| Phase 2: 백엔드 | 기술 설계, 밸런스 |
-| Phase 3: 프론트엔드 | **UI & 아트 가이드**, GDD |
-| Phase 4: 게임 로직 | 공룡 도감, 위인 도감, 밸런스 |
-| Phase 5: 콘텐츠 | 스토리, 시즌, 사운드, **에셋 문서** |
-| Phase 6: 수익화 | 수익 모델, GDD |
-| Phase 7: 테스트 | 전체 문서 |
-| Phase 8: 런칭 | 액션 플랜 |
+| Phase               | 참조 문서                           |
+| ------------------- | ----------------------------------- |
+| Phase 1: 셋업       | 기술 설계, 액션 플랜                |
+| Phase 2: 백엔드     | 기술 설계, 밸런스                   |
+| Phase 3: 프론트엔드 | **UI & 아트 가이드**, GDD           |
+| Phase 4: 게임 로직  | 공룡 도감, 위인 도감, 밸런스        |
+| Phase 5: 콘텐츠     | 스토리, 시즌, 사운드, **에셋 문서** |
+| Phase 6: 수익화     | 수익 모델, GDD                      |
+| Phase 7: 테스트     | 전체 문서                           |
+| Phase 8: 런칭       | 액션 플랜                           |
 
 ---
 
@@ -908,11 +921,11 @@ Claude Code가 에셋이 필요할 때:
 
 ## 현재 상태
 
-| 항목 | 값 |
-|------|-----|
+| 항목      | 값            |
+| --------- | ------------- |
 | **Phase** | 0 (기획 완료) |
-| **Week** | 0 |
-| **날짜** | 2026-01-31 |
+| **Week**  | 0             |
+| **날짜**  | 2026-01-31    |
 
 ## Phase 진행률
 
@@ -941,5 +954,5 @@ Phase 8: 런칭             ░░░░░░░░░░ 0%
 
 ---
 
-*이 문서는 Claude Code가 자동으로 참조하며, 모든 개발 작업의 기준입니다.*
-*최종 업데이트: 2026년 1월*
+_이 문서는 Claude Code가 자동으로 참조하며, 모든 개발 작업의 기준입니다._
+_최종 업데이트: 2026년 1월_

@@ -137,6 +137,6 @@ export const useGameStore = create<GameState>()(
       // 리셋
       reset: () => set(initialState),
     }),
-    { name: 'GameStore' }
-  )
+    { name: 'GameStore' },
+  ),
 );

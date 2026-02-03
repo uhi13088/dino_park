@@ -17,9 +17,10 @@ export default function BottomNav() {
   const location = useLocation();
 
   return (
-    <nav className="relative flex items-center justify-around bg-black/50 backdrop-blur-sm py-2 px-2 safe-area-bottom">
+    <nav className="safe-area-bottom relative flex items-center justify-around bg-black/50 px-2 py-2 backdrop-blur-sm">
       {navItems.map((item) => {
-        const isActive = location.pathname === item.path ||
+        const isActive =
+          location.pathname === item.path ||
           (item.path !== '/' && location.pathname.startsWith(item.path));
 
         return (
@@ -27,26 +28,22 @@ export default function BottomNav() {
             key={item.path}
             to={item.path}
             className={cn(
-              'relative flex flex-col items-center py-1 px-4 rounded-xl transition-all',
-              isActive
-                ? 'text-white'
-                : 'text-white/60 hover:text-white/80 active:scale-95'
+              'relative flex flex-col items-center rounded-xl px-4 py-1 transition-all',
+              isActive ? 'text-white' : 'text-white/60 hover:text-white/80 active:scale-95',
             )}
           >
             {/* 활성 배경 */}
             {isActive && (
               <motion.div
                 layoutId="nav-active"
-                className="absolute inset-0 bg-primary-500 rounded-xl"
+                className="bg-primary-500 absolute inset-0 rounded-xl"
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               />
             )}
 
             {/* 아이콘 & 라벨 */}
-            <span className="relative text-2xl z-10">{item.icon}</span>
-            <span className="relative text-[10px] mt-0.5 font-medium z-10">
-              {item.label}
-            </span>
+            <span className="relative z-10 text-2xl">{item.icon}</span>
+            <span className="relative z-10 mt-0.5 text-[10px] font-medium">{item.label}</span>
           </NavLink>
         );
       })}

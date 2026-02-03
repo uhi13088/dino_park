@@ -41,7 +41,7 @@ export function Modal({
         onClose();
       }
     },
-    [onClose]
+    [onClose],
   );
 
   useEffect(() => {
@@ -72,37 +72,35 @@ export function Modal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 z-50"
+            className="fixed inset-0 z-50 bg-black/50"
             onClick={handleOverlayClick}
           />
 
           {/* Modal Container */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+          <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2, type: 'spring', damping: 25 }}
               className={cn(
-                'w-full bg-white rounded-2xl shadow-2xl pointer-events-auto',
+                'pointer-events-auto w-full rounded-2xl bg-white shadow-2xl',
                 sizeClasses[size],
-                className
+                className,
               )}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               {(title || showCloseButton) && (
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                  {title && (
-                    <h2 className="text-xl font-bold text-gray-900">{title}</h2>
-                  )}
+                <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+                  {title && <h2 className="text-xl font-bold text-gray-900">{title}</h2>}
                   {showCloseButton && (
                     <button
                       onClick={onClose}
-                      className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                      className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
                     >
                       <svg
-                        className="w-5 h-5"
+                        className="h-5 w-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -120,13 +118,11 @@ export function Modal({
               )}
 
               {/* Content */}
-              <div className="px-6 py-4 max-h-[60vh] overflow-y-auto">
-                {children}
-              </div>
+              <div className="max-h-[60vh] overflow-y-auto px-6 py-4">{children}</div>
 
               {/* Footer */}
               {footer && (
-                <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
+                <div className="rounded-b-2xl border-t border-gray-100 bg-gray-50 px-6 py-4">
                   {footer}
                 </div>
               )}
@@ -168,9 +164,7 @@ export function ConfirmModal({
   isLoading = false,
 }: ConfirmModalProps) {
   const confirmButtonClass =
-    variant === 'danger'
-      ? 'bg-red-500 hover:bg-red-600'
-      : 'bg-primary-500 hover:bg-primary-600';
+    variant === 'danger' ? 'bg-red-500 hover:bg-red-600' : 'bg-primary-500 hover:bg-primary-600';
 
   return (
     <Modal
@@ -181,13 +175,13 @@ export function ConfirmModal({
       closeOnOverlayClick={!isLoading}
     >
       <div className="text-center">
-        <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
-        <p className="text-gray-600 mb-6">{message}</p>
+        <h3 className="mb-2 text-lg font-bold text-gray-900">{title}</h3>
+        <p className="mb-6 text-gray-600">{message}</p>
         <div className="flex gap-3">
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 py-3 px-4 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+            className="flex-1 rounded-xl border border-gray-300 px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -195,8 +189,8 @@ export function ConfirmModal({
             onClick={onConfirm}
             disabled={isLoading}
             className={cn(
-              'flex-1 py-3 px-4 rounded-xl text-white font-medium transition-colors disabled:opacity-50',
-              confirmButtonClass
+              'flex-1 rounded-xl px-4 py-3 font-medium text-white transition-colors disabled:opacity-50',
+              confirmButtonClass,
             )}
           >
             {isLoading ? '처리 중...' : confirmText}

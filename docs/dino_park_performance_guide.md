@@ -9,6 +9,7 @@
 ### 1.1 코드 스플리팅
 
 **Vite 설정 (`vite.config.ts`)**
+
 ```typescript
 // 벤더 청크 분리
 manualChunks: {
@@ -20,6 +21,7 @@ manualChunks: {
 ```
 
 **라우트 기반 코드 스플리팅**
+
 ```typescript
 // React.lazy를 사용한 동적 임포트
 const ParkPage = React.lazy(() => import('@/pages/ParkPage'));
@@ -30,23 +32,23 @@ const StoryPage = React.lazy(() => import('@/pages/StoryPage'));
 ### 1.2 이미지 최적화
 
 **이미지 포맷**
+
 - PNG: 투명도가 필요한 UI, 스프라이트
 - WebP: 일반 이미지 (PNG 대비 30% 용량 절감)
 - AVIF: 최신 브라우저용 고압축
 
 **스프라이트 시트**
+
 ```typescript
 // 개별 이미지 대신 스프라이트 시트 사용
 // 네트워크 요청 수 감소
 import { Spritesheet } from 'pixi.js';
 
-const spritesheet = new Spritesheet(
-  baseTexture,
-  spritesheetData
-);
+const spritesheet = new Spritesheet(baseTexture, spritesheetData);
 ```
 
 **레이지 로딩**
+
 ```typescript
 // 화면 밖 이미지는 지연 로딩
 <img loading="lazy" src={imageSrc} />
@@ -55,6 +57,7 @@ const spritesheet = new Spritesheet(
 ### 1.3 PixiJS 렌더링 최적화
 
 **오브젝트 풀링**
+
 ```typescript
 // 자주 생성/삭제되는 오브젝트 재사용
 class DinosaurPool {
@@ -72,16 +75,18 @@ class DinosaurPool {
 ```
 
 **컬링 (화면 밖 렌더링 제외)**
+
 ```typescript
 // 뷰포트 밖 오브젝트 렌더링 스킵
 function updateVisibility(container: Container, viewport: Rectangle) {
-  container.children.forEach(child => {
+  container.children.forEach((child) => {
     child.visible = viewport.contains(child.x, child.y);
   });
 }
 ```
 
 **배치 렌더링**
+
 ```typescript
 // 같은 텍스처를 사용하는 스프라이트 그룹화
 const batchContainer = new ParticleContainer(10000, {
@@ -94,18 +99,20 @@ const batchContainer = new ParticleContainer(10000, {
 ### 1.4 상태 관리 최적화
 
 **Zustand 선택적 구독**
+
 ```typescript
 // 필요한 상태만 구독
-const gold = useGameStore(state => state.gold);
+const gold = useGameStore((state) => state.gold);
 
 // 여러 값을 한번에 구독 (shallow 비교)
 const { gold, diamond } = useGameStore(
-  state => ({ gold: state.gold, diamond: state.diamond }),
-  shallow
+  (state) => ({ gold: state.gold, diamond: state.diamond }),
+  shallow,
 );
 ```
 
 **React Query 캐싱**
+
 ```typescript
 // 적절한 staleTime 설정
 useQuery({
@@ -119,6 +126,7 @@ useQuery({
 ### 1.5 React 렌더링 최적화
 
 **메모이제이션**
+
 ```typescript
 // 비용이 큰 컴포넌트 메모이제이션
 const DinosaurCard = React.memo(({ dinosaur }) => {
@@ -131,12 +139,16 @@ const totalRevenue = useMemo(() => {
 }, [dinosaurs]);
 
 // 콜백 함수 메모이제이션
-const handleFeed = useCallback((dinoId: string) => {
-  feedDinosaur(dinoId);
-}, [feedDinosaur]);
+const handleFeed = useCallback(
+  (dinoId: string) => {
+    feedDinosaur(dinoId);
+  },
+  [feedDinosaur],
+);
 ```
 
 **가상화 (대규모 목록)**
+
 ```typescript
 // react-virtual 사용
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -165,6 +177,7 @@ function DinosaurList({ dinosaurs }) {
 ### 2.1 데이터베이스 최적화
 
 **인덱스 설정**
+
 ```prisma
 model Dinosaur {
   id        String   @id @default(cuid())
@@ -177,22 +190,24 @@ model Dinosaur {
 ```
 
 **N+1 문제 방지**
+
 ```typescript
 // BAD: N+1 쿼리
 const parks = await prisma.park.findMany();
 for (const park of parks) {
   const dinosaurs = await prisma.dinosaur.findMany({
-    where: { parkId: park.id }
+    where: { parkId: park.id },
   });
 }
 
 // GOOD: Include 사용
 const parks = await prisma.park.findMany({
-  include: { dinosaurs: true }
+  include: { dinosaurs: true },
 });
 ```
 
 **페이지네이션**
+
 ```typescript
 // 커서 기반 페이지네이션 (대규모 데이터셋에 효율적)
 const dinosaurs = await prisma.dinosaur.findMany({
@@ -206,6 +221,7 @@ const dinosaurs = await prisma.dinosaur.findMany({
 ### 2.2 캐싱
 
 **Redis 캐싱**
+
 ```typescript
 // 자주 조회되는 데이터 캐싱
 async function getDinosaurWithCache(id: string) {
@@ -226,6 +242,7 @@ async function getDinosaurWithCache(id: string) {
 ```
 
 **응답 캐싱 (HTTP)**
+
 ```typescript
 // NestJS 캐시 인터셉터
 @UseInterceptors(CacheInterceptor)
@@ -239,6 +256,7 @@ async getDinosaurs() {
 ### 2.3 API 최적화
 
 **응답 압축**
+
 ```typescript
 // main.ts
 import compression from 'compression';
@@ -246,6 +264,7 @@ app.use(compression());
 ```
 
 **GraphQL DataLoader (N+1 방지)**
+
 ```typescript
 // DataLoader 사용
 const dinosaurLoader = new DataLoader(async (parkIds) => {
@@ -253,9 +272,7 @@ const dinosaurLoader = new DataLoader(async (parkIds) => {
     where: { parkId: { in: parkIds } },
   });
 
-  return parkIds.map(parkId =>
-    dinosaurs.filter(d => d.parkId === parkId)
-  );
+  return parkIds.map((parkId) => dinosaurs.filter((d) => d.parkId === parkId));
 });
 ```
 
@@ -292,6 +309,7 @@ async collectOfflineRevenue(userId: string, clientCalculation: number) {
 ### 3.1 요청 최소화
 
 **배치 요청**
+
 ```typescript
 // 여러 요청을 하나로 묶기
 POST /api/batch
@@ -305,6 +323,7 @@ POST /api/batch
 ```
 
 **WebSocket 활용**
+
 ```typescript
 // 실시간 업데이트는 WebSocket으로
 socket.on('dinosaur:update', (data) => {
@@ -315,12 +334,14 @@ socket.on('dinosaur:update', (data) => {
 ### 3.2 페이로드 최적화
 
 **필요한 필드만 요청**
+
 ```typescript
 // GraphQL 스타일 필드 선택
 GET /api/dinosaurs?fields=id,name,level,happiness
 ```
 
 **압축**
+
 - gzip/brotli 압축 활성화
 - JSON 대신 MessagePack 고려 (바이너리 직렬화)
 
@@ -331,15 +352,17 @@ GET /api/dinosaurs?fields=id,name,level,happiness
 ### 4.1 프론트엔드
 
 **Web Vitals**
+
 ```typescript
 import { getCLS, getFID, getLCP } from 'web-vitals';
 
-getCLS(console.log);  // Cumulative Layout Shift
-getFID(console.log);  // First Input Delay
-getLCP(console.log);  // Largest Contentful Paint
+getCLS(console.log); // Cumulative Layout Shift
+getFID(console.log); // First Input Delay
+getLCP(console.log); // Largest Contentful Paint
 ```
 
 **React Profiler**
+
 ```typescript
 <Profiler id="DinosaurList" onRender={onRenderCallback}>
   <DinosaurList dinosaurs={dinosaurs} />
@@ -349,6 +372,7 @@ getLCP(console.log);  // Largest Contentful Paint
 ### 4.2 백엔드
 
 **쿼리 로깅**
+
 ```typescript
 // Prisma 쿼리 로깅
 const prisma = new PrismaClient({
@@ -357,6 +381,7 @@ const prisma = new PrismaClient({
 ```
 
 **APM (Application Performance Monitoring)**
+
 - Sentry Performance
 - Datadog
 - New Relic
@@ -365,14 +390,14 @@ const prisma = new PrismaClient({
 
 ## 5. 성능 목표
 
-| 항목 | 목표 | 측정 방법 |
-|------|------|----------|
-| **초기 로딩** | < 3초 | LCP |
-| **상호작용 지연** | < 100ms | FID |
-| **레이아웃 시프트** | < 0.1 | CLS |
-| **API 응답** | < 200ms | 서버 로그 |
-| **프레임레이트** | 60fps | DevTools |
-| **메모리** | < 100MB | DevTools |
+| 항목                | 목표    | 측정 방법 |
+| ------------------- | ------- | --------- |
+| **초기 로딩**       | < 3초   | LCP       |
+| **상호작용 지연**   | < 100ms | FID       |
+| **레이아웃 시프트** | < 0.1   | CLS       |
+| **API 응답**        | < 200ms | 서버 로그 |
+| **프레임레이트**    | 60fps   | DevTools  |
+| **메모리**          | < 100MB | DevTools  |
 
 ---
 
@@ -389,4 +414,4 @@ const prisma = new PrismaClient({
 
 ---
 
-*최종 업데이트: 2026-02-02*
+_최종 업데이트: 2026-02-02_

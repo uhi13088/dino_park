@@ -78,10 +78,7 @@ export class ParkController {
   @Patch('me/name')
   @ApiOperation({ summary: '파크 이름 변경' })
   @ApiResponse({ status: 200, description: '이름 변경 완료' })
-  async renamePark(
-    @CurrentUser('id') userId: string,
-    @Body() dto: RenameParkDto,
-  ) {
+  async renamePark(@CurrentUser('id') userId: string, @Body() dto: RenameParkDto) {
     return this.parkService.rename(userId, dto.name);
   }
 

@@ -62,7 +62,7 @@ export class GameEngine {
     await this.app.init({
       width: container.clientWidth,
       height: container.clientHeight,
-      backgroundColor: 0x87CEEB,
+      backgroundColor: 0x87ceeb,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
       antialias: true,
@@ -297,7 +297,7 @@ export class GameEngine {
   /**
    * 공룡 추가
    */
-  addDinosaur(id: string, gridX: number, gridY: number, color = 0x4CAF50): PIXI.Container {
+  addDinosaur(id: string, gridX: number, gridY: number, color = 0x4caf50): PIXI.Container {
     if (this.dinosaurs.has(id)) {
       return this.dinosaurs.get(id)!;
     }
@@ -399,7 +399,10 @@ export class GameEngine {
   /**
    * 이벤트 리스너 등록
    */
-  on<K extends keyof GameEngineEvents>(event: K, callback: EventCallback<GameEngineEvents[K]>): void {
+  on<K extends keyof GameEngineEvents>(
+    event: K,
+    callback: EventCallback<GameEngineEvents[K]>,
+  ): void {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, new Set());
     }
@@ -409,7 +412,10 @@ export class GameEngine {
   /**
    * 이벤트 리스너 제거
    */
-  off<K extends keyof GameEngineEvents>(event: K, callback: EventCallback<GameEngineEvents[K]>): void {
+  off<K extends keyof GameEngineEvents>(
+    event: K,
+    callback: EventCallback<GameEngineEvents[K]>,
+  ): void {
     this.eventListeners.get(event)?.delete(callback as EventCallback<unknown>);
   }
 

@@ -5,20 +5,20 @@
 
 // 레벨업 필요 경험치 테이블
 export const PARK_LEVEL_EXP_TABLE: number[] = [
-  0,      // Lv.1 (시작)
-  100,    // Lv.2
-  250,    // Lv.3
-  500,    // Lv.4
-  1000,   // Lv.5
+  0, // Lv.1 (시작)
+  100, // Lv.2
+  250, // Lv.3
+  500, // Lv.4
+  1000, // Lv.5
   // ... Phase 4에서 전체 테이블 구현
 ];
 
 export const DINOSAUR_LEVEL_EXP_TABLE: number[] = [
-  0,      // Lv.1
-  50,     // Lv.2
-  120,    // Lv.3
-  220,    // Lv.4
-  350,    // Lv.5
+  0, // Lv.1
+  50, // Lv.2
+  120, // Lv.3
+  220, // Lv.4
+  350, // Lv.5
   // ... Phase 4에서 전체 테이블 구현
 ];
 

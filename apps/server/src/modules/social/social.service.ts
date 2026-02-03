@@ -263,12 +263,7 @@ export class SocialService {
       select: { nickname: true },
     });
 
-    await this.createNotification(
-      request.fromUserId,
-      'friendAccepted',
-      userId,
-      toUser?.nickname,
-    );
+    await this.createNotification(request.fromUserId, 'friendAccepted', userId, toUser?.nickname);
 
     return { accepted: true, friend: friend1 };
   }
@@ -494,13 +489,9 @@ export class SocialService {
         },
       });
 
-      await this.createNotification(
-        visit.hostId,
-        'guestbookComment',
-        userId,
-        visitor?.nickname,
-        { comment },
-      );
+      await this.createNotification(visit.hostId, 'guestbookComment', userId, visitor?.nickname, {
+        comment,
+      });
     }
 
     // 보상 계산 및 지급
@@ -593,9 +584,7 @@ export class SocialService {
       });
 
       if (!intimacy || intimacy.intimacyLevel < giftItem.requiredFriendLevel) {
-        throw new BadRequestException(
-          `친밀도 ${giftItem.requiredFriendLevel} 이상이 필요합니다.`,
-        );
+        throw new BadRequestException(`친밀도 ${giftItem.requiredFriendLevel} 이상이 필요합니다.`);
       }
     }
 
@@ -635,7 +624,9 @@ export class SocialService {
     }
 
     // 선물 생성
-    const expiresAt = new Date(Date.now() + SOCIAL_CONSTANTS.giftExpirationDays * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(
+      Date.now() + SOCIAL_CONSTANTS.giftExpirationDays * 24 * 60 * 60 * 1000,
+    );
 
     const gift = await this.prisma.gift.create({
       data: {
@@ -803,7 +794,11 @@ export class SocialService {
         totalIntimacyExp += SOCIAL_CONSTANTS.intimacyExpPerGiftReceived;
 
         // 친밀도 증가
-        await this.addIntimacyExp(userId, gift.senderId, SOCIAL_CONSTANTS.intimacyExpPerGiftReceived);
+        await this.addIntimacyExp(
+          userId,
+          gift.senderId,
+          SOCIAL_CONSTANTS.intimacyExpPerGiftReceived,
+        );
       }
     }
 
@@ -995,7 +990,10 @@ export class SocialService {
   /**
    * 보상 지급
    */
-  private async grantRewards(userId: string, rewards: Array<{ type: string; quantity: number; id?: string }>) {
+  private async grantRewards(
+    userId: string,
+    rewards: Array<{ type: string; quantity: number; id?: string }>,
+  ) {
     for (const reward of rewards) {
       switch (reward.type) {
         case 'gold':
@@ -1024,7 +1022,9 @@ export class SocialService {
   /**
    * 보상 합산
    */
-  private mergeRewards(rewards: Array<{ type: string; quantity: number }>): Array<{ type: string; quantity: number }> {
+  private mergeRewards(
+    rewards: Array<{ type: string; quantity: number }>,
+  ): Array<{ type: string; quantity: number }> {
     const merged = new Map<string, number>();
 
     for (const reward of rewards) {

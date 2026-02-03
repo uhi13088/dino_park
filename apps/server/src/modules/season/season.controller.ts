@@ -25,10 +25,7 @@ export class SeasonController {
 
   @Post('pass/claim/:level')
   @ApiOperation({ summary: '시즌 패스 보상 수령' })
-  async claimReward(
-    @CurrentUser('id') userId: string,
-    @Param('level') level: number,
-  ) {
+  async claimReward(@CurrentUser('id') userId: string, @Param('level') level: number) {
     return this.seasonService.claimReward(userId, level);
   }
 }

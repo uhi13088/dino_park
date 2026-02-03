@@ -12,7 +12,9 @@ test.describe('App Basic Tests', () => {
     await page.goto('/');
 
     // 로딩 인디케이터 또는 스플래시 화면 확인
-    const loadingOrApp = page.locator('[data-testid="loading"], [data-testid="app-container"], #root');
+    const loadingOrApp = page.locator(
+      '[data-testid="loading"], [data-testid="app-container"], #root',
+    );
     await expect(loadingOrApp).toBeVisible();
   });
 });

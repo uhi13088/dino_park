@@ -21,11 +21,7 @@ export default function MainLayout() {
   // 프로필 데이터 동기화
   useEffect(() => {
     if (profileData) {
-      setAuth(
-        profileData.user,
-        profileData.currency,
-        profileData.park
-      );
+      setAuth(profileData.user, profileData.currency, profileData.park);
     }
   }, [profileData, setAuth]);
 
@@ -48,12 +44,12 @@ export default function MainLayout() {
   }, []);
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-sky-400 to-sky-200">
+    <div className="flex h-full flex-col bg-gradient-to-b from-sky-400 to-sky-200">
       {/* 상단 바 */}
       <TopBar />
 
       {/* 메인 콘텐츠 */}
-      <main className="flex-1 overflow-hidden relative">
+      <main className="relative flex-1 overflow-hidden">
         <Outlet />
       </main>
 

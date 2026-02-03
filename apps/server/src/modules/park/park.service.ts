@@ -110,7 +110,10 @@ export class ParkService {
   /**
    * 파크 경험치 추가 및 레벨업 처리
    */
-  async addExp(parkId: string, expAmount: number): Promise<{
+  async addExp(
+    parkId: string,
+    expAmount: number,
+  ): Promise<{
     exp: number;
     level: number;
     leveledUp: boolean;

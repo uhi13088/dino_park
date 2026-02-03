@@ -24,9 +24,7 @@ export const DIAMOND_PACKS: IAPProduct[] = [
     description: 'A small pack of diamonds',
     descriptionKo: '소량의 다이아',
     price: 1100,
-    rewards: [
-      { type: 'diamond', quantity: 60 },
-    ],
+    rewards: [{ type: 'diamond', quantity: 60 }],
     isLimited: false,
     isActive: true,
     sortOrder: 1,
@@ -177,9 +175,7 @@ export const SUBSCRIPTIONS: SubscriptionProduct[] = [
     description: 'Unlock premium rewards track for the season',
     descriptionKo: '시즌 프리미엄 보상 트랙 해금',
     price: 9900,
-    rewards: [
-      { type: 'seasonPoint', quantity: 500 },
-    ],
+    rewards: [{ type: 'seasonPoint', quantity: 500 }],
     dailyRewards: [],
     immediateRewards: [
       { type: 'seasonPoint', quantity: 500 },
@@ -609,9 +605,7 @@ export const AD_REWARD_CONFIGS: AdRewardConfig[] = [
     id: 'ad-hatchery-speedup',
     type: 'rewarded',
     placement: 'hatchery_speedup',
-    rewards: [
-      { type: 'item', id: 'speedup-30m', quantity: 1 },
-    ],
+    rewards: [{ type: 'item', id: 'speedup-30m', quantity: 1 }],
     cooldownMinutes: 30,
     dailyLimit: 5,
     isActive: true,
@@ -620,9 +614,7 @@ export const AD_REWARD_CONFIGS: AdRewardConfig[] = [
     id: 'ad-exploration-energy',
     type: 'rewarded',
     placement: 'exploration_energy',
-    rewards: [
-      { type: 'energy', quantity: 5 },
-    ],
+    rewards: [{ type: 'energy', quantity: 5 }],
     cooldownMinutes: 60,
     dailyLimit: 5,
     isActive: true,
@@ -631,9 +623,7 @@ export const AD_REWARD_CONFIGS: AdRewardConfig[] = [
     id: 'ad-double-revenue',
     type: 'rewarded',
     placement: 'double_revenue',
-    rewards: [
-      { type: 'item', id: 'revenue-boost-30m', quantity: 1 },
-    ],
+    rewards: [{ type: 'item', id: 'revenue-boost-30m', quantity: 1 }],
     cooldownMinutes: 120,
     dailyLimit: 3,
     isActive: true,
@@ -642,9 +632,7 @@ export const AD_REWARD_CONFIGS: AdRewardConfig[] = [
     id: 'ad-free-chest',
     type: 'rewarded',
     placement: 'free_chest',
-    rewards: [
-      { type: 'item', id: 'chest-bronze', quantity: 1 },
-    ],
+    rewards: [{ type: 'item', id: 'chest-bronze', quantity: 1 }],
     cooldownMinutes: 240,
     dailyLimit: 2,
     isActive: true,
@@ -653,9 +641,7 @@ export const AD_REWARD_CONFIGS: AdRewardConfig[] = [
     id: 'ad-expedition-boost',
     type: 'rewarded',
     placement: 'expedition_boost',
-    rewards: [
-      { type: 'item', id: 'expedition-boost', quantity: 1 },
-    ],
+    rewards: [{ type: 'item', id: 'expedition-boost', quantity: 1 }],
     cooldownMinutes: 180,
     dailyLimit: 3,
     isActive: true,
@@ -711,13 +697,13 @@ export function getAdRewardConfig(placement: string): AdRewardConfig | undefined
  */
 export function getSpecialPackageByTrigger(
   triggerType: string,
-  value?: string | number
+  value?: string | number,
 ): SpecialPackage | undefined {
   return SPECIAL_PACKAGES.find(
     (pkg) =>
       pkg.triggerCondition.type === triggerType &&
       (value === undefined || pkg.triggerCondition.value === value) &&
-      pkg.isActive
+      pkg.isActive,
   );
 }
 

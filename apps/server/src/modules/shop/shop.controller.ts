@@ -19,10 +19,7 @@ export class ShopController {
 
   @Post('purchase')
   @ApiOperation({ summary: '상품 구매' })
-  async purchase(
-    @CurrentUser('id') userId: string,
-    @Body('productId') productId: string,
-  ) {
+  async purchase(@CurrentUser('id') userId: string, @Body('productId') productId: string) {
     return this.shopService.purchase(userId, productId);
   }
 }

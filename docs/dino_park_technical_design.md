@@ -1,4 +1,5 @@
 # 🔧 다이노 파크 타이쿤 - 기술 설계 문서
+
 ## Technical Design Document (TDD) v1.0
 
 ---
@@ -24,47 +25,47 @@
 
 ### 클라이언트 (토스 앱스)
 
-| 레이어 | 기술 | 선택 이유 |
-|--------|------|----------|
-| **프레임워크** | React + TypeScript | 토스 앱스 권장, 타입 안정성 |
-| **상태 관리** | Zustand + React Query | 가볍고 직관적, 서버 상태 분리 |
-| **렌더링** | PixiJS + React-Pixi | 2.5D 아이소메트릭, WebGL 가속 |
-| **애니메이션** | Spine Runtime | 공룡 스켈레톤 애니메이션 |
-| **UI** | Tailwind CSS | 빠른 스타일링, 토스 디자인 호환 |
-| **로컬 저장** | IndexedDB (Dexie.js) | 오프라인 데이터 캐싱 |
+| 레이어         | 기술                  | 선택 이유                       |
+| -------------- | --------------------- | ------------------------------- |
+| **프레임워크** | React + TypeScript    | 토스 앱스 권장, 타입 안정성     |
+| **상태 관리**  | Zustand + React Query | 가볍고 직관적, 서버 상태 분리   |
+| **렌더링**     | PixiJS + React-Pixi   | 2.5D 아이소메트릭, WebGL 가속   |
+| **애니메이션** | Spine Runtime         | 공룡 스켈레톤 애니메이션        |
+| **UI**         | Tailwind CSS          | 빠른 스타일링, 토스 디자인 호환 |
+| **로컬 저장**  | IndexedDB (Dexie.js)  | 오프라인 데이터 캐싱            |
 
 ### 서버
 
-| 레이어 | 기술 | 선택 이유 |
-|--------|------|----------|
-| **런타임** | Node.js + TypeScript | 프론트와 타입 공유 |
-| **프레임워크** | NestJS | 구조화된 아키텍처, DI |
-| **실시간** | Socket.IO | 이벤트 알림, 실시간 동기화 |
-| **ORM** | Prisma | 타입 안전 쿼리, 마이그레이션 |
-| **캐시** | Redis | 세션, 랭킹, 실시간 데이터 |
-| **큐** | Bull (Redis 기반) | 백그라운드 작업, 오프라인 계산 |
+| 레이어         | 기술                 | 선택 이유                      |
+| -------------- | -------------------- | ------------------------------ |
+| **런타임**     | Node.js + TypeScript | 프론트와 타입 공유             |
+| **프레임워크** | NestJS               | 구조화된 아키텍처, DI          |
+| **실시간**     | Socket.IO            | 이벤트 알림, 실시간 동기화     |
+| **ORM**        | Prisma               | 타입 안전 쿼리, 마이그레이션   |
+| **캐시**       | Redis                | 세션, 랭킹, 실시간 데이터      |
+| **큐**         | Bull (Redis 기반)    | 백그라운드 작업, 오프라인 계산 |
 
 ### 데이터베이스
 
-| 용도 | 기술 | 이유 |
-|------|------|------|
-| **메인 DB** | PostgreSQL | 복잡한 관계, 트랜잭션 |
-| **캐시/세션** | Redis | 빠른 읽기, TTL 관리 |
-| **분석** | ClickHouse | 대용량 로그, 통계 |
-| **파일** | AWS S3 | 이미지, 에셋 저장 |
+| 용도          | 기술       | 이유                  |
+| ------------- | ---------- | --------------------- |
+| **메인 DB**   | PostgreSQL | 복잡한 관계, 트랜잭션 |
+| **캐시/세션** | Redis      | 빠른 읽기, TTL 관리   |
+| **분석**      | ClickHouse | 대용량 로그, 통계     |
+| **파일**      | AWS S3     | 이미지, 에셋 저장     |
 
 ---
 
 ## 1.2 핵심 기술 요구사항
 
-| 게임 특성 | 기술 요구사항 | 해결 방안 |
-|-----------|--------------|----------|
+| 게임 특성                       | 기술 요구사항         | 해결 방안                     |
+| ------------------------------- | --------------------- | ----------------------------- |
 | **82종 공룡 실시간 시뮬레이션** | 대량 엔티티 상태 관리 | ECS 패턴 + 청크 기반 업데이트 |
-| **DNA 조합 (복잡한 레시피)** | 조합 규칙 엔진 | 룰 엔진 + 캐싱 |
-| **스토리 분기 (3+ 엔딩)** | 선택 히스토리 추적 | 이벤트 소싱 패턴 |
-| **50명 위인 버프 스택** | 다중 버프 계산 | 버프 시스템 + 메모이제이션 |
-| **오프라인 진행** | 시간 기반 계산 | 델타 타임 시뮬레이션 |
-| **탈출/사고 이벤트** | 확률 기반 이벤트 | 이벤트 스케줄러 + 랜덤 시드 |
+| **DNA 조합 (복잡한 레시피)**    | 조합 규칙 엔진        | 룰 엔진 + 캐싱                |
+| **스토리 분기 (3+ 엔딩)**       | 선택 히스토리 추적    | 이벤트 소싱 패턴              |
+| **50명 위인 버프 스택**         | 다중 버프 계산        | 버프 시스템 + 메모이제이션    |
+| **오프라인 진행**               | 시간 기반 계산        | 델타 타임 시뮬레이션          |
+| **탈출/사고 이벤트**            | 확률 기반 이벤트      | 이벤트 스케줄러 + 랜덤 시드   |
 
 ---
 
@@ -233,23 +234,23 @@ CREATE TABLE dinosaur_definitions (
     name_en         VARCHAR(100) NOT NULL,
     category        VARCHAR(20) NOT NULL,     -- herbivore, carnivore, pterosaur, marine, hybrid
     rarity          VARCHAR(20) NOT NULL,     -- common, uncommon, rare, epic, legendary
-    
+
     -- 기본 스탯
     base_income     INT NOT NULL,
     base_popularity INT NOT NULL,
     base_upkeep     INT NOT NULL,
-    
+
     -- 서식지 요구사항
     habitat_type    VARCHAR(50) NOT NULL,
     space_required  INT NOT NULL,
-    
+
     -- 특수 능력 (JSON)
     passive_ability JSONB,
-    
+
     -- 하이브리드 조합 레시피
     is_hybrid       BOOLEAN DEFAULT FALSE,
     recipe          JSONB,
-    
+
     -- 시너지 태그
     synergy_tags    VARCHAR[] DEFAULT '{}'
 );
@@ -259,26 +260,26 @@ CREATE TABLE dinosaurs (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     park_id         UUID REFERENCES parks(id) ON DELETE CASCADE,
     definition_id   VARCHAR(20) REFERENCES dinosaur_definitions(id),
-    
+
     -- 개체 정보
     nickname        VARCHAR(50),
     gender          VARCHAR(10),
-    
+
     -- 상태
     health          INT DEFAULT 100,
     happiness       INT DEFAULT 100,
     hunger          INT DEFAULT 100,
     stress          INT DEFAULT 0,
-    
+
     -- 배치 정보
     habitat_id      UUID,
-    
+
     -- 친밀도
     intimacy        INT DEFAULT 0,
-    
+
     -- 유전자 변이
     genetics        JSONB DEFAULT '{}',
-    
+
     obtained_at     TIMESTAMP DEFAULT NOW()
 );
 
@@ -311,11 +312,11 @@ CREATE TABLE figure_definitions (
     role            VARCHAR(100) NOT NULL,
     category        VARCHAR(50) NOT NULL,
     rarity          VARCHAR(20) NOT NULL,
-    
+
     -- 영입 정보
     recruit_cost    INT NOT NULL,
     unlock_condition JSONB,
-    
+
     -- 능력 (레벨별) - JSON 구조
     abilities       JSONB NOT NULL,
     /*
@@ -325,7 +326,7 @@ CREATE TABLE figure_definitions (
         "ultimate": {"type": "unlock_indominus", "unlock_level": 10}
     }
     */
-    
+
     -- 시너지
     synergy_pairs   JSONB
 );
@@ -335,13 +336,13 @@ CREATE TABLE park_figures (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     park_id         UUID REFERENCES parks(id) ON DELETE CASCADE,
     definition_id   VARCHAR(20) REFERENCES figure_definitions(id),
-    
+
     level           INT DEFAULT 1,
     affection       INT DEFAULT 0,
     is_active       BOOLEAN DEFAULT TRUE,
-    
+
     obtained_at     TIMESTAMP DEFAULT NOW(),
-    
+
     UNIQUE(park_id, definition_id)
 );
 ```
@@ -352,13 +353,13 @@ CREATE TABLE park_figures (
 -- 플레이어 스토리 진행
 CREATE TABLE story_progress (
     park_id         UUID PRIMARY KEY REFERENCES parks(id) ON DELETE CASCADE,
-    
+
     current_chapter VARCHAR(20),
     current_scene   VARCHAR(50),
-    
+
     -- 완료 목록
     completed_chapters VARCHAR[] DEFAULT '{}',
-    
+
     -- 선택 히스토리 (이벤트 소싱)
     choice_history  JSONB DEFAULT '[]',
     /*
@@ -367,13 +368,13 @@ CREATE TABLE story_progress (
         ...
     ]
     */
-    
+
     -- 스토리 플래그
     flags           JSONB DEFAULT '{}',
-    
+
     -- 엔딩 포인트
     ending_points   JSONB DEFAULT '{"hope": 0, "cage": 0, "necessary": 0}',
-    
+
     updated_at      TIMESTAMP DEFAULT NOW()
 );
 ```
@@ -533,7 +534,7 @@ park:{park_id}:buffs:
 park:{park_id}:tasks:
   type: sorted_set
   score: completion_timestamp
-  
+
 # 랭킹
 ranking:weekly:income:
   type: sorted_set
@@ -551,54 +552,54 @@ ranking:weekly:income:
 class IncomeCalculator {
   /**
    * 파크의 시간당 총 수익 계산
-   * 
+   *
    * 공식:
    * 총수익 = Σ(공룡별 기본수익) × (1 + 위인버프) × (1 + 시너지버프) × 만족도계수
    */
   calculateHourlyIncome(park: Park): IncomeResult {
     // 1. 공룡별 기본 수익 합산
     const baseIncome = this.sumDinosaurIncome(park.dinosaurs);
-    
+
     // 2. 버프 수집 및 적용
     const figureBuffs = this.getFigureBuffs(park.figures);
     const synergyBuffs = this.getSynergyBuffs(park.dinosaurs);
     const facilityBuffs = this.getFacilityBuffs(park.buildings);
-    
+
     // 3. 버프 계산 (가산 → 승산 순서)
     let multiplier = 1.0;
     multiplier += this.sumAdditiveBuffs([...figureBuffs, ...synergyBuffs, ...facilityBuffs]);
     multiplier *= this.applyMultiplicativeBuffs(facilityBuffs);
-    
+
     // 4. 만족도 계수 (50% → 1.0x, 100% → 1.5x)
-    const satisfactionCoef = 0.5 + (park.satisfaction / 100);
+    const satisfactionCoef = 0.5 + park.satisfaction / 100;
     multiplier *= satisfactionCoef;
-    
+
     return {
       base: baseIncome,
       multiplier,
-      total: Math.floor(baseIncome * multiplier)
+      total: Math.floor(baseIncome * multiplier),
     };
   }
-  
+
   /**
    * 공룡별 수익 계산
    */
   private sumDinosaurIncome(dinosaurs: Dinosaur[]): number {
     return dinosaurs
-      .filter(d => d.habitatId && d.health > 0)
+      .filter((d) => d.habitatId && d.health > 0)
       .reduce((sum, dino) => {
         let income = dino.definition.baseIncome;
-        
+
         // 친밀도 보너스 (100당 +5%)
-        income *= (1 + Math.floor(dino.intimacy / 100) * 0.05);
-        
+        income *= 1 + Math.floor(dino.intimacy / 100) * 0.05;
+
         // 건강 페널티
         if (dino.health < 50) income *= 0.5;
         else if (dino.health < 80) income *= 0.8;
-        
+
         // 행복도 보너스/페널티 (±15%)
-        income *= (1 + (dino.happiness - 50) / 100 * 0.3);
-        
+        income *= 1 + ((dino.happiness - 50) / 100) * 0.3;
+
         return sum + income;
       }, 0);
   }
@@ -612,38 +613,36 @@ class IncomeCalculator {
 
 class OfflineService {
   private readonly MAX_OFFLINE_HOURS = 24;
-  private readonly OFFLINE_EFFICIENCY = 0.5;  // 50%
-  
+  private readonly OFFLINE_EFFICIENCY = 0.5; // 50%
+
   async calculateOfflineProgress(parkId: string, lastCalcAt: Date): Promise<OfflineResult> {
     const elapsedHours = Math.min(
       (Date.now() - lastCalcAt.getTime()) / (1000 * 60 * 60),
-      this.MAX_OFFLINE_HOURS
+      this.MAX_OFFLINE_HOURS,
     );
-    
+
     if (elapsedHours < 0.01) return { income: 0, events: [] };
-    
+
     // 1. 시점 기준 파크 상태 로드
     const parkSnapshot = await this.loadParkState(parkId);
-    
+
     // 2. 시간당 수익 계산
     const hourlyIncome = this.incomeCalculator.calculateHourlyIncome(parkSnapshot);
-    
+
     // 3. 오프라인 효율 적용
-    const totalIncome = Math.floor(
-      hourlyIncome.total * elapsedHours * this.OFFLINE_EFFICIENCY
-    );
-    
+    const totalIncome = Math.floor(hourlyIncome.total * elapsedHours * this.OFFLINE_EFFICIENCY);
+
     // 4. 완료된 작업 처리 (부화, 건설 등)
     const completedTasks = await this.processCompletedTasks(parkId);
-    
+
     // 5. 공룡 상태 변화 (배고픔 등)
     const dinoChanges = this.simulateDinoStateChanges(parkSnapshot.dinosaurs, elapsedHours);
-    
+
     return {
       elapsedHours,
       income: totalIncome,
       completedTasks,
-      dinoChanges
+      dinoChanges,
     };
   }
 }
@@ -658,47 +657,43 @@ class DNAService {
   async startCombine(parkId: string, recipeId: string): Promise<CombineTask> {
     const recipe = await this.getRecipe(recipeId);
     const inventory = await this.getDNAInventory(parkId);
-    
+
     // 1. 재료 검증
     for (const ingredient of recipe.ingredients) {
       if ((inventory.get(ingredient.dinoId) || 0) < ingredient.amount) {
         throw new InsufficientDNAError(ingredient.dinoId);
       }
     }
-    
+
     // 2. 재료 차감
     await this.deductDNA(parkId, recipe.ingredients);
-    
+
     // 3. 성공률 계산 (위인 버프 적용)
     const buffs = await this.getBuffs(parkId);
-    const successRate = Math.min(0.95, 
-      recipe.baseSuccessRate + (buffs.combineSuccess || 0)
-    );
-    
+    const successRate = Math.min(0.95, recipe.baseSuccessRate + (buffs.combineSuccess || 0));
+
     // 4. 소요 시간 계산
-    const duration = Math.floor(
-      recipe.baseDuration * (1 - (buffs.combineTimeReduction || 0))
-    );
-    
+    const duration = Math.floor(recipe.baseDuration * (1 - (buffs.combineTimeReduction || 0)));
+
     // 5. 작업 생성
     return this.createTask({
       parkId,
       recipeId,
       successRate,
       duration,
-      seed: this.generateSeed()  // 결과 재현용
+      seed: this.generateSeed(), // 결과 재현용
     });
   }
-  
+
   async completeCombine(taskId: string): Promise<CombineResult> {
     const task = await this.getTask(taskId);
     const rng = this.createRNG(task.seed);
-    
+
     if (rng.random() <= task.successRate) {
       const dino = await this.createDinosaur(task.parkId, task.recipeId);
       return { success: true, dinosaur: dino };
     } else {
-      await this.refundDNA(task.parkId, task.recipeId, 0.2);  // 20% 환불
+      await this.refundDNA(task.parkId, task.recipeId, 0.2); // 20% 환불
       return { success: false };
     }
   }
@@ -713,40 +708,40 @@ class DNAService {
 class StoryService {
   async processChoice(parkId: string, choiceId: string, option: string): Promise<ChoiceResult> {
     const choiceDef = await this.getChoiceDefinition(choiceId);
-    const selected = choiceDef.options.find(o => o.id === option);
-    
+    const selected = choiceDef.options.find((o) => o.id === option);
+
     // 1. 선택 기록 (이벤트 소싱)
     await this.recordChoice(parkId, { choiceId, option, timestamp: new Date() });
-    
+
     // 2. 효과 적용
     if (selected.effects.affection) {
       await this.applyAffectionChanges(parkId, selected.effects.affection);
     }
-    
+
     if (selected.effects.flags) {
       await this.setFlags(parkId, selected.effects.flags);
     }
-    
+
     if (selected.effects.endingPoints) {
       await this.addEndingPoints(parkId, selected.effects.endingPoints);
     }
-    
+
     // 3. 엔딩 루트 재계산 (major 선택지일 경우)
     if (choiceDef.impact === 'major' || choiceDef.impact === 'ending') {
       await this.recalculateEndingRoute(parkId);
     }
-    
+
     return { nextScene: selected.nextScene, effects: selected.effects };
   }
-  
+
   async calculateEndingRoute(parkId: string): Promise<string> {
     const progress = await this.getProgress(parkId);
-    
+
     // 히든 엔딩 조건 체크
     if (await this.checkTrueHeirConditions(parkId)) {
       return 'true_heir';
     }
-    
+
     // 포인트 기반 엔딩
     const { hope, cage, necessary } = progress.endingPoints;
     if (hope >= cage && hope >= necessary) return 'hope';
@@ -762,63 +757,63 @@ class StoryService {
 // buff.service.ts
 
 class BuffService {
-  private cache: Map<string, { buffs: BuffMap, timestamp: number }> = new Map();
-  private readonly CACHE_TTL = 10 * 60 * 1000;  // 10분
-  
+  private cache: Map<string, { buffs: BuffMap; timestamp: number }> = new Map();
+  private readonly CACHE_TTL = 10 * 60 * 1000; // 10분
+
   async getAllBuffs(parkId: string): Promise<BuffMap> {
     // 캐시 체크
     const cached = this.cache.get(parkId);
     if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
       return cached.buffs;
     }
-    
+
     // 버프 수집
     const allBuffs: Buff[] = [];
-    
+
     // 1. 위인 버프
     const figures = await this.getFigures(parkId);
-    for (const figure of figures.filter(f => f.isActive)) {
+    for (const figure of figures.filter((f) => f.isActive)) {
       allBuffs.push(...this.calculateFigureBuffs(figure));
     }
-    
+
     // 2. 위인 시너지
     allBuffs.push(...this.calculateFigureSynergies(figures));
-    
+
     // 3. 공룡 패시브
     const dinosaurs = await this.getDinosaurs(parkId);
-    for (const dino of dinosaurs.filter(d => d.habitatId)) {
+    for (const dino of dinosaurs.filter((d) => d.habitatId)) {
       allBuffs.push(...this.calculateDinoPassive(dino));
     }
-    
+
     // 4. 공룡 시너지
     allBuffs.push(...this.calculateDinoSynergies(dinosaurs));
-    
+
     // 5. 건물 버프
     const buildings = await this.getBuildings(parkId);
     allBuffs.push(...this.calculateBuildingBuffs(buildings));
-    
+
     // 6. 합산
     const aggregated = this.aggregateBuffs(allBuffs);
-    
+
     // 캐시 저장
     this.cache.set(parkId, { buffs: aggregated, timestamp: Date.now() });
-    
+
     return aggregated;
   }
-  
+
   private aggregateBuffs(buffs: Buff[]): BuffMap {
     const result = new Map<BuffType, number>();
-    
+
     for (const buff of buffs) {
       const current = result.get(buff.type) || 0;
-      
+
       if (buff.stackable) {
         result.set(buff.type, current + buff.value);
       } else {
         result.set(buff.type, Math.max(current, buff.value));
       }
     }
-    
+
     return result;
   }
 }
@@ -836,8 +831,8 @@ Base URL: https://api.dinopark.game/v1
 인증: Bearer Token (JWT)
 
 응답 형식:
-  성공: { "success": true, "data": {...} }
-  실패: { "success": false, "error": {"code": "...", "message": "..."} }
+  성공: { 'success': true, 'data': { ... } }
+  실패: { 'success': false, 'error': { 'code': '...', 'message': '...' } }
 ```
 
 ## 5.2 주요 엔드포인트
@@ -970,7 +965,7 @@ interface GetParkResponse {
   };
   offlineReward?: {
     gold: number;
-    duration: number;  // 분
+    duration: number; // 분
   };
 }
 ```
@@ -1013,7 +1008,7 @@ interface FeedDinosaurRequest {
 interface FeedDinosaurResponse {
   dinosaur: Dinosaur;
   currencyChange: {
-    gold: number;  // 음수 (비용)
+    gold: number; // 음수 (비용)
   };
 }
 ```
@@ -1045,14 +1040,14 @@ interface UpgradeBuildingResponse {
 // POST /expeditions/start 요청
 interface StartExpeditionRequest {
   regionId: string;
-  dinosaurIds?: string[];  // 탐험에 보낼 공룡 (선택)
+  dinosaurIds?: string[]; // 탐험에 보낼 공룡 (선택)
 }
 
 // POST /expeditions/:id/complete 응답
 interface CompleteExpeditionResponse {
   rewards: {
     dinosaurs: { definitionId: string; rarity: string }[];
-    resources: { gold?: number; dna?: number; };
+    resources: { gold?: number; dna?: number };
     items: { id: string; amount: number }[];
   };
   currencyChange: {
@@ -1125,30 +1120,31 @@ interface ServerEvents {
 class EventScheduler {
   async scheduleRandomEvents(parkId: string) {
     const park = await this.getPark(parkId);
-    
+
     // 탈출 이벤트 (육식공룡)
-    for (const dino of park.dinosaurs.filter(d => d.category === 'carnivore')) {
+    for (const dino of park.dinosaurs.filter((d) => d.category === 'carnivore')) {
       const escapeChance = this.calculateEscapeChance(dino, park);
       if (Math.random() < escapeChance) {
         await this.scheduleEvent(parkId, 'dinosaur_escape', { dinosaurId: dino.id });
       }
     }
-    
+
     // 질병 이벤트
-    if (Math.random() < 0.02) {  // 2%
+    if (Math.random() < 0.02) {
+      // 2%
       const victim = this.selectRandomDino(park.dinosaurs);
       await this.scheduleEvent(parkId, 'disease_outbreak', { dinosaurId: victim.id });
     }
   }
-  
+
   private calculateEscapeChance(dino: Dinosaur, park: Park): number {
-    let chance = 0.001;  // 기본 0.1%
-    chance += dino.stress * 0.0001;  // 스트레스 100 → +1%
-    if (dino.hunger < 30) chance += 0.005;  // 배고프면 +0.5%
-    
+    let chance = 0.001; // 기본 0.1%
+    chance += dino.stress * 0.0001; // 스트레스 100 → +1%
+    if (dino.hunger < 30) chance += 0.005; // 배고프면 +0.5%
+
     // 위인 버프 적용
-    chance *= (1 - (park.buffs.escapePreventoion || 0));
-    
+    chance *= 1 - (park.buffs.escapePreventoion || 0);
+
     return chance;
   }
 }
@@ -1190,14 +1186,14 @@ packages/game-data/
 // vite.config.ts
 export default {
   optimizeDeps: {
-    include: ['@dino-park/game-data']
-  }
-}
+    include: ['@dino-park/game-data'],
+  },
+};
 
 // 2. 클라이언트에서 사용
 import { DINOSAURS, getDinosaurById } from '@dino-park/game-data';
 
-const trex = getDinosaurById('026');  // 티라노사우루스
+const trex = getDinosaurById('026'); // 티라노사우루스
 
 // 3. 서버에서 사용
 import { BUILDINGS, getUnlockableFigures } from '@dino-park/game-data';
@@ -1253,7 +1249,7 @@ db.version(1).stores({
   pendingActions: 'id, timestamp, synced, actionType',
 
   // 동기화 메타
-  syncMeta: 'key'
+  syncMeta: 'key',
 });
 
 // 캐시 타입
@@ -1264,7 +1260,7 @@ interface ParkCache {
   exp: number;
   gridSizeX: number;
   gridSizeY: number;
-  updatedAt: number;  // timestamp
+  updatedAt: number; // timestamp
 }
 
 interface PendingAction {
@@ -1277,7 +1273,7 @@ interface PendingAction {
 }
 
 interface SyncMeta {
-  key: string;  // 'lastSync', 'gameDataVersion', etc.
+  key: string; // 'lastSync', 'gameDataVersion', etc.
   value: any;
   updatedAt: number;
 }
@@ -1292,31 +1288,29 @@ export { db, DinoParkDB };
 
 class OfflineManager {
   private pendingActions: Action[] = [];
-  
+
   async queueAction(action: Action) {
     await this.db.pendingActions.add({
       id: generateId(),
       action,
       timestamp: Date.now(),
-      synced: false
+      synced: false,
     });
-    
+
     // 낙관적 업데이트 (로컬 즉시 반영)
     this.applyOptimistically(action);
   }
-  
+
   async syncPendingActions() {
-    const pending = await this.db.pendingActions
-      .where('synced').equals(false)
-      .sortBy('timestamp');
-    
+    const pending = await this.db.pendingActions.where('synced').equals(false).sortBy('timestamp');
+
     for (const item of pending) {
       const result = await this.api.syncAction(item.action);
-      
+
       if (result.corrections) {
         this.applyCorrections(result.corrections);
       }
-      
+
       await this.db.pendingActions.update(item.id, { synced: true });
     }
   }
@@ -1331,16 +1325,16 @@ class OfflineManager {
 @Post('/sync')
 async sync(@Body() body: SyncRequest) {
   const { lastSyncAt, pendingActions } = body;
-  
+
   // 1. 오프라인 수익 계산
   const offlineResult = await this.offlineService.calculate(parkId, lastSyncAt);
-  
+
   // 2. 클라이언트 액션 적용
   const actionResults = await this.processActions(pendingActions);
-  
+
   // 3. 현재 상태 반환
   const currentState = await this.getParkState(parkId);
-  
+
   return { offlineResult, actionResults, currentState };
 }
 ```
@@ -1364,7 +1358,7 @@ class ActionValidator {
     }
     return true;
   }
-  
+
   validateTimeAction(action: TimeAction, lastCalcAt: Date): boolean {
     // 미래 시간 조작 방지
     if (action.timestamp > Date.now() + TIME_TOLERANCE) {
@@ -1388,11 +1382,11 @@ class AntiCheatService {
   async detectAbnormalProgress(parkId: string) {
     const account = await this.getAccount(parkId);
     const ageHours = (Date.now() - account.createdAt) / (1000 * 60 * 60);
-    
+
     // 예상 진행도
     const expectedLevel = Math.floor(Math.sqrt(ageHours) * 2);
     const expectedDinos = Math.floor(ageHours / 2);
-    
+
     if (account.level > expectedLevel * 2 || account.dinoCount > expectedDinos * 3) {
       await this.flagSuspicious(parkId, 'abnormal_progress');
     }
@@ -1411,14 +1405,14 @@ class AntiCheatService {
 class ParkRenderer {
   updateVisibleChunks() {
     const visible = this.getVisibleChunkIds();
-    
+
     // 안 보이는 청크 언로드
     for (const [id, chunk] of this.chunks) {
       if (!visible.includes(id)) {
         this.unloadChunk(chunk);
       }
     }
-    
+
     // 새로 보이는 청크 로드
     for (const id of visible) {
       if (!this.chunks.has(id)) {
@@ -1431,12 +1425,12 @@ class ParkRenderer {
 // 오브젝트 풀링
 class SpritePool {
   private pools: Map<string, Sprite[]> = new Map();
-  
+
   get(type: string): Sprite {
     const pool = this.pools.get(type) || [];
     return pool.pop() || this.create(type);
   }
-  
+
   release(type: string, sprite: Sprite) {
     sprite.visible = false;
     const pool = this.pools.get(type) || [];
@@ -1464,16 +1458,16 @@ async loadParkWithRelations(parkId: string) {
 class CachingStrategy {
   // 정적 게임 데이터: 메모리 + Redis 24시간
   async getDefinition(id: string) {
-    return this.memoryCache.get(id) 
+    return this.memoryCache.get(id)
         || await this.redis.get(`def:${id}`)
         || await this.loadAndCache(id);
   }
-  
+
   // 동적 파크 상태: Redis 1분 + 무효화
   async getParkState(parkId: string) {
     const cached = await this.redis.get(`park:${parkId}`);
     if (cached) return JSON.parse(cached);
-    
+
     const state = await this.loadState(parkId);
     await this.redis.setex(`park:${parkId}`, 60, JSON.stringify(state));
     return state;
@@ -1500,8 +1494,8 @@ spec:
         - name: api
           image: dinopark/api:latest
           resources:
-            requests: { memory: "512Mi", cpu: "250m" }
-            limits: { memory: "1Gi", cpu: "500m" }
+            requests: { memory: '512Mi', cpu: '250m' }
+            limits: { memory: '1Gi', cpu: '500m' }
           livenessProbe:
             httpGet: { path: /health, port: 3000 }
           readinessProbe:
@@ -1529,7 +1523,7 @@ spec:
 const alerts = [
   { name: 'High Error Rate', condition: 'error_rate > 1%', severity: 'critical' },
   { name: 'High Latency', condition: 'p99_latency > 500ms', severity: 'warning' },
-  { name: 'DB Pool Exhausted', condition: 'db_pool < 5', severity: 'critical' }
+  { name: 'DB Pool Exhausted', condition: 'db_pool < 5', severity: 'critical' },
 ];
 ```
 
@@ -1539,31 +1533,31 @@ const alerts = [
 
 ## 핵심 시스템별 기술 선택
 
-| 시스템 | 기술 | 이유 |
-|--------|------|------|
-| **수익 계산** | Redis 캐싱 + 델타 계산 | 실시간 + 오프라인 효율 |
-| **DNA 조합** | 룰 엔진 + 시드 기반 랜덤 | 재현 가능한 결과 |
-| **스토리 분기** | 이벤트 소싱 + 플래그 | 완벽한 히스토리 |
-| **버프 시스템** | 메모이제이션 + 캐시 | 복잡한 계산 최적화 |
-| **실시간** | Socket.IO + Redis Pub/Sub | 확장 가능 |
-| **오프라인** | 낙관적 업데이트 + 충돌 해결 | UX 최적화 |
+| 시스템          | 기술                        | 이유                   |
+| --------------- | --------------------------- | ---------------------- |
+| **수익 계산**   | Redis 캐싱 + 델타 계산      | 실시간 + 오프라인 효율 |
+| **DNA 조합**    | 룰 엔진 + 시드 기반 랜덤    | 재현 가능한 결과       |
+| **스토리 분기** | 이벤트 소싱 + 플래그        | 완벽한 히스토리        |
+| **버프 시스템** | 메모이제이션 + 캐시         | 복잡한 계산 최적화     |
+| **실시간**      | Socket.IO + Redis Pub/Sub   | 확장 가능              |
+| **오프라인**    | 낙관적 업데이트 + 충돌 해결 | UX 최적화              |
 
 ## 예상 리소스
 
-| 항목 | 수치 |
-|------|------|
-| DB 용량 (유저당) | ~50KB |
-| 일일 API 호출 (유저당) | ~500회 |
-| 동시 접속 | DAU의 30% |
+| 항목                   | 수치      |
+| ---------------------- | --------- |
+| DB 용량 (유저당)       | ~50KB     |
+| 일일 API 호출 (유저당) | ~500회    |
+| 동시 접속              | DAU의 30% |
 
 ## 확장 계획
 
-| DAU | 인프라 |
-|-----|--------|
-| ~10K | 서버 3대, DB 1대 |
+| DAU   | 인프라                 |
+| ----- | ---------------------- |
+| ~10K  | 서버 3대, DB 1대       |
 | ~100K | 서버 10대, DB 리플리카 |
-| ~500K | 오토스케일링, 샤딩 |
+| ~500K | 오토스케일링, 샤딩     |
 
 ---
 
-*© 2025 Dino Park Tycoon - Technical Design Document v1.0*
+_© 2025 Dino Park Tycoon - Technical Design Document v1.0_

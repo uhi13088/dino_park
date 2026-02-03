@@ -7,20 +7,14 @@ export default function DinosaurPage() {
   const [activeTab, setActiveTab] = useState<'collection' | 'codex'>('collection');
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex h-full flex-col bg-gray-50">
       {/* 탭 헤더 */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="border-b border-gray-200 bg-white">
         <div className="flex">
-          <TabButton
-            active={activeTab === 'collection'}
-            onClick={() => setActiveTab('collection')}
-          >
+          <TabButton active={activeTab === 'collection'} onClick={() => setActiveTab('collection')}>
             🦕 보유 공룡
           </TabButton>
-          <TabButton
-            active={activeTab === 'codex'}
-            onClick={() => setActiveTab('codex')}
-          >
+          <TabButton active={activeTab === 'codex'} onClick={() => setActiveTab('codex')}>
             📖 도감
           </TabButton>
         </div>
@@ -28,11 +22,7 @@ export default function DinosaurPage() {
 
       {/* 탭 컨텐츠 */}
       <div className="flex-1 overflow-auto p-4">
-        {activeTab === 'collection' ? (
-          <CollectionView />
-        ) : (
-          <CodexView />
-        )}
+        {activeTab === 'collection' ? <CollectionView /> : <CodexView />}
       </div>
     </div>
   );
@@ -41,7 +31,7 @@ export default function DinosaurPage() {
 function TabButton({
   active,
   onClick,
-  children
+  children,
 }: {
   active: boolean;
   onClick: () => void;
@@ -52,7 +42,7 @@ function TabButton({
       onClick={onClick}
       className={`flex-1 py-3 text-center font-medium transition-colors ${
         active
-          ? 'text-primary-600 border-b-2 border-primary-600'
+          ? 'text-primary-600 border-primary-600 border-b-2'
           : 'text-gray-500 hover:text-gray-700'
       }`}
     >
@@ -72,12 +62,9 @@ function CollectionView() {
   return (
     <div className="space-y-3">
       {placeholderDinos.map((dino) => (
-        <div
-          key={dino.id}
-          className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-4"
-        >
+        <div key={dino.id} className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
           {/* 공룡 썸네일 Placeholder */}
-          <div className="w-16 h-16 rounded-lg bg-dino-herbivore flex items-center justify-center">
+          <div className="bg-dino-herbivore flex h-16 w-16 items-center justify-center rounded-lg">
             <span className="text-2xl">🦕</span>
           </div>
 
@@ -90,7 +77,7 @@ function CollectionView() {
           {/* 상태 */}
           <div className="text-right">
             <div className="text-sm text-gray-600">행복도</div>
-            <div className="font-bold text-primary-600">{dino.happiness}%</div>
+            <div className="text-primary-600 font-bold">{dino.happiness}%</div>
           </div>
         </div>
       ))}
@@ -113,9 +100,9 @@ function CodexView() {
       {categories.map((cat) => (
         <button
           key={cat.id}
-          className="w-full bg-white rounded-xl p-4 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow"
+          className="flex w-full items-center gap-4 rounded-xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
         >
-          <div className={`w-12 h-12 rounded-lg ${cat.color} flex items-center justify-center`}>
+          <div className={`h-12 w-12 rounded-lg ${cat.color} flex items-center justify-center`}>
             <span className="text-xl">{cat.icon}</span>
           </div>
           <div className="flex-1 text-left">

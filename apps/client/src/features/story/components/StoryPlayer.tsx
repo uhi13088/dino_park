@@ -56,7 +56,7 @@ export function StoryPlayer({ scene, onAdvance, onComplete, isAdvancing }: Story
 
     if (!isLastDialogue) {
       // 다음 대화로
-      setCurrentDialogueIndex(prev => prev + 1);
+      setCurrentDialogueIndex((prev) => prev + 1);
     } else if (!hasChoices) {
       // 선택지가 없으면 다음 씬으로
       const result = await onAdvance();
@@ -100,20 +100,20 @@ export function StoryPlayer({ scene, onAdvance, onComplete, isAdvancing }: Story
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-gray-900 to-gray-800">
+    <div className="flex h-full flex-col bg-gradient-to-b from-gray-900 to-gray-800">
       {/* 스킵 버튼 */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute right-4 top-4 z-10">
         <button
           onClick={handleSkip}
           disabled={isAdvancing}
-          className="px-4 py-2 bg-white/10 text-white/60 rounded-lg text-sm hover:bg-white/20 transition-colors"
+          className="rounded-lg bg-white/10 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/20"
         >
           스킵 ››
         </button>
       </div>
 
       {/* 캐릭터 영역 */}
-      <div className="flex-1 relative flex items-end justify-center pb-8">
+      <div className="relative flex flex-1 items-end justify-center pb-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentDialogue?.speaker}
@@ -123,32 +123,29 @@ export function StoryPlayer({ scene, onAdvance, onComplete, isAdvancing }: Story
             className="text-center"
           >
             {/* 캐릭터 이미지 Placeholder */}
-            <div className="w-48 h-64 mx-auto bg-gradient-to-t from-primary-500/30 to-transparent rounded-t-full flex items-end justify-center pb-4">
-              <span className="text-8xl">
-                {getCharacterEmoji(currentDialogue?.speaker)}
-              </span>
+            <div className="from-primary-500/30 mx-auto flex h-64 w-48 items-end justify-center rounded-t-full bg-gradient-to-t to-transparent pb-4">
+              <span className="text-8xl">{getCharacterEmoji(currentDialogue?.speaker)}</span>
             </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* 대화 박스 */}
-      <div className="bg-black/80 backdrop-blur-sm border-t border-white/10">
+      <div className="border-t border-white/10 bg-black/80 backdrop-blur-sm">
         {/* 화자 이름 */}
         {currentDialogue?.speaker !== 'narrator' && (
           <div className="px-6 pt-4">
-            <span className={`text-sm font-bold ${speakerColors[currentDialogue?.speaker] ?? speakerColors.default}`}>
+            <span
+              className={`text-sm font-bold ${speakerColors[currentDialogue?.speaker] ?? speakerColors.default}`}
+            >
               {speakerNames[currentDialogue?.speaker] ?? currentDialogue?.speaker}
             </span>
           </div>
         )}
 
         {/* 대화 텍스트 */}
-        <div
-          className="px-6 py-4 min-h-[100px] cursor-pointer"
-          onClick={handleContinue}
-        >
-          <p className="text-white text-lg leading-relaxed">
+        <div className="min-h-[100px] cursor-pointer px-6 py-4" onClick={handleContinue}>
+          <p className="text-lg leading-relaxed text-white">
             {displayedText}
             {isTyping && <span className="animate-pulse">▌</span>}
           </p>
@@ -172,13 +169,13 @@ export function StoryPlayer({ scene, onAdvance, onComplete, isAdvancing }: Story
             </div>
           ) : (
             <div className="flex items-center justify-between">
-              <span className="text-white/40 text-sm">
+              <span className="text-sm text-white/40">
                 {currentDialogueIndex + 1} / {scene.dialogues.length}
               </span>
               <button
                 onClick={handleContinue}
                 disabled={isAdvancing}
-                className="text-white/60 text-sm hover:text-white transition-colors"
+                className="text-sm text-white/60 transition-colors hover:text-white"
               >
                 {isTyping ? '터치하여 스킵' : isLastDialogue ? '다음 씬 ▶' : '계속 ▶'}
               </button>

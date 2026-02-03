@@ -9,12 +9,6 @@
 
 ### 🟠 중간 (서비스 보강)
 
-- [ ] **C05: GreatFigure Service 보강**
-  - 위치: `apps/server/src/modules/great-figure/great-figure.service.ts`
-  - AC: 현재 35줄 → 200줄+ (CRUD + 배정 로직)
-  - 기능: 위인 영입, 건물 배정, 레벨업, 시너지 계산
-  - 참조: `docs/dino_park_great_figures.md`
-
 - [ ] **C06: Shop Service 보강**
   - 위치: `apps/server/src/modules/shop/shop.service.ts`
   - AC: 현재 64줄 → 200줄+ (구매 로직)
@@ -84,6 +78,12 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C05: GreatFigure Service 보강** ✅ 2026-02-03
+  - 수정 파일:
+    - `apps/server/src/modules/great-figure/great-figure.service.ts` (35줄 → 656줄)
+    - `apps/server/src/modules/great-figure/great-figure.controller.ts` (25줄 → 143줄)
+  - 기능: 위인 CRUD, 영입 (조건 검사 + 비용 차감), 건물 배정/해제, 경험치 추가, 골드 레벨업, 시너지 계산, 건물 보너스 계산, 통계
 
 - [x] **C01: Social 모듈 생성 (Backend)** ✅ 2026-02-03
   - 생성 파일:
@@ -160,10 +160,10 @@ _(없음)_
 | 우선순위  | 티켓 수 | 완료  |
 | --------- | ------- | ----- |
 | 🔴 높음   | 3       | 3 ✅  |
-| 🟠 중간   | 4       | 1     |
+| 🟠 중간   | 4       | 2     |
 | 🟡 낮음   | 6       | 0     |
 | ⚪ 인프라 | 2       | 0     |
-| **합계**  | **15**  | **4** |
+| **합계**  | **15**  | **5** |
 
 ---
 

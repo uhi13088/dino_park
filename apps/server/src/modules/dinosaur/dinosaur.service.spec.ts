@@ -95,9 +95,7 @@ describe('DinosaurService', () => {
     it('should throw NotFoundException when park not found', async () => {
       mockPrismaService.park.findUnique.mockResolvedValue(null);
 
-      await expect(service.getByUserId('invalid-user')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.getByUserId('invalid-user')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -117,9 +115,7 @@ describe('DinosaurService', () => {
     it('should throw NotFoundException when dinosaur not found', async () => {
       mockPrismaService.dinosaur.findUnique.mockResolvedValue(null);
 
-      await expect(service.getById('invalid-id')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.getById('invalid-id')).rejects.toThrow(NotFoundException);
     });
 
     it('should throw ForbiddenException when user does not own dinosaur', async () => {
@@ -128,9 +124,7 @@ describe('DinosaurService', () => {
         park: { userId: 'other-user' },
       });
 
-      await expect(service.getById('dino-1', 'user-1')).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(service.getById('dino-1', 'user-1')).rejects.toThrow(ForbiddenException);
     });
   });
 
@@ -159,20 +153,14 @@ describe('DinosaurService', () => {
     it('should throw NotFoundException when park not found', async () => {
       mockPrismaService.park.findUnique.mockResolvedValue(null);
 
-      await expect(service.create('invalid-user', 'trex', 5, 5)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.create('invalid-user', 'trex', 5, 5)).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException for invalid position', async () => {
       mockPrismaService.park.findUnique.mockResolvedValue(mockPark);
 
-      await expect(service.create('user-1', 'trex', -1, 5)).rejects.toThrow(
-        BadRequestException,
-      );
-      await expect(service.create('user-1', 'trex', 100, 5)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.create('user-1', 'trex', -1, 5)).rejects.toThrow(BadRequestException);
+      await expect(service.create('user-1', 'trex', 100, 5)).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -228,9 +216,7 @@ describe('DinosaurService', () => {
         park: mockPark,
       });
 
-      await expect(service.move('dino-1', 'user-1', 50, 50)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.move('dino-1', 'user-1', 50, 50)).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -267,9 +253,7 @@ describe('DinosaurService', () => {
         gold: 50,
       });
 
-      await expect(service.feed('dino-1', 'user-1')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.feed('dino-1', 'user-1')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException when dinosaur is not hungry', async () => {
@@ -280,9 +264,7 @@ describe('DinosaurService', () => {
       });
       mockPrismaService.currency.findUnique.mockResolvedValue(mockCurrency);
 
-      await expect(service.feed('dino-1', 'user-1')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.feed('dino-1', 'user-1')).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -355,9 +337,7 @@ describe('DinosaurService', () => {
     it('should throw NotFoundException when dinosaur not found', async () => {
       mockPrismaService.dinosaur.findUnique.mockResolvedValue(null);
 
-      await expect(service.calculateRevenue('invalid-id')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.calculateRevenue('invalid-id')).rejects.toThrow(NotFoundException);
     });
   });
 });

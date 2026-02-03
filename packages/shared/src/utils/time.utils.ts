@@ -29,10 +29,7 @@ export function formatDuration(ms: number): string {
 /**
  * 오프라인 시간 계산 (최대 제한 적용)
  */
-export function calculateOfflineTime(
-  lastLoginAt: Date,
-  maxHours: number,
-): number {
+export function calculateOfflineTime(lastLoginAt: Date, maxHours: number): number {
   const now = Date.now();
   const elapsed = now - lastLoginAt.getTime();
   const maxMs = maxHours * HOUR;

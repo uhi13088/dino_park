@@ -146,9 +146,7 @@ describe('AuthService', () => {
     it('should throw UnauthorizedException for invalid user', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.refreshToken('invalid-user')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshToken('invalid-user')).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -199,9 +197,7 @@ describe('AuthService', () => {
     it('should throw UnauthorizedException for non-existent user', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.getProfile('invalid-user')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.getProfile('invalid-user')).rejects.toThrow(UnauthorizedException);
     });
   });
 });

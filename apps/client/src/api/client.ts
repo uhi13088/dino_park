@@ -50,7 +50,7 @@ export class ApiError extends Error {
     public status: number,
     public code: string,
     message: string,
-    public details?: unknown
+    public details?: unknown,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -88,11 +88,7 @@ async function refreshAccessToken(): Promise<boolean> {
 /**
  * API 요청 함수
  */
-async function request<T>(
-  endpoint: string,
-  options: RequestInit = {},
-  retry = true
-): Promise<T> {
+async function request<T>(endpoint: string, options: RequestInit = {}, retry = true): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
   const headers: Record<string, string> = {
@@ -130,7 +126,7 @@ async function request<T>(
       response.status,
       errorBody.code || 'UNKNOWN_ERROR',
       errorBody.message || 'An error occurred',
-      errorBody.details
+      errorBody.details,
     );
   }
 

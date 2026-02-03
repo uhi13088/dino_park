@@ -256,13 +256,10 @@ export class DinosaurService {
     const cooldownMinutes = 5;
     const lastInteraction = dinosaur.lastFedAt; // 임시로 lastFedAt 사용
     const now = new Date();
-    const minutesSinceLastInteraction =
-      (now.getTime() - lastInteraction.getTime()) / (1000 * 60);
+    const minutesSinceLastInteraction = (now.getTime() - lastInteraction.getTime()) / (1000 * 60);
 
     if (minutesSinceLastInteraction < cooldownMinutes) {
-      const remainingSeconds = Math.ceil(
-        (cooldownMinutes - minutesSinceLastInteraction) * 60,
-      );
+      const remainingSeconds = Math.ceil((cooldownMinutes - minutesSinceLastInteraction) * 60);
       throw new BadRequestException(
         `아직 쿨타임 중입니다. ${remainingSeconds}초 후에 다시 시도해주세요.`,
       );
@@ -352,12 +349,7 @@ export class DinosaurService {
   /**
    * 공룡 파크에 배치
    */
-  async placeInPark(
-    dinosaurId: string,
-    userId: string,
-    positionX: number,
-    positionY: number,
-  ) {
+  async placeInPark(dinosaurId: string, userId: string, positionX: number, positionY: number) {
     const dinosaur = await this.prisma.dinosaur.findUnique({
       where: { id: dinosaurId },
       include: { park: true },
@@ -445,9 +437,7 @@ export class DinosaurService {
       minuteRevenue: Math.floor(hourlyRevenue / 60),
       level: currentState.level,
       happiness: currentState.happiness,
-      happinessMultiplier: Math.floor(
-        (0.5 + (currentState.happiness / MAX_HAPPINESS) * 0.5) * 100,
-      ),
+      happinessMultiplier: Math.floor((0.5 + (currentState.happiness / MAX_HAPPINESS) * 0.5) * 100),
     };
   }
 

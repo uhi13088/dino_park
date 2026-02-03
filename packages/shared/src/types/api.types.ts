@@ -84,7 +84,10 @@ export interface ProfileResponse {
 // 유저 API
 // ========================================
 
-export interface UserResponse extends Pick<User, 'id' | 'nickname' | 'level' | 'exp' | 'tutorialStep' | 'lastLoginAt'> {}
+export interface UserResponse extends Pick<
+  User,
+  'id' | 'nickname' | 'level' | 'exp' | 'tutorialStep' | 'lastLoginAt'
+> {}
 
 export interface UserStatsResponse {
   totalDinosaurs: number;
@@ -105,7 +108,10 @@ export interface UpdateTutorialRequest {
 // 파크 API
 // ========================================
 
-export interface ParkResponse extends Pick<Park, 'id' | 'name' | 'level' | 'exp' | 'gridSizeX' | 'gridSizeY'> {}
+export interface ParkResponse extends Pick<
+  Park,
+  'id' | 'name' | 'level' | 'exp' | 'gridSizeX' | 'gridSizeY'
+> {}
 
 export interface ParkSummaryResponse extends ParkResponse {
   dinosaurCount: number;

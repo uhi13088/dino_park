@@ -3,12 +3,7 @@
  * 시즌 1: 창립자의 귀환
  */
 
-import type {
-  Season,
-  SeasonChapter,
-  SeasonPassReward,
-  SeasonEvent,
-} from '@dino-park/shared';
+import type { Season, SeasonChapter, SeasonPassReward, SeasonEvent } from '@dino-park/shared';
 
 // ============================================================
 // 시즌 1 챕터 데이터
@@ -589,64 +584,264 @@ const SEASON1_CHAPTERS: SeasonChapter[] = [
 
 const SEASON1_PASS_REWARDS: SeasonPassReward[] = [
   // Level 1-10: 기본 보상
-  { level: 1, freeReward: { type: 'gold', quantity: 5000 }, premiumReward: { type: 'gold', quantity: 10000 } },
-  { level: 2, freeReward: { type: 'dna', quantity: 50 }, premiumReward: { type: 'dna', quantity: 100 } },
-  { level: 3, freeReward: { type: 'gold', quantity: 7500 }, premiumReward: { type: 'diamond', quantity: 50 } },
-  { level: 4, freeReward: { type: 'dna', quantity: 75 }, premiumReward: { type: 'dna', quantity: 150 } },
-  { level: 5, freeReward: { type: 'diamond', quantity: 30 }, premiumReward: { type: 'skin', id: 'trex-founder', quantity: 1 } },
-  { level: 6, freeReward: { type: 'gold', quantity: 10000 }, premiumReward: { type: 'gold', quantity: 25000 } },
-  { level: 7, freeReward: { type: 'dna', quantity: 100 }, premiumReward: { type: 'dna', quantity: 200 } },
-  { level: 8, freeReward: { type: 'gold', quantity: 12500 }, premiumReward: { type: 'diamond', quantity: 75 } },
-  { level: 9, freeReward: { type: 'dna', quantity: 125 }, premiumReward: { type: 'dna', quantity: 250 } },
-  { level: 10, freeReward: { type: 'diamond', quantity: 50 }, premiumReward: { type: 'dinosaur', id: 'velociraptor-misty', quantity: 1 } },
+  {
+    level: 1,
+    freeReward: { type: 'gold', quantity: 5000 },
+    premiumReward: { type: 'gold', quantity: 10000 },
+  },
+  {
+    level: 2,
+    freeReward: { type: 'dna', quantity: 50 },
+    premiumReward: { type: 'dna', quantity: 100 },
+  },
+  {
+    level: 3,
+    freeReward: { type: 'gold', quantity: 7500 },
+    premiumReward: { type: 'diamond', quantity: 50 },
+  },
+  {
+    level: 4,
+    freeReward: { type: 'dna', quantity: 75 },
+    premiumReward: { type: 'dna', quantity: 150 },
+  },
+  {
+    level: 5,
+    freeReward: { type: 'diamond', quantity: 30 },
+    premiumReward: { type: 'skin', id: 'trex-founder', quantity: 1 },
+  },
+  {
+    level: 6,
+    freeReward: { type: 'gold', quantity: 10000 },
+    premiumReward: { type: 'gold', quantity: 25000 },
+  },
+  {
+    level: 7,
+    freeReward: { type: 'dna', quantity: 100 },
+    premiumReward: { type: 'dna', quantity: 200 },
+  },
+  {
+    level: 8,
+    freeReward: { type: 'gold', quantity: 12500 },
+    premiumReward: { type: 'diamond', quantity: 75 },
+  },
+  {
+    level: 9,
+    freeReward: { type: 'dna', quantity: 125 },
+    premiumReward: { type: 'dna', quantity: 250 },
+  },
+  {
+    level: 10,
+    freeReward: { type: 'diamond', quantity: 50 },
+    premiumReward: { type: 'dinosaur', id: 'velociraptor-misty', quantity: 1 },
+  },
 
   // Level 11-20: 중급 보상
-  { level: 11, freeReward: { type: 'gold', quantity: 15000 }, premiumReward: { type: 'gold', quantity: 35000 } },
-  { level: 12, freeReward: { type: 'dna', quantity: 150 }, premiumReward: { type: 'dna', quantity: 300 } },
-  { level: 13, freeReward: { type: 'gold', quantity: 17500 }, premiumReward: { type: 'diamond', quantity: 100 } },
-  { level: 14, freeReward: { type: 'dna', quantity: 175 }, premiumReward: { type: 'dna', quantity: 350 } },
-  { level: 15, freeReward: { type: 'diamond', quantity: 75 }, premiumReward: { type: 'skin', id: 'brachio-eden', quantity: 1 } },
-  { level: 16, freeReward: { type: 'gold', quantity: 20000 }, premiumReward: { type: 'gold', quantity: 50000 } },
-  { level: 17, freeReward: { type: 'dna', quantity: 200 }, premiumReward: { type: 'dna', quantity: 400 } },
-  { level: 18, freeReward: { type: 'gold', quantity: 22500 }, premiumReward: { type: 'diamond', quantity: 125 } },
-  { level: 19, freeReward: { type: 'dna', quantity: 225 }, premiumReward: { type: 'dna', quantity: 450 } },
-  { level: 20, freeReward: { type: 'diamond', quantity: 100 }, premiumReward: { type: 'dinosaur', id: 'gallimimus-silver', quantity: 1 } },
+  {
+    level: 11,
+    freeReward: { type: 'gold', quantity: 15000 },
+    premiumReward: { type: 'gold', quantity: 35000 },
+  },
+  {
+    level: 12,
+    freeReward: { type: 'dna', quantity: 150 },
+    premiumReward: { type: 'dna', quantity: 300 },
+  },
+  {
+    level: 13,
+    freeReward: { type: 'gold', quantity: 17500 },
+    premiumReward: { type: 'diamond', quantity: 100 },
+  },
+  {
+    level: 14,
+    freeReward: { type: 'dna', quantity: 175 },
+    premiumReward: { type: 'dna', quantity: 350 },
+  },
+  {
+    level: 15,
+    freeReward: { type: 'diamond', quantity: 75 },
+    premiumReward: { type: 'skin', id: 'brachio-eden', quantity: 1 },
+  },
+  {
+    level: 16,
+    freeReward: { type: 'gold', quantity: 20000 },
+    premiumReward: { type: 'gold', quantity: 50000 },
+  },
+  {
+    level: 17,
+    freeReward: { type: 'dna', quantity: 200 },
+    premiumReward: { type: 'dna', quantity: 400 },
+  },
+  {
+    level: 18,
+    freeReward: { type: 'gold', quantity: 22500 },
+    premiumReward: { type: 'diamond', quantity: 125 },
+  },
+  {
+    level: 19,
+    freeReward: { type: 'dna', quantity: 225 },
+    premiumReward: { type: 'dna', quantity: 450 },
+  },
+  {
+    level: 20,
+    freeReward: { type: 'diamond', quantity: 100 },
+    premiumReward: { type: 'dinosaur', id: 'gallimimus-silver', quantity: 1 },
+  },
 
   // Level 21-30: 고급 보상
-  { level: 21, freeReward: { type: 'gold', quantity: 25000 }, premiumReward: { type: 'gold', quantity: 65000 } },
-  { level: 22, freeReward: { type: 'dna', quantity: 250 }, premiumReward: { type: 'dna', quantity: 500 } },
-  { level: 23, freeReward: { type: 'gold', quantity: 27500 }, premiumReward: { type: 'diamond', quantity: 150 } },
-  { level: 24, freeReward: { type: 'dna', quantity: 275 }, premiumReward: { type: 'dna', quantity: 550 } },
-  { level: 25, freeReward: { type: 'diamond', quantity: 125 }, premiumReward: { type: 'building', id: 'eden-crystal-lamp', quantity: 1 } },
-  { level: 26, freeReward: { type: 'gold', quantity: 30000 }, premiumReward: { type: 'gold', quantity: 80000 } },
-  { level: 27, freeReward: { type: 'dna', quantity: 300 }, premiumReward: { type: 'dna', quantity: 600 } },
-  { level: 28, freeReward: { type: 'gold', quantity: 32500 }, premiumReward: { type: 'diamond', quantity: 175 } },
-  { level: 29, freeReward: { type: 'dna', quantity: 325 }, premiumReward: { type: 'dna', quantity: 650 } },
-  { level: 30, freeReward: { type: 'diamond', quantity: 150 }, premiumReward: { type: 'dinosaur', id: 'protoceratops-alpha', quantity: 1 } },
+  {
+    level: 21,
+    freeReward: { type: 'gold', quantity: 25000 },
+    premiumReward: { type: 'gold', quantity: 65000 },
+  },
+  {
+    level: 22,
+    freeReward: { type: 'dna', quantity: 250 },
+    premiumReward: { type: 'dna', quantity: 500 },
+  },
+  {
+    level: 23,
+    freeReward: { type: 'gold', quantity: 27500 },
+    premiumReward: { type: 'diamond', quantity: 150 },
+  },
+  {
+    level: 24,
+    freeReward: { type: 'dna', quantity: 275 },
+    premiumReward: { type: 'dna', quantity: 550 },
+  },
+  {
+    level: 25,
+    freeReward: { type: 'diamond', quantity: 125 },
+    premiumReward: { type: 'building', id: 'eden-crystal-lamp', quantity: 1 },
+  },
+  {
+    level: 26,
+    freeReward: { type: 'gold', quantity: 30000 },
+    premiumReward: { type: 'gold', quantity: 80000 },
+  },
+  {
+    level: 27,
+    freeReward: { type: 'dna', quantity: 300 },
+    premiumReward: { type: 'dna', quantity: 600 },
+  },
+  {
+    level: 28,
+    freeReward: { type: 'gold', quantity: 32500 },
+    premiumReward: { type: 'diamond', quantity: 175 },
+  },
+  {
+    level: 29,
+    freeReward: { type: 'dna', quantity: 325 },
+    premiumReward: { type: 'dna', quantity: 650 },
+  },
+  {
+    level: 30,
+    freeReward: { type: 'diamond', quantity: 150 },
+    premiumReward: { type: 'dinosaur', id: 'protoceratops-alpha', quantity: 1 },
+  },
 
   // Level 31-40: 에픽 보상
-  { level: 31, freeReward: { type: 'gold', quantity: 35000 }, premiumReward: { type: 'gold', quantity: 100000 } },
-  { level: 32, freeReward: { type: 'dna', quantity: 350 }, premiumReward: { type: 'dna', quantity: 700 } },
-  { level: 33, freeReward: { type: 'gold', quantity: 37500 }, premiumReward: { type: 'diamond', quantity: 200 } },
-  { level: 34, freeReward: { type: 'dna', quantity: 375 }, premiumReward: { type: 'dna', quantity: 750 } },
-  { level: 35, freeReward: { type: 'diamond', quantity: 175 }, premiumReward: { type: 'skin', id: 'stego-crystal', quantity: 1 } },
-  { level: 36, freeReward: { type: 'gold', quantity: 40000 }, premiumReward: { type: 'gold', quantity: 125000 } },
-  { level: 37, freeReward: { type: 'dna', quantity: 400 }, premiumReward: { type: 'dna', quantity: 800 } },
-  { level: 38, freeReward: { type: 'gold', quantity: 42500 }, premiumReward: { type: 'diamond', quantity: 225 } },
-  { level: 39, freeReward: { type: 'dna', quantity: 425 }, premiumReward: { type: 'dna', quantity: 850 } },
-  { level: 40, freeReward: { type: 'diamond', quantity: 200 }, premiumReward: { type: 'greatFigure', id: 'marco-founder', quantity: 1 } },
+  {
+    level: 31,
+    freeReward: { type: 'gold', quantity: 35000 },
+    premiumReward: { type: 'gold', quantity: 100000 },
+  },
+  {
+    level: 32,
+    freeReward: { type: 'dna', quantity: 350 },
+    premiumReward: { type: 'dna', quantity: 700 },
+  },
+  {
+    level: 33,
+    freeReward: { type: 'gold', quantity: 37500 },
+    premiumReward: { type: 'diamond', quantity: 200 },
+  },
+  {
+    level: 34,
+    freeReward: { type: 'dna', quantity: 375 },
+    premiumReward: { type: 'dna', quantity: 750 },
+  },
+  {
+    level: 35,
+    freeReward: { type: 'diamond', quantity: 175 },
+    premiumReward: { type: 'skin', id: 'stego-crystal', quantity: 1 },
+  },
+  {
+    level: 36,
+    freeReward: { type: 'gold', quantity: 40000 },
+    premiumReward: { type: 'gold', quantity: 125000 },
+  },
+  {
+    level: 37,
+    freeReward: { type: 'dna', quantity: 400 },
+    premiumReward: { type: 'dna', quantity: 800 },
+  },
+  {
+    level: 38,
+    freeReward: { type: 'gold', quantity: 42500 },
+    premiumReward: { type: 'diamond', quantity: 225 },
+  },
+  {
+    level: 39,
+    freeReward: { type: 'dna', quantity: 425 },
+    premiumReward: { type: 'dna', quantity: 850 },
+  },
+  {
+    level: 40,
+    freeReward: { type: 'diamond', quantity: 200 },
+    premiumReward: { type: 'greatFigure', id: 'marco-founder', quantity: 1 },
+  },
 
   // Level 41-50: 레전더리 보상
-  { level: 41, freeReward: { type: 'gold', quantity: 45000 }, premiumReward: { type: 'gold', quantity: 150000 } },
-  { level: 42, freeReward: { type: 'dna', quantity: 450 }, premiumReward: { type: 'dna', quantity: 900 } },
-  { level: 43, freeReward: { type: 'gold', quantity: 47500 }, premiumReward: { type: 'diamond', quantity: 250 } },
-  { level: 44, freeReward: { type: 'dna', quantity: 475 }, premiumReward: { type: 'dna', quantity: 950 } },
-  { level: 45, freeReward: { type: 'diamond', quantity: 225 }, premiumReward: { type: 'skin', id: 'indominus-ghost', quantity: 1 } },
-  { level: 46, freeReward: { type: 'gold', quantity: 50000 }, premiumReward: { type: 'gold', quantity: 200000 } },
-  { level: 47, freeReward: { type: 'dna', quantity: 500 }, premiumReward: { type: 'dna', quantity: 1000 } },
-  { level: 48, freeReward: { type: 'gold', quantity: 55000 }, premiumReward: { type: 'diamond', quantity: 300 } },
-  { level: 49, freeReward: { type: 'dna', quantity: 550 }, premiumReward: { type: 'dna', quantity: 1100 } },
-  { level: 50, freeReward: { type: 'diamond', quantity: 300 }, premiumReward: { type: 'dinosaur', id: 'eden-brachiosaurus', quantity: 1 } },
+  {
+    level: 41,
+    freeReward: { type: 'gold', quantity: 45000 },
+    premiumReward: { type: 'gold', quantity: 150000 },
+  },
+  {
+    level: 42,
+    freeReward: { type: 'dna', quantity: 450 },
+    premiumReward: { type: 'dna', quantity: 900 },
+  },
+  {
+    level: 43,
+    freeReward: { type: 'gold', quantity: 47500 },
+    premiumReward: { type: 'diamond', quantity: 250 },
+  },
+  {
+    level: 44,
+    freeReward: { type: 'dna', quantity: 475 },
+    premiumReward: { type: 'dna', quantity: 950 },
+  },
+  {
+    level: 45,
+    freeReward: { type: 'diamond', quantity: 225 },
+    premiumReward: { type: 'skin', id: 'indominus-ghost', quantity: 1 },
+  },
+  {
+    level: 46,
+    freeReward: { type: 'gold', quantity: 50000 },
+    premiumReward: { type: 'gold', quantity: 200000 },
+  },
+  {
+    level: 47,
+    freeReward: { type: 'dna', quantity: 500 },
+    premiumReward: { type: 'dna', quantity: 1000 },
+  },
+  {
+    level: 48,
+    freeReward: { type: 'gold', quantity: 55000 },
+    premiumReward: { type: 'diamond', quantity: 300 },
+  },
+  {
+    level: 49,
+    freeReward: { type: 'dna', quantity: 550 },
+    premiumReward: { type: 'dna', quantity: 1100 },
+  },
+  {
+    level: 50,
+    freeReward: { type: 'diamond', quantity: 300 },
+    premiumReward: { type: 'dinosaur', id: 'eden-brachiosaurus', quantity: 1 },
+  },
 ];
 
 // ============================================================
@@ -656,7 +851,7 @@ const SEASON1_PASS_REWARDS: SeasonPassReward[] = [
 const SEASON1_EVENTS: SeasonEvent[] = [
   {
     id: 's1-event-1',
-    name: 'Founder\'s Legacy Collection',
+    name: "Founder's Legacy Collection",
     nameKo: '창립자의 유산 컬렉션',
     type: 'collection',
     startDay: 7,
@@ -734,11 +929,7 @@ export const SEASON_1: Season = {
     'eden-brachiosaurus',
     'parasaurolophus-crystal',
   ],
-  greatFigures: [
-    'arthur-hammond',
-    'marco-founder',
-    'helen-ark',
-  ],
+  greatFigures: ['arthur-hammond', 'marco-founder', 'helen-ark'],
   chapters: SEASON1_CHAPTERS,
   passRewards: SEASON1_PASS_REWARDS,
   specialEvents: SEASON1_EVENTS,
@@ -775,10 +966,7 @@ export function getCurrentSeason(currentDate: Date = new Date()): Season | undef
 /**
  * 시즌 챕터 조회
  */
-export function getSeasonChapter(
-  seasonId: string,
-  chapterId: string
-): SeasonChapter | undefined {
+export function getSeasonChapter(seasonId: string, chapterId: string): SeasonChapter | undefined {
   const season = getSeasonById(seasonId);
   return season?.chapters.find((ch) => ch.id === chapterId);
 }
@@ -786,10 +974,7 @@ export function getSeasonChapter(
 /**
  * 시즌 패스 보상 조회
  */
-export function getSeasonPassReward(
-  seasonId: string,
-  level: number
-): SeasonPassReward | undefined {
+export function getSeasonPassReward(seasonId: string, level: number): SeasonPassReward | undefined {
   const season = getSeasonById(seasonId);
   return season?.passRewards.find((r) => r.level === level);
 }

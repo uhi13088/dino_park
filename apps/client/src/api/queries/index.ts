@@ -183,8 +183,7 @@ export function useUpdateNickname() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (nickname: string) =>
-      api.patch<UserResponse>('/users/me/nickname', { nickname }),
+    mutationFn: (nickname: string) => api.patch<UserResponse>('/users/me/nickname', { nickname }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.user });
     },
@@ -236,8 +235,7 @@ export function useUpdateParkName() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (name: string) =>
-      api.patch<ParkResponse>('/parks/me/name', { name }),
+    mutationFn: (name: string) => api.patch<ParkResponse>('/parks/me/name', { name }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.park });
     },
@@ -268,8 +266,7 @@ export function useCreateDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateDinosaurRequest) =>
-      api.post<DinosaurResponse>('/dinosaurs', data),
+    mutationFn: (data: CreateDinosaurRequest) => api.post<DinosaurResponse>('/dinosaurs', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurs });
       queryClient.invalidateQueries({ queryKey: queryKeys.parkSummary() });
@@ -294,8 +291,7 @@ export function useFeedDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<DinosaurResponse>(`/dinosaurs/${id}/feed`),
+    mutationFn: (id: string) => api.post<DinosaurResponse>(`/dinosaurs/${id}/feed`),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurDetail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurList() });
@@ -308,8 +304,7 @@ export function useInteractDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<InteractDinosaurResponse>(`/dinosaurs/${id}/interact`),
+    mutationFn: (id: string) => api.post<InteractDinosaurResponse>(`/dinosaurs/${id}/interact`),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurDetail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurList() });
@@ -353,8 +348,7 @@ export function useCreateBuilding() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateBuildingRequest) =>
-      api.post<BuildingResponse>('/buildings', data),
+    mutationFn: (data: CreateBuildingRequest) => api.post<BuildingResponse>('/buildings', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
       queryClient.invalidateQueries({ queryKey: queryKeys.parkSummary() });
@@ -367,8 +361,7 @@ export function useUpgradeBuilding() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<BuildingResponse>(`/buildings/${id}/upgrade`),
+    mutationFn: (id: string) => api.post<BuildingResponse>(`/buildings/${id}/upgrade`),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingList() });
@@ -381,7 +374,10 @@ export function useAssignGreatFigure() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ buildingId, greatFigureId }: { buildingId: string } & AssignGreatFigureRequest) =>
+    mutationFn: ({
+      buildingId,
+      greatFigureId,
+    }: { buildingId: string } & AssignGreatFigureRequest) =>
       api.post<BuildingResponse>(`/buildings/${buildingId}/assign-great-figure`, { greatFigureId }),
     onSuccess: (_, { buildingId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(buildingId) });
@@ -394,8 +390,7 @@ export function useUnassignGreatFigure() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (buildingId: string) =>
-      api.delete(`/buildings/${buildingId}/great-figure`),
+    mutationFn: (buildingId: string) => api.delete(`/buildings/${buildingId}/great-figure`),
     onSuccess: (_, buildingId) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(buildingId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.greatFigures });
@@ -431,7 +426,8 @@ export function useCurrency() {
 export function useTransactions(page = 1, limit = 20) {
   return useQuery({
     queryKey: queryKeys.transactions(page),
-    queryFn: () => api.get<TransactionListResponse>(`/economy/transactions?page=${page}&limit=${limit}`),
+    queryFn: () =>
+      api.get<TransactionListResponse>(`/economy/transactions?page=${page}&limit=${limit}`),
     enabled: tokenManager.isAuthenticated(),
   });
 }
@@ -492,8 +488,7 @@ export function useStartExploration() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (regionId: string) =>
-      api.post<ExplorationResponse>('/explorations', { regionId }),
+    mutationFn: (regionId: string) => api.post<ExplorationResponse>('/explorations', { regionId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
@@ -505,8 +500,7 @@ export function useCheckExploration() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<ExplorationResponse>(`/explorations/${id}/check`),
+    mutationFn: (id: string) => api.post<ExplorationResponse>(`/explorations/${id}/check`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
     },
@@ -530,8 +524,7 @@ export function useClaimExploration() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<ClaimExplorationResponse>(`/explorations/${id}/claim`),
+    mutationFn: (id: string) => api.post<ClaimExplorationResponse>(`/explorations/${id}/claim`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
@@ -622,7 +615,10 @@ export function useStoryChapters() {
 export function useStoryProgress() {
   return useQuery({
     queryKey: queryKeys.storyProgress(),
-    queryFn: () => api.get<{ progress: Record<string, { completedScenes: number; isCompleted: boolean }> }>('/stories/progress'),
+    queryFn: () =>
+      api.get<{ progress: Record<string, { completedScenes: number; isCompleted: boolean }> }>(
+        '/stories/progress',
+      ),
     enabled: tokenManager.isAuthenticated(),
   });
 }
@@ -638,8 +634,18 @@ export function useAdvanceScene() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ chapterId, sceneId, choiceId }: { chapterId: string; sceneId: string; choiceId?: string }) =>
-      api.post<AdvanceSceneResponse>(`/stories/${chapterId}/scenes/${sceneId}/advance`, { choiceId }),
+    mutationFn: ({
+      chapterId,
+      sceneId,
+      choiceId,
+    }: {
+      chapterId: string;
+      sceneId: string;
+      choiceId?: string;
+    }) =>
+      api.post<AdvanceSceneResponse>(`/stories/${chapterId}/scenes/${sceneId}/advance`, {
+        choiceId,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.storyProgress() });
     },

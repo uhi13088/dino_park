@@ -107,7 +107,10 @@ export class UserService {
   /**
    * 경험치 추가 및 레벨업 처리
    */
-  async addExp(userId: string, expAmount: number): Promise<{
+  async addExp(
+    userId: string,
+    expAmount: number,
+  ): Promise<{
     exp: number;
     level: number;
     leveledUp: boolean;
@@ -164,29 +167,24 @@ export class UserService {
    * 유저 통계 조회
    */
   async getStats(userId: string) {
-    const [
-      dinosaurCount,
-      buildingCount,
-      greatFigureCount,
-      explorationCount,
-      completedChapters,
-    ] = await Promise.all([
-      this.prisma.dinosaur.count({
-        where: { park: { userId } },
-      }),
-      this.prisma.building.count({
-        where: { park: { userId } },
-      }),
-      this.prisma.userGreatFigure.count({
-        where: { userId },
-      }),
-      this.prisma.exploration.count({
-        where: { userId, status: 'CLAIMED' },
-      }),
-      this.prisma.storyProgress.count({
-        where: { userId, completed: true },
-      }),
-    ]);
+    const [dinosaurCount, buildingCount, greatFigureCount, explorationCount, completedChapters] =
+      await Promise.all([
+        this.prisma.dinosaur.count({
+          where: { park: { userId } },
+        }),
+        this.prisma.building.count({
+          where: { park: { userId } },
+        }),
+        this.prisma.userGreatFigure.count({
+          where: { userId },
+        }),
+        this.prisma.exploration.count({
+          where: { userId, status: 'CLAIMED' },
+        }),
+        this.prisma.storyProgress.count({
+          where: { userId, completed: true },
+        }),
+      ]);
 
     return {
       dinosaurCount,

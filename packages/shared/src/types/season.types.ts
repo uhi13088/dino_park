@@ -53,7 +53,16 @@ export interface SeasonPassReward {
 }
 
 export interface SeasonRewardItem {
-  type: 'gold' | 'diamond' | 'dna' | 'dinosaur' | 'greatFigure' | 'skin' | 'title' | 'building' | 'item';
+  type:
+    | 'gold'
+    | 'diamond'
+    | 'dna'
+    | 'dinosaur'
+    | 'greatFigure'
+    | 'skin'
+    | 'title'
+    | 'building'
+    | 'item';
   id?: string;
   quantity: number;
 }

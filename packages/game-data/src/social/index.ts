@@ -130,9 +130,7 @@ export const GIFT_ITEMS: GiftItem[] = [
 export const INTIMACY_REWARDS: IntimacyReward[] = [
   {
     level: 1,
-    rewards: [
-      { type: 'gold', quantity: 1000 },
-    ],
+    rewards: [{ type: 'gold', quantity: 1000 }],
     unlocks: ['daily-gift'],
   },
   {
@@ -407,28 +405,112 @@ export const FRIEND_POINT_SHOP: FriendPointShopItem[] = [
 
 export const RANKING_REWARDS: Record<string, RankingReward[]> = {
   parkLevel: [
-    { rankMin: 1, rankMax: 1, rewards: [{ type: 'diamond', quantity: 500 }, { type: 'item', id: 'title-rank-1', quantity: 1 }] },
+    {
+      rankMin: 1,
+      rankMax: 1,
+      rewards: [
+        { type: 'diamond', quantity: 500 },
+        { type: 'item', id: 'title-rank-1', quantity: 1 },
+      ],
+    },
     { rankMin: 2, rankMax: 3, rewards: [{ type: 'diamond', quantity: 300 }] },
     { rankMin: 4, rankMax: 10, rewards: [{ type: 'diamond', quantity: 150 }] },
     { rankMin: 11, rankMax: 50, rewards: [{ type: 'diamond', quantity: 80 }] },
     { rankMin: 51, rankMax: 100, rewards: [{ type: 'diamond', quantity: 50 }] },
   ],
   dinosaurCount: [
-    { rankMin: 1, rankMax: 1, rewards: [{ type: 'diamond', quantity: 400 }, { type: 'dna', quantity: 500 }] },
-    { rankMin: 2, rankMax: 3, rewards: [{ type: 'diamond', quantity: 250 }, { type: 'dna', quantity: 300 }] },
-    { rankMin: 4, rankMax: 10, rewards: [{ type: 'diamond', quantity: 120 }, { type: 'dna', quantity: 150 }] },
-    { rankMin: 11, rankMax: 50, rewards: [{ type: 'diamond', quantity: 60 }, { type: 'dna', quantity: 80 }] },
-    { rankMin: 51, rankMax: 100, rewards: [{ type: 'diamond', quantity: 30 }, { type: 'dna', quantity: 50 }] },
+    {
+      rankMin: 1,
+      rankMax: 1,
+      rewards: [
+        { type: 'diamond', quantity: 400 },
+        { type: 'dna', quantity: 500 },
+      ],
+    },
+    {
+      rankMin: 2,
+      rankMax: 3,
+      rewards: [
+        { type: 'diamond', quantity: 250 },
+        { type: 'dna', quantity: 300 },
+      ],
+    },
+    {
+      rankMin: 4,
+      rankMax: 10,
+      rewards: [
+        { type: 'diamond', quantity: 120 },
+        { type: 'dna', quantity: 150 },
+      ],
+    },
+    {
+      rankMin: 11,
+      rankMax: 50,
+      rewards: [
+        { type: 'diamond', quantity: 60 },
+        { type: 'dna', quantity: 80 },
+      ],
+    },
+    {
+      rankMin: 51,
+      rankMax: 100,
+      rewards: [
+        { type: 'diamond', quantity: 30 },
+        { type: 'dna', quantity: 50 },
+      ],
+    },
   ],
   revenue: [
-    { rankMin: 1, rankMax: 1, rewards: [{ type: 'diamond', quantity: 600 }, { type: 'gold', quantity: 500000 }] },
-    { rankMin: 2, rankMax: 3, rewards: [{ type: 'diamond', quantity: 350 }, { type: 'gold', quantity: 300000 }] },
-    { rankMin: 4, rankMax: 10, rewards: [{ type: 'diamond', quantity: 180 }, { type: 'gold', quantity: 150000 }] },
-    { rankMin: 11, rankMax: 50, rewards: [{ type: 'diamond', quantity: 90 }, { type: 'gold', quantity: 80000 }] },
-    { rankMin: 51, rankMax: 100, rewards: [{ type: 'diamond', quantity: 50 }, { type: 'gold', quantity: 50000 }] },
+    {
+      rankMin: 1,
+      rankMax: 1,
+      rewards: [
+        { type: 'diamond', quantity: 600 },
+        { type: 'gold', quantity: 500000 },
+      ],
+    },
+    {
+      rankMin: 2,
+      rankMax: 3,
+      rewards: [
+        { type: 'diamond', quantity: 350 },
+        { type: 'gold', quantity: 300000 },
+      ],
+    },
+    {
+      rankMin: 4,
+      rankMax: 10,
+      rewards: [
+        { type: 'diamond', quantity: 180 },
+        { type: 'gold', quantity: 150000 },
+      ],
+    },
+    {
+      rankMin: 11,
+      rankMax: 50,
+      rewards: [
+        { type: 'diamond', quantity: 90 },
+        { type: 'gold', quantity: 80000 },
+      ],
+    },
+    {
+      rankMin: 51,
+      rankMax: 100,
+      rewards: [
+        { type: 'diamond', quantity: 50 },
+        { type: 'gold', quantity: 50000 },
+      ],
+    },
   ],
   seasonPoint: [
-    { rankMin: 1, rankMax: 1, rewards: [{ type: 'diamond', quantity: 1000 }, { type: 'item', id: 'title-season-champion', quantity: 1 }] },
+    {
+      rankMin: 1,
+      rankMax: 1,
+      rewards: [
+        { type: 'diamond', quantity: 1000 },
+        { type: 'item', id: 'title-season-champion', quantity: 1 },
+      ],
+    },
     { rankMin: 2, rankMax: 3, rewards: [{ type: 'diamond', quantity: 500 }] },
     { rankMin: 4, rankMax: 10, rewards: [{ type: 'diamond', quantity: 250 }] },
     { rankMin: 11, rankMax: 50, rewards: [{ type: 'diamond', quantity: 120 }] },

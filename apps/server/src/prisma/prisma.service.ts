@@ -2,16 +2,10 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
     super({
-      log:
-        process.env.NODE_ENV === 'development'
-          ? ['query', 'info', 'warn', 'error']
-          : ['error'],
+      log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
     });
   }
 
@@ -26,9 +20,7 @@ export class PrismaService
   /**
    * 트랜잭션 헬퍼
    */
-  async executeTransaction<T>(
-    fn: (prisma: PrismaClient) => Promise<T>,
-  ): Promise<T> {
+  async executeTransaction<T>(fn: (prisma: PrismaClient) => Promise<T>): Promise<T> {
     return this.$transaction(fn);
   }
 }

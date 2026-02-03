@@ -3,17 +3,20 @@ TASK.md를 확인하고 다음 작업을 진행해줘.
 ## 실행 로직
 
 ### 1. 현재 상태 확인
+
 - IN_PROGRESS에 티켓이 있는가?
   - 있으면 → 해당 티켓 계속 진행
   - 없으면 → QUEUE 최상단 티켓을 IN_PROGRESS로 이동
 
 ### 2. 작업 진행
+
 - AC(Acceptance Criteria) 확인
 - Plan 먼저 작성 (구현 전)
 - 단계별로 구현
 - 각 단계마다 테스트 실행
 
 ### 3. 완료 처리
+
 - 모든 AC 충족 + 테스트 PASS 확인
 - TASK.md 업데이트:
   ```
@@ -24,6 +27,7 @@ TASK.md를 확인하고 다음 작업을 진행해줘.
 - IN_PROGRESS → DONE으로 이동
 
 ### 4. 막힘 처리
+
 - 테스트 FAIL 또는 요구사항 불명확 시
 - TASK.md에 기록:
   ```
@@ -35,11 +39,13 @@ TASK.md를 확인하고 다음 작업을 진행해줘.
 - 멈추고 사용자에게 보고
 
 ## 참조 문서
+
 - 기능별 참조: CLAUDE.md의 "문서 참조 규칙" 섹션 확인
 - 수치: docs/dino_park_balance_simulation.md
 - API: docs/dino_park_technical_design.md
 
 ## 출력
+
 - 현재 진행 중인 티켓
 - 다음 액션
 - (완료 시) 변경 요약

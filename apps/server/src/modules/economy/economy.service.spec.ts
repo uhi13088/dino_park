@@ -84,9 +84,7 @@ describe('EconomyService', () => {
     it('should throw NotFoundException when currency not found', async () => {
       mockPrismaService.currency.findUnique.mockResolvedValue(null);
 
-      await expect(service.getCurrency('invalid-user')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.getCurrency('invalid-user')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -171,9 +169,9 @@ describe('EconomyService', () => {
         gold: 500,
       });
 
-      await expect(
-        service.spendGold('user-1', 1000, 'Purchase'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.spendGold('user-1', 1000, 'Purchase')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -211,9 +209,9 @@ describe('EconomyService', () => {
         diamond: 50,
       });
 
-      await expect(
-        service.spendDiamond('user-1', 100, 'Energy refill'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.spendDiamond('user-1', 100, 'Energy refill')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -251,9 +249,7 @@ describe('EconomyService', () => {
         dna: 20,
       });
 
-      await expect(service.spendDna('user-1', 50, 'Hatching')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.spendDna('user-1', 50, 'Hatching')).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -276,9 +272,7 @@ describe('EconomyService', () => {
         explorationEnergy: 3,
       });
 
-      await expect(service.useEnergy('user-1', 5)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.useEnergy('user-1', 5)).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -340,9 +334,7 @@ describe('EconomyService', () => {
         diamond: 20,
       });
 
-      await expect(service.refillEnergy('user-1')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.refillEnergy('user-1')).rejects.toThrow(BadRequestException);
     });
   });
 

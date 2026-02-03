@@ -1,4 +1,5 @@
 # 🎬 다이노 파크 타이쿤 - 에셋 프롬프트 (컷신 & 스토리 UI편)
+
 ## 컷신 10종 + 스토리 UI + 특수 연출
 
 ---
@@ -8,12 +9,14 @@
 ## 파일명 규칙
 
 ### 컷신 이미지
+
 ```
 cutscene_{챕터}_{번호}_{장면명}.png
 cutscene_{챕터}_{번호}_{장면명}_frame{프레임번호}.png
 ```
 
 **예시:**
+
 ```
 cutscene_01_01_letter.png
 cutscene_01_02_first_meeting.png
@@ -22,12 +25,14 @@ cutscene_02_01_storm_night_frame02.png
 ```
 
 ### 스토리 UI
+
 ```
 story_ui_{요소명}.png
 story_ui_{요소명}_{상태}.png
 ```
 
 **예시:**
+
 ```
 story_ui_dialog_box.png
 story_ui_choice_button_normal.png
@@ -201,9 +206,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_01_01 할아버지의 편지 (The Letter)
+## 컷신\_01_01 할아버지의 편지 (The Letter)
 
 ### 장면 설명
+
 주인공이 할아버지 아서의 편지를 읽는 장면. 감정적 시작점.
 
 ```
@@ -212,9 +218,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_01_02 브라키오사우루스와의 첫 만남 (First Meeting)
+## 컷신\_01_02 브라키오사우루스와의 첫 만남 (First Meeting)
 
 ### 장면 설명
+
 주인공이 처음으로 살아있는 공룡 (브라키오사우루스)를 마주하는 경이로운 순간.
 
 ```
@@ -223,9 +230,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_01_03 마르코의 등장 (Marco Arrives)
+## 컷신\_01_03 마르코의 등장 (Marco Arrives)
 
 ### 장면 설명
+
 가이드 마르코가 처음 등장하는 장면.
 
 ```
@@ -234,9 +242,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_01_04 첫 부화 성공 (First Hatching)
+## 컷신\_01_04 첫 부화 성공 (First Hatching)
 
 ### 장면 설명
+
 처음으로 공룡 알이 부화하는 감동적인 순간.
 
 ```
@@ -245,9 +254,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_01_05 첫 관람객 도착 (First Visitors)
+## 컷신\_01_05 첫 관람객 도착 (First Visitors)
 
 ### 장면 설명
+
 파크에 첫 관람객이 도착하는 뿌듯한 순간.
 
 ```
@@ -262,9 +272,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_02_01 태풍의 밤 - 폭풍 시작 (Storm Begins)
+## 컷신\_02_01 태풍의 밤 - 폭풍 시작 (Storm Begins)
 
 ### 장면 설명
+
 거대한 태풍이 파크를 덮치는 위기의 시작.
 
 ```
@@ -273,9 +284,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_02_02 태풍의 밤 - 위기 (Crisis Peak)
+## 컷신\_02_02 태풍의 밤 - 위기 (Crisis Peak)
 
 ### 장면 설명
+
 폭풍 속에서 공룡들과 파크를 지키려는 필사적인 노력.
 
 ```
@@ -284,9 +296,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_02_03 태풍의 밤 - 새벽 (Dawn After Storm)
+## 컷신\_02_03 태풍의 밤 - 새벽 (Dawn After Storm)
 
 ### 장면 설명
+
 폭풍이 지나간 후 새벽의 희망찬 장면.
 
 ```
@@ -301,9 +314,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_03_01 인도미누스 대면 (Indominus Confrontation)
+## 컷신\_03_01 인도미누스 대면 (Indominus Confrontation)
 
 ### 장면 설명
+
 인도미누스 렉스와의 첫 긴장감 있는 대면.
 
 ```
@@ -312,9 +326,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_04_01 아서의 비밀 연구실 (Arthur's Secret Lab)
+## 컷신\_04_01 아서의 비밀 연구실 (Arthur's Secret Lab)
 
 ### 장면 설명
+
 할아버지의 비밀 연구실을 발견하는 장면.
 
 ```
@@ -323,9 +338,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_05_01 최후의 결전 (Final Battle)
+## 컷신\_05_01 최후의 결전 (Final Battle)
 
 ### 장면 설명
+
 모든 공룡들과 함께 파크를 지키는 클라이맥스.
 
 ```
@@ -334,9 +350,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_06_01 엔딩 - 번영 (Prosperity Ending)
+## 컷신\_06_01 엔딩 - 번영 (Prosperity Ending)
 
 ### 장면 설명
+
 파크가 번영하는 해피 엔딩.
 
 ```
@@ -345,9 +362,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_06_02 엔딩 - 균형 (Balance Ending)
+## 컷신\_06_02 엔딩 - 균형 (Balance Ending)
 
 ### 장면 설명
+
 자연과 조화를 이룬 엔딩.
 
 ```
@@ -356,9 +374,10 @@ apps/client/src/assets/
 
 ---
 
-## 컷신_06_03 엔딩 - 탐구 (Discovery Ending)
+## 컷신\_06_03 엔딩 - 탐구 (Discovery Ending)
 
 ### 장면 설명
+
 새로운 탐험을 떠나는 엔딩.
 
 ```
@@ -464,6 +483,7 @@ apps/client/src/assets/
 # 📋 파일명 빠른 참조
 
 ## 스토리 UI
+
 ```
 story_ui_dialog_box.png
 story_ui_narrator_box.png
@@ -482,6 +502,7 @@ story_ui_story_lock.png
 ```
 
 ## 챕터 1 컷신
+
 ```
 cutscene_01_01_letter.png
 cutscene_01_02_first_meeting.png
@@ -491,6 +512,7 @@ cutscene_01_05_first_visitors.png
 ```
 
 ## 챕터 2 컷신
+
 ```
 cutscene_02_01_storm_begins.png
 cutscene_02_02_crisis_peak.png
@@ -498,6 +520,7 @@ cutscene_02_03_dawn_after_storm.png
 ```
 
 ## 챕터 3-6 컷신
+
 ```
 cutscene_03_01_indominus_confrontation.png
 cutscene_04_01_secret_lab.png
@@ -508,6 +531,7 @@ cutscene_06_03_ending_discovery.png
 ```
 
 ## 특수 이펙트
+
 ```
 effect_fade_overlay.png
 effect_white_flash.png
@@ -525,11 +549,11 @@ effect_dust_wind.png
 
 # 📊 전체 요약
 
-| 카테고리 | 항목 수 | 상태 |
-|----------|---------|------|
-| 스토리 UI | 14 | ✅ 완료 |
-| 챕터 1 컷신 | 5 | ✅ 완료 |
-| 챕터 2 컷신 | 3 | ✅ 완료 |
-| 챕터 3-6 컷신 | 6 | ✅ 완료 |
-| 특수 이펙트 | 10 | ✅ 완료 |
-| **총합** | **38개** | ✅ |
+| 카테고리      | 항목 수  | 상태    |
+| ------------- | -------- | ------- |
+| 스토리 UI     | 14       | ✅ 완료 |
+| 챕터 1 컷신   | 5        | ✅ 완료 |
+| 챕터 2 컷신   | 3        | ✅ 완료 |
+| 챕터 3-6 컷신 | 6        | ✅ 완료 |
+| 특수 이펙트   | 10       | ✅ 완료 |
+| **총합**      | **38개** | ✅      |

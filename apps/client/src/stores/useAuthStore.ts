@@ -99,8 +99,8 @@ export const useAuthStore = create<AuthState>()(
           currency: state.currency,
           park: state.park,
         }),
-      }
+      },
     ),
-    { name: 'AuthStore' }
-  )
+    { name: 'AuthStore' },
+  ),
 );

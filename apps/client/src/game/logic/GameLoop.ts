@@ -155,7 +155,7 @@ export class GameLoop {
     const revenueResult = revenueCalculator.calculateParkRevenue(
       this.state.dinosaurs,
       this.state.buildings,
-      this.state.greatFigureBonus
+      this.state.greatFigureBonus,
     );
 
     // 골드 누적 (1초당 수익)
@@ -205,7 +205,7 @@ export class GameLoop {
 
     const updates: TickResult['dinosaurUpdates'] = [];
 
-    this.state.dinosaurs = this.state.dinosaurs.map(dino => {
+    this.state.dinosaurs = this.state.dinosaurs.map((dino) => {
       if (!dino.isInPark) return dino;
 
       // 행복도 감소
@@ -302,16 +302,21 @@ export class GameLoop {
     const revenueResult = revenueCalculator.calculateParkRevenue(
       this.state.dinosaurs,
       this.state.buildings,
-      this.state.greatFigureBonus
+      this.state.greatFigureBonus,
     );
 
     const hourlyRevenue = revenueCalculator.calculateHourlyRevenue(revenueResult.netRevenue);
-    const offlineGold = revenueCalculator.calculateOfflineRevenue(hourlyRevenue, offlineHours, 8, 0.5);
+    const offlineGold = revenueCalculator.calculateOfflineRevenue(
+      hourlyRevenue,
+      offlineHours,
+      8,
+      0.5,
+    );
 
     // 공룡 상태 업데이트
     const dinosaurUpdates = this.state.dinosaurs
-      .filter(d => d.isInPark)
-      .map(dino => {
+      .filter((d) => d.isInPark)
+      .map((dino) => {
         const happinessDecay = HAPPINESS_DECAY_PER_HOUR * offlineHours;
         const hungerIncrease = HUNGER_INCREASE_PER_HOUR * offlineHours;
 
@@ -335,7 +340,7 @@ export class GameLoop {
   feedDinosaur(dinosaurId: string, happinessGain: number, hungerReduce: number): void {
     if (!this.state) return;
 
-    this.state.dinosaurs = this.state.dinosaurs.map(dino => {
+    this.state.dinosaurs = this.state.dinosaurs.map((dino) => {
       if (dino.id !== dinosaurId) return dino;
 
       return {
@@ -359,7 +364,7 @@ export class GameLoop {
    */
   removeDinosaur(dinosaurId: string): void {
     if (!this.state) return;
-    this.state.dinosaurs = this.state.dinosaurs.filter(d => d.id !== dinosaurId);
+    this.state.dinosaurs = this.state.dinosaurs.filter((d) => d.id !== dinosaurId);
   }
 
   /**
@@ -383,7 +388,7 @@ export class GameLoop {
    * 이벤트 발생
    */
   private emit<K extends keyof GameLoopEvents>(event: K, data: GameLoopEvents[K]): void {
-    this.eventListeners.get(event)?.forEach(callback => callback(data));
+    this.eventListeners.get(event)?.forEach((callback) => callback(data));
   }
 
   /**
