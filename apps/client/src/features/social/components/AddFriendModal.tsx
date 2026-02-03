@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSocialStore } from '../stores/useSocialStore';
+import { useSearchUsers, useSendFriendRequest } from '../../../api/queries';
 
 interface AddFriendModalProps {
   isOpen: boolean;
@@ -19,46 +19,49 @@ interface SearchResult {
 export default function AddFriendModal({ isOpen, onClose }: AddFriendModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   const [sentRequests, setSentRequests] = useState<Set<string>>(new Set());
 
-  const { friends, sendFriendRequest } = useSocialStore();
+  const searchMutation = useSearchUsers();
+  const sendRequestMutation = useSendFriendRequest();
+
+  const isSearching = searchMutation.isPending;
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim() || searchQuery.length < 2) return;
 
-    setIsSearching(true);
-
-    // 실제로는 API 호출
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // 임시 검색 결과
-    const mockResults: SearchResult[] = [
-      {
-        id: 'search1',
-        nickname: searchQuery + '님의파크',
-        level: Math.floor(Math.random() * 30) + 1,
-        parkName: `${searchQuery}의 공룡 왕국`,
-        isAlreadyFriend: false,
-        hasPendingRequest: false,
-      },
-      {
-        id: 'search2',
-        nickname: `Dino${searchQuery}`,
-        level: Math.floor(Math.random() * 30) + 1,
-        parkName: '쥬라기 파크',
-        isAlreadyFriend: friends.some((f) => f.nickname === `Dino${searchQuery}`),
-        hasPendingRequest: false,
-      },
-    ];
-
-    setSearchResults(mockResults);
-    setIsSearching(false);
+    try {
+      const result = await searchMutation.mutateAsync(searchQuery);
+      const users = (
+        result.users as Array<{
+          userId: string;
+          nickname: string;
+          level: number;
+          parkName: string;
+          isFriend: boolean;
+          hasPendingRequest: boolean;
+        }>
+      ).map((u) => ({
+        id: u.userId,
+        nickname: u.nickname,
+        level: u.level,
+        parkName: u.parkName,
+        isAlreadyFriend: u.isFriend,
+        hasPendingRequest: u.hasPendingRequest,
+      }));
+      setSearchResults(users);
+    } catch (error) {
+      console.error('Failed to search users:', error);
+      setSearchResults([]);
+    }
   };
 
   const handleSendRequest = async (userId: string) => {
-    await sendFriendRequest(userId);
-    setSentRequests(new Set([...sentRequests, userId]));
+    try {
+      await sendRequestMutation.mutateAsync(userId);
+      setSentRequests(new Set([...sentRequests, userId]));
+    } catch (error) {
+      console.error('Failed to send friend request:', error);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

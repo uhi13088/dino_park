@@ -37,6 +37,21 @@ model User {
   transactions       Transaction[]
   seasonPasses       SeasonPass[]
 
+  // Social Relations
+  friendsAsUser      Friend[]             @relation("FriendUser")
+  friendsAsFriend    Friend[]             @relation("FriendTarget")
+  sentFriendRequests FriendRequest[]      @relation("FriendRequestFrom")
+  receivedFriendRequests FriendRequest[]  @relation("FriendRequestTo")
+  intimacyAsUser     FriendIntimacy[]     @relation("IntimacyUser")
+  intimacyAsFriend   FriendIntimacy[]     @relation("IntimacyFriend")
+  visitsAsVisitor    ParkVisit[]          @relation("VisitVisitor")
+  visitsAsHost       ParkVisit[]          @relation("VisitHost")
+  guestbooksOwned    GuestBook[]          @relation("GuestBookOwner")
+  guestbooksWritten  GuestBook[]          @relation("GuestBookVisitor")
+  sentGifts          Gift[]               @relation("GiftSender")
+  receivedGifts      Gift[]               @relation("GiftReceiver")
+  socialNotifications SocialNotification[] @relation("NotificationUser")
+
   @@map("users")
 }
 
@@ -330,6 +345,10 @@ model Friend {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
+  // Relations
+  user   User @relation("FriendUser", fields: [userId], references: [id], onDelete: Cascade)
+  friend User @relation("FriendTarget", fields: [friendId], references: [id], onDelete: Cascade)
+
   @@unique([userId, friendId])
   @@index([userId])
   @@index([friendId])
@@ -350,6 +369,10 @@ model FriendRequest {
   message    String?
   createdAt  DateTime            @default(now())
   updatedAt  DateTime            @updatedAt
+
+  // Relations
+  fromUser User @relation("FriendRequestFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser   User @relation("FriendRequestTo", fields: [toUserId], references: [id], onDelete: Cascade)
 
   @@unique([fromUserId, toUserId])
   @@index([toUserId])
@@ -380,6 +403,10 @@ model FriendIntimacy {
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
 
+  // Relations
+  user   User @relation("IntimacyUser", fields: [userId], references: [id], onDelete: Cascade)
+  friend User @relation("IntimacyFriend", fields: [friendId], references: [id], onDelete: Cascade)
+
   @@unique([userId, friendId])
   @@map("friend_intimacy")
 }
@@ -399,6 +426,10 @@ model ParkVisit {
   leftComment       String?
   createdAt         DateTime  @default(now())
 
+  // Relations
+  visitor User @relation("VisitVisitor", fields: [visitorId], references: [id], onDelete: Cascade)
+  host    User @relation("VisitHost", fields: [hostId], references: [id], onDelete: Cascade)
+
   @@index([hostId])
   @@index([visitorId])
   @@map("park_visits")
@@ -413,6 +444,10 @@ model GuestBook {
   likeCount     Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  // Relations
+  parkOwner User @relation("GuestBookOwner", fields: [parkOwnerId], references: [id], onDelete: Cascade)
+  visitor   User @relation("GuestBookVisitor", fields: [visitorId], references: [id], onDelete: Cascade)
 
   @@index([parkOwnerId])
   @@map("guest_books")
@@ -433,6 +468,10 @@ model Gift {
   message     String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+
+  // Relations
+  sender   User @relation("GiftSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("GiftReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
 
   @@index([receiverId, status])
   @@index([senderId])
@@ -459,6 +498,9 @@ model SocialNotification {
   data         Json?
   isRead       Boolean  @default(false)
   createdAt    DateTime @default(now())
+
+  // Relations
+  user User @relation("NotificationUser", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead])
   @@map("social_notifications")

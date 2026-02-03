@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { type Friend, useSocialStore } from '../stores/useSocialStore';
+import { useVisitFriendPark } from '../../../api/queries';
 
 interface FriendParkVisitProps {
   friend: Friend;
@@ -9,7 +10,7 @@ interface FriendParkVisitProps {
   onSendGift: () => void;
 }
 
-// 친구 파크의 공룡 데이터 (임시)
+// 친구 파크의 공룡 데이터
 interface FriendDinosaur {
   id: string;
   name: string;
@@ -18,7 +19,7 @@ interface FriendDinosaur {
   rarity: string;
 }
 
-// 친구 파크의 건물 데이터 (임시)
+// 친구 파크의 건물 데이터
 interface FriendBuilding {
   id: string;
   name: string;
@@ -51,33 +52,69 @@ export default function FriendParkVisit({
   const { guestbooks } = useSocialStore();
   const friendGuestbooks = guestbooks.filter((g) => g.visitorId === friend.id);
 
-  // 파크 데이터 로드 (임시 데이터)
+  const visitMutation = useVisitFriendPark();
+
+  // 파크 데이터 로드
   useEffect(() => {
     const loadParkData = async () => {
       setIsLoading(true);
-      // 실제로는 API 호출
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      try {
+        const result = await visitMutation.mutateAsync(friend.id);
 
-      setParkData({
-        dinosaurs: [
-          { id: '1', name: '티라노', species: '티라노사우루스', level: 15, rarity: 'legendary' },
-          { id: '2', name: '트리', species: '트리케라톱스', level: 10, rarity: 'epic' },
-          { id: '3', name: '벨로', species: '벨로시랩터', level: 8, rarity: 'rare' },
-          { id: '4', name: '브라키', species: '브라키오사우루스', level: 12, rarity: 'epic' },
-        ],
-        buildings: [
-          { id: '1', name: 'DNA 연구소', level: 5, type: 'production' },
-          { id: '2', name: '방문자 센터', level: 3, type: 'service' },
-          { id: '3', name: '레스토랑', level: 4, type: 'commercial' },
-        ],
-        stats: {
-          totalRevenue: 125000,
-          popularity: 4500,
-          dinosaurCount: 15,
-          buildingCount: 8,
-        },
-      });
-      setIsLoading(false);
+        const dinosaurs = (
+          result.dinosaurs as Array<{
+            id: string;
+            nickname?: string;
+            speciesId: string;
+            level: number;
+            rarity?: string;
+          }>
+        ).map((d) => ({
+          id: d.id,
+          name: d.nickname || d.speciesId,
+          species: d.speciesId,
+          level: d.level,
+          rarity: d.rarity || 'common',
+        }));
+
+        const buildings = (
+          result.buildings as Array<{
+            id: string;
+            typeId: string;
+            level: number;
+          }>
+        ).map((b) => ({
+          id: b.id,
+          name: b.typeId.replace(/_/g, ' '),
+          level: b.level,
+          type: 'building',
+        }));
+
+        const park = result.park as {
+          totalRevenue?: number;
+          popularity?: number;
+        } | null;
+
+        setParkData({
+          dinosaurs,
+          buildings,
+          stats: {
+            totalRevenue: park?.totalRevenue || 0,
+            popularity: park?.popularity || 0,
+            dinosaurCount: dinosaurs.length,
+            buildingCount: buildings.length,
+          },
+        });
+      } catch (error) {
+        console.error('Failed to load park data:', error);
+        setParkData({
+          dinosaurs: [],
+          buildings: [],
+          stats: { totalRevenue: 0, popularity: 0, dinosaurCount: 0, buildingCount: 0 },
+        });
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadParkData();

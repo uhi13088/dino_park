@@ -636,9 +636,9 @@ export class SeasonService {
    */
   private async grantChapterReward(
     userId: string,
-    reward: { type: string; amount: number; id?: string },
+    reward: { type: string; amount?: number; id?: string },
   ) {
-    const { type, amount, id } = reward;
+    const { type, amount = 1, id } = reward;
 
     switch (type) {
       case 'seasonPoint':

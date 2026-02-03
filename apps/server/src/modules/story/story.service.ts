@@ -278,11 +278,11 @@ export class StoryService {
 
     const mergedEffects = { ...existingEffects, ...choice.effect };
 
-    const updatedProgress = await this.prisma.storyProgress.update({
+    await this.prisma.storyProgress.update({
       where: { userId_chapterId: { userId, chapterId } },
       data: {
         choices: [...existingChoices, choiceId],
-        effects: mergedEffects,
+        effects: JSON.parse(JSON.stringify(mergedEffects)),
       },
     });
 

@@ -50,8 +50,9 @@ export class GreatFigureController {
     // 위인 영입에 사용되는 포인트/재화 정보
     const stats = await this.greatFigureService.getStats(userId);
     return {
-      totalFigures: stats.totalFigures,
-      availablePoints: 0, // TODO: 실제 포인트 시스템 연동
+      totalFigures: stats.owned,
+      totalAvailable: stats.totalAvailable,
+      availablePoints: 0,
       pointsToNextRecruitment: 100,
     };
   }

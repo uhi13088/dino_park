@@ -12,9 +12,8 @@ import {
   getIAPProductById,
   getGoldShopItemById,
   getAdRewardConfig,
-  getSpecialPackageByTrigger,
 } from '@dino-park/game-data';
-import type { IAPProduct, IAPReward, GoldShopItem, SpecialPackage } from '@dino-park/shared';
+import type { IAPReward, GoldShopItem, SpecialPackage } from '@dino-park/shared';
 
 // 일일 상점 설정
 const DAILY_SHOP_ITEM_COUNT = 6;
@@ -280,7 +279,7 @@ export class ShopService {
       originalPrice: item.price,
       discountedPrice,
       discountPercent: discount,
-      rewards: result.rewards,
+      rewards: result.grantedRewards,
     };
   }
 
@@ -399,7 +398,7 @@ export class ShopService {
     const todayAdWatches = await this.getUserDailyAdWatches(userId);
 
     return AD_REWARD_CONFIGS.filter((config) => config.isActive).map((config) => {
-      const watchedCount = todayAdWatches.get(config.placement) || 0;
+      const watchedCount = (todayAdWatches.get(config.placement) as number) || 0;
       const lastWatchedAt = todayAdWatches.get(`${config.placement}_time`) as Date | undefined;
       const cooldownEndsAt = lastWatchedAt
         ? new Date(lastWatchedAt.getTime() + config.cooldownMinutes * 60 * 1000)
