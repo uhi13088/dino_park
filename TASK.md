@@ -9,11 +9,6 @@
 
 ### 🟡 낮음 (프론트엔드 완성)
 
-- [ ] **C11: Exploration Feature 보강 (Frontend)**
-  - 위치: `apps/client/src/features/exploration/`
-  - AC: ExplorationDetail.tsx, ExplorationReward.tsx, useExplorationStore.ts 추가
-  - 기능: 탐험 상세, 보상 수령
-
 - [ ] **C12: GreatFigure Feature 보강 (Frontend)**
   - 위치: `apps/client/src/features/greatFigure/`
   - AC: GreatFigureDetail.tsx, GreatFigureAssign.tsx, useGreatFigureStore.ts 추가
@@ -49,6 +44,14 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C11: Exploration Feature 보강 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/exploration/stores/useExplorationStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/exploration/components/ExplorationDetail.tsx` (탐험 상세 모달)
+    - `apps/client/src/features/exploration/components/ExplorationReward.tsx` (보상 표시 모달)
+    - `apps/client/src/features/exploration/index.ts`
+  - 기능: 탐험 상태관리, 지역별 난이도/보상, 진행률 표시, 취소 기능, 보상 애니메이션
 
 - [x] **C10: Dinosaur Feature 보강 (Frontend)** ✅ 2026-02-03
   - 생성 파일:
@@ -188,9 +191,9 @@ _(없음)_
 | --------- | ------- | ------ |
 | 🔴 높음   | 3       | 3 ✅   |
 | 🟠 중간   | 4       | 4 ✅   |
-| 🟡 낮음   | 6       | 3      |
+| 🟡 낮음   | 6       | 4      |
 | ⚪ 인프라 | 2       | 0      |
-| **합계**  | **15**  | **10** |
+| **합계**  | **15**  | **11** |
 
 ---
 
