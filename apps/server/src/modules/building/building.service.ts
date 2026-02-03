@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { BuildingStatus } from '@prisma/client';
 import { MAX_BUILDING_LEVEL } from '@dino-park/shared';
+import { getBuildingById } from '@dino-park/game-data';
 
 /**
  * 건물 레벨별 업그레이드 비용
@@ -115,9 +116,10 @@ export class BuildingService {
       throw new BadRequestException('이미 건물이 있는 위치입니다.');
     }
 
-    // TODO: game-data에서 건물 정보 가져오기
-    const buildCost = 1000; // 기본 건설 비용
-    const buildTimeSeconds = 60; // 기본 건설 시간 (1분)
+    // game-data에서 건물 정보 가져오기
+    const buildingData = getBuildingById(typeId);
+    const buildCost = buildingData?.baseCost || 1000;
+    const buildTimeSeconds = buildingData?.constructionTime || 60;
 
     // 골드 차감
     const currency = await this.prisma.currency.findUnique({
@@ -231,9 +233,10 @@ export class BuildingService {
       throw new BadRequestException('최대 레벨입니다.');
     }
 
-    // TODO: game-data에서 건물 정보 가져오기
-    const baseCost = 1000;
-    const baseTime = 60;
+    // game-data에서 건물 정보 가져오기
+    const buildingData = getBuildingById(building.typeId);
+    const baseCost = buildingData?.baseCost || 1000;
+    const baseTime = buildingData?.constructionTime || 60;
 
     const upgradeCost = getUpgradeCost(baseCost, building.level + 1);
     const upgradeTime = getUpgradeTime(baseTime, building.level + 1);
@@ -407,8 +410,9 @@ export class BuildingService {
     }
 
     // 철거 시 골드 일부 환불 (50%)
-    // TODO: game-data에서 건물 비용 가져오기
-    const baseCost = 1000;
+    // game-data에서 건물 비용 가져오기
+    const buildingData = getBuildingById(building.typeId);
+    const baseCost = buildingData?.baseCost || 1000;
     let totalInvested = 0;
     for (let i = 1; i <= building.level; i++) {
       totalInvested += getUpgradeCost(baseCost, i);
@@ -443,8 +447,9 @@ export class BuildingService {
       throw new NotFoundException('건물을 찾을 수 없습니다.');
     }
 
-    // TODO: game-data에서 건물 보너스 정보 가져오기
-    const baseBonus = 5; // 기본 5% 보너스
+    // game-data에서 건물 보너스 정보 가져오기
+    const buildingData = getBuildingById(building.typeId);
+    const baseBonus = buildingData?.baseBonus || 5;
 
     let bonus = calculateBuildingBonus(baseBonus, building.level);
 
@@ -474,9 +479,10 @@ export class BuildingService {
    * 건물 데이터 보강 (추가 정보 계산)
    */
   private enrichBuildingData(building: any) {
-    // TODO: game-data에서 건물 정보 가져오기
-    const baseCost = 1000;
-    const baseBonus = 5;
+    // game-data에서 건물 정보 가져오기
+    const buildingData = getBuildingById(building.typeId);
+    const baseCost = buildingData?.baseCost || 1000;
+    const baseBonus = buildingData?.baseBonus || 5;
 
     const nextLevelCost =
       building.level < MAX_BUILDING_LEVEL ? getUpgradeCost(baseCost, building.level + 1) : null;

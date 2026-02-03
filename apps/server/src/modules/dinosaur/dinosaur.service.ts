@@ -16,6 +16,7 @@ import {
   FEEDING_HUNGER_REDUCE,
   RARITY_REVENUE_MULTIPLIER,
 } from '@dino-park/shared';
+import { getDinosaurById } from '@dino-park/game-data';
 
 /**
  * 공룡 레벨별 필요 경험치
@@ -391,8 +392,9 @@ export class DinosaurService {
     const dinosaur = await this.getById(dinosaurId, userId);
 
     // 방생 시 DNA 획득 (레벨과 희귀도에 따라)
-    // TODO: game-data에서 희귀도 가져오기
-    const dnaReward = dinosaur.level * 5;
+    const speciesData = getDinosaurById(dinosaur.speciesId);
+    const rarityMultiplier = RARITY_REVENUE_MULTIPLIER[speciesData?.stats.rarity || 'common'] || 1;
+    const dnaReward = Math.floor(dinosaur.level * 5 * rarityMultiplier);
 
     await this.prisma.$transaction([
       this.prisma.dinosaur.delete({
@@ -421,9 +423,10 @@ export class DinosaurService {
 
     const currentState = this.calculateCurrentState(dinosaur);
 
-    // TODO: game-data에서 baseRevenue와 rarity 가져오기
-    const baseRevenue = 100;
-    const rarity = 'common';
+    // game-data에서 baseRevenue와 rarity 가져오기
+    const speciesData = getDinosaurById(dinosaur.speciesId);
+    const baseRevenue = speciesData?.stats.baseRevenue || 100;
+    const rarity = speciesData?.stats.rarity || 'common';
 
     const hourlyRevenue = calculateDinosaurRevenue(
       baseRevenue,

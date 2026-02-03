@@ -6,8 +6,8 @@ import {
   ENERGY_RECHARGE_MINUTES,
   MAX_OFFLINE_HOURS,
   OFFLINE_REVENUE_RATE,
-  RARITY_REVENUE_MULTIPLIER,
 } from '@dino-park/shared';
+import { getDinosaurById } from '@dino-park/game-data';
 
 @Injectable()
 export class EconomyService {
@@ -100,13 +100,15 @@ export class EconomyService {
     let totalMaintenanceCost = 0;
 
     for (const dino of user.park.dinosaurs) {
-      // TODO: game-data에서 baseRevenue 가져오기
-      const baseRevenue = 100;
+      // game-data에서 baseRevenue 가져오기
+      const speciesData = getDinosaurById(dino.speciesId);
+      const baseRevenue = speciesData?.stats.baseRevenue || 100;
+      const maintenanceCost = speciesData?.stats.maintenanceCost || Math.floor(baseRevenue * 0.1);
       const levelMultiplier = 1 + (dino.level - 1) * 0.1;
       const happinessMultiplier = 0.5 + (dino.happiness / 100) * 0.5;
 
       hourlyRevenue += Math.floor(baseRevenue * levelMultiplier * happinessMultiplier);
-      totalMaintenanceCost += Math.floor(baseRevenue * 0.1);
+      totalMaintenanceCost += maintenanceCost;
     }
 
     // 건물 보너스
