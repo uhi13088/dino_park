@@ -1,19 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Delete,
-  Body,
-  Param,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { BuildingService } from './building.service';
@@ -87,10 +73,7 @@ export class BuildingController {
    */
   @Get(':id')
   @ApiOperation({ summary: '건물 상세 조회' })
-  async getBuilding(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async getBuilding(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.buildingService.getById(id, userId);
   }
 
@@ -136,16 +119,8 @@ export class BuildingController {
       },
     },
   })
-  async constructBuilding(
-    @CurrentUser('id') userId: string,
-    @Body() dto: ConstructBuildingDto,
-  ) {
-    return this.buildingService.construct(
-      userId,
-      dto.typeId,
-      dto.positionX,
-      dto.positionY,
-    );
+  async constructBuilding(@CurrentUser('id') userId: string, @Body() dto: ConstructBuildingDto) {
+    return this.buildingService.construct(userId, dto.typeId, dto.positionX, dto.positionY);
   }
 
   /**
@@ -153,10 +128,7 @@ export class BuildingController {
    */
   @Post(':id/complete')
   @ApiOperation({ summary: '건설/업그레이드 완료 확인' })
-  async checkCompletion(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async checkCompletion(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.buildingService.checkCompletion(id, userId);
   }
 
@@ -176,10 +148,7 @@ export class BuildingController {
       },
     },
   })
-  async instantComplete(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async instantComplete(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.buildingService.instantComplete(id, userId);
   }
 
@@ -202,10 +171,7 @@ export class BuildingController {
       },
     },
   })
-  async upgradeBuilding(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async upgradeBuilding(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.buildingService.upgrade(id, userId);
   }
 
@@ -227,10 +193,7 @@ export class BuildingController {
    */
   @Post(':id/unassign-figure')
   @ApiOperation({ summary: '건물에서 위인 해제' })
-  async unassignGreatFigure(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async unassignGreatFigure(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.buildingService.unassignGreatFigure(id, userId);
   }
 
@@ -262,10 +225,7 @@ export class BuildingController {
       },
     },
   })
-  async demolishBuilding(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async demolishBuilding(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.buildingService.demolish(id, userId);
   }
 }

@@ -1,48 +1,44 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/utils/cn';
 
-const badgeVariants = cva(
-  'inline-flex items-center justify-center font-medium rounded-full',
-  {
-    variants: {
-      variant: {
-        default: 'bg-gray-100 text-gray-700',
-        primary: 'bg-primary-100 text-primary-700',
-        secondary: 'bg-secondary-100 text-secondary-700',
-        success: 'bg-green-100 text-green-700',
-        warning: 'bg-yellow-100 text-yellow-700',
-        danger: 'bg-red-100 text-red-700',
-        info: 'bg-blue-100 text-blue-700',
-        // 희귀도
-        common: 'bg-gray-200 text-gray-700',
-        uncommon: 'bg-green-200 text-green-800',
-        rare: 'bg-blue-200 text-blue-800',
-        epic: 'bg-purple-200 text-purple-800',
-        legendary: 'bg-gradient-to-r from-yellow-400 to-orange-400 text-white',
-        // 카테고리
-        herbivore: 'bg-green-200 text-green-800',
-        carnivore: 'bg-red-200 text-red-800',
-        pterosaur: 'bg-purple-200 text-purple-800',
-        marine: 'bg-blue-200 text-blue-800',
-        hybrid: 'bg-gradient-to-r from-purple-400 to-pink-400 text-white',
-      },
-      size: {
-        xs: 'h-4 px-1.5 text-[10px]',
-        sm: 'h-5 px-2 text-xs',
-        md: 'h-6 px-2.5 text-sm',
-        lg: 'h-7 px-3 text-base',
-      },
+const badgeVariants = cva('inline-flex items-center justify-center font-medium rounded-full', {
+  variants: {
+    variant: {
+      default: 'bg-gray-100 text-gray-700',
+      primary: 'bg-primary-100 text-primary-700',
+      secondary: 'bg-secondary-100 text-secondary-700',
+      success: 'bg-green-100 text-green-700',
+      warning: 'bg-yellow-100 text-yellow-700',
+      danger: 'bg-red-100 text-red-700',
+      info: 'bg-blue-100 text-blue-700',
+      // 희귀도
+      common: 'bg-gray-200 text-gray-700',
+      uncommon: 'bg-green-200 text-green-800',
+      rare: 'bg-blue-200 text-blue-800',
+      epic: 'bg-purple-200 text-purple-800',
+      legendary: 'bg-gradient-to-r from-yellow-400 to-orange-400 text-white',
+      // 카테고리
+      herbivore: 'bg-green-200 text-green-800',
+      carnivore: 'bg-red-200 text-red-800',
+      pterosaur: 'bg-purple-200 text-purple-800',
+      marine: 'bg-blue-200 text-blue-800',
+      hybrid: 'bg-gradient-to-r from-purple-400 to-pink-400 text-white',
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'sm',
+    size: {
+      xs: 'h-4 px-1.5 text-[10px]',
+      sm: 'h-5 px-2 text-xs',
+      md: 'h-6 px-2.5 text-sm',
+      lg: 'h-7 px-3 text-base',
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'sm',
+  },
+});
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {
+  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badgeVariants> {
   icon?: React.ReactNode;
 }
 
@@ -71,7 +67,12 @@ const rarityLabels = {
   legendary: '전설',
 };
 
-export function RarityBadge({ rarity, size = 'sm', showLabel = true, className }: RarityBadgeProps) {
+export function RarityBadge({
+  rarity,
+  size = 'sm',
+  showLabel = true,
+  className,
+}: RarityBadgeProps) {
   return (
     <Badge variant={rarity} size={size} className={className}>
       {showLabel ? rarityLabels[rarity] : rarity.charAt(0).toUpperCase()}
@@ -103,7 +104,12 @@ const categoryIcons = {
   hybrid: '🧬',
 };
 
-export function CategoryBadge({ category, size = 'sm', showLabel = true, className }: CategoryBadgeProps) {
+export function CategoryBadge({
+  category,
+  size = 'sm',
+  showLabel = true,
+  className,
+}: CategoryBadgeProps) {
   return (
     <Badge variant={category} size={size} className={className}>
       <span className="mr-0.5">{categoryIcons[category]}</span>

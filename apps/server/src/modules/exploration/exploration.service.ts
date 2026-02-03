@@ -1,14 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ExplorationStatus } from '@prisma/client';
-import {
-  ENERGY_PER_EXPLORATION,
-  RARITY_DROP_RATES,
-} from '@dino-park/shared';
+import { ENERGY_PER_EXPLORATION, RARITY_DROP_RATES } from '@dino-park/shared';
 
 // 탐험 지역 정보 (나중에 game-data로 이동)
 const EXPLORATION_REGIONS = {
@@ -118,9 +111,7 @@ export class ExplorationService {
     });
 
     if (!user || user.level < region.unlockLevel) {
-      throw new BadRequestException(
-        `이 지역은 레벨 ${region.unlockLevel} 이상에서 해금됩니다.`,
-      );
+      throw new BadRequestException(`이 지역은 레벨 ${region.unlockLevel} 이상에서 해금됩니다.`);
     }
 
     // 에너지 확인
@@ -367,10 +358,16 @@ export class ExplorationService {
     } else if (region.possibleRewards.includes('egg_rare') && eggRoll < RARITY_DROP_RATES.rare) {
       eggType = 'rare';
       hatchTime = 1800; // 30분
-    } else if (region.possibleRewards.includes('egg_uncommon') && eggRoll < RARITY_DROP_RATES.uncommon) {
+    } else if (
+      region.possibleRewards.includes('egg_uncommon') &&
+      eggRoll < RARITY_DROP_RATES.uncommon
+    ) {
       eggType = 'uncommon';
       hatchTime = 600; // 10분
-    } else if (region.possibleRewards.includes('egg_common') && eggRoll < RARITY_DROP_RATES.common) {
+    } else if (
+      region.possibleRewards.includes('egg_common') &&
+      eggRoll < RARITY_DROP_RATES.common
+    ) {
       eggType = 'common';
       hatchTime = 300; // 5분
     }
@@ -395,10 +392,7 @@ export class ExplorationService {
     const startedAt = new Date(exploration.startedAt);
     const completesAt = new Date(startedAt.getTime() + region.duration * 1000);
     const now = new Date();
-    const remainingSeconds = Math.max(
-      0,
-      Math.ceil((completesAt.getTime() - now.getTime()) / 1000),
-    );
+    const remainingSeconds = Math.max(0, Math.ceil((completesAt.getTime() - now.getTime()) / 1000));
 
     return {
       ...exploration,

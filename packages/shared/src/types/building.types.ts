@@ -7,13 +7,13 @@ import { Position, BaseEntity } from './common.types';
 
 // 건물 카테고리
 export enum BuildingCategory {
-  DINOSAUR = 'dinosaur',       // 공룡 시설
-  VISITOR = 'visitor',         // 관람 시설
-  AMENITY = 'amenity',         // 편의 시설
-  PRODUCTION = 'production',   // 생산 시설
-  RESEARCH = 'research',       // 연구 시설
-  OPERATION = 'operation',     // 운영 시설
-  DECORATION = 'decoration',   // 장식물
+  DINOSAUR = 'dinosaur', // 공룡 시설
+  VISITOR = 'visitor', // 관람 시설
+  AMENITY = 'amenity', // 편의 시설
+  PRODUCTION = 'production', // 생산 시설
+  RESEARCH = 'research', // 연구 시설
+  OPERATION = 'operation', // 운영 시설
+  DECORATION = 'decoration', // 장식물
 }
 
 // 건물 상태
@@ -26,10 +26,10 @@ export enum BuildingStatus {
 
 // 건물 스탯
 export interface BuildingStats {
-  capacity: number;           // 수용량
-  revenue: number;            // 수익 (있는 경우)
-  maintenanceCost: number;    // 유지비
-  space: number;              // 필요 공간
+  capacity: number; // 수용량
+  revenue: number; // 수익 (있는 경우)
+  maintenanceCost: number; // 유지비
+  space: number; // 필요 공간
 }
 
 // 건물 타입 (정적 데이터)

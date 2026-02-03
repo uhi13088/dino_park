@@ -39,9 +39,9 @@ export const MAX_GRID_SIZE = 100;
 
 // === 등급별 드롭률 ===
 export const RARITY_DROP_RATES = {
-  common: 0.40,
-  uncommon: 0.30,
-  rare: 0.20,
+  common: 0.4,
+  uncommon: 0.3,
+  rare: 0.2,
   epic: 0.08,
   legendary: 0.02,
 } as const;

@@ -1798,10 +1798,7 @@ export function getChapterByOrder(order: number): StoryChapter | undefined {
 /**
  * 챕터 내 씬 조회
  */
-export function getSceneById(
-  chapterId: string,
-  sceneId: string
-): StoryScene | undefined {
+export function getSceneById(chapterId: string, sceneId: string): StoryScene | undefined {
   const chapter = getChapterById(chapterId);
   return chapter?.scenes.find((scene) => scene.id === sceneId);
 }
@@ -1810,10 +1807,7 @@ export function getSceneById(
  * 총 씬 수 계산
  */
 export function getTotalSceneCount(): number {
-  return STORY_CHAPTERS.reduce(
-    (total, chapter) => total + chapter.scenes.length,
-    0
-  );
+  return STORY_CHAPTERS.reduce((total, chapter) => total + chapter.scenes.length, 0);
 }
 
 /**

@@ -1,20 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Delete,
-  Param,
-  Body,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiResponse,
-  ApiParam,
-} from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { DinosaurService } from './dinosaur.service';
@@ -94,10 +79,7 @@ export class DinosaurController {
   @Get(':id')
   @ApiOperation({ summary: '공룡 상세 조회' })
   @ApiParam({ name: 'id', description: '공룡 ID' })
-  async getDinosaur(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async getDinosaur(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.dinosaurService.getById(id, userId);
   }
 
@@ -171,10 +153,7 @@ export class DinosaurController {
       },
     },
   })
-  async feedDinosaur(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async feedDinosaur(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.dinosaurService.feed(id, userId);
   }
 
@@ -196,10 +175,7 @@ export class DinosaurController {
       },
     },
   })
-  async interactWithDinosaur(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async interactWithDinosaur(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.dinosaurService.interact(id, userId);
   }
 
@@ -209,10 +185,7 @@ export class DinosaurController {
   @Post(':id/remove')
   @ApiOperation({ summary: '공룡을 파크에서 제거 (창고로 이동)' })
   @ApiResponse({ status: 200, description: '창고로 이동 완료' })
-  async removeFromPark(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async removeFromPark(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.dinosaurService.removeFromPark(id, userId);
   }
 
@@ -245,10 +218,7 @@ export class DinosaurController {
       },
     },
   })
-  async releaseDinosaur(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async releaseDinosaur(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.dinosaurService.release(id, userId);
   }
 }

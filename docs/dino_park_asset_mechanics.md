@@ -1,4 +1,5 @@
 # 🗺️ 다이노 파크 타이쿤 - 에셋 프롬프트 (기믹 & 탐험편)
+
 ## 5개 섬 × 5개 기믹 = 25종 + 섬 UI
 
 ---
@@ -8,12 +9,14 @@
 ## 파일명 규칙
 
 ### 기믹 이미지
+
 ```
 mechanic_{섬번호}_{번호}_{영문이름}.png
 mechanic_{섬번호}_{번호}_{영문이름}_icon.png
 ```
 
 **예시:**
+
 ```
 mechanic_01_01_ancient_sap.png
 mechanic_01_01_ancient_sap_icon.png
@@ -21,6 +24,7 @@ mechanic_03_05_canyon_tunnel.png
 ```
 
 ### 섬 이미지
+
 ```
 island_{번호}_{영문이름}_icon.png
 island_{번호}_{영문이름}_preview.png
@@ -28,6 +32,7 @@ island_{번호}_{영문이름}_bg.png
 ```
 
 **예시:**
+
 ```
 island_01_emerald_icon.png
 island_01_emerald_preview.png
@@ -75,7 +80,7 @@ apps/client/src/assets/
 
 ---
 
-### 섬_01 에메랄드 섬 아이콘
+### 섬\_01 에메랄드 섬 아이콘
 
 ```
 2.5D isometric game icon, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft directional lighting, transparent PNG background, high quality mobile game artwork, Emerald Island icon, tropical jungle island silhouette, lush green vegetation #4CAF50, palm trees and dense forest, mysterious ancient ruins visible, warm golden sunlight, adventure destination marker, icon size 128x128 pixels, centered, --ar 1:1 --v 6 --s 250 --q 2
@@ -83,7 +88,7 @@ apps/client/src/assets/
 
 ---
 
-### 섬_02 화이트록 섬 아이콘
+### 섬\_02 화이트록 섬 아이콘
 
 ```
 2.5D isometric game icon, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft directional lighting, transparent PNG background, high quality mobile game artwork, Whiterock Island icon, frozen arctic island silhouette, snow-covered peaks #ECEFF1, ice glaciers and frozen tundra, aurora borealis hints, cold blue atmosphere #B3E5FC, winter expedition destination, icon size 128x128 pixels, centered, --ar 1:1 --v 6 --s 250 --q 2
@@ -91,7 +96,7 @@ apps/client/src/assets/
 
 ---
 
-### 섬_03 선셋 섬 아이콘
+### 섬\_03 선셋 섬 아이콘
 
 ```
 2.5D isometric game icon, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft directional lighting, transparent PNG background, high quality mobile game artwork, Sunset Island icon, desert canyon island silhouette, warm orange and red sandstone #FF7043, rock formations and canyons, golden sunset glow, oasis hints with palm trees, desert adventure destination, icon size 128x128 pixels, centered, --ar 1:1 --v 6 --s 250 --q 2
@@ -99,7 +104,7 @@ apps/client/src/assets/
 
 ---
 
-### 섬_04 딥블루 섬 아이콘
+### 섬\_04 딥블루 섬 아이콘
 
 ```
 2.5D isometric game icon, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft directional lighting, transparent PNG background, high quality mobile game artwork, Deep Blue Island icon, ocean archipelago silhouette, deep blue water #1565C0, coral reefs visible underwater, tropical beaches, shipwreck hints, marine exploration destination, icon size 128x128 pixels, centered, --ar 1:1 --v 6 --s 250 --q 2
@@ -107,7 +112,7 @@ apps/client/src/assets/
 
 ---
 
-### 섬_05 스톰 섬 아이콘
+### 섬\_05 스톰 섬 아이콘
 
 ```
 2.5D isometric game icon, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft directional lighting, transparent PNG background, high quality mobile game artwork, Storm Island icon, volcanic island silhouette, dark volcanic rock #37474F, active volcano with orange lava glow #FF5722, smoke and ash clouds, lightning storm atmosphere, dangerous expedition destination, icon size 128x128 pixels, centered, --ar 1:1 --v 6 --s 250 --q 2
@@ -185,7 +190,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_01_01 고대 수액 (Ancient Sap)
+## 기믹\_01_01 고대 수액 (Ancient Sap)
 
 ### 메인 이미지
 
@@ -201,7 +206,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_01_02 치유 온천 (Healing Hot Spring)
+## 기믹\_01_02 치유 온천 (Healing Hot Spring)
 
 ### 메인 이미지
 
@@ -217,7 +222,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_01_03 밀림 터널 (Jungle Tunnel)
+## 기믹\_01_03 밀림 터널 (Jungle Tunnel)
 
 ### 메인 이미지
 
@@ -233,7 +238,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_01_04 거대 폭포 (Giant Waterfall)
+## 기믹\_01_04 거대 폭포 (Giant Waterfall)
 
 ### 메인 이미지
 
@@ -249,7 +254,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_01_05 고대 거목 (Ancient Giant Tree)
+## 기믹\_01_05 고대 거목 (Ancient Giant Tree)
 
 ### 메인 이미지
 
@@ -271,7 +276,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_02_01 영구 동토층 (Permafrost Layer)
+## 기믹\_02_01 영구 동토층 (Permafrost Layer)
 
 ### 메인 이미지
 
@@ -287,7 +292,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_02_02 얼음 화석 (Ice Fossil)
+## 기믹\_02_02 얼음 화석 (Ice Fossil)
 
 ### 메인 이미지
 
@@ -303,7 +308,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_02_03 온열 지대 (Thermal Zone)
+## 기믹\_02_03 온열 지대 (Thermal Zone)
 
 ### 메인 이미지
 
@@ -319,7 +324,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_02_04 빙하 동굴 (Glacier Cave)
+## 기믹\_02_04 빙하 동굴 (Glacier Cave)
 
 ### 메인 이미지
 
@@ -335,7 +340,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_02_05 오로라 전망대 (Aurora Observatory)
+## 기믹\_02_05 오로라 전망대 (Aurora Observatory)
 
 ### 메인 이미지
 
@@ -357,7 +362,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_03_01 지하수맥 (Underground Spring)
+## 기믹\_03_01 지하수맥 (Underground Spring)
 
 ### 메인 이미지
 
@@ -373,7 +378,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_03_02 사암 광산 (Sandstone Mine)
+## 기믹\_03_02 사암 광산 (Sandstone Mine)
 
 ### 메인 이미지
 
@@ -389,7 +394,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_03_03 신기루 숲 (Mirage Forest)
+## 기믹\_03_03 신기루 숲 (Mirage Forest)
 
 ### 메인 이미지
 
@@ -405,7 +410,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_03_04 고대 오아시스 (Ancient Oasis)
+## 기믹\_03_04 고대 오아시스 (Ancient Oasis)
 
 ### 메인 이미지
 
@@ -421,7 +426,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_03_05 협곡 터널 (Canyon Tunnel)
+## 기믹\_03_05 협곡 터널 (Canyon Tunnel)
 
 ### 메인 이미지
 
@@ -443,7 +448,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_04_01 난파선 (Shipwreck)
+## 기믹\_04_01 난파선 (Shipwreck)
 
 ### 메인 이미지
 
@@ -459,7 +464,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_04_02 해저 유적 (Underwater Ruins)
+## 기믹\_04_02 해저 유적 (Underwater Ruins)
 
 ### 메인 이미지
 
@@ -475,7 +480,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_04_03 진주 양식장 (Pearl Farm)
+## 기믹\_04_03 진주 양식장 (Pearl Farm)
 
 ### 메인 이미지
 
@@ -491,7 +496,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_04_04 산호 정원 (Coral Garden)
+## 기믹\_04_04 산호 정원 (Coral Garden)
 
 ### 메인 이미지
 
@@ -507,7 +512,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_04_05 심해 동굴 (Deep Sea Cave)
+## 기믹\_04_05 심해 동굴 (Deep Sea Cave)
 
 ### 메인 이미지
 
@@ -529,7 +534,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_05_01 지열 발전소 (Geothermal Plant)
+## 기믹\_05_01 지열 발전소 (Geothermal Plant)
 
 ### 메인 이미지
 
@@ -545,7 +550,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_05_02 화산재 광물 (Volcanic Ash Mineral)
+## 기믹\_05_02 화산재 광물 (Volcanic Ash Mineral)
 
 ### 메인 이미지
 
@@ -561,7 +566,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_05_03 용암 터널 (Lava Tunnel)
+## 기믹\_05_03 용암 터널 (Lava Tunnel)
 
 ### 메인 이미지
 
@@ -577,7 +582,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_05_04 마그마 온천 (Magma Hot Spring)
+## 기믹\_05_04 마그마 온천 (Magma Hot Spring)
 
 ### 메인 이미지
 
@@ -593,7 +598,7 @@ apps/client/src/assets/
 
 ---
 
-## 기믹_05_05 흑요석 광산 (Obsidian Mine)
+## 기믹\_05_05 흑요석 광산 (Obsidian Mine)
 
 ### 메인 이미지
 
@@ -612,6 +617,7 @@ apps/client/src/assets/
 # 📋 파일명 빠른 참조
 
 ## 섬 에셋
+
 ```
 island_01_emerald_icon.png
 island_01_emerald_preview.png
@@ -628,6 +634,7 @@ btn_expedition_start.png
 ```
 
 ## 에메랄드 섬 기믹
+
 ```
 mechanic_01_01_ancient_sap.png
 mechanic_01_01_ancient_sap_icon.png
@@ -642,6 +649,7 @@ mechanic_01_05_ancient_tree_icon.png
 ```
 
 ## 화이트록 섬 기믹
+
 ```
 mechanic_02_01_permafrost.png
 mechanic_02_01_permafrost_icon.png
@@ -656,6 +664,7 @@ mechanic_02_05_aurora_observatory_icon.png
 ```
 
 ## 선셋 섬 기믹
+
 ```
 mechanic_03_01_underground_spring.png
 mechanic_03_01_underground_spring_icon.png
@@ -670,6 +679,7 @@ mechanic_03_05_canyon_tunnel_icon.png
 ```
 
 ## 딥블루 섬 기믹
+
 ```
 mechanic_04_01_shipwreck.png
 mechanic_04_01_shipwreck_icon.png
@@ -684,6 +694,7 @@ mechanic_04_05_deep_sea_cave_icon.png
 ```
 
 ## 스톰 섬 기믹
+
 ```
 mechanic_05_01_geothermal_plant.png
 mechanic_05_01_geothermal_plant_icon.png
@@ -701,16 +712,16 @@ mechanic_05_05_obsidian_mine_icon.png
 
 # 📊 전체 요약
 
-| 카테고리 | 항목 수 | 상태 |
-|----------|---------|------|
-| 섬 아이콘 | 5 | ✅ 완료 |
-| 섬 미리보기 | 5 | ✅ 완료 |
-| 섬 선택 UI | 2 | ✅ 완료 |
-| 에메랄드 기믹 | 5 (×2) | ✅ 완료 |
-| 화이트록 기믹 | 5 (×2) | ✅ 완료 |
-| 선셋 기믹 | 5 (×2) | ✅ 완료 |
-| 딥블루 기믹 | 5 (×2) | ✅ 완료 |
-| 스톰 기믹 | 5 (×2) | ✅ 완료 |
-| **총합** | **62개** | ✅ |
+| 카테고리      | 항목 수  | 상태    |
+| ------------- | -------- | ------- |
+| 섬 아이콘     | 5        | ✅ 완료 |
+| 섬 미리보기   | 5        | ✅ 완료 |
+| 섬 선택 UI    | 2        | ✅ 완료 |
+| 에메랄드 기믹 | 5 (×2)   | ✅ 완료 |
+| 화이트록 기믹 | 5 (×2)   | ✅ 완료 |
+| 선셋 기믹     | 5 (×2)   | ✅ 완료 |
+| 딥블루 기믹   | 5 (×2)   | ✅ 완료 |
+| 스톰 기믹     | 5 (×2)   | ✅ 완료 |
+| **총합**      | **62개** | ✅      |
 
 > 기믹은 메인 이미지 + 아이콘 = 2개씩

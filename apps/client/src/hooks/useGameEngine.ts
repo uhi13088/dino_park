@@ -36,7 +36,7 @@ export function useGameEngine() {
         selectEntity(null);
       }
     },
-    [mode, placementData, selectEntity]
+    [mode, placementData, selectEntity],
   );
 
   // 엔티티 클릭 핸들러
@@ -52,7 +52,7 @@ export function useGameEngine() {
         openModal('building_detail', { buildingId: id });
       }
     },
-    [selectEntity, openModal]
+    [selectEntity, openModal],
   );
 
   // 게임 엔진 초기화
@@ -116,7 +116,7 @@ export function useGameEngine() {
         dino.id,
         dino.positionX,
         dino.positionY,
-        0x4CAF50 // TODO: 카테고리별 색상
+        0x4caf50, // TODO: 카테고리별 색상
       );
     });
   }, [isReady, dinosaursData]);
@@ -130,7 +130,7 @@ export function useGameEngine() {
         building.id,
         building.positionX,
         building.positionY,
-        0x795548 // TODO: 타입별 색상
+        0x795548, // TODO: 타입별 색상
       );
     });
   }, [isReady, buildingsData]);

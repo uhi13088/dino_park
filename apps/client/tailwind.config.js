@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -39,8 +36,8 @@ export default {
           herbivore: '#4CAF50', // 초식 - 녹색
           carnivore: '#F44336', // 육식 - 빨강
           pterosaur: '#9C27B0', // 익룡 - 보라
-          marine: '#2196F3',    // 해양 - 파랑
-          hybrid: '#FF9800',    // 하이브리드 - 주황
+          marine: '#2196F3', // 해양 - 파랑
+          hybrid: '#FF9800', // 하이브리드 - 주황
         },
         rarity: {
           common: '#9E9E9E',
@@ -55,8 +52,8 @@ export default {
         display: ['Nunito', 'sans-serif'],
       },
       spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
+        18: '4.5rem',
+        88: '22rem',
       },
       animation: {
         'bounce-slow': 'bounce 2s infinite',

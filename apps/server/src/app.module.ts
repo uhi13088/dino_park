@@ -12,6 +12,7 @@ import { StoryModule } from './modules/story/story.module';
 import { ShopModule } from './modules/shop/shop.module';
 import { SeasonModule } from './modules/season/season.module';
 import { EconomyModule } from './modules/economy/economy.module';
+import { SocialModule } from './modules/social/social.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { EconomyModule } from './modules/economy/economy.module';
     ShopModule,
     SeasonModule,
     EconomyModule,
+    SocialModule,
   ],
 })
 export class AppModule {}

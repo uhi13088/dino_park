@@ -1,10 +1,5 @@
 import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { TossLoginDto } from './dto/toss-login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';

@@ -55,26 +55,21 @@ export function ProgressBar({
   return (
     <div className={cn('w-full', className)}>
       {showLabel && (
-        <div className="flex justify-between mb-1">
+        <div className="mb-1 flex justify-between">
           <span className="text-xs text-gray-500">{formatLabel()}</span>
         </div>
       )}
-      <div
-        className={cn(
-          'w-full bg-gray-200 rounded-full overflow-hidden',
-          sizeClasses[size]
-        )}
-      >
+      <div className={cn('w-full overflow-hidden rounded-full bg-gray-200', sizeClasses[size])}>
         <div
           className={cn(
             'h-full rounded-full transition-all duration-500 ease-out',
             variantColors[variant],
-            animated && 'relative overflow-hidden'
+            animated && 'relative overflow-hidden',
           )}
           style={{ width: `${percentage}%` }}
         >
           {animated && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+            <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           )}
         </div>
       </div>
@@ -93,7 +88,7 @@ interface ExpBarProps {
 export function ExpBar({ level, exp, maxExp, className }: ExpBarProps) {
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-purple-500 text-white text-sm font-bold rounded-full">
+      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-purple-500 text-sm font-bold text-white">
         {level}
       </span>
       <div className="flex-1">
@@ -120,15 +115,22 @@ interface StatusBarProps {
   className?: string;
 }
 
-export function StatusBar({ label, value, max, icon, variant = 'primary', className }: StatusBarProps) {
+export function StatusBar({
+  label,
+  value,
+  max,
+  icon,
+  variant = 'primary',
+  className,
+}: StatusBarProps) {
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      {icon && <span className="flex-shrink-0 w-5">{icon}</span>}
-      <span className="flex-shrink-0 text-xs text-gray-500 w-12">{label}</span>
+      {icon && <span className="w-5 flex-shrink-0">{icon}</span>}
+      <span className="w-12 flex-shrink-0 text-xs text-gray-500">{label}</span>
       <div className="flex-1">
         <ProgressBar value={value} max={max} variant={variant} size="sm" />
       </div>
-      <span className="flex-shrink-0 text-xs font-medium text-gray-700 w-10 text-right">
+      <span className="w-10 flex-shrink-0 text-right text-xs font-medium text-gray-700">
         {value}/{max}
       </span>
     </div>

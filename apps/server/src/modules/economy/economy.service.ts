@@ -28,9 +28,7 @@ export class EconomyService {
     // 에너지 회복 계산
     const now = new Date();
     const lastRecharge = currency.energyLastRechargedAt;
-    const minutesPassed = Math.floor(
-      (now.getTime() - lastRecharge.getTime()) / (1000 * 60),
-    );
+    const minutesPassed = Math.floor((now.getTime() - lastRecharge.getTime()) / (1000 * 60));
     const energyToAdd = Math.floor(minutesPassed / ENERGY_RECHARGE_MINUTES);
     const currentEnergy = Math.min(
       MAX_EXPLORATION_ENERGY,
@@ -261,14 +259,7 @@ export class EconomyService {
       data: { dna: { increment: amount } },
     });
 
-    await this.recordTransaction(
-      userId,
-      TransactionType.EARN,
-      'dna',
-      amount,
-      reason,
-      currency.dna,
-    );
+    await this.recordTransaction(userId, TransactionType.EARN, 'dna', amount, reason, currency.dna);
 
     return currency;
   }
@@ -335,17 +326,12 @@ export class EconomyService {
 
     const now = new Date();
     const lastRecharge = currency.energyLastRechargedAt;
-    const minutesPassed = Math.floor(
-      (now.getTime() - lastRecharge.getTime()) / (1000 * 60),
-    );
+    const minutesPassed = Math.floor((now.getTime() - lastRecharge.getTime()) / (1000 * 60));
 
     const energyToAdd = Math.floor(minutesPassed / ENERGY_RECHARGE_MINUTES);
 
     if (energyToAdd > 0 && currency.explorationEnergy < MAX_EXPLORATION_ENERGY) {
-      const newEnergy = Math.min(
-        MAX_EXPLORATION_ENERGY,
-        currency.explorationEnergy + energyToAdd,
-      );
+      const newEnergy = Math.min(MAX_EXPLORATION_ENERGY, currency.explorationEnergy + energyToAdd);
 
       return this.prisma.currency.update({
         where: { userId },

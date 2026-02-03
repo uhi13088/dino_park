@@ -88,7 +88,9 @@ export class RevenueCalculator {
     const rarityMultiplier = RARITY_REVENUE_MULTIPLIER[rarity];
 
     // 최종 수익
-    const finalRevenue = Math.floor(baseRevenue * levelMultiplier * stateMultiplier * rarityMultiplier);
+    const finalRevenue = Math.floor(
+      baseRevenue * levelMultiplier * stateMultiplier * rarityMultiplier,
+    );
 
     return {
       dinosaurId: dinosaur.id,
@@ -122,12 +124,12 @@ export class RevenueCalculator {
   calculateParkRevenue(
     dinosaurs: DinosaurResponse[],
     buildings: BuildingResponse[],
-    greatFigureBonus: number = 0
+    greatFigureBonus: number = 0,
   ): ParkRevenueResult {
     // 공룡별 수익 계산
     const dinosaurRevenues = dinosaurs
-      .filter(d => d.isInPark)
-      .map(d => this.calculateDinosaurRevenue(d));
+      .filter((d) => d.isInPark)
+      .map((d) => this.calculateDinosaurRevenue(d));
 
     const totalDinosaurRevenue = dinosaurRevenues.reduce((sum, r) => sum + r.finalRevenue, 0);
 
@@ -136,7 +138,7 @@ export class RevenueCalculator {
 
     // 최종 수익 (모든 보너스 적용)
     const totalRevenue = Math.floor(
-      totalDinosaurRevenue * (1 + buildingBonus) * (1 + greatFigureBonus)
+      totalDinosaurRevenue * (1 + buildingBonus) * (1 + greatFigureBonus),
     );
 
     // 유지비 계산
@@ -161,7 +163,7 @@ export class RevenueCalculator {
    */
   private calculateBuildingBonus(buildings: BuildingResponse[]): number {
     // 활성 건물의 보너스 합산 (간단한 로직, 추후 확장)
-    const activeBuildings = buildings.filter(b => b.status === 'active');
+    const activeBuildings = buildings.filter((b) => b.status === 'active');
 
     // 레벨당 1% 보너스 (가정)
     const bonusPerLevel = 0.01;
@@ -174,11 +176,11 @@ export class RevenueCalculator {
    */
   private calculateMaintenanceCost(
     dinosaurs: DinosaurResponse[],
-    buildings: BuildingResponse[]
+    buildings: BuildingResponse[],
   ): number {
     // 공룡 유지비
     const dinoMaintenance = dinosaurs
-      .filter(d => d.isInPark)
+      .filter((d) => d.isInPark)
       .reduce((sum, d) => {
         const speciesData = this.speciesDataCache.get(d.speciesId);
         return sum + (speciesData?.maintenanceCost ?? 10);
@@ -186,7 +188,7 @@ export class RevenueCalculator {
 
     // 건물 유지비 (레벨당 5 가정)
     const buildingMaintenance = buildings
-      .filter(b => b.status === 'active')
+      .filter((b) => b.status === 'active')
       .reduce((sum, b) => sum + b.level * 5, 0);
 
     return dinoMaintenance + buildingMaintenance;
@@ -207,7 +209,7 @@ export class RevenueCalculator {
     hourlyRevenue: number,
     offlineHours: number,
     maxOfflineHours: number,
-    offlineRate: number
+    offlineRate: number,
   ): number {
     const cappedHours = Math.min(offlineHours, maxOfflineHours);
     return Math.floor(hourlyRevenue * cappedHours * offlineRate);

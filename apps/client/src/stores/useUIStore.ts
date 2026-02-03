@@ -125,8 +125,7 @@ export const useUIStore = create<UIState>()(
 
       // 튜토리얼 하이라이트
       tutorialHighlight: null,
-      setTutorialHighlight: (elementId) =>
-        set({ tutorialHighlight: elementId }),
+      setTutorialHighlight: (elementId) => set({ tutorialHighlight: elementId }),
 
       // 바텀 시트
       bottomSheetContent: null,
@@ -142,6 +141,6 @@ export const useUIStore = create<UIState>()(
           // content는 애니메이션 후 정리
         }),
     }),
-    { name: 'UIStore' }
-  )
+    { name: 'UIStore' },
+  ),
 );

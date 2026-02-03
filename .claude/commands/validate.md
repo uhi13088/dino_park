@@ -1,12 +1,14 @@
 전체 검증을 실행하고 결과를 요약해줘.
 
 ## 실행 순서
+
 1. `pnpm typecheck` (TypeScript 검사)
 2. `pnpm lint` (ESLint 검사)
 3. `pnpm test` (테스트 실행)
 4. `pnpm build` (빌드 확인)
 
 ## 출력 형식
+
 ```
 ## 🔍 검증 결과
 
@@ -23,10 +25,12 @@
 ```
 
 ## CLAUDE.md 검증 체크리스트도 확인
+
 - [ ] 타입 일관성 (shared/types 사용 여부)
 - [ ] 필드명 일관성 (도메인 용어 통일표)
 - [ ] 문서 일치 (GDD, 밸런스 수치)
 
 ## 실패 시
+
 - TASK.md의 현재 티켓을 BLOCKED로 옮길지 제안
 - 수정 방법 제시

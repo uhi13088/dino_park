@@ -59,10 +59,7 @@ export class UserController {
   @Patch('me/nickname')
   @ApiOperation({ summary: '닉네임 변경' })
   @ApiResponse({ status: 200, description: '변경 완료' })
-  async updateNickname(
-    @CurrentUser('id') userId: string,
-    @Body() dto: UpdateNicknameDto,
-  ) {
+  async updateNickname(@CurrentUser('id') userId: string, @Body() dto: UpdateNicknameDto) {
     return this.userService.updateNickname(userId, dto.nickname);
   }
 
@@ -72,10 +69,7 @@ export class UserController {
   @Patch('me/tutorial')
   @ApiOperation({ summary: '튜토리얼 단계 업데이트' })
   @ApiResponse({ status: 200, description: '업데이트 완료' })
-  async updateTutorial(
-    @CurrentUser('id') userId: string,
-    @Body() dto: UpdateTutorialDto,
-  ) {
+  async updateTutorial(@CurrentUser('id') userId: string, @Body() dto: UpdateTutorialDto) {
     return this.userService.updateTutorialStep(userId, dto.step);
   }
 

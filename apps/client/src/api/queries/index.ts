@@ -110,10 +110,24 @@ export const queryKeys = {
   // Shop
   shop: ['shop'] as const,
   shopProducts: () => [...queryKeys.shop, 'products'] as const,
+  shopDiamondPacks: () => [...queryKeys.shop, 'diamond-packs'] as const,
+  shopSpecialPackages: () => [...queryKeys.shop, 'special-packages'] as const,
+  shopDaily: () => [...queryKeys.shop, 'daily'] as const,
+  shopGold: () => [...queryKeys.shop, 'gold'] as const,
 
   // Season
   season: ['season'] as const,
   seasonCurrent: () => [...queryKeys.season, 'current'] as const,
+  seasonPass: () => [...queryKeys.season, 'pass'] as const,
+  seasonChapters: () => [...queryKeys.season, 'chapters'] as const,
+  seasonEvents: () => [...queryKeys.season, 'events'] as const,
+
+  // Social
+  social: ['social'] as const,
+  socialFriends: () => [...queryKeys.social, 'friends'] as const,
+  socialRequests: () => [...queryKeys.social, 'requests'] as const,
+  socialGifts: () => [...queryKeys.social, 'gifts'] as const,
+  socialGuestbook: () => [...queryKeys.social, 'guestbook'] as const,
 };
 
 // ========================================
@@ -183,8 +197,7 @@ export function useUpdateNickname() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (nickname: string) =>
-      api.patch<UserResponse>('/users/me/nickname', { nickname }),
+    mutationFn: (nickname: string) => api.patch<UserResponse>('/users/me/nickname', { nickname }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.user });
     },
@@ -236,8 +249,7 @@ export function useUpdateParkName() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (name: string) =>
-      api.patch<ParkResponse>('/parks/me/name', { name }),
+    mutationFn: (name: string) => api.patch<ParkResponse>('/parks/me/name', { name }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.park });
     },
@@ -268,8 +280,7 @@ export function useCreateDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateDinosaurRequest) =>
-      api.post<DinosaurResponse>('/dinosaurs', data),
+    mutationFn: (data: CreateDinosaurRequest) => api.post<DinosaurResponse>('/dinosaurs', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurs });
       queryClient.invalidateQueries({ queryKey: queryKeys.parkSummary() });
@@ -294,8 +305,7 @@ export function useFeedDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<DinosaurResponse>(`/dinosaurs/${id}/feed`),
+    mutationFn: (id: string) => api.post<DinosaurResponse>(`/dinosaurs/${id}/feed`),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurDetail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurList() });
@@ -308,8 +318,7 @@ export function useInteractDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<InteractDinosaurResponse>(`/dinosaurs/${id}/interact`),
+    mutationFn: (id: string) => api.post<InteractDinosaurResponse>(`/dinosaurs/${id}/interact`),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurDetail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurList() });
@@ -353,8 +362,7 @@ export function useCreateBuilding() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateBuildingRequest) =>
-      api.post<BuildingResponse>('/buildings', data),
+    mutationFn: (data: CreateBuildingRequest) => api.post<BuildingResponse>('/buildings', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
       queryClient.invalidateQueries({ queryKey: queryKeys.parkSummary() });
@@ -367,8 +375,7 @@ export function useUpgradeBuilding() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<BuildingResponse>(`/buildings/${id}/upgrade`),
+    mutationFn: (id: string) => api.post<BuildingResponse>(`/buildings/${id}/upgrade`),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingList() });
@@ -381,7 +388,10 @@ export function useAssignGreatFigure() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ buildingId, greatFigureId }: { buildingId: string } & AssignGreatFigureRequest) =>
+    mutationFn: ({
+      buildingId,
+      greatFigureId,
+    }: { buildingId: string } & AssignGreatFigureRequest) =>
       api.post<BuildingResponse>(`/buildings/${buildingId}/assign-great-figure`, { greatFigureId }),
     onSuccess: (_, { buildingId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(buildingId) });
@@ -394,8 +404,7 @@ export function useUnassignGreatFigure() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (buildingId: string) =>
-      api.delete(`/buildings/${buildingId}/great-figure`),
+    mutationFn: (buildingId: string) => api.delete(`/buildings/${buildingId}/great-figure`),
     onSuccess: (_, buildingId) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(buildingId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.greatFigures });
@@ -431,7 +440,8 @@ export function useCurrency() {
 export function useTransactions(page = 1, limit = 20) {
   return useQuery({
     queryKey: queryKeys.transactions(page),
-    queryFn: () => api.get<TransactionListResponse>(`/economy/transactions?page=${page}&limit=${limit}`),
+    queryFn: () =>
+      api.get<TransactionListResponse>(`/economy/transactions?page=${page}&limit=${limit}`),
     enabled: tokenManager.isAuthenticated(),
   });
 }
@@ -492,8 +502,7 @@ export function useStartExploration() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (regionId: string) =>
-      api.post<ExplorationResponse>('/explorations', { regionId }),
+    mutationFn: (regionId: string) => api.post<ExplorationResponse>('/explorations', { regionId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
@@ -505,8 +514,7 @@ export function useCheckExploration() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<ExplorationResponse>(`/explorations/${id}/check`),
+    mutationFn: (id: string) => api.post<ExplorationResponse>(`/explorations/${id}/check`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
     },
@@ -530,8 +538,7 @@ export function useClaimExploration() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) =>
-      api.post<ClaimExplorationResponse>(`/explorations/${id}/claim`),
+    mutationFn: (id: string) => api.post<ClaimExplorationResponse>(`/explorations/${id}/claim`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
@@ -622,7 +629,10 @@ export function useStoryChapters() {
 export function useStoryProgress() {
   return useQuery({
     queryKey: queryKeys.storyProgress(),
-    queryFn: () => api.get<{ progress: Record<string, { completedScenes: number; isCompleted: boolean }> }>('/stories/progress'),
+    queryFn: () =>
+      api.get<{ progress: Record<string, { completedScenes: number; isCompleted: boolean }> }>(
+        '/stories/progress',
+      ),
     enabled: tokenManager.isAuthenticated(),
   });
 }
@@ -638,10 +648,366 @@ export function useAdvanceScene() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ chapterId, sceneId, choiceId }: { chapterId: string; sceneId: string; choiceId?: string }) =>
-      api.post<AdvanceSceneResponse>(`/stories/${chapterId}/scenes/${sceneId}/advance`, { choiceId }),
+    mutationFn: ({
+      chapterId,
+      sceneId,
+      choiceId,
+    }: {
+      chapterId: string;
+      sceneId: string;
+      choiceId?: string;
+    }) =>
+      api.post<AdvanceSceneResponse>(`/stories/${chapterId}/scenes/${sceneId}/advance`, {
+        choiceId,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.storyProgress() });
     },
+  });
+}
+
+// ========================================
+// Shop Queries & Mutations
+// ========================================
+
+export function useShopProducts() {
+  return useQuery({
+    queryKey: queryKeys.shopProducts(),
+    queryFn: () => api.get<{ products: unknown[] }>('/shop/products'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useDiamondPacks() {
+  return useQuery({
+    queryKey: ['shop', 'diamond-packs'],
+    queryFn: () => api.get<{ packs: unknown[] }>('/shop/iap/diamond-packs'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useSpecialPackages() {
+  return useQuery({
+    queryKey: ['shop', 'special-packages'],
+    queryFn: () => api.get<{ packages: unknown[] }>('/shop/iap/special-packages'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useDailyShop() {
+  return useQuery({
+    queryKey: ['shop', 'daily'],
+    queryFn: () => api.get<{ items: unknown[]; refreshTime: string; seed: string }>('/shop/daily'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useGoldShop() {
+  return useQuery({
+    queryKey: ['shop', 'gold'],
+    queryFn: () => api.get<{ items: unknown[] }>('/shop/gold-shop'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function usePurchaseIAP() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { productId: string; receipt: string; platform: string }) =>
+      api.post<{ success: boolean; rewards: unknown[] }>('/shop/iap/purchase', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shop });
+    },
+  });
+}
+
+export function usePurchaseDailyItem() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { itemId: string; slot: number }) =>
+      api.post<{ success: boolean; item: unknown }>('/shop/daily/purchase', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+      queryClient.invalidateQueries({ queryKey: ['shop', 'daily'] });
+    },
+  });
+}
+
+export function usePurchaseGoldShopItem() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (itemId: string) =>
+      api.post<{ success: boolean; gold: number }>(`/shop/gold-shop/${itemId}/purchase`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+      queryClient.invalidateQueries({ queryKey: ['shop', 'gold'] });
+    },
+  });
+}
+
+export function useClaimAdReward() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (adType: string) =>
+      api.post<{ success: boolean; rewards: unknown[] }>('/shop/ads/claim', { adType }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    },
+  });
+}
+
+// ========================================
+// Season Queries & Mutations
+// ========================================
+
+export function useCurrentSeason() {
+  return useQuery({
+    queryKey: queryKeys.seasonCurrent(),
+    queryFn: () =>
+      api.get<{
+        season: unknown;
+        isActive: boolean;
+        daysRemaining: number;
+      }>('/seasons/current'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useSeasonPass() {
+  return useQuery({
+    queryKey: ['season', 'pass'],
+    queryFn: () =>
+      api.get<{
+        level: number;
+        exp: number;
+        isPremium: boolean;
+        claimedRewards: number[];
+      }>('/seasons/pass'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useSeasonChapters() {
+  return useQuery({
+    queryKey: ['season', 'chapters'],
+    queryFn: () => api.get<{ chapters: unknown[] }>('/seasons/chapters'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useSeasonEvents() {
+  return useQuery({
+    queryKey: ['season', 'events'],
+    queryFn: () => api.get<{ events: unknown[] }>('/seasons/events'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useClaimSeasonReward() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { level: number; isPremium: boolean }) =>
+      api.post<{ success: boolean; rewards: unknown[] }>('/seasons/pass/claim', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['season', 'pass'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    },
+  });
+}
+
+export function useUpgradeSeasonPass() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => api.post<{ success: boolean }>('/seasons/pass/upgrade'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['season', 'pass'] });
+    },
+  });
+}
+
+export function useCompleteSeasonChapter() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (chapterId: string) =>
+      api.post<{ success: boolean; rewards: unknown[] }>(`/seasons/chapters/${chapterId}/complete`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['season', 'chapters'] });
+      queryClient.invalidateQueries({ queryKey: ['season', 'pass'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    },
+  });
+}
+
+// ========================================
+// Social Queries & Mutations
+// ========================================
+
+export function useFriends() {
+  return useQuery({
+    queryKey: ['social', 'friends'],
+    queryFn: () =>
+      api.get<{
+        friends: unknown[];
+        onlineCount: number;
+      }>('/social/friends'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useFriendRequests() {
+  return useQuery({
+    queryKey: ['social', 'requests'],
+    queryFn: () =>
+      api.get<{
+        received: unknown[];
+        sent: unknown[];
+      }>('/social/requests'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useGifts() {
+  return useQuery({
+    queryKey: ['social', 'gifts'],
+    queryFn: () =>
+      api.get<{
+        gifts: unknown[];
+        canSendToday: number;
+      }>('/social/gifts'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useGuestbook() {
+  return useQuery({
+    queryKey: ['social', 'guestbook'],
+    queryFn: () => api.get<{ entries: unknown[] }>('/social/guestbook'),
+    enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useSendFriendRequest() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => api.post<{ success: boolean }>('/social/requests', { userId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social', 'requests'] });
+    },
+  });
+}
+
+export function useAcceptFriendRequest() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (requestId: string) =>
+      api.post<{ success: boolean }>(`/social/requests/${requestId}/accept`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social', 'friends'] });
+      queryClient.invalidateQueries({ queryKey: ['social', 'requests'] });
+    },
+  });
+}
+
+export function useRejectFriendRequest() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (requestId: string) =>
+      api.post<{ success: boolean }>(`/social/requests/${requestId}/reject`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social', 'requests'] });
+    },
+  });
+}
+
+export function useRemoveFriend() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (friendId: string) =>
+      api.delete<{ success: boolean }>(`/social/friends/${friendId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social', 'friends'] });
+    },
+  });
+}
+
+export function useSendGift() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { friendId: string; giftType: string }) =>
+      api.post<{ success: boolean }>('/social/gifts/send', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social', 'gifts'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    },
+  });
+}
+
+export function useClaimGift() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (giftId: string) =>
+      api.post<{ success: boolean; rewards: unknown[] }>(`/social/gifts/${giftId}/claim`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social', 'gifts'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    },
+  });
+}
+
+export function useClaimAllGifts() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => api.post<{ success: boolean; rewards: unknown[] }>('/social/gifts/claim-all'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social', 'gifts'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    },
+  });
+}
+
+export function useVisitFriendPark() {
+  return useMutation({
+    mutationFn: (friendId: string) =>
+      api.post<{
+        park: unknown;
+        dinosaurs: unknown[];
+        buildings: unknown[];
+      }>(`/social/friends/${friendId}/visit`),
+  });
+}
+
+export function useLeaveGuestbook() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { friendId: string; message: string }) =>
+      api.post<{ success: boolean }>(`/social/friends/${data.friendId}/guestbook`, {
+        message: data.message,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['social', 'guestbook'] });
+    },
+  });
+}
+
+export function useSearchUsers() {
+  return useMutation({
+    mutationFn: (query: string) =>
+      api.get<{ users: unknown[] }>(`/social/search?q=${encodeURIComponent(query)}`),
   });
 }

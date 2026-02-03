@@ -4,10 +4,7 @@
  * 총 50종: 서식지(8), 연구(6), 관람(6), 편의(12), 생산(6), 운영(6), 장식(6)
  */
 
-import {
-  BuildingType,
-  BuildingCategory,
-} from '@dino-park/shared';
+import { BuildingType, BuildingCategory } from '@dino-park/shared';
 
 // === 크기별 사이즈 ===
 const SIZE = {
@@ -37,7 +34,8 @@ const DINOSAUR_HABITATS: BuildingType[] = [
       parkLevel: 1,
       cost: { gold: 5000 },
     },
-    description: '초식 공룡들이 서식할 수 있는 넓은 초원. 나무 울타리와 먹이통, 작은 연못이 있습니다.',
+    description:
+      '초식 공룡들이 서식할 수 있는 넓은 초원. 나무 울타리와 먹이통, 작은 연못이 있습니다.',
   },
   {
     id: 'habitat-forest',

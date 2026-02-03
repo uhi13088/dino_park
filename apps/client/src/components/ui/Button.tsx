@@ -7,22 +7,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary:
-          'bg-primary-500 text-white hover:bg-primary-600 shadow-md hover:shadow-lg',
-        secondary:
-          'bg-secondary-500 text-white hover:bg-secondary-600 shadow-md hover:shadow-lg',
-        success:
-          'bg-green-500 text-white hover:bg-green-600 shadow-md hover:shadow-lg',
-        danger:
-          'bg-red-500 text-white hover:bg-red-600 shadow-md hover:shadow-lg',
-        warning:
-          'bg-yellow-500 text-white hover:bg-yellow-600 shadow-md hover:shadow-lg',
-        ghost:
-          'bg-transparent hover:bg-gray-100 text-gray-700',
-        outline:
-          'border-2 border-primary-500 text-primary-500 hover:bg-primary-50',
-        gold:
-          'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 hover:from-yellow-500 hover:to-yellow-600 shadow-md',
+        primary: 'bg-primary-500 text-white hover:bg-primary-600 shadow-md hover:shadow-lg',
+        secondary: 'bg-secondary-500 text-white hover:bg-secondary-600 shadow-md hover:shadow-lg',
+        success: 'bg-green-500 text-white hover:bg-green-600 shadow-md hover:shadow-lg',
+        danger: 'bg-red-500 text-white hover:bg-red-600 shadow-md hover:shadow-lg',
+        warning: 'bg-yellow-500 text-white hover:bg-yellow-600 shadow-md hover:shadow-lg',
+        ghost: 'bg-transparent hover:bg-gray-100 text-gray-700',
+        outline: 'border-2 border-primary-500 text-primary-500 hover:bg-primary-50',
+        gold: 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 hover:from-yellow-500 hover:to-yellow-600 shadow-md',
         diamond:
           'bg-gradient-to-r from-cyan-400 to-blue-500 text-white hover:from-cyan-500 hover:to-blue-600 shadow-md',
       },
@@ -44,12 +36,11 @@ const buttonVariants = cva(
       variant: 'primary',
       size: 'md',
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -69,7 +60,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <button
@@ -79,8 +70,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <span className="animate-spin mr-2">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24">
+          <span className="mr-2 animate-spin">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -103,7 +94,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {rightIcon && !isLoading && <span className="ml-2">{rightIcon}</span>}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

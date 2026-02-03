@@ -83,12 +83,7 @@ export class BuildingService {
   /**
    * 건물 건설
    */
-  async construct(
-    userId: string,
-    typeId: string,
-    positionX: number,
-    positionY: number,
-  ) {
+  async construct(userId: string, typeId: string, positionX: number, positionY: number) {
     const park = await this.prisma.park.findUnique({
       where: { userId },
     });
@@ -278,11 +273,7 @@ export class BuildingService {
   /**
    * 위인 배치
    */
-  async assignGreatFigure(
-    buildingId: string,
-    userId: string,
-    greatFigureId: string,
-  ) {
+  async assignGreatFigure(buildingId: string, userId: string, greatFigureId: string) {
     const building = await this.getById(buildingId, userId);
 
     if (building.status !== BuildingStatus.ACTIVE) {
@@ -355,12 +346,7 @@ export class BuildingService {
   /**
    * 건물 이동
    */
-  async move(
-    buildingId: string,
-    userId: string,
-    positionX: number,
-    positionY: number,
-  ) {
+  async move(buildingId: string, userId: string, positionX: number, positionY: number) {
     const building = await this.prisma.building.findUnique({
       where: { id: buildingId },
       include: { park: true },
@@ -493,9 +479,7 @@ export class BuildingService {
     const baseBonus = 5;
 
     const nextLevelCost =
-      building.level < MAX_BUILDING_LEVEL
-        ? getUpgradeCost(baseCost, building.level + 1)
-        : null;
+      building.level < MAX_BUILDING_LEVEL ? getUpgradeCost(baseCost, building.level + 1) : null;
 
     const currentBonus = calculateBuildingBonus(baseBonus, building.level);
 

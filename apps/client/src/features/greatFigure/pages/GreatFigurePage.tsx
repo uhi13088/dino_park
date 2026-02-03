@@ -6,10 +6,7 @@ import {
   useRecruitGreatFigure,
   useLevelUpGreatFigure,
 } from '@/api/queries';
-import type {
-  GreatFigureResponse,
-  GreatFigureTypeResponse,
-} from '@dino-park/shared';
+import type { GreatFigureResponse, GreatFigureTypeResponse } from '@dino-park/shared';
 import { Modal, Button, Badge } from '@/components/ui';
 
 /**
@@ -17,7 +14,9 @@ import { Modal, Button, Badge } from '@/components/ui';
  */
 export default function GreatFigurePage() {
   const [activeTab, setActiveTab] = useState<'owned' | 'recruit'>('owned');
-  const [selectedFigure, setSelectedFigure] = useState<GreatFigureResponse | GreatFigureTypeResponse | null>(null);
+  const [selectedFigure, setSelectedFigure] = useState<
+    GreatFigureResponse | GreatFigureTypeResponse | null
+  >(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   const { data: figuresData, isLoading: figuresLoading } = useGreatFigures();
@@ -50,22 +49,22 @@ export default function GreatFigurePage() {
 
   if (figuresLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+      <div className="flex h-full items-center justify-center">
+        <div className="border-primary-500 h-8 w-8 animate-spin rounded-full border-b-2" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex h-full flex-col bg-gray-50">
       {/* 위인 포인트 표시 */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="border-b border-gray-200 bg-white p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-2xl">👤</span>
             <div>
               <p className="text-sm text-gray-500">위인 포인트</p>
-              <p className="font-bold text-lg text-purple-600">{points.toLocaleString()} P</p>
+              <p className="text-lg font-bold text-purple-600">{points.toLocaleString()} P</p>
             </div>
           </div>
           <div className="text-right">
@@ -76,12 +75,12 @@ export default function GreatFigurePage() {
       </div>
 
       {/* 탭 */}
-      <div className="bg-white border-b border-gray-200 flex">
+      <div className="flex border-b border-gray-200 bg-white">
         <button
           onClick={() => setActiveTab('owned')}
           className={`flex-1 py-3 text-center font-medium transition-colors ${
             activeTab === 'owned'
-              ? 'text-primary-600 border-b-2 border-primary-600'
+              ? 'text-primary-600 border-primary-600 border-b-2'
               : 'text-gray-500'
           }`}
         >
@@ -91,7 +90,7 @@ export default function GreatFigurePage() {
           onClick={() => setActiveTab('recruit')}
           className={`flex-1 py-3 text-center font-medium transition-colors ${
             activeTab === 'recruit'
-              ? 'text-primary-600 border-b-2 border-primary-600'
+              ? 'text-primary-600 border-primary-600 border-b-2'
               : 'text-gray-500'
           }`}
         >
@@ -125,10 +124,14 @@ export default function GreatFigurePage() {
       <Modal
         isOpen={showDetailModal}
         onClose={() => setShowDetailModal(false)}
-        title={isOwnedFigure(selectedFigure) ? selectedFigure.nameKo : (selectedFigure as GreatFigureTypeResponse)?.nameKo ?? '위인 상세'}
+        title={
+          isOwnedFigure(selectedFigure)
+            ? selectedFigure.nameKo
+            : ((selectedFigure as GreatFigureTypeResponse)?.nameKo ?? '위인 상세')
+        }
       >
-        {selectedFigure && (
-          isOwnedFigure(selectedFigure) ? (
+        {selectedFigure &&
+          (isOwnedFigure(selectedFigure) ? (
             <OwnedFigureDetail
               figure={selectedFigure}
               onLevelUp={handleLevelUp}
@@ -141,14 +144,15 @@ export default function GreatFigurePage() {
               onRecruit={handleRecruit}
               isRecruiting={recruitMutation.isPending}
             />
-          )
-        )}
+          ))}
       </Modal>
     </div>
   );
 }
 
-function isOwnedFigure(figure: GreatFigureResponse | GreatFigureTypeResponse | null): figure is GreatFigureResponse {
+function isOwnedFigure(
+  figure: GreatFigureResponse | GreatFigureTypeResponse | null,
+): figure is GreatFigureResponse {
   return figure !== null && 'level' in figure && 'exp' in figure;
 }
 
@@ -164,10 +168,10 @@ function OwnedFiguresList({
 }) {
   if (figures.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-        <span className="text-5xl mb-4">👤</span>
+      <div className="flex h-64 flex-col items-center justify-center text-gray-400">
+        <span className="mb-4 text-5xl">👤</span>
         <p>아직 영입한 위인이 없습니다</p>
-        <p className="text-sm mt-1">영입하기 탭에서 위인을 영입해보세요</p>
+        <p className="mt-1 text-sm">영입하기 탭에서 위인을 영입해보세요</p>
       </div>
     );
   }
@@ -201,12 +205,12 @@ function RecruitFiguresList({
   currentPoints: number;
   onSelect: (figure: GreatFigureTypeResponse) => void;
 }) {
-  const recruitableFigures = figures.filter(f => !f.isOwned);
+  const recruitableFigures = figures.filter((f) => !f.isOwned);
 
   if (recruitableFigures.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-        <span className="text-5xl mb-4">🎉</span>
+      <div className="flex h-64 flex-col items-center justify-center text-gray-400">
+        <span className="mb-4 text-5xl">🎉</span>
         <p>모든 위인을 영입했습니다!</p>
       </div>
     );
@@ -273,15 +277,15 @@ function FigureCard({
   return (
     <button
       onClick={onClick}
-      className={`p-4 rounded-xl border-2 ${rarityColors[rarity] ?? 'bg-gray-50 border-gray-200'} text-left transition-transform active:scale-95`}
+      className={`rounded-xl border-2 p-4 ${rarityColors[rarity] ?? 'border-gray-200 bg-gray-50'} text-left transition-transform active:scale-95`}
     >
       {/* 아바타 */}
-      <div className="w-16 h-16 mx-auto mb-3 bg-white rounded-full flex items-center justify-center text-3xl shadow-sm">
+      <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white text-3xl shadow-sm">
         {jobEmojis[job] ?? '👤'}
       </div>
 
       {/* 이름 */}
-      <h3 className="font-bold text-center text-gray-800 truncate">{name}</h3>
+      <h3 className="truncate text-center font-bold text-gray-800">{name}</h3>
 
       {/* 레벨 또는 비용 */}
       {level !== undefined ? (
@@ -290,11 +294,15 @@ function FigureCard({
             Lv.{level}
           </Badge>
           {isAssigned && (
-            <Badge variant="primary" size="sm">배치됨</Badge>
+            <Badge variant="primary" size="sm">
+              배치됨
+            </Badge>
           )}
         </div>
       ) : recruitCost !== undefined ? (
-        <div className={`mt-2 text-center text-sm font-medium ${canAfford ? 'text-purple-600' : 'text-gray-400'}`}>
+        <div
+          className={`mt-2 text-center text-sm font-medium ${canAfford ? 'text-purple-600' : 'text-gray-400'}`}
+        >
           {recruitCost.toLocaleString()} P
         </div>
       ) : null}
@@ -317,7 +325,7 @@ function OwnedFigureDetail({
   return (
     <div className="space-y-4">
       {/* 아바타 */}
-      <div className="w-24 h-24 mx-auto bg-gradient-to-br from-primary-100 to-primary-200 rounded-full flex items-center justify-center text-5xl">
+      <div className="from-primary-100 to-primary-200 mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br text-5xl">
         👤
       </div>
 
@@ -329,7 +337,7 @@ function OwnedFigureDetail({
       </div>
 
       {/* 상태 */}
-      <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+      <div className="space-y-2 rounded-lg bg-gray-50 p-4">
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">직업</span>
           <span className="font-medium capitalize">{figure.job}</span>
@@ -340,9 +348,7 @@ function OwnedFigureDetail({
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">배치</span>
-          <span className="font-medium">
-            {figure.assignedBuildingId ? '배치됨' : '대기중'}
-          </span>
+          <span className="font-medium">{figure.assignedBuildingId ? '배치됨' : '대기중'}</span>
         </div>
       </div>
 
@@ -378,7 +384,7 @@ function RecruitFigureDetail({
   return (
     <div className="space-y-4">
       {/* 아바타 */}
-      <div className="w-24 h-24 mx-auto bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center text-5xl">
+      <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-purple-100 to-purple-200 text-5xl">
         👤
       </div>
 
@@ -392,10 +398,12 @@ function RecruitFigureDetail({
       </div>
 
       {/* 비용 */}
-      <div className="bg-purple-50 rounded-lg p-4 text-center">
+      <div className="rounded-lg bg-purple-50 p-4 text-center">
         <p className="text-sm text-purple-600">영입 비용</p>
-        <p className="text-2xl font-bold text-purple-700">{figure.recruitCost.toLocaleString()} P</p>
-        <p className={`text-sm mt-1 ${canAfford ? 'text-green-600' : 'text-red-500'}`}>
+        <p className="text-2xl font-bold text-purple-700">
+          {figure.recruitCost.toLocaleString()} P
+        </p>
+        <p className={`mt-1 text-sm ${canAfford ? 'text-green-600' : 'text-red-500'}`}>
           보유: {currentPoints.toLocaleString()} P
         </p>
       </div>

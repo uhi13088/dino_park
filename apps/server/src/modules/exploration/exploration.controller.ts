@@ -1,10 +1,5 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ExplorationService } from './exploration.service';
@@ -108,10 +103,7 @@ export class ExplorationController {
       },
     },
   })
-  async startExploration(
-    @CurrentUser('id') userId: string,
-    @Body() dto: StartExplorationDto,
-  ) {
+  async startExploration(@CurrentUser('id') userId: string, @Body() dto: StartExplorationDto) {
     return this.explorationService.start(userId, dto.regionId);
   }
 
@@ -136,10 +128,7 @@ export class ExplorationController {
       },
     },
   })
-  async checkCompletion(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async checkCompletion(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.explorationService.checkCompletion(id, userId);
   }
 
@@ -163,10 +152,7 @@ export class ExplorationController {
       },
     },
   })
-  async instantComplete(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async instantComplete(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.explorationService.instantComplete(id, userId);
   }
 
@@ -189,10 +175,7 @@ export class ExplorationController {
       },
     },
   })
-  async claimRewards(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async claimRewards(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.explorationService.claim(id, userId);
   }
 }

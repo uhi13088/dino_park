@@ -7,72 +7,176 @@
 
 ## 📋 QUEUE (대기)
 
-### 🟠 높음 (개발 전 수정)
-
-*(모두 완료)*
-
-### 🟡 중간 (개발 중 보완)
-
-*(모두 완료)*
+_(모든 작업 완료!)_
 
 ---
 
 ## 🔄 IN_PROGRESS (진행중)
+
 <!-- 한 번에 1개만 -->
 
-*(모두 완료)*
+_(없음)_
 
 ---
 
 ## ✅ DONE (완료)
 
+### 코드 작업
+
+- [x] **C15: Balance Constants 확장** ✅ 2026-02-03
+  - 수정 파일: `packages/game-data/src/balance/index.ts` (42줄 → 385줄)
+  - 추가 상수:
+    - 레벨 테이블: PARK_LEVEL_EXP_TABLE (50레벨), DINOSAUR_LEVEL_EXP_TABLE (25레벨), GREAT_FIGURE_LEVEL_EXP_TABLE (10레벨)
+    - 시스템: INITIAL_CURRENCY, ENERGY, DINOSAUR_STATUS, OFFLINE, GRID
+    - 데이터: RARITY_BASE_STATS, BUILDING_TYPE_STATS, EXPLORATION, DIAMOND_PACKS, GOLD_SHOP, SUBSCRIPTIONS, SEASON_PASS, AD_REWARDS
+    - 유틸리티 함수: calculateRevenue, getRequiredExp, calculateOfflineRevenue, calculateEnergyRecharge, calculateHatchTime, calculateSeasonPassLevel
+
+- [x] **C14: API Queries 작성** ✅ 2026-02-03
+  - 수정 파일: `apps/client/src/api/queries/index.ts` (654줄 → 980줄+)
+  - 추가 쿼리:
+    - Shop: useDiamondPacks, useSpecialPackages, useDailyShop, useGoldShop, usePurchaseIAP 등
+    - Season: useCurrentSeason, useSeasonPass, useSeasonChapters, useSeasonEvents 등
+    - Social: useFriends, useFriendRequests, useGifts, useGuestbook, useSendGift 등
+  - 기능: 서버 상태 관리, 캐싱, 쿼리 무효화, 낙관적 업데이트
+
+- [x] **C13: Shop Feature 보강 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/shop/stores/useShopStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/shop/components/PurchaseModal.tsx` (구매 확인/결과 모달)
+    - `apps/client/src/features/shop/components/ShopProductCard.tsx` (상품 카드들)
+    - `apps/client/src/features/shop/index.ts`
+  - 기능: 다이아/패키지/일일/골드 상점, 구매 로직, 결과 표시, 일일 리프레시
+
+- [x] **C12: GreatFigure Feature 보강 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/greatFigure/stores/useGreatFigureStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/greatFigure/components/GreatFigureDetail.tsx` (위인 상세 모달)
+    - `apps/client/src/features/greatFigure/components/GreatFigureAssign.tsx` (건물 배치 모달)
+    - `apps/client/src/features/greatFigure/index.ts` (업데이트)
+  - 기능: 위인 영입/레벨업, 건물 배치, 시너지 표시, 능력 보너스 계산
+
+- [x] **C11: Exploration Feature 보강 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/exploration/stores/useExplorationStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/exploration/components/ExplorationDetail.tsx` (탐험 상세 모달)
+    - `apps/client/src/features/exploration/components/ExplorationReward.tsx` (보상 표시 모달)
+    - `apps/client/src/features/exploration/index.ts`
+  - 기능: 탐험 상태관리, 지역별 난이도/보상, 진행률 표시, 취소 기능, 보상 애니메이션
+
+- [x] **C10: Dinosaur Feature 보강 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/dinosaur/stores/useDinosaurStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/dinosaur/components/DinosaurCard.tsx` (공룡 카드)
+    - `apps/client/src/features/dinosaur/components/DinosaurDetail.tsx` (공룡 상세 모달)
+    - `apps/client/src/features/dinosaur/components/DinosaurFeed.tsx` (먹이주기 UI)
+    - `apps/client/src/features/dinosaur/index.ts`
+  - 기능: 공룡 상태관리, 카테고리/희귀도 필터, 먹이주기 (3종류), 행복도/배고픔 관리, 레벨업, 경험치
+
+- [x] **C09: Social Feature 생성 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/social/pages/SocialPage.tsx` (메인 페이지 + 탭 네비게이션)
+    - `apps/client/src/features/social/components/FriendList.tsx` (친구 목록 + 필터/검색)
+    - `apps/client/src/features/social/components/FriendCard.tsx` (친구 카드)
+    - `apps/client/src/features/social/components/FriendParkVisit.tsx` (파크 방문 모달)
+    - `apps/client/src/features/social/components/AddFriendModal.tsx` (친구 추가 모달)
+    - `apps/client/src/features/social/stores/useSocialStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/social/index.ts`
+  - 기능: 친구 목록 (온라인/오프라인 필터), 친구 요청 관리, 파크 방문, 방명록, 선물함
+
+- [x] **C08: Season Feature 생성 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/season/pages/SeasonPage.tsx` (메인 페이지 + 탭 네비게이션)
+    - `apps/client/src/features/season/components/SeasonPassTrack.tsx` (50레벨 보상 트랙)
+    - `apps/client/src/features/season/components/SeasonReward.tsx` (개별 보상 컴포넌트)
+    - `apps/client/src/features/season/components/SeasonChapterList.tsx` (시즌 스토리 챕터)
+    - `apps/client/src/features/season/components/SeasonEventCard.tsx` (시즌 이벤트)
+    - `apps/client/src/features/season/stores/useSeasonStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/season/index.ts`
+  - 기능: 시즌 패스 UI, 경험치 바, 무료/프리미엄 보상 트랙, 챕터 목록, 이벤트 카드
+
+- [x] **C07: Season Service 보강** ✅ 2026-02-03
+  - 수정 파일:
+    - `apps/server/src/modules/season/season.service.ts` (76줄 → 715줄)
+    - `apps/server/src/modules/season/season.controller.ts` (31줄 → 182줄)
+  - 기능:
+    - 시즌 정보: 현재 시즌, 전체 시즌 목록, 시즌 상세
+    - 시즌 패스: 조회, 경험치 추가 + 레벨업, 무료/프리미엄 보상 수령, 일괄 수령
+    - 프리미엄 업그레이드
+    - 시즌 챕터: 목록, 상세, 완료 처리 + 보상 지급
+    - 시즌 이벤트: 활성 이벤트 조회
+    - 통계: 레벨, 수령 현황, 챕터 완료, 남은 일수
+
+- [x] **C06: Shop Service 보강** ✅ 2026-02-03
+  - 수정 파일:
+    - `apps/server/src/modules/shop/shop.service.ts` (64줄 → 962줄)
+    - `apps/server/src/modules/shop/shop.controller.ts` (25줄 → 182줄)
+  - 기능:
+    - IAP 상품: 다이아팩, 구독, 스타터팩, 프리미엄 콘텐츠 조회
+    - 골드샵: 인게임 재화 구매, 일일 한도 관리
+    - 일일 상점: 유저별 랜덤 아이템, 할인, 시드 기반 선택
+    - IAP 구매: 영수증 검증 (스텁), 보상 지급
+    - 광고 보상: 설정 조회, 쿨다운, 일일 제한, 보상 수령
+    - 특별 패키지: 트리거 조건별 패키지 (레벨업, 첫구매, 복귀)
+    - 구매 내역, 통계
+
+- [x] **C05: GreatFigure Service 보강** ✅ 2026-02-03
+  - 수정 파일:
+    - `apps/server/src/modules/great-figure/great-figure.service.ts` (35줄 → 656줄)
+    - `apps/server/src/modules/great-figure/great-figure.controller.ts` (25줄 → 143줄)
+  - 기능: 위인 CRUD, 영입 (조건 검사 + 비용 차감), 건물 배정/해제, 경험치 추가, 골드 레벨업, 시너지 계산, 건물 보너스 계산, 통계
+
+- [x] **C01: Social 모듈 생성 (Backend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/server/src/modules/social/social.module.ts`
+    - `apps/server/src/modules/social/social.service.ts` (1037줄)
+    - `apps/server/src/modules/social/social.controller.ts` (282줄)
+  - Prisma 스키마 업데이트: Friend, FriendRequest, FriendIntimacy, ParkVisit, GuestBook, Gift, SocialNotification 모델 추가
+  - 기능: 친구 추가/삭제/차단, 친구 요청, 파크 방문, 방명록, 선물 시스템, 친밀도, 알림
+
+- [x] **C02: Building Feature 생성 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/building/pages/BuildingPage.tsx`
+    - `apps/client/src/features/building/components/BuildingCard.tsx`
+    - `apps/client/src/features/building/components/BuildingList.tsx`
+    - `apps/client/src/features/building/stores/useBuildingStore.ts`
+    - `apps/client/src/features/building/index.ts`
+  - 기능: 건물 목록, 카테고리 필터, 건물 상점, 건설, 업그레이드 모달, 위인 배정 모달
+
+- [x] **C03: Economy Feature 생성 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/economy/pages/EconomyPage.tsx`
+    - `apps/client/src/features/economy/components/CurrencyPanel.tsx`
+    - `apps/client/src/features/economy/components/TransactionHistory.tsx`
+    - `apps/client/src/features/economy/stores/useEconomyStore.ts`
+    - `apps/client/src/features/economy/index.ts`
+  - 기능: 재화 표시 (골드/다이아/DNA/에너지), 거래 내역 필터, 오프라인 수익 수령
+
+- [x] **C04: Story Service 보강** ✅ 2026-02-03
+  - 수정 파일:
+    - `apps/server/src/modules/story/story.service.ts` (45줄 → 707줄)
+    - `apps/server/src/modules/story/story.controller.ts` (30줄 → 157줄)
+    - `apps/server/prisma/schema.prisma` (CharacterAffinity, StoryFlag 모델 추가)
+  - 기능: 챕터 시작/진행, 씬 전환, 선택지 처리 + 효과 적용, 보상 지급, 캐릭터 호감도 시스템, 스토리 플래그
+
+### 문서 작업 (이전 완료)
+
+<details>
+<summary>문서 수정 12건 완료 (접기/펼치기)</summary>
+
 - [x] **D12: 에셋 문서 수정** ✅ 2026-02-03
-  - 변경: `docs/assets/dino_park_asset_main.md`, `docs/assets/dino_park_asset_dinosaurs.md`, `docs/assets/dino_park_asset_buildings_characters.md`
-  - 수정: 파일명/경로 규칙 정의 (섹션 0), 62종 공룡 완전한 프롬프트 (섹션 2.5), 43종 건물 완전한 프롬프트 (섹션 1.5), 45명 위인 완전한 프롬프트 (섹션 3.5), UI 에셋 70종 개별 프롬프트 (섹션 6.3~6.11)
-
 - [x] **D11: 시즌 콘텐츠 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_season_content.md`
-  - 수정: 시즌 3/4 스토리 상세 추가 (각 5챕터 분량), 스토리 선택지/대사/엔딩 보상 추가, 시즌 4 위인 3명 상세 정의
-
 - [x] **D10: 사운드 가이드 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_sound_guide.md`
-  - 수정: BGM 총계 요약 섹션 추가 (36곡 = 32코어 + 4시즌), 82종 공룡별 SFX 명세 추가 (카테고리별 코드/개수/음색 특징), SFX 총계 445개 산출
-
 - [x] **D9: 액션플랜 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_action_plan.md`
-  - 수정: MVP 범위 명확화 (위인 10명 vs 50명 비교표), Week 17-18 확장 계획 보완, Phase 3 주간 일정 상세화 및 체크포인트 추가
-
 - [x] **D8: 수익 모델 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_revenue_model.md`
-  - 수정: ARPU 용어 명확화 (가중 ARPU ₩9,640 vs 실제 ARPU ₩1,200 구분), 활성화율 보정 근거 추가, Retention D1/D7/D30 목표 상세 근거 및 곡선 시뮬레이션 추가
-
 - [x] **D7: UI 가이드 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_ui_art_guide.md`
-  - 수정: 탐험/상점/스토리/위인 UI 추가, 애니메이션 & 이펙트 가이드 신규 섹션, 추가 컴포넌트 20종+ 정의 (알림, 입력, 정보표시, 리스트, 오버레이, 네비게이션, 게임전용)
-
 - [x] **D6: 스토리 문서 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_story_scenario.md`
-  - 수정: 호감도 시스템 정의 (MAX 1000, 6등급, 획득조건), 선택의 장기 영향 섹션 추가, GDD/위인도감 연계 매핑, 사이드 스토리 S-02~S-06 추가, 시즌 1/2 상세 스토리 확장
-
 - [x] **D1: GDD 문서 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_tycoon_gdd.md`
-  - 수정: 기술 스택 Unity→PixiJS+NestJS, 건물 65종+→50종, 7.1 표 수정
-
 - [x] **D2: 공룡 도감 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_dinosaur_codex.md`
-  - 수정: #023 파타고티탄으로 변경, #076~#080 재등장 삭제 및 번호 재배정, 안킬로코돈/파라사우롤로푸스 룩스 추가
-
 - [x] **D3: 기술 설계 문서 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_technical_design.md`
-  - 수정: Building/Exploration 테이블 추가, Currency 별도 테이블 분리, API DTO 추가, game-data 로드 방식 추가, IndexedDB 스키마 추가
-
 - [x] **D4: 밸런스 문서 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_balance_simulation.md`
-  - 수정: 일일 수입 공식 추가, 초기 슬롯 정의, 광고 단축 계산 수정, 중복 공룡 처리 추가, 위인/시설 보너스 상세 추가
-
 - [x] **D5: 위인 도감 수정** ✅ 2026-02-03
-  - 변경: `docs/dino_park_great_figures.md`
-  - 수정: GF-011 튜토리얼 할인 주석 추가, "렉스의 비밀" 이벤트 상세 정의
+
+</details>
 
 ---
 
@@ -93,11 +197,22 @@
 
 ## 📊 진행 상황
 
-| 우선순위 | 티켓 수 | 완료 |
-|----------|---------|------|
-| 🔴 심각 | 3 | 3 |
-| 🟠 높음 | 6 | 6 |
-| 🟡 중간 | 3 | 3 |
-| **합계** | **12** | **12** |
+| 우선순위  | 티켓 수 | 완료      |
+| --------- | ------- | --------- |
+| 🔴 높음   | 3       | 3 ✅      |
+| 🟠 중간   | 4       | 4 ✅      |
+| 🟡 낮음   | 6       | 6 ✅      |
+| ⚪ 인프라 | 2       | 2 ✅      |
+| **합계**  | **15**  | **15** ✅ |
 
-🎉 **모든 기획 문서 이슈 해결 완료!**
+---
+
+## 📅 예상 일정
+
+| Phase     | 티켓     | 예상    |
+| --------- | -------- | ------- |
+| 🔴 높음   | C01~C03  | 1일     |
+| 🟠 중간   | C04~C07  | 1일     |
+| 🟡 낮음   | C08~C13  | 1.5일   |
+| ⚪ 인프라 | C14~C15  | 0.5일   |
+| **총합**  | **15개** | **4일** |

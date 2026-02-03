@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import {
-  useStoryChapters,
-  useStartChapter,
-  useAdvanceScene,
-} from '@/api/queries';
-import type { StoryChapterResponse, StorySceneResponse, AdvanceSceneResponse } from '@dino-park/shared';
+import { useStoryChapters, useStartChapter, useAdvanceScene } from '@/api/queries';
+import type {
+  StoryChapterResponse,
+  StorySceneResponse,
+  AdvanceSceneResponse,
+} from '@dino-park/shared';
 import { Modal, Button } from '@/components/ui';
 import { StoryPlayer } from '../components/StoryPlayer';
 
@@ -66,8 +66,8 @@ export default function StoryPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full bg-gradient-to-b from-purple-900 to-purple-700">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
+      <div className="flex h-full items-center justify-center bg-gradient-to-b from-purple-900 to-purple-700">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-white" />
       </div>
     );
   }
@@ -75,10 +75,10 @@ export default function StoryPage() {
   // 스토리 플레이 모드
   if (isPlaying && currentScene) {
     return (
-      <div className="h-full relative">
+      <div className="relative h-full">
         <button
           onClick={() => setIsPlaying(false)}
-          className="absolute top-4 left-4 z-20 text-white/60 hover:text-white"
+          className="absolute left-4 top-4 z-20 text-white/60 hover:text-white"
         >
           ← 나가기
         </button>
@@ -93,15 +93,15 @@ export default function StoryPage() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-purple-900 to-purple-700">
+    <div className="flex h-full flex-col bg-gradient-to-b from-purple-900 to-purple-700">
       {/* 헤더 */}
       <div className="p-6 text-center text-white">
-        <h1 className="text-2xl font-display font-bold mb-2">📖 메인 스토리</h1>
+        <h1 className="font-display mb-2 text-2xl font-bold">📖 메인 스토리</h1>
         <p className="text-white/70">다이노 파크의 비밀을 밝혀라</p>
       </div>
 
       {/* 챕터 목록 */}
-      <div className="flex-1 overflow-auto px-4 pb-4 space-y-4">
+      <div className="flex-1 space-y-4 overflow-auto px-4 pb-4">
         {chapters.map((chapter) => (
           <ChapterCard
             key={chapter.id}
@@ -113,11 +113,7 @@ export default function StoryPage() {
       </div>
 
       {/* 보상 모달 */}
-      <Modal
-        isOpen={showRewardModal}
-        onClose={() => setShowRewardModal(false)}
-        title="챕터 완료!"
-      >
+      <Modal isOpen={showRewardModal} onClose={() => setShowRewardModal(false)} title="챕터 완료!">
         <div className="space-y-4">
           <div className="flex justify-center">
             <span className="text-6xl">🎉</span>
@@ -128,7 +124,7 @@ export default function StoryPage() {
               {rewards.map((reward, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 bg-purple-50 rounded-lg"
+                  className="flex items-center justify-between rounded-lg bg-purple-50 p-3"
                 >
                   <span className="flex items-center gap-2">
                     <span className="text-xl">{getRewardEmoji(reward.type)}</span>
@@ -140,11 +136,7 @@ export default function StoryPage() {
             </div>
           )}
 
-          <Button
-            variant="primary"
-            className="w-full"
-            onClick={() => setShowRewardModal(false)}
-          >
+          <Button variant="primary" className="w-full" onClick={() => setShowRewardModal(false)}>
             확인
           </Button>
         </div>
@@ -168,39 +160,41 @@ function ChapterCard({
     <button
       disabled={chapter.isLocked || isStarting}
       onClick={() => !chapter.isLocked && onStart(chapter.id)}
-      className={`w-full bg-white/10 backdrop-blur rounded-xl p-4 text-left transition-all ${
-        chapter.isLocked
-          ? 'opacity-50'
-          : 'hover:bg-white/20 hover:scale-[1.02]'
+      className={`w-full rounded-xl bg-white/10 p-4 text-left backdrop-blur transition-all ${
+        chapter.isLocked ? 'opacity-50' : 'hover:scale-[1.02] hover:bg-white/20'
       }`}
     >
       <div className="flex items-start gap-4">
         {/* 챕터 번호 */}
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-lg ${
-          chapter.isCompleted
-            ? 'bg-green-500 text-white'
-            : chapter.isLocked
-              ? 'bg-gray-600 text-gray-400'
-              : 'bg-white/20 text-white'
-        }`}>
+        <div
+          className={`flex h-12 w-12 items-center justify-center rounded-lg text-lg font-bold ${
+            chapter.isCompleted
+              ? 'bg-green-500 text-white'
+              : chapter.isLocked
+                ? 'bg-gray-600 text-gray-400'
+                : 'bg-white/20 text-white'
+          }`}
+        >
           {chapter.isLocked ? '🔒' : chapter.isCompleted ? '✓' : chapter.number}
         </div>
 
         {/* 챕터 정보 */}
         <div className="flex-1">
-          <h3 className="font-bold text-white mb-1">
+          <h3 className="mb-1 font-bold text-white">
             챕터 {chapter.number}: {chapter.title}
           </h3>
-          <p className="text-sm text-white/60 mb-2">{chapter.description}</p>
+          <p className="mb-2 text-sm text-white/60">{chapter.description}</p>
 
           {/* 진행도 바 */}
           {!chapter.isLocked && (
             <div className="space-y-1">
               <div className="flex justify-between text-xs text-white/60">
-                <span>{chapter.completedScenes}/{chapter.totalScenes} 씬</span>
+                <span>
+                  {chapter.completedScenes}/{chapter.totalScenes} 씬
+                </span>
                 <span>{Math.round(progressPercent)}%</span>
               </div>
-              <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+              <div className="h-1.5 overflow-hidden rounded-full bg-white/20">
                 <div
                   className={`h-full rounded-full transition-all ${
                     chapter.isCompleted ? 'bg-green-400' : 'bg-secondary-400'
@@ -213,16 +207,12 @@ function ChapterCard({
 
           {/* 잠금 조건 */}
           {chapter.isLocked && chapter.unlockRequirement && (
-            <p className="text-xs text-white/40 mt-2">
-              🔒 {chapter.unlockRequirement}
-            </p>
+            <p className="mt-2 text-xs text-white/40">🔒 {chapter.unlockRequirement}</p>
           )}
         </div>
 
         {/* 화살표 */}
-        {!chapter.isLocked && (
-          <span className="text-white/40 text-xl">›</span>
-        )}
+        {!chapter.isLocked && <span className="text-xl text-white/40">›</span>}
       </div>
     </button>
   );

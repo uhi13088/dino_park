@@ -1,11 +1,12 @@
 # 🎨 다이노 파크 타이쿤 - 에셋 프롬프트 시스템
+
 ## AI 이미지 생성을 위한 마스터 템플릿 v2.0
 
 ---
 
 # 📋 목차
 
-0. [파일명 & 경로 규칙](#0-파일명--경로-규칙) *(신규)*
+0. [파일명 & 경로 규칙](#0-파일명--경로-규칙) _(신규)_
 1. [프롬프트 조합 공식](#1-프롬프트-조합-공식)
 2. [마스터 스타일](#2-마스터-스타일)
 3. [사이즈 템플릿](#3-사이즈-템플릿)
@@ -83,48 +84,48 @@ assets/
 
 ### 카테고리 접두사
 
-| 접두사 | 카테고리 | 예시 |
-|--------|----------|------|
-| `dino_` | 공룡 | dino_001_stegosaurus |
-| `building_` | 건물 | building_prod_hatchery |
-| `char_` | 캐릭터/위인 | char_gf001_dr_jin |
-| `ui_` | UI 요소 | ui_icon_gold |
-| `env_` | 환경 | env_tile_grass |
-| `fx_` | 이펙트 | fx_sparkle_gold |
+| 접두사      | 카테고리    | 예시                   |
+| ----------- | ----------- | ---------------------- |
+| `dino_`     | 공룡        | dino_001_stegosaurus   |
+| `building_` | 건물        | building_prod_hatchery |
+| `char_`     | 캐릭터/위인 | char_gf001_dr_jin      |
+| `ui_`       | UI 요소     | ui_icon_gold           |
+| `env_`      | 환경        | env_tile_grass         |
+| `fx_`       | 이펙트      | fx_sparkle_gold        |
 
 ### 상태 접미사
 
-| 접미사 | 공룡 상태 | 건물 상태 | 캐릭터 감정 |
-|--------|----------|----------|------------|
-| `_idle` | 기본 | - | - |
-| `_walk` | 걷기 | - | - |
-| `_eat` | 먹기 | - | - |
-| `_sleep` | 수면 | - | - |
-| `_happy` | 행복 | - | 기쁨 |
-| `_angry` | 화남 | - | 화남 |
-| `_lv1~5` | - | 레벨 | - |
-| `_normal` | - | - | 기본 |
-| `_portrait` | 초상화 | - | 초상화 |
+| 접미사      | 공룡 상태 | 건물 상태 | 캐릭터 감정 |
+| ----------- | --------- | --------- | ----------- |
+| `_idle`     | 기본      | -         | -           |
+| `_walk`     | 걷기      | -         | -           |
+| `_eat`      | 먹기      | -         | -           |
+| `_sleep`    | 수면      | -         | -           |
+| `_happy`    | 행복      | -         | 기쁨        |
+| `_angry`    | 화남      | -         | 화남        |
+| `_lv1~5`    | -         | 레벨      | -           |
+| `_normal`   | -         | -         | 기본        |
+| `_portrait` | 초상화    | -         | 초상화      |
 
 ### 크기 접미사
 
-| 접미사 | 크기 | 픽셀 |
-|--------|------|------|
-| `_XS` | 초소형 | 64×64 |
-| `_S` | 소형 | 96×96 |
-| `_M` | 중형 | 128×128 |
-| `_L` | 대형 | 192×192 |
-| `_XL` | 초대형 | 256×256 |
+| 접미사 | 크기   | 픽셀    |
+| ------ | ------ | ------- |
+| `_XS`  | 초소형 | 64×64   |
+| `_S`   | 소형   | 96×96   |
+| `_M`   | 중형   | 128×128 |
+| `_L`   | 대형   | 192×192 |
+| `_XL`  | 초대형 | 256×256 |
 | `_XXL` | 최대형 | 320×320 |
 
 ### 등급 접미사
 
-| 접미사 | 등급 |
-|--------|------|
-| `_common` | 커먼 |
-| `_uncommon` | 언커먼 |
-| `_rare` | 레어 |
-| `_epic` | 에픽 |
+| 접미사       | 등급     |
+| ------------ | -------- |
+| `_common`    | 커먼     |
+| `_uncommon`  | 언커먼   |
+| `_rare`      | 레어     |
+| `_epic`      | 에픽     |
 | `_legendary` | 레전더리 |
 
 ## 0.3 스프라이트 시트 규칙
@@ -198,43 +199,43 @@ v3: dino_001_stegosaurus_idle_v3.png
 
 ## 3.1 공룡
 
-| 크기 | 그리드 | 픽셀 | 템플릿 |
-|------|--------|------|--------|
-| **XS** | 1×1 | 64×64 | `sprite size 64x64 pixels, 1x1 game grid, centered on canvas,` |
-| **S** | 1×1 | 96×96 | `sprite size 96x96 pixels, 1x1 game grid, centered on canvas,` |
-| **M** | 2×2 | 128×128 | `sprite size 128x128 pixels, 2x2 game grid, centered on canvas,` |
-| **L** | 3×3 | 192×192 | `sprite size 192x192 pixels, 3x3 game grid, centered on canvas,` |
-| **XL** | 4×4 | 256×256 | `sprite size 256x256 pixels, 4x4 game grid, centered on canvas,` |
-| **XXL** | 6×6 | 384×384 | `sprite size 384x384 pixels, 6x6 game grid, centered on canvas,` |
+| 크기    | 그리드 | 픽셀    | 템플릿                                                           |
+| ------- | ------ | ------- | ---------------------------------------------------------------- |
+| **XS**  | 1×1    | 64×64   | `sprite size 64x64 pixels, 1x1 game grid, centered on canvas,`   |
+| **S**   | 1×1    | 96×96   | `sprite size 96x96 pixels, 1x1 game grid, centered on canvas,`   |
+| **M**   | 2×2    | 128×128 | `sprite size 128x128 pixels, 2x2 game grid, centered on canvas,` |
+| **L**   | 3×3    | 192×192 | `sprite size 192x192 pixels, 3x3 game grid, centered on canvas,` |
+| **XL**  | 4×4    | 256×256 | `sprite size 256x256 pixels, 4x4 game grid, centered on canvas,` |
+| **XXL** | 6×6    | 384×384 | `sprite size 384x384 pixels, 6x6 game grid, centered on canvas,` |
 
 ## 3.2 건물
 
-| 크기 | 픽셀 | 템플릿 |
-|------|------|--------|
-| **S** | 64×96 | `building size 64x96 pixels, 1x1 grid, bottom-aligned,` |
-| **M** | 128×160 | `building size 128x160 pixels, 2x2 grid, bottom-aligned,` |
-| **L** | 192×240 | `building size 192x240 pixels, 3x3 grid, bottom-aligned,` |
+| 크기   | 픽셀    | 템플릿                                                    |
+| ------ | ------- | --------------------------------------------------------- |
+| **S**  | 64×96   | `building size 64x96 pixels, 1x1 grid, bottom-aligned,`   |
+| **M**  | 128×160 | `building size 128x160 pixels, 2x2 grid, bottom-aligned,` |
+| **L**  | 192×240 | `building size 192x240 pixels, 3x3 grid, bottom-aligned,` |
 | **XL** | 256×320 | `building size 256x320 pixels, 4x4 grid, bottom-aligned,` |
 
 ## 3.3 캐릭터/초상화
 
-| 용도 | 픽셀 | 템플릿 |
-|------|------|--------|
-| 미니 | 48×64 | `chibi sprite 48x64 pixels,` |
-| 표준 | 96×128 | `character sprite 96x128 pixels,` |
+| 용도   | 픽셀    | 템플릿                                          |
+| ------ | ------- | ----------------------------------------------- |
+| 미니   | 48×64   | `chibi sprite 48x64 pixels,`                    |
+| 표준   | 96×128  | `character sprite 96x128 pixels,`               |
 | 초상화 | 256×320 | `portrait 256x320 pixels, upper body centered,` |
 
 ## 3.4 UI
 
-| 용도 | 픽셀 |
-|------|------|
-| 아이콘 S | 24×24 |
-| 아이콘 M | 32×32 |
-| 아이콘 L | 48×48 |
-| 재화 HUD | 32×32 |
-| 재화 보상 | 64×64 |
-| 썸네일 | 240×240 |
-| 카드 | 336×400 |
+| 용도      | 픽셀    |
+| --------- | ------- |
+| 아이콘 S  | 24×24   |
+| 아이콘 M  | 32×32   |
+| 아이콘 L  | 48×48   |
+| 재화 HUD  | 32×32   |
+| 재화 보상 | 64×64   |
+| 썸네일    | 240×240 |
+| 카드      | 336×400 |
 
 ---
 
@@ -248,12 +249,12 @@ cute but majestic dinosaur creature, big expressive friendly eyes, slightly exag
 
 **타입별 추가:**
 
-| 타입 | 추가 키워드 |
-|------|-------------|
-| 초식 | `gentle herbivore expression, peaceful stance,` |
-| 육식 | `fierce but friendly predator, powerful stance,` |
-| 익룡 | `graceful flying reptile, wings spread,` |
-| 해양 | `streamlined aquatic body, swimming pose,` |
+| 타입       | 추가 키워드                                          |
+| ---------- | ---------------------------------------------------- |
+| 초식       | `gentle herbivore expression, peaceful stance,`      |
+| 육식       | `fierce but friendly predator, powerful stance,`     |
+| 익룡       | `graceful flying reptile, wings spread,`             |
+| 해양       | `streamlined aquatic body, swimming pose,`           |
 | 하이브리드 | `bio-engineered hybrid, subtle bioluminescent glow,` |
 
 ## 4.2 건물 스타일
@@ -274,30 +275,30 @@ chibi style character, 2.5 head to body proportion, big round expressive eyes, c
 
 ## 5.1 공룡
 
-| 상태 | 키워드 |
-|------|--------|
-| **Idle** | `standing idle pose, relaxed stance, looking forward,` |
-| **Walk** | `walking pose, one leg forward, mid-stride movement,` |
-| **Eat** | `eating pose, head lowered toward food,` |
-| **Happy** | `happy excited pose, slight jump, joyful expression,` |
+| 상태         | 키워드                                                  |
+| ------------ | ------------------------------------------------------- |
+| **Idle**     | `standing idle pose, relaxed stance, looking forward,`  |
+| **Walk**     | `walking pose, one leg forward, mid-stride movement,`   |
+| **Eat**      | `eating pose, head lowered toward food,`                |
+| **Happy**    | `happy excited pose, slight jump, joyful expression,`   |
 | **Portrait** | `front-facing portrait, head and upper body, centered,` |
 
 ## 5.2 건물
 
-| 상태 | 키워드 |
-|------|--------|
-| **Lv.1** | `level 1 basic, simple design,` |
-| **Lv.2** | `level 2 upgraded, improved details,` |
-| **Lv.3** | `level 3 maximum, elaborate design, subtle glow,` |
-| **건설중** | `under construction, scaffolding visible,` |
+| 상태       | 키워드                                            |
+| ---------- | ------------------------------------------------- |
+| **Lv.1**   | `level 1 basic, simple design,`                   |
+| **Lv.2**   | `level 2 upgraded, improved details,`             |
+| **Lv.3**   | `level 3 maximum, elaborate design, subtle glow,` |
+| **건설중** | `under construction, scaffolding visible,`        |
 
 ## 5.3 캐릭터
 
-| 상태 | 키워드 |
-|------|--------|
-| **Idle** | `standing idle, friendly smile,` |
-| **Walk** | `walking pose, casual stride,` |
-| **Work** | `working pose, holding tools,` |
+| 상태      | 키워드                           |
+| --------- | -------------------------------- |
+| **Idle**  | `standing idle, friendly smile,` |
+| **Walk**  | `walking pose, casual stride,`   |
+| **Work**  | `working pose, holding tools,`   |
 | **Happy** | `celebrating pose, arms raised,` |
 
 ---
@@ -306,35 +307,35 @@ chibi style character, 2.5 head to body proportion, big round expressive eyes, c
 
 ## 6.1 브랜드 컬러
 
-| 이름 | HEX | 용도 |
-|------|-----|------|
-| Dino Green | #4CAF50 | 자연, 초식 |
-| Amber Gold | #FFC107 | 보상, 레전더리 |
-| Ocean Blue | #2196F3 | 다이아, 해양 |
-| Warm Coral | #FF7043 | 육식, 에너지 |
+| 이름         | HEX     | 용도             |
+| ------------ | ------- | ---------------- |
+| Dino Green   | #4CAF50 | 자연, 초식       |
+| Amber Gold   | #FFC107 | 보상, 레전더리   |
+| Ocean Blue   | #2196F3 | 다이아, 해양     |
+| Warm Coral   | #FF7043 | 육식, 에너지     |
 | Magic Purple | #9C27B0 | 에픽, 하이브리드 |
 
 ## 6.2 등급 컬러
 
-| 등급 | HEX |
-|------|-----|
-| ⭐ Common | #9E9E9E |
-| ⭐⭐ Uncommon | #8BC34A |
-| ⭐⭐⭐ Rare | #2196F3 |
-| ⭐⭐⭐⭐ Epic | #9C27B0 |
+| 등급                 | HEX     |
+| -------------------- | ------- |
+| ⭐ Common            | #9E9E9E |
+| ⭐⭐ Uncommon        | #8BC34A |
+| ⭐⭐⭐ Rare          | #2196F3 |
+| ⭐⭐⭐⭐ Epic        | #9C27B0 |
 | ⭐⭐⭐⭐⭐ Legendary | #FFC107 |
 
 ---
 
 # 7. 등급 효과
 
-| 등급 | 추가 키워드 |
-|------|-------------|
-| Common | (없음) |
-| Uncommon | `slightly more detailed,` |
-| Rare | `polished appearance, richer colors,` |
-| Epic | `premium quality, subtle inner glow,` |
-| Legendary | `golden rim light, majestic aura,` |
+| 등급      | 추가 키워드                           |
+| --------- | ------------------------------------- |
+| Common    | (없음)                                |
+| Uncommon  | `slightly more detailed,`             |
+| Rare      | `polished appearance, richer colors,` |
+| Epic      | `premium quality, subtle inner glow,` |
+| Legendary | `golden rim light, majestic aura,`    |
 
 ---
 
@@ -424,5 +425,5 @@ portrait 256x320 pixels,
 
 ---
 
-*다이노 파크 타이쿤 - 에셋 프롬프트 시스템 v2.0*
-*최종 업데이트: 2026년 1월*
+_다이노 파크 타이쿤 - 에셋 프롬프트 시스템 v2.0_
+_최종 업데이트: 2026년 1월_

@@ -9,9 +9,9 @@ export default function ShopPage() {
   const { gold, diamond } = useGameStore();
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex h-full flex-col bg-gray-50">
       {/* 보유 재화 */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="border-b border-gray-200 bg-white p-4">
         <div className="flex justify-center gap-8">
           <CurrencyDisplay icon="🪙" amount={gold} label="골드" />
           <CurrencyDisplay icon="💎" amount={diamond} label="다이아" />
@@ -19,23 +19,14 @@ export default function ShopPage() {
       </div>
 
       {/* 탭 */}
-      <div className="bg-white border-b border-gray-200 flex">
-        <ShopTab
-          active={activeTab === 'diamond'}
-          onClick={() => setActiveTab('diamond')}
-        >
+      <div className="flex border-b border-gray-200 bg-white">
+        <ShopTab active={activeTab === 'diamond'} onClick={() => setActiveTab('diamond')}>
           💎 다이아 충전
         </ShopTab>
-        <ShopTab
-          active={activeTab === 'package'}
-          onClick={() => setActiveTab('package')}
-        >
+        <ShopTab active={activeTab === 'package'} onClick={() => setActiveTab('package')}>
           📦 패키지
         </ShopTab>
-        <ShopTab
-          active={activeTab === 'daily'}
-          onClick={() => setActiveTab('daily')}
-        >
+        <ShopTab active={activeTab === 'daily'} onClick={() => setActiveTab('daily')}>
           🏷️ 일일 상점
         </ShopTab>
       </div>
@@ -62,14 +53,20 @@ function CurrencyDisplay({ icon, amount, label }: { icon: string; amount: number
   );
 }
 
-function ShopTab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function ShopTab({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
       className={`flex-1 py-3 text-sm font-medium transition-colors ${
-        active
-          ? 'text-primary-600 border-b-2 border-primary-600'
-          : 'text-gray-500'
+        active ? 'text-primary-600 border-primary-600 border-b-2' : 'text-gray-500'
       }`}
     >
       {children}
@@ -92,21 +89,21 @@ function DiamondShop() {
       {products.map((product) => (
         <div
           key={product.id}
-          className={`bg-white rounded-xl p-4 text-center relative ${
-            product.popular ? 'ring-2 ring-secondary-500' : ''
+          className={`relative rounded-xl bg-white p-4 text-center ${
+            product.popular ? 'ring-secondary-500 ring-2' : ''
           }`}
         >
           {product.popular && (
-            <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-secondary-500 text-white text-xs px-2 py-0.5 rounded-full">
+            <div className="bg-secondary-500 absolute -top-2 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5 text-xs text-white">
               인기
             </div>
           )}
-          <div className="text-3xl mb-2">💎</div>
-          <div className="font-bold text-lg">{product.diamonds.toLocaleString()}</div>
+          <div className="mb-2 text-3xl">💎</div>
+          <div className="text-lg font-bold">{product.diamonds.toLocaleString()}</div>
           {product.bonus > 0 && (
             <div className="text-secondary-500 text-sm">+{product.bonus} 보너스</div>
           )}
-          <button className="w-full mt-3 py-2 bg-primary-500 text-white rounded-lg text-sm font-medium">
+          <button className="bg-primary-500 mt-3 w-full rounded-lg py-2 text-sm font-medium text-white">
             ₩{product.price.toLocaleString()}
           </button>
         </div>
@@ -138,28 +135,28 @@ function PackageShop() {
   return (
     <div className="space-y-4">
       {packages.map((pkg) => (
-        <div key={pkg.id} className="bg-white rounded-xl overflow-hidden">
-          <div className="h-24 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+        <div key={pkg.id} className="overflow-hidden rounded-xl bg-white">
+          <div className="flex h-24 items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500">
             <span className="text-4xl">🎁</span>
           </div>
           <div className="p-4">
-            <h3 className="font-bold text-lg">{pkg.name}</h3>
-            <p className="text-sm text-gray-500 mb-3">{pkg.description}</p>
-            <div className="space-y-1 mb-4">
+            <h3 className="text-lg font-bold">{pkg.name}</h3>
+            <p className="mb-3 text-sm text-gray-500">{pkg.description}</p>
+            <div className="mb-4 space-y-1">
               {pkg.contents.map((content, idx) => (
-                <div key={idx} className="text-sm text-gray-700">• {content}</div>
+                <div key={idx} className="text-sm text-gray-700">
+                  • {content}
+                </div>
               ))}
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-gray-400 line-through text-sm">
+                <span className="text-sm text-gray-400 line-through">
                   ₩{pkg.originalPrice.toLocaleString()}
                 </span>
-                <span className="text-red-500 font-bold ml-2">
-                  ₩{pkg.price.toLocaleString()}
-                </span>
+                <span className="ml-2 font-bold text-red-500">₩{pkg.price.toLocaleString()}</span>
               </div>
-              <button className="px-6 py-2 bg-secondary-500 text-white rounded-lg font-medium">
+              <button className="bg-secondary-500 rounded-lg px-6 py-2 font-medium text-white">
                 구매
               </button>
             </div>
@@ -180,18 +177,16 @@ function DailyShop() {
 
   return (
     <div className="space-y-3">
-      <div className="text-sm text-gray-500 text-center mb-4">
-        ⏰ 갱신까지 12:34:56
-      </div>
+      <div className="mb-4 text-center text-sm text-gray-500">⏰ 갱신까지 12:34:56</div>
       {dailyItems.map((item) => (
-        <div key={item.id} className="bg-white rounded-xl p-4 flex items-center gap-4">
-          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl">
+        <div key={item.id} className="flex items-center gap-4 rounded-xl bg-white p-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-2xl">
             {item.icon}
           </div>
           <div className="flex-1">
             <h3 className="font-medium">{item.name}</h3>
           </div>
-          <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-sm font-medium flex items-center gap-1">
+          <button className="bg-primary-500 flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-white">
             <span>{item.currency === 'diamond' ? '💎' : '🪙'}</span>
             <span>{item.price}</span>
           </button>
