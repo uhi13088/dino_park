@@ -9,11 +9,6 @@
 
 ### 🟡 낮음 (프론트엔드 완성)
 
-- [ ] **C12: GreatFigure Feature 보강 (Frontend)**
-  - 위치: `apps/client/src/features/greatFigure/`
-  - AC: GreatFigureDetail.tsx, GreatFigureAssign.tsx, useGreatFigureStore.ts 추가
-  - 기능: 위인 상세, 건물 배정
-
 - [ ] **C13: Shop Feature 보강 (Frontend)**
   - 위치: `apps/client/src/features/shop/`
   - AC: ShopDetail.tsx, PurchaseModal.tsx, useShopStore.ts 추가
@@ -44,6 +39,14 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C12: GreatFigure Feature 보강 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/greatFigure/stores/useGreatFigureStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/greatFigure/components/GreatFigureDetail.tsx` (위인 상세 모달)
+    - `apps/client/src/features/greatFigure/components/GreatFigureAssign.tsx` (건물 배치 모달)
+    - `apps/client/src/features/greatFigure/index.ts` (업데이트)
+  - 기능: 위인 영입/레벨업, 건물 배치, 시너지 표시, 능력 보너스 계산
 
 - [x] **C11: Exploration Feature 보강 (Frontend)** ✅ 2026-02-03
   - 생성 파일:
@@ -191,9 +194,9 @@ _(없음)_
 | --------- | ------- | ------ |
 | 🔴 높음   | 3       | 3 ✅   |
 | 🟠 중간   | 4       | 4 ✅   |
-| 🟡 낮음   | 6       | 4      |
+| 🟡 낮음   | 6       | 5      |
 | ⚪ 인프라 | 2       | 0      |
-| **합계**  | **15**  | **11** |
+| **합계**  | **15**  | **12** |
 
 ---
 
