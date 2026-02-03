@@ -7,14 +7,6 @@
 
 ## 📋 QUEUE (대기)
 
-### 🔴 높음 (핵심 누락)
-
-- [ ] **C03: Economy Feature 생성 (Frontend)**
-  - 위치: `apps/client/src/features/economy/`
-  - AC: EconomyPage.tsx, CurrencyPanel.tsx, TransactionHistory.tsx, useEconomyStore.ts 생성
-  - 기능: 재화 표시, 수입/지출 내역, 오프라인 수익 수령
-  - 참조: `docs/dino_park_balance_simulation.md`
-
 ### 🟠 중간 (서비스 보강)
 
 - [ ] **C04: Story Service 보강**
@@ -116,6 +108,15 @@ _(없음)_
     - `apps/client/src/features/building/index.ts`
   - 기능: 건물 목록, 카테고리 필터, 건물 상점, 건설, 업그레이드 모달, 위인 배정 모달
 
+- [x] **C03: Economy Feature 생성 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/economy/pages/EconomyPage.tsx`
+    - `apps/client/src/features/economy/components/CurrencyPanel.tsx`
+    - `apps/client/src/features/economy/components/TransactionHistory.tsx`
+    - `apps/client/src/features/economy/stores/useEconomyStore.ts`
+    - `apps/client/src/features/economy/index.ts`
+  - 기능: 재화 표시 (골드/다이아/DNA/에너지), 거래 내역 필터, 오프라인 수익 수령
+
 ### 문서 작업 (이전 완료)
 
 <details>
@@ -157,11 +158,11 @@ _(없음)_
 
 | 우선순위  | 티켓 수 | 완료  |
 | --------- | ------- | ----- |
-| 🔴 높음   | 3       | 2     |
+| 🔴 높음   | 3       | 3 ✅  |
 | 🟠 중간   | 4       | 0     |
 | 🟡 낮음   | 6       | 0     |
 | ⚪ 인프라 | 2       | 0     |
-| **합계**  | **15**  | **2** |
+| **합계**  | **15**  | **3** |
 
 ---
 
