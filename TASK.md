@@ -9,12 +9,6 @@
 
 ### 🔴 높음 (핵심 누락)
 
-- [ ] **C02: Building Feature 생성 (Frontend)**
-  - 위치: `apps/client/src/features/building/`
-  - AC: BuildingPage.tsx, BuildingCard.tsx, BuildingList.tsx, useBuildingStore.ts 생성
-  - 기능: 건물 목록, 건물 배치, 건물 업그레이드, 위인 배정
-  - 참조: `docs/dino_park_ui_art_guide.md` 섹션 5
-
 - [ ] **C03: Economy Feature 생성 (Frontend)**
   - 위치: `apps/client/src/features/economy/`
   - AC: EconomyPage.tsx, CurrencyPanel.tsx, TransactionHistory.tsx, useEconomyStore.ts 생성
@@ -94,9 +88,10 @@
 ---
 
 ## 🔄 IN_PROGRESS (진행중)
+
 <!-- 한 번에 1개만 -->
 
-*(없음)*
+_(없음)_
 
 ---
 
@@ -111,6 +106,15 @@
     - `apps/server/src/modules/social/social.controller.ts` (282줄)
   - Prisma 스키마 업데이트: Friend, FriendRequest, FriendIntimacy, ParkVisit, GuestBook, Gift, SocialNotification 모델 추가
   - 기능: 친구 추가/삭제/차단, 친구 요청, 파크 방문, 방명록, 선물 시스템, 친밀도, 알림
+
+- [x] **C02: Building Feature 생성 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/building/pages/BuildingPage.tsx`
+    - `apps/client/src/features/building/components/BuildingCard.tsx`
+    - `apps/client/src/features/building/components/BuildingList.tsx`
+    - `apps/client/src/features/building/stores/useBuildingStore.ts`
+    - `apps/client/src/features/building/index.ts`
+  - 기능: 건물 목록, 카테고리 필터, 건물 상점, 건설, 업그레이드 모달, 위인 배정 모달
 
 ### 문서 작업 (이전 완료)
 
@@ -151,22 +155,22 @@
 
 ## 📊 진행 상황
 
-| 우선순위 | 티켓 수 | 완료 |
-|----------|---------|------|
-| 🔴 높음 | 3 | 1 |
-| 🟠 중간 | 4 | 0 |
-| 🟡 낮음 | 6 | 0 |
-| ⚪ 인프라 | 2 | 0 |
-| **합계** | **15** | **1** |
+| 우선순위  | 티켓 수 | 완료  |
+| --------- | ------- | ----- |
+| 🔴 높음   | 3       | 2     |
+| 🟠 중간   | 4       | 0     |
+| 🟡 낮음   | 6       | 0     |
+| ⚪ 인프라 | 2       | 0     |
+| **합계**  | **15**  | **2** |
 
 ---
 
 ## 📅 예상 일정
 
-| Phase | 티켓 | 예상 |
-|-------|------|------|
-| 🔴 높음 | C01~C03 | 1일 |
-| 🟠 중간 | C04~C07 | 1일 |
-| 🟡 낮음 | C08~C13 | 1.5일 |
-| ⚪ 인프라 | C14~C15 | 0.5일 |
-| **총합** | **15개** | **4일** |
+| Phase     | 티켓     | 예상    |
+| --------- | -------- | ------- |
+| 🔴 높음   | C01~C03  | 1일     |
+| 🟠 중간   | C04~C07  | 1일     |
+| 🟡 낮음   | C08~C13  | 1.5일   |
+| ⚪ 인프라 | C14~C15  | 0.5일   |
+| **총합**  | **15개** | **4일** |
