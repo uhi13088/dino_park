@@ -7,13 +7,6 @@
 
 ## 📋 QUEUE (대기)
 
-### 🟡 낮음 (프론트엔드 완성)
-
-- [ ] **C13: Shop Feature 보강 (Frontend)**
-  - 위치: `apps/client/src/features/shop/`
-  - AC: ShopDetail.tsx, PurchaseModal.tsx, useShopStore.ts 추가
-  - 기능: 상품 상세, 구매 확인
-
 ### ⚪ 인프라 (마무리)
 
 - [ ] **C14: API Queries 작성**
@@ -39,6 +32,14 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C13: Shop Feature 보강 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/shop/stores/useShopStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/shop/components/PurchaseModal.tsx` (구매 확인/결과 모달)
+    - `apps/client/src/features/shop/components/ShopProductCard.tsx` (상품 카드들)
+    - `apps/client/src/features/shop/index.ts`
+  - 기능: 다이아/패키지/일일/골드 상점, 구매 로직, 결과 표시, 일일 리프레시
 
 - [x] **C12: GreatFigure Feature 보강 (Frontend)** ✅ 2026-02-03
   - 생성 파일:
@@ -194,9 +195,9 @@ _(없음)_
 | --------- | ------- | ------ |
 | 🔴 높음   | 3       | 3 ✅   |
 | 🟠 중간   | 4       | 4 ✅   |
-| 🟡 낮음   | 6       | 5      |
+| 🟡 낮음   | 6       | 6 ✅   |
 | ⚪ 인프라 | 2       | 0      |
-| **합계**  | **15**  | **12** |
+| **합계**  | **15**  | **13** |
 
 ---
 
