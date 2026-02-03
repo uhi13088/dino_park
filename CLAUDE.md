@@ -58,7 +58,7 @@
 |------|------|----------|
 | **GDD** | `docs/dino_park_tycoon_gdd.md` | 전체 기획, 기능 명세, 시스템 규칙 |
 | **밸런스** | `docs/dino_park_balance_simulation.md` | 모든 수치, 공식, 경제 설정 |
-| **UI/UX** | `docs/dino_park_ui_wireframe.md` | 화면 구조, 컴포넌트, 플로우 |
+| **UI/UX** | `docs/dino_park_ui_art_guide.md` | 화면 구조, 컴포넌트, 플로우 |
 | **공룡 도감** | `docs/dino_park_dinosaur_codex.md` | 공룡 82종 상세 스펙 |
 | **위인 도감** | `docs/dino_park_great_figures.md` | 위인 50명 상세 스펙, 시너지 |
 | **스토리** | `docs/dino_park_story_scenario.md` | 스토리 6챕터, 전체 대사 |
