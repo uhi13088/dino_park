@@ -9,11 +9,6 @@
 
 ### 🟡 낮음 (프론트엔드 완성)
 
-- [ ] **C10: Dinosaur Feature 보강 (Frontend)**
-  - 위치: `apps/client/src/features/dinosaur/`
-  - AC: DinosaurDetail.tsx, DinosaurFeed.tsx, useDinosaurStore.ts 추가
-  - 기능: 공룡 상세, 먹이주기, 레벨업
-
 - [ ] **C11: Exploration Feature 보강 (Frontend)**
   - 위치: `apps/client/src/features/exploration/`
   - AC: ExplorationDetail.tsx, ExplorationReward.tsx, useExplorationStore.ts 추가
@@ -54,6 +49,15 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C10: Dinosaur Feature 보강 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/dinosaur/stores/useDinosaurStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/dinosaur/components/DinosaurCard.tsx` (공룡 카드)
+    - `apps/client/src/features/dinosaur/components/DinosaurDetail.tsx` (공룡 상세 모달)
+    - `apps/client/src/features/dinosaur/components/DinosaurFeed.tsx` (먹이주기 UI)
+    - `apps/client/src/features/dinosaur/index.ts`
+  - 기능: 공룡 상태관리, 카테고리/희귀도 필터, 먹이주기 (3종류), 행복도/배고픔 관리, 레벨업, 경험치
 
 - [x] **C09: Social Feature 생성 (Frontend)** ✅ 2026-02-03
   - 생성 파일:
@@ -180,13 +184,13 @@ _(없음)_
 
 ## 📊 진행 상황
 
-| 우선순위  | 티켓 수 | 완료  |
-| --------- | ------- | ----- |
-| 🔴 높음   | 3       | 3 ✅  |
-| 🟠 중간   | 4       | 4 ✅  |
-| 🟡 낮음   | 6       | 2     |
-| ⚪ 인프라 | 2       | 0     |
-| **합계**  | **15**  | **9** |
+| 우선순위  | 티켓 수 | 완료   |
+| --------- | ------- | ------ |
+| 🔴 높음   | 3       | 3 ✅   |
+| 🟠 중간   | 4       | 4 ✅   |
+| 🟡 낮음   | 6       | 3      |
+| ⚪ 인프라 | 2       | 0      |
+| **합계**  | **15**  | **10** |
 
 ---
 
