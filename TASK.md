@@ -9,11 +9,6 @@
 
 ### 🟡 낮음 (프론트엔드 완성)
 
-- [ ] **C09: Social Feature 생성 (Frontend)**
-  - 위치: `apps/client/src/features/social/`
-  - AC: SocialPage.tsx, FriendList.tsx, FriendParkVisit.tsx 생성
-  - 기능: 친구 목록, 친구 추가, 파크 방문
-
 - [ ] **C10: Dinosaur Feature 보강 (Frontend)**
   - 위치: `apps/client/src/features/dinosaur/`
   - AC: DinosaurDetail.tsx, DinosaurFeed.tsx, useDinosaurStore.ts 추가
@@ -59,6 +54,17 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C09: Social Feature 생성 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/social/pages/SocialPage.tsx` (메인 페이지 + 탭 네비게이션)
+    - `apps/client/src/features/social/components/FriendList.tsx` (친구 목록 + 필터/검색)
+    - `apps/client/src/features/social/components/FriendCard.tsx` (친구 카드)
+    - `apps/client/src/features/social/components/FriendParkVisit.tsx` (파크 방문 모달)
+    - `apps/client/src/features/social/components/AddFriendModal.tsx` (친구 추가 모달)
+    - `apps/client/src/features/social/stores/useSocialStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/social/index.ts`
+  - 기능: 친구 목록 (온라인/오프라인 필터), 친구 요청 관리, 파크 방문, 방명록, 선물함
 
 - [x] **C08: Season Feature 생성 (Frontend)** ✅ 2026-02-03
   - 생성 파일:
@@ -178,9 +184,9 @@ _(없음)_
 | --------- | ------- | ----- |
 | 🔴 높음   | 3       | 3 ✅  |
 | 🟠 중간   | 4       | 4 ✅  |
-| 🟡 낮음   | 6       | 1     |
+| 🟡 낮음   | 6       | 2     |
 | ⚪ 인프라 | 2       | 0     |
-| **합계**  | **15**  | **8** |
+| **합계**  | **15**  | **9** |
 
 ---
 
