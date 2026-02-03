@@ -9,11 +9,6 @@
 
 ### 🟡 낮음 (프론트엔드 완성)
 
-- [ ] **C08: Season Feature 생성 (Frontend)**
-  - 위치: `apps/client/src/features/season/`
-  - AC: SeasonPage.tsx, SeasonPassTrack.tsx, SeasonReward.tsx 생성
-  - 기능: 시즌 패스 UI, 보상 트랙, 미션 목록
-
 - [ ] **C09: Social Feature 생성 (Frontend)**
   - 위치: `apps/client/src/features/social/`
   - AC: SocialPage.tsx, FriendList.tsx, FriendParkVisit.tsx 생성
@@ -64,6 +59,17 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C08: Season Feature 생성 (Frontend)** ✅ 2026-02-03
+  - 생성 파일:
+    - `apps/client/src/features/season/pages/SeasonPage.tsx` (메인 페이지 + 탭 네비게이션)
+    - `apps/client/src/features/season/components/SeasonPassTrack.tsx` (50레벨 보상 트랙)
+    - `apps/client/src/features/season/components/SeasonReward.tsx` (개별 보상 컴포넌트)
+    - `apps/client/src/features/season/components/SeasonChapterList.tsx` (시즌 스토리 챕터)
+    - `apps/client/src/features/season/components/SeasonEventCard.tsx` (시즌 이벤트)
+    - `apps/client/src/features/season/stores/useSeasonStore.ts` (Zustand 스토어)
+    - `apps/client/src/features/season/index.ts`
+  - 기능: 시즌 패스 UI, 경험치 바, 무료/프리미엄 보상 트랙, 챕터 목록, 이벤트 카드
 
 - [x] **C07: Season Service 보강** ✅ 2026-02-03
   - 수정 파일:
@@ -172,9 +178,9 @@ _(없음)_
 | --------- | ------- | ----- |
 | 🔴 높음   | 3       | 3 ✅  |
 | 🟠 중간   | 4       | 4 ✅  |
-| 🟡 낮음   | 6       | 0     |
+| 🟡 낮음   | 6       | 1     |
 | ⚪ 인프라 | 2       | 0     |
-| **합계**  | **15**  | **7** |
+| **합계**  | **15**  | **8** |
 
 ---
 
