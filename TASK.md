@@ -7,12 +7,7 @@
 
 ## 📋 QUEUE (대기)
 
-### ⚪ 인프라 (마무리)
-
-- [ ] **C15: Balance Constants 확장**
-  - 위치: `packages/game-data/src/balance/index.ts`
-  - AC: 현재 41줄 → 200줄+ (모든 밸런스 상수)
-  - 참조: `docs/dino_park_balance_simulation.md`
+_(모든 작업 완료!)_
 
 ---
 
@@ -27,6 +22,14 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C15: Balance Constants 확장** ✅ 2026-02-03
+  - 수정 파일: `packages/game-data/src/balance/index.ts` (42줄 → 385줄)
+  - 추가 상수:
+    - 레벨 테이블: PARK_LEVEL_EXP_TABLE (50레벨), DINOSAUR_LEVEL_EXP_TABLE (25레벨), GREAT_FIGURE_LEVEL_EXP_TABLE (10레벨)
+    - 시스템: INITIAL_CURRENCY, ENERGY, DINOSAUR_STATUS, OFFLINE, GRID
+    - 데이터: RARITY_BASE_STATS, BUILDING_TYPE_STATS, EXPLORATION, DIAMOND_PACKS, GOLD_SHOP, SUBSCRIPTIONS, SEASON_PASS, AD_REWARDS
+    - 유틸리티 함수: calculateRevenue, getRequiredExp, calculateOfflineRevenue, calculateEnergyRecharge, calculateHatchTime, calculateSeasonPassLevel
 
 - [x] **C14: API Queries 작성** ✅ 2026-02-03
   - 수정 파일: `apps/client/src/api/queries/index.ts` (654줄 → 980줄+)
@@ -194,13 +197,13 @@ _(없음)_
 
 ## 📊 진행 상황
 
-| 우선순위  | 티켓 수 | 완료   |
-| --------- | ------- | ------ |
-| 🔴 높음   | 3       | 3 ✅   |
-| 🟠 중간   | 4       | 4 ✅   |
-| 🟡 낮음   | 6       | 6 ✅   |
-| ⚪ 인프라 | 2       | 1      |
-| **합계**  | **15**  | **14** |
+| 우선순위  | 티켓 수 | 완료      |
+| --------- | ------- | --------- |
+| 🔴 높음   | 3       | 3 ✅      |
+| 🟠 중간   | 4       | 4 ✅      |
+| 🟡 낮음   | 6       | 6 ✅      |
+| ⚪ 인프라 | 2       | 2 ✅      |
+| **합계**  | **15**  | **15** ✅ |
 
 ---
 
