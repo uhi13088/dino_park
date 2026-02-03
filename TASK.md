@@ -9,12 +9,6 @@
 
 ### 🟠 중간 (서비스 보강)
 
-- [ ] **C04: Story Service 보강**
-  - 위치: `apps/server/src/modules/story/story.service.ts`
-  - AC: 현재 45줄 → 200줄+ (CRUD + 진행 로직)
-  - 기능: 챕터 시작, 선택지 처리, 보상 지급, 호감도 시스템
-  - 참조: `docs/dino_park_story_scenario.md`
-
 - [ ] **C05: GreatFigure Service 보강**
   - 위치: `apps/server/src/modules/great-figure/great-figure.service.ts`
   - AC: 현재 35줄 → 200줄+ (CRUD + 배정 로직)
@@ -117,6 +111,13 @@ _(없음)_
     - `apps/client/src/features/economy/index.ts`
   - 기능: 재화 표시 (골드/다이아/DNA/에너지), 거래 내역 필터, 오프라인 수익 수령
 
+- [x] **C04: Story Service 보강** ✅ 2026-02-03
+  - 수정 파일:
+    - `apps/server/src/modules/story/story.service.ts` (45줄 → 707줄)
+    - `apps/server/src/modules/story/story.controller.ts` (30줄 → 157줄)
+    - `apps/server/prisma/schema.prisma` (CharacterAffinity, StoryFlag 모델 추가)
+  - 기능: 챕터 시작/진행, 씬 전환, 선택지 처리 + 효과 적용, 보상 지급, 캐릭터 호감도 시스템, 스토리 플래그
+
 ### 문서 작업 (이전 완료)
 
 <details>
@@ -159,10 +160,10 @@ _(없음)_
 | 우선순위  | 티켓 수 | 완료  |
 | --------- | ------- | ----- |
 | 🔴 높음   | 3       | 3 ✅  |
-| 🟠 중간   | 4       | 0     |
+| 🟠 중간   | 4       | 1     |
 | 🟡 낮음   | 6       | 0     |
 | ⚪ 인프라 | 2       | 0     |
-| **합계**  | **15**  | **3** |
+| **합계**  | **15**  | **4** |
 
 ---
 

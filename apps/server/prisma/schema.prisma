@@ -26,14 +26,16 @@ model User {
   updatedAt     DateTime @updatedAt
 
   // Relations
-  park          Park?
-  currency      Currency?
-  greatFigures  UserGreatFigure[]
-  storyProgress StoryProgress[]
-  explorations  Exploration[]
-  hatchingQueue HatchingQueue[]
-  transactions  Transaction[]
-  seasonPasses  SeasonPass[]
+  park               Park?
+  currency           Currency?
+  greatFigures       UserGreatFigure[]
+  storyProgress      StoryProgress[]
+  characterAffinities CharacterAffinity[]
+  storyFlags         StoryFlag[]
+  explorations       Exploration[]
+  hatchingQueue      HatchingQueue[]
+  transactions       Transaction[]
+  seasonPasses       SeasonPass[]
 
   @@map("users")
 }
@@ -168,6 +170,7 @@ model StoryProgress {
   sceneId   String?
   completed Boolean  @default(false)
   choices   Json     @default("[]")
+  effects   Json     @default("{}")  // 선택지 효과 누적
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -176,6 +179,44 @@ model StoryProgress {
 
   @@unique([userId, chapterId])
   @@map("story_progress")
+}
+
+// ========================================
+// 캐릭터 호감도
+// ========================================
+
+model CharacterAffinity {
+  id          String   @id @default(cuid())
+  userId      String
+  characterId String   // jin, olivia, marco, thomas, etc.
+  affinity    Int      @default(0)
+  level       Int      @default(1)
+  unlockedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, characterId])
+  @@map("character_affinities")
+}
+
+// ========================================
+// 스토리 플래그
+// ========================================
+
+model StoryFlag {
+  id        String   @id @default(cuid())
+  userId    String
+  flagId    String
+  value     Json     @default("true")
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, flagId])
+  @@map("story_flags")
 }
 
 // ========================================
