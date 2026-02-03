@@ -188,20 +188,38 @@ CREATE TABLE parks (
     user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
     name            VARCHAR(100) NOT NULL,
     level           INT DEFAULT 1,
-    
-    -- 재화
-    gold            BIGINT DEFAULT 0,
-    gem             INT DEFAULT 0,
-    figure_point    INT DEFAULT 0,
-    
+    exp             INT DEFAULT 0,
+
+    -- 그리드 크기
+    grid_size_x     INT DEFAULT 20,
+    grid_size_y     INT DEFAULT 20,
+
     -- 파크 상태
     satisfaction    DECIMAL(5,2) DEFAULT 50.00,
-    
+
     -- 시간 관련
     last_calc_at    TIMESTAMP DEFAULT NOW(),  -- 마지막 수익 계산 시점
     created_at      TIMESTAMP DEFAULT NOW(),
-    
+    updated_at      TIMESTAMP DEFAULT NOW(),
+
     UNIQUE(user_id)
+);
+
+-- 재화 테이블 (별도 관리)
+CREATE TABLE currencies (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id             UUID UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    gold                BIGINT DEFAULT 10000,
+    diamond             INT DEFAULT 100,
+    dna                 INT DEFAULT 0,
+    figure_point        INT DEFAULT 0,
+
+    -- 탐험 에너지
+    exploration_energy  INT DEFAULT 30,
+    energy_last_recharged_at TIMESTAMP DEFAULT NOW(),
+
+    updated_at          TIMESTAMP DEFAULT NOW()
 );
 ```
 
@@ -358,6 +376,139 @@ CREATE TABLE story_progress (
     
     updated_at      TIMESTAMP DEFAULT NOW()
 );
+```
+
+### 건물 시스템
+
+```sql
+-- 건물 정의 (게임 데이터)
+CREATE TABLE building_definitions (
+    id              VARCHAR(50) PRIMARY KEY,
+    name            VARCHAR(100) NOT NULL,
+    name_ko         VARCHAR(100) NOT NULL,
+    category        VARCHAR(30) NOT NULL,  -- 'dinosaur', 'viewing', 'show', 'convenience', 'production', 'research', 'operation', 'decoration'
+
+    -- 건설 비용
+    cost_gold       INTEGER NOT NULL DEFAULT 0,
+    cost_wood       INTEGER NOT NULL DEFAULT 0,
+    cost_stone      INTEGER NOT NULL DEFAULT 0,
+    cost_metal      INTEGER NOT NULL DEFAULT 0,
+    cost_glass      INTEGER NOT NULL DEFAULT 0,
+    cost_diamond    INTEGER NOT NULL DEFAULT 0,
+
+    -- 크기 및 배치
+    size_x          INTEGER NOT NULL DEFAULT 1,
+    size_y          INTEGER NOT NULL DEFAULT 1,
+
+    -- 효과
+    revenue_per_hour    INTEGER DEFAULT 0,
+    production_type     VARCHAR(30),
+    production_amount   INTEGER DEFAULT 0,
+    buff_type           VARCHAR(50),
+    buff_value          DECIMAL(5,2),
+
+    -- 업그레이드 정보
+    max_level       INTEGER NOT NULL DEFAULT 5,
+
+    -- 해금 조건
+    unlock_park_level   INTEGER DEFAULT 1,
+    unlock_chapter      VARCHAR(20),
+    unlock_figure_id    VARCHAR(50),
+
+    created_at      TIMESTAMP DEFAULT NOW()
+);
+
+-- 파크 내 배치된 건물
+CREATE TABLE buildings (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    park_id         UUID NOT NULL REFERENCES parks(id) ON DELETE CASCADE,
+    definition_id   VARCHAR(50) NOT NULL REFERENCES building_definitions(id),
+
+    -- 배치 정보
+    position_x      INTEGER NOT NULL,
+    position_y      INTEGER NOT NULL,
+
+    -- 상태
+    level           INTEGER NOT NULL DEFAULT 1,
+    status          VARCHAR(20) DEFAULT 'active',  -- 'constructing', 'active', 'upgrading'
+
+    -- 위인 배치
+    assigned_figure_id  UUID REFERENCES park_figures(id),
+
+    -- 건설/업그레이드 타이머
+    construction_ends_at    TIMESTAMP,
+
+    -- 생산 시설용
+    last_collected_at       TIMESTAMP DEFAULT NOW(),
+
+    created_at      TIMESTAMP DEFAULT NOW(),
+    updated_at      TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_buildings_park ON buildings(park_id);
+```
+
+### 탐험 시스템
+
+```sql
+-- 탐험 지역 정의
+CREATE TABLE exploration_regions (
+    id              VARCHAR(50) PRIMARY KEY,
+    name            VARCHAR(100) NOT NULL,
+    name_ko         VARCHAR(100) NOT NULL,
+
+    -- 지역 정보
+    tier            INTEGER NOT NULL DEFAULT 1,  -- 1~5
+    energy_cost     INTEGER NOT NULL DEFAULT 5,
+    duration_minutes INTEGER NOT NULL DEFAULT 60,
+
+    -- 해금 조건
+    unlock_park_level   INTEGER DEFAULT 1,
+    unlock_chapter      VARCHAR(20),
+
+    -- 보상 테이블 (JSON)
+    reward_pool     JSONB NOT NULL,
+    /*
+    {
+        "common": [{"type": "dinosaur", "id": "001", "weight": 30}, ...],
+        "uncommon": [...],
+        "rare": [...],
+        "resources": [{"type": "gold", "min": 100, "max": 500}, ...]
+    }
+    */
+
+    created_at      TIMESTAMP DEFAULT NOW()
+);
+
+-- 탐험 기록
+CREATE TABLE explorations (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    park_id         UUID NOT NULL REFERENCES parks(id) ON DELETE CASCADE,
+    region_id       VARCHAR(50) NOT NULL REFERENCES exploration_regions(id),
+
+    -- 상태
+    status          VARCHAR(20) DEFAULT 'in_progress',  -- 'in_progress', 'completed', 'claimed'
+
+    -- 타이밍
+    started_at      TIMESTAMP DEFAULT NOW(),
+    ends_at         TIMESTAMP NOT NULL,
+    claimed_at      TIMESTAMP,
+
+    -- 보상 (탐험 완료 시 결정)
+    rewards         JSONB,
+    /*
+    {
+        "dinosaurs": [{"definition_id": "001", "rarity": "common"}],
+        "resources": {"gold": 350, "dna": 50},
+        "items": []
+    }
+    */
+
+    created_at      TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_explorations_park ON explorations(park_id);
+CREATE INDEX idx_explorations_status ON explorations(status);
 ```
 
 ## 3.3 Redis 스키마
@@ -764,6 +915,190 @@ POST /shop/purchase       # 구매
 POST /shop/iap/verify     # 인앱 결제 검증
 ```
 
+## 5.3 요청/응답 DTO
+
+### 공통
+
+```typescript
+// 성공 응답
+interface ApiResponse<T> {
+  success: true;
+  data: T;
+}
+
+// 에러 응답
+interface ApiError {
+  success: false;
+  error: {
+    code: string;
+    message: string;
+    details?: Record<string, any>;
+  };
+}
+
+// 페이지네이션
+interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+  hasNext: boolean;
+}
+```
+
+### 파크 API
+
+```typescript
+// GET /park 응답
+interface GetParkResponse {
+  park: {
+    id: string;
+    name: string;
+    level: number;
+    exp: number;
+    gridSizeX: number;
+    gridSizeY: number;
+    satisfaction: number;
+    lastCalcAt: string;
+  };
+  currency: {
+    gold: number;
+    diamond: number;
+    dna: number;
+    figurePoint: number;
+    explorationEnergy: number;
+  };
+  offlineReward?: {
+    gold: number;
+    duration: number;  // 분
+  };
+}
+```
+
+### 공룡 API
+
+```typescript
+// GET /dinosaurs 응답
+interface GetDinosaursResponse {
+  dinosaurs: Dinosaur[];
+}
+
+interface Dinosaur {
+  id: string;
+  definitionId: string;
+  nickname: string | null;
+  level: number;
+  exp: number;
+  happiness: number;
+  hunger: number;
+  intimacy: number;
+  positionX: number;
+  positionY: number;
+  isInPark: boolean;
+  lastFedAt: string;
+}
+
+// POST /dinosaurs/hatch 요청
+interface HatchDinosaurRequest {
+  eggType: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+  slotIndex: number;
+}
+
+// POST /dinosaurs/:id/feed 요청
+interface FeedDinosaurRequest {
+  foodType: 'basic' | 'premium';
+}
+
+// POST /dinosaurs/:id/feed 응답
+interface FeedDinosaurResponse {
+  dinosaur: Dinosaur;
+  currencyChange: {
+    gold: number;  // 음수 (비용)
+  };
+}
+```
+
+### 건물 API
+
+```typescript
+// POST /buildings 요청
+interface BuildBuildingRequest {
+  definitionId: string;
+  positionX: number;
+  positionY: number;
+}
+
+// POST /buildings/:id/upgrade 응답
+interface UpgradeBuildingResponse {
+  building: Building;
+  currencyChange: {
+    gold?: number;
+    wood?: number;
+    stone?: number;
+  };
+}
+```
+
+### 탐험 API
+
+```typescript
+// POST /expeditions/start 요청
+interface StartExpeditionRequest {
+  regionId: string;
+  dinosaurIds?: string[];  // 탐험에 보낼 공룡 (선택)
+}
+
+// POST /expeditions/:id/complete 응답
+interface CompleteExpeditionResponse {
+  rewards: {
+    dinosaurs: { definitionId: string; rarity: string }[];
+    resources: { gold?: number; dna?: number; };
+    items: { id: string; amount: number }[];
+  };
+  currencyChange: {
+    gold: number;
+    dna: number;
+  };
+}
+```
+
+## 5.4 에러 코드
+
+```typescript
+enum ErrorCode {
+  // 인증 (1xxx)
+  AUTH_INVALID_TOKEN = 'AUTH_1001',
+  AUTH_EXPIRED_TOKEN = 'AUTH_1002',
+  AUTH_TOSS_FAILED = 'AUTH_1003',
+
+  // 파크 (2xxx)
+  PARK_NOT_FOUND = 'PARK_2001',
+  PARK_GRID_OCCUPIED = 'PARK_2002',
+  PARK_LEVEL_REQUIRED = 'PARK_2003',
+
+  // 공룡 (3xxx)
+  DINO_NOT_FOUND = 'DINO_3001',
+  DINO_ALREADY_IN_PARK = 'DINO_3002',
+  DINO_HATCH_SLOT_FULL = 'DINO_3003',
+  DINO_INSUFFICIENT_DNA = 'DINO_3004',
+
+  // 건물 (4xxx)
+  BUILDING_NOT_FOUND = 'BUILDING_4001',
+  BUILDING_CONSTRUCTION_IN_PROGRESS = 'BUILDING_4002',
+  BUILDING_MAX_LEVEL = 'BUILDING_4003',
+
+  // 재화 (5xxx)
+  CURRENCY_INSUFFICIENT_GOLD = 'CURRENCY_5001',
+  CURRENCY_INSUFFICIENT_DIAMOND = 'CURRENCY_5002',
+  CURRENCY_INSUFFICIENT_ENERGY = 'CURRENCY_5003',
+
+  // 탐험 (6xxx)
+  EXPEDITION_NOT_FOUND = 'EXPEDITION_6001',
+  EXPEDITION_ALREADY_ACTIVE = 'EXPEDITION_6002',
+  EXPEDITION_REGION_LOCKED = 'EXPEDITION_6003',
+}
+```
+
 ---
 
 # 6. 실시간 시스템
@@ -823,7 +1158,134 @@ class EventScheduler {
 
 # 7. 오프라인 & 동기화
 
-## 7.1 클라이언트 오프라인 처리
+## 7.0 게임 데이터 로드 (game-data)
+
+### 정적 게임 데이터 구조
+
+```
+packages/game-data/
+├── dinosaurs/
+│   ├── index.ts           # 전체 공룡 데이터 export
+│   ├── herbivores.ts      # 초식 25종
+│   ├── carnivores.ts      # 육식 25종
+│   ├── pterosaurs.ts      # 익룡 12종
+│   ├── marines.ts         # 해양 10종
+│   └── hybrids.ts         # 하이브리드 10종
+├── buildings/
+│   └── index.ts           # 건물 50종
+├── greatFigures/
+│   └── index.ts           # 위인 50명
+├── explorations/
+│   └── regions.ts         # 탐험 지역
+├── stories/
+│   └── index.ts           # 스토리 챕터
+└── balance/
+    └── constants.ts       # 밸런스 상수
+```
+
+### 로드 방식
+
+```typescript
+// 1. 빌드 타임에 번들링 (권장)
+// vite.config.ts
+export default {
+  optimizeDeps: {
+    include: ['@dino-park/game-data']
+  }
+}
+
+// 2. 클라이언트에서 사용
+import { DINOSAURS, getDinosaurById } from '@dino-park/game-data';
+
+const trex = getDinosaurById('026');  // 티라노사우루스
+
+// 3. 서버에서 사용
+import { BUILDINGS, getUnlockableFigures } from '@dino-park/game-data';
+
+const availableFigures = getUnlockableFigures(parkLevel, completedChapters);
+```
+
+### 데이터 버전 관리
+
+```typescript
+// game-data 버전 (클라이언트-서버 동기화 확인용)
+export const GAME_DATA_VERSION = '1.0.0';
+
+// 클라이언트 시작 시 버전 확인
+const serverVersion = await api.getGameDataVersion();
+if (serverVersion !== GAME_DATA_VERSION) {
+  // 클라이언트 업데이트 필요 알림
+}
+```
+
+## 7.1 클라이언트 IndexedDB 스키마
+
+```typescript
+// client/db/schema.ts
+import Dexie from 'dexie';
+
+interface DinoParkDB extends Dexie {
+  // 사용자 데이터 캐시
+  park: Dexie.Table<ParkCache, string>;
+  dinosaurs: Dexie.Table<DinosaurCache, string>;
+  buildings: Dexie.Table<BuildingCache, string>;
+  figures: Dexie.Table<FigureCache, string>;
+  currency: Dexie.Table<CurrencyCache, string>;
+
+  // 오프라인 액션 큐
+  pendingActions: Dexie.Table<PendingAction, string>;
+
+  // 메타데이터
+  syncMeta: Dexie.Table<SyncMeta, string>;
+}
+
+const db = new Dexie('DinoParkDB') as DinoParkDB;
+
+db.version(1).stores({
+  // 기본 키: id, 인덱스: updatedAt
+  park: 'id, updatedAt',
+  dinosaurs: 'id, parkId, definitionId, updatedAt',
+  buildings: 'id, parkId, definitionId, status, updatedAt',
+  figures: 'id, definitionId, assignedBuildingId, updatedAt',
+  currency: 'userId, updatedAt',
+
+  // 오프라인 액션
+  pendingActions: 'id, timestamp, synced, actionType',
+
+  // 동기화 메타
+  syncMeta: 'key'
+});
+
+// 캐시 타입
+interface ParkCache {
+  id: string;
+  name: string;
+  level: number;
+  exp: number;
+  gridSizeX: number;
+  gridSizeY: number;
+  updatedAt: number;  // timestamp
+}
+
+interface PendingAction {
+  id: string;
+  actionType: 'feed_dinosaur' | 'build' | 'upgrade' | 'move' | 'collect';
+  payload: Record<string, any>;
+  timestamp: number;
+  synced: boolean;
+  retryCount: number;
+}
+
+interface SyncMeta {
+  key: string;  // 'lastSync', 'gameDataVersion', etc.
+  value: any;
+  updatedAt: number;
+}
+
+export { db, DinoParkDB };
+```
+
+## 7.2 클라이언트 오프라인 처리
 
 ```typescript
 // client/offline.manager.ts
