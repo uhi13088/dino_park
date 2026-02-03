@@ -9,11 +9,6 @@
 
 ### ⚪ 인프라 (마무리)
 
-- [ ] **C14: API Queries 작성**
-  - 위치: `apps/client/src/api/queries/`
-  - AC: 도메인별 TanStack Query 훅 (useDinosaurs, useBuildings, etc.)
-  - 기능: 서버 상태 관리, 캐싱, 낙관적 업데이트
-
 - [ ] **C15: Balance Constants 확장**
   - 위치: `packages/game-data/src/balance/index.ts`
   - AC: 현재 41줄 → 200줄+ (모든 밸런스 상수)
@@ -32,6 +27,14 @@ _(없음)_
 ## ✅ DONE (완료)
 
 ### 코드 작업
+
+- [x] **C14: API Queries 작성** ✅ 2026-02-03
+  - 수정 파일: `apps/client/src/api/queries/index.ts` (654줄 → 980줄+)
+  - 추가 쿼리:
+    - Shop: useDiamondPacks, useSpecialPackages, useDailyShop, useGoldShop, usePurchaseIAP 등
+    - Season: useCurrentSeason, useSeasonPass, useSeasonChapters, useSeasonEvents 등
+    - Social: useFriends, useFriendRequests, useGifts, useGuestbook, useSendGift 등
+  - 기능: 서버 상태 관리, 캐싱, 쿼리 무효화, 낙관적 업데이트
 
 - [x] **C13: Shop Feature 보강 (Frontend)** ✅ 2026-02-03
   - 생성 파일:
@@ -196,8 +199,8 @@ _(없음)_
 | 🔴 높음   | 3       | 3 ✅   |
 | 🟠 중간   | 4       | 4 ✅   |
 | 🟡 낮음   | 6       | 6 ✅   |
-| ⚪ 인프라 | 2       | 0      |
-| **합계**  | **15**  | **13** |
+| ⚪ 인프라 | 2       | 1      |
+| **합계**  | **15**  | **14** |
 
 ---
 
