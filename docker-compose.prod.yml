@@ -1,0 +1,70 @@
+version: '3.8'
+
+# 프로덕션용 Docker Compose
+# Railway/Render 마이그레이션 시 참조용
+
+services:
+  # API 서버
+  api:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    container_name: dino-park-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - '4000:4000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # 클라이언트 (Nginx로 서빙)
+  client:
+    build:
+      context: .
+      dockerfile: apps/client/Dockerfile
+    container_name: dino-park-client
+    restart: unless-stopped
+    ports:
+      - '3000:80'
+    depends_on:
+      - api
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: dino-park-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-dino_park}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: dino-park-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:

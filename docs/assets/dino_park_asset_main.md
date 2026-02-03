@@ -189,7 +189,7 @@ v3: dino_001_stegosaurus_idle_v3.png
 > ⚠️ **필수**: 모든 프롬프트 앞에 복사하세요!
 
 ```
-2.5D isometric game sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell Hay Day and Clash of Clans art style,
+2.5D isometric game sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell Hay Day and Clash of Clans art style,
 ```
 
 ---
@@ -334,7 +334,7 @@ chibi style character, 2.5 head to body proportion, big round expressive eyes, c
 | Uncommon | `slightly more detailed,` |
 | Rare | `polished appearance, richer colors,` |
 | Epic | `premium quality, subtle inner glow,` |
-| Legendary | `legendary glow effect, golden rim light, majestic aura,` |
+| Legendary | `golden rim light, majestic aura,` |
 
 ---
 
@@ -343,7 +343,7 @@ chibi style character, 2.5 head to body proportion, big round expressive eyes, c
 ## 예시 1: 스테고사우루스 Idle (M, Rare)
 
 ```
-2.5D isometric game sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell Hay Day and Clash of Clans art style,
+2.5D isometric game sprite, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork, inspired by Supercell Hay Day and Clash of Clans art style,
 
 cute but majestic dinosaur creature, big expressive friendly eyes, slightly exaggerated proportions with larger head, smooth rounded forms, approachable appearance, gentle herbivore expression, peaceful stance,
 
@@ -367,7 +367,7 @@ cute but majestic dinosaur creature, big expressive friendly eyes, powerful appe
 
 Tyrannosaurus Rex, king of dinosaurs, massive powerful head, teeth visible in slight smile, dark brown body #5D4037, orange underbelly #FFCC80, tiny arms, confident expression,
 
-legendary glow effect, golden rim light, majestic aura,
+golden rim light, majestic aura,
 
 front-facing portrait, head and upper body, centered,
 
@@ -379,7 +379,7 @@ portrait 256x256 pixels,
 ## 예시 3: 부화장 Lv.2 (M)
 
 ```
-2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, subtle drop shadow on ground, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork,
+2.5D isometric game building, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines with soft rounded edges, gentle gradients and highlights, soft directional lighting from top-left 315 degrees, facing southwest direction three-quarter view, 45 degree top-down camera angle, transparent PNG background, high quality mobile game artwork,
 
 theme park architecture, blend of modern and natural materials, cozy inviting atmosphere, miniature diorama feel,
 

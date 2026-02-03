@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Pretendard 폰트 */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+/* Nunito 폰트 */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+/* 기본 스타일 */
+:root {
+  --color-primary: #4CAF50;
+  --color-secondary: #FFC107;
+  --color-accent: #00BCD4;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Pretendard', sans-serif;
+  background-color: #1a1a2e;
+  color: #ffffff;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 게임 캔버스 */
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* 스크롤바 숨김 */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* 커스텀 유틸리티 클래스 */
+@layer components {
+  .btn-primary {
+    @apply bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-lg transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary-500 hover:bg-secondary-600 text-black font-bold py-2 px-4 rounded-lg transition-colors;
+  }
+
+  .card {
+    @apply bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20;
+  }
+
+  .rarity-common { @apply text-rarity-common; }
+  .rarity-uncommon { @apply text-rarity-uncommon; }
+  .rarity-rare { @apply text-rarity-rare; }
+  .rarity-epic { @apply text-rarity-epic; }
+  .rarity-legendary { @apply text-rarity-legendary; }
+}
