@@ -16,6 +16,40 @@
 
 ---
 
+# 🔄 작업 관리 (TASK.md)
+
+> **TASK.md가 모든 작업의 유일한 진실(Single Source of Truth)입니다.**
+
+## 작업 흐름
+
+```
+┌─────────┐     ┌──────────────┐     ┌──────┐
+│  QUEUE  │ ──► │ IN_PROGRESS  │ ──► │ DONE │
+└─────────┘     └──────────────┘     └──────┘
+                       │
+                       ▼ (실패/불명확)
+                ┌─────────┐
+                │ BLOCKED │ ← 사람 개입 필요
+                └─────────┘
+```
+
+## 규칙
+1. **한 번에 1개 티켓만** IN_PROGRESS
+2. **AC(Acceptance Criteria)** 기준으로 완료 판단
+3. **완료 즉시** DONE으로 이동 + 기록
+4. **막히면** BLOCKED로 이동 + 사용자에게 보고
+
+## 커스텀 명령어
+
+| 명령어 | 설명 |
+|--------|------|
+| `/next` | QUEUE 최상단 티켓 작업 시작 |
+| `/status` | 현재 프로젝트 상태 요약 |
+| `/validate` | 전체 검증 (typecheck + lint + test + build) |
+| `/pr` | PR 설명 자동 생성 |
+
+---
+
 # 📚 필수 참조 문서
 
 > ⚠️ **모든 개발 작업 전에 관련 문서를 반드시 확인하세요.**
@@ -34,9 +68,9 @@
 | **시즌** | `docs/dino_park_season_content.md` | 시즌 1~4 스토리, 보상 |
 | **액션 플랜** | `docs/dino_park_action_plan.md` | 개발 순서, Phase별 작업 |
 | **UI & 아트 가이드** | `docs/dino_park_ui_art_guide.md` | 픽셀 설계, 와이어프레임, 그래픽 스타일 |
-| **에셋 - 메인** | `docs/dino_park_asset_main.md` | 마스터 스타일, Placeholder |
-| **에셋 - 공룡** | `docs/dino_park_asset_dinosaurs.md` | 공룡 82종 + AI 프롬프트 |
-| **에셋 - 건물/캐릭터** | `docs/dino_park_asset_buildings_characters.md` | 건물 50종, 위인 50명, 환경, UI |
+| **에셋 - 메인** | `docs/assets/dino_park_asset_main.md` | 마스터 스타일, Placeholder |
+| **에셋 - 공룡** | `docs/assets/dino_park_asset_dinosaurs.md` | 공룡 82종 + AI 프롬프트 |
+| **에셋 - 건물/캐릭터** | `docs/assets/dino_park_asset_buildings_characters.md` | 건물 50종, 위인 50명, 환경, UI |
 
 ### 문서 참조 규칙
 
