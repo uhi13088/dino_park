@@ -22,7 +22,12 @@ export default function AddFriendModal({ isOpen, onClose }: AddFriendModalProps)
   const [isSearching, setIsSearching] = useState(false);
   const [sentRequests, setSentRequests] = useState<Set<string>>(new Set());
 
-  const { friends, sendFriendRequest } = useSocialStore();
+  const { friends } = useSocialStore();
+
+  // TODO: implement sendFriendRequest via API
+  const sendFriendRequest = async (_userId: string) => {
+    // Placeholder until API is implemented
+  };
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;

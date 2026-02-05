@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useSeasonStore, type SeasonChapter, REWARD_CONFIG } from '../stores/useSeasonStore';
 

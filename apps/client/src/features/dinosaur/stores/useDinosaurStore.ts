@@ -1,12 +1,16 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { DinosaurCategory, Rarity } from '@dino-park/shared';
+
+// Re-export for backward compatibility
+export { DinosaurCategory };
 
 // ========================================
 // Types
 // ========================================
 
-export type DinosaurCategory = 'herbivore' | 'carnivore' | 'pterosaur' | 'marine' | 'hybrid';
-export type DinosaurRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+// Backward-compatible alias
+export type DinosaurRarity = `${Rarity}`;
 
 export interface DinosaurSpecies {
   id: string;

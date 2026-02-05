@@ -9,7 +9,7 @@ class RenameParkDto {
   @IsString()
   @MinLength(2)
   @MaxLength(20)
-  name: string;
+  name!: string;
 }
 
 @ApiTags('parks')

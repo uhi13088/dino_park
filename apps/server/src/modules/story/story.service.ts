@@ -274,11 +274,11 @@ export class StoryService {
 
     // 선택 기록 및 효과 저장
     const existingChoices = (progress.choices as string[]) || [];
-    const existingEffects = (progress.effects as Record<string, unknown>) || {};
+    const existingEffects = (progress.effects as Record<string, number | string | boolean>) || {};
 
     const mergedEffects = { ...existingEffects, ...choice.effect };
 
-    const updatedProgress = await this.prisma.storyProgress.update({
+    await this.prisma.storyProgress.update({
       where: { userId_chapterId: { userId, chapterId } },
       data: {
         choices: [...existingChoices, choiceId],

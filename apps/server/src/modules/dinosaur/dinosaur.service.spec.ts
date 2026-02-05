@@ -5,7 +5,6 @@ import { NotFoundException, BadRequestException, ForbiddenException } from '@nes
 
 describe('DinosaurService', () => {
   let service: DinosaurService;
-  let prisma: PrismaService;
 
   const mockPrismaService = {
     park: {
@@ -72,7 +71,6 @@ describe('DinosaurService', () => {
     }).compile();
 
     service = module.get<DinosaurService>(DinosaurService);
-    prisma = module.get<PrismaService>(PrismaService);
 
     // Reset all mocks
     jest.clearAllMocks();

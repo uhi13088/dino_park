@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { ExplorationStatus } from '@prisma/client';
+import { Exploration, ExplorationStatus } from '@prisma/client';
 import { ENERGY_PER_EXPLORATION, RARITY_DROP_RATES } from '@dino-park/shared';
 
 // 탐험 지역 정보 (나중에 game-data로 이동)
@@ -76,7 +76,7 @@ export class ExplorationService {
       take: 50,
     });
 
-    return explorations.map((exp) => this.enrichExplorationData(exp));
+    return explorations.map((exp: Exploration) => this.enrichExplorationData(exp));
   }
 
   /**
@@ -91,7 +91,7 @@ export class ExplorationService {
       orderBy: { startedAt: 'desc' },
     });
 
-    return explorations.map((exp) => this.enrichExplorationData(exp));
+    return explorations.map((exp: Exploration) => this.enrichExplorationData(exp));
   }
 
   /**

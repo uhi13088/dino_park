@@ -3,7 +3,7 @@
  * 참조: docs/dino_park_tycoon_gdd.md
  */
 
-import { Position, BaseEntity } from './common.types';
+import { BaseEntity } from './common.types';
 
 // 건물 카테고리
 export enum BuildingCategory {
@@ -53,7 +53,8 @@ export interface Building extends BaseEntity {
   parkId: string;
   typeId: string;
   level: number;
-  position: Position;
+  positionX: number;
+  positionY: number;
   status: BuildingStatus;
   assignedGreatFigureId: string | null;
   constructionEndsAt: Date | null;

@@ -829,7 +829,7 @@ export class SocialService {
    * 알림 목록 조회
    */
   async getNotifications(userId: string, unreadOnly = false) {
-    const where: any = { userId };
+    const where: { userId: string; isRead?: boolean } = { userId };
     if (unreadOnly) {
       where.isRead = false;
     }

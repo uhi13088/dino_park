@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import {
   type DiamondProduct,
@@ -15,8 +14,6 @@ interface DiamondProductCardProps {
 }
 
 export function DiamondProductCard({ product, onClick }: DiamondProductCardProps) {
-  const totalDiamonds = product.diamonds + product.bonusDiamonds;
-
   return (
     <motion.button
       onClick={onClick}

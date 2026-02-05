@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { Building, BuildingStatus } from '@dino-park/shared';
+import type { Building } from '@dino-park/shared';
 
 // 건물 필터 타입
 export type BuildingFilter =
@@ -73,7 +73,7 @@ const initialState = {
 
 export const useBuildingStore = create<BuildingState>()(
   devtools(
-    (set, get) => ({
+    (set, _get) => ({
       ...initialState,
 
       // 건물 목록 관리

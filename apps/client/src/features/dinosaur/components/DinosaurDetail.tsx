@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   type Dinosaur,
@@ -18,7 +18,7 @@ export default function DinosaurDetail({ dinosaur, onClose }: DinosaurDetailProp
   const [isRenaming, setIsRenaming] = useState(false);
   const [newNickname, setNewNickname] = useState(dinosaur.nickname || '');
 
-  const { renameDinosaur, addExp } = useDinosaurStore();
+  const { renameDinosaur } = useDinosaurStore();
 
   const categoryConfig = CATEGORY_CONFIG[dinosaur.species.category];
   const rarityConfig = RARITY_CONFIG[dinosaur.species.rarity];
