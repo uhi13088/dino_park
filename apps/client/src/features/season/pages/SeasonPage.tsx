@@ -1,19 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  useSeasonStore,
-  useClaimableRewardsCount,
-  type Season,
-  type SeasonPass,
-  type SeasonChapter,
-  type SeasonEvent,
-} from '../stores/useSeasonStore';
+import { useSeasonStore, useClaimableRewardsCount } from '../stores/useSeasonStore';
 import SeasonPassTrack from '../components/SeasonPassTrack';
 import SeasonChapterList from '../components/SeasonChapterList';
 import { SeasonEventsList } from '../components/SeasonEventCard';
-
-// 탭 타입
-type TabType = 'pass' | 'story' | 'events';
 
 export default function SeasonPage() {
   const {

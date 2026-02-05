@@ -4,12 +4,9 @@ import {
   BadRequestException,
   ConflictException,
 } from '@nestjs/common';
+import { UserGreatFigure } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import {
-  GREAT_FIGURE_DATA,
-  getGreatFigureById,
-  getGreatFiguresWithSynergy,
-} from '@dino-park/game-data';
+import { GREAT_FIGURE_DATA, getGreatFigureById } from '@dino-park/game-data';
 import type { GreatFigureType } from '@dino-park/shared';
 
 // 레벨업 경험치 테이블
@@ -33,7 +30,7 @@ export class GreatFigureService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return userFigures.map((uf) => {
+    return userFigures.map((uf: UserGreatFigure) => {
       const figureData = getGreatFigureById(uf.figureId);
       return {
         ...uf,
@@ -79,7 +76,7 @@ export class GreatFigureService {
       select: { figureId: true },
     });
 
-    const ownedIds = new Set(ownedFigures.map((f) => f.figureId));
+    const ownedIds = new Set(ownedFigures.map((f: { figureId: string }) => f.figureId));
 
     const availableFigures: Array<{
       figure: GreatFigureType;
@@ -276,7 +273,7 @@ export class GreatFigureService {
     });
 
     return Promise.all(
-      assignedFigures.map(async (uf) => {
+      assignedFigures.map(async (uf: UserGreatFigure) => {
         const building = await this.prisma.building.findUnique({
           where: { id: uf.assignedBuildingId! },
         });
@@ -424,7 +421,7 @@ export class GreatFigureService {
       },
     });
 
-    const sameBuildingIds = new Set(sameBuildingFigures.map((f) => f.figureId));
+    const sameBuildingIds = new Set(sameBuildingFigures.map((f: UserGreatFigure) => f.figureId));
 
     // 활성화된 시너지
     const activeSynergies = figureData.synergies.filter((s) => sameBuildingIds.has(s.partnerId));
@@ -629,9 +626,9 @@ export class GreatFigureService {
 
     const totalFigures = GREAT_FIGURE_DATA.length;
     const ownedCount = figures.length;
-    const assignedCount = figures.filter((f) => f.assignedBuildingId).length;
-    const totalLevel = figures.reduce((sum, f) => sum + f.level, 0);
-    const maxLevelCount = figures.filter((f) => f.level >= MAX_LEVEL).length;
+    const assignedCount = figures.filter((f: UserGreatFigure) => f.assignedBuildingId).length;
+    const totalLevel = figures.reduce((sum: number, f: UserGreatFigure) => sum + f.level, 0);
+    const maxLevelCount = figures.filter((f: UserGreatFigure) => f.level >= MAX_LEVEL).length;
 
     return {
       totalAvailable: totalFigures,

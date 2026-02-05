@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { type Friend, useSocialStore } from '../stores/useSocialStore';
+import { type Friend, type GuestbookEntry, useSocialStore } from '../stores/useSocialStore';
 
 interface FriendParkVisitProps {
   friend: Friend;
@@ -48,8 +48,8 @@ export default function FriendParkVisit({
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { guestbooks } = useSocialStore();
-  const friendGuestbooks = guestbooks.filter((g) => g.visitorId === friend.id);
+  const { guestbook } = useSocialStore();
+  const friendGuestbooks = guestbook.filter((g: GuestbookEntry) => g.visitorId === friend.id);
 
   // 파크 데이터 로드 (임시 데이터)
   useEffect(() => {
@@ -376,7 +376,7 @@ export default function FriendParkVisit({
                         <span>아직 방명록이 없습니다</span>
                       </div>
                     ) : (
-                      friendGuestbooks.map((entry) => (
+                      friendGuestbooks.map((entry: GuestbookEntry) => (
                         <div key={entry.id} className="rounded-lg bg-gray-800 p-3">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium text-white">

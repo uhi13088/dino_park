@@ -3,7 +3,7 @@
  * 참조: docs/dino_park_dinosaur_codex.md
  */
 
-import { Rarity, Position, BaseEntity } from './common.types';
+import { Rarity, BaseEntity } from './common.types';
 
 // 공룡 카테고리
 export enum DinosaurCategory {
@@ -71,7 +71,8 @@ export interface Dinosaur extends BaseEntity {
   happiness: number; // 0-100
   hunger: number; // 0-100
   intimacy: number; // 0-1000
-  position: Position;
+  positionX: number;
+  positionY: number;
   isInPark: boolean;
   lastFedAt: Date;
 }

@@ -561,7 +561,7 @@ export function useGreatFigures() {
 
 export function useAvailableGreatFigures() {
   return useQuery({
-    queryKey: ['greatFigures', 'available'],
+    queryKey: [...queryKeys.greatFigures, 'available'],
     queryFn: () => api.get<AvailableGreatFiguresResponse>('/great-figures/available'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -569,7 +569,7 @@ export function useAvailableGreatFigures() {
 
 export function useGreatFigurePoints() {
   return useQuery({
-    queryKey: ['greatFigures', 'points'],
+    queryKey: [...queryKeys.greatFigures, 'points'],
     queryFn: () => api.get<GreatFigurePointsResponse>('/great-figures/points'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -583,8 +583,8 @@ export function useRecruitGreatFigure() {
       api.post<RecruitGreatFigureResponse>('/great-figures/recruit', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.greatFigures });
-      queryClient.invalidateQueries({ queryKey: ['greatFigures', 'available'] });
-      queryClient.invalidateQueries({ queryKey: ['greatFigures', 'points'] });
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.greatFigures, 'available'] });
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.greatFigures, 'points'] });
     },
   });
 }
@@ -680,7 +680,7 @@ export function useShopProducts() {
 
 export function useDiamondPacks() {
   return useQuery({
-    queryKey: ['shop', 'diamond-packs'],
+    queryKey: queryKeys.shopDiamondPacks(),
     queryFn: () => api.get<{ packs: unknown[] }>('/shop/iap/diamond-packs'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -688,7 +688,7 @@ export function useDiamondPacks() {
 
 export function useSpecialPackages() {
   return useQuery({
-    queryKey: ['shop', 'special-packages'],
+    queryKey: queryKeys.shopSpecialPackages(),
     queryFn: () => api.get<{ packages: unknown[] }>('/shop/iap/special-packages'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -696,7 +696,7 @@ export function useSpecialPackages() {
 
 export function useDailyShop() {
   return useQuery({
-    queryKey: ['shop', 'daily'],
+    queryKey: queryKeys.shopDaily(),
     queryFn: () => api.get<{ items: unknown[]; refreshTime: string; seed: string }>('/shop/daily'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -704,7 +704,7 @@ export function useDailyShop() {
 
 export function useGoldShop() {
   return useQuery({
-    queryKey: ['shop', 'gold'],
+    queryKey: queryKeys.shopGold(),
     queryFn: () => api.get<{ items: unknown[] }>('/shop/gold-shop'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -731,7 +731,7 @@ export function usePurchaseDailyItem() {
       api.post<{ success: boolean; item: unknown }>('/shop/daily/purchase', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
-      queryClient.invalidateQueries({ queryKey: ['shop', 'daily'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shopDaily() });
     },
   });
 }
@@ -744,7 +744,7 @@ export function usePurchaseGoldShopItem() {
       api.post<{ success: boolean; gold: number }>(`/shop/gold-shop/${itemId}/purchase`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
-      queryClient.invalidateQueries({ queryKey: ['shop', 'gold'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.shopGold() });
     },
   });
 }
@@ -780,7 +780,7 @@ export function useCurrentSeason() {
 
 export function useSeasonPass() {
   return useQuery({
-    queryKey: ['season', 'pass'],
+    queryKey: queryKeys.seasonPass(),
     queryFn: () =>
       api.get<{
         level: number;
@@ -794,7 +794,7 @@ export function useSeasonPass() {
 
 export function useSeasonChapters() {
   return useQuery({
-    queryKey: ['season', 'chapters'],
+    queryKey: queryKeys.seasonChapters(),
     queryFn: () => api.get<{ chapters: unknown[] }>('/seasons/chapters'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -802,7 +802,7 @@ export function useSeasonChapters() {
 
 export function useSeasonEvents() {
   return useQuery({
-    queryKey: ['season', 'events'],
+    queryKey: queryKeys.seasonEvents(),
     queryFn: () => api.get<{ events: unknown[] }>('/seasons/events'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -815,7 +815,7 @@ export function useClaimSeasonReward() {
     mutationFn: (data: { level: number; isPremium: boolean }) =>
       api.post<{ success: boolean; rewards: unknown[] }>('/seasons/pass/claim', data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['season', 'pass'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.seasonPass() });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
     },
   });
@@ -827,7 +827,7 @@ export function useUpgradeSeasonPass() {
   return useMutation({
     mutationFn: () => api.post<{ success: boolean }>('/seasons/pass/upgrade'),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['season', 'pass'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.seasonPass() });
     },
   });
 }
@@ -839,8 +839,8 @@ export function useCompleteSeasonChapter() {
     mutationFn: (chapterId: string) =>
       api.post<{ success: boolean; rewards: unknown[] }>(`/seasons/chapters/${chapterId}/complete`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['season', 'chapters'] });
-      queryClient.invalidateQueries({ queryKey: ['season', 'pass'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.seasonChapters() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.seasonPass() });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
     },
   });
@@ -852,7 +852,7 @@ export function useCompleteSeasonChapter() {
 
 export function useFriends() {
   return useQuery({
-    queryKey: ['social', 'friends'],
+    queryKey: queryKeys.socialFriends(),
     queryFn: () =>
       api.get<{
         friends: unknown[];
@@ -864,7 +864,7 @@ export function useFriends() {
 
 export function useFriendRequests() {
   return useQuery({
-    queryKey: ['social', 'requests'],
+    queryKey: queryKeys.socialRequests(),
     queryFn: () =>
       api.get<{
         received: unknown[];
@@ -876,7 +876,7 @@ export function useFriendRequests() {
 
 export function useGifts() {
   return useQuery({
-    queryKey: ['social', 'gifts'],
+    queryKey: queryKeys.socialGifts(),
     queryFn: () =>
       api.get<{
         gifts: unknown[];
@@ -888,7 +888,7 @@ export function useGifts() {
 
 export function useGuestbook() {
   return useQuery({
-    queryKey: ['social', 'guestbook'],
+    queryKey: queryKeys.socialGuestbook(),
     queryFn: () => api.get<{ entries: unknown[] }>('/social/guestbook'),
     enabled: tokenManager.isAuthenticated(),
   });
@@ -900,7 +900,7 @@ export function useSendFriendRequest() {
   return useMutation({
     mutationFn: (userId: string) => api.post<{ success: boolean }>('/social/requests', { userId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['social', 'requests'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialRequests() });
     },
   });
 }
@@ -912,8 +912,8 @@ export function useAcceptFriendRequest() {
     mutationFn: (requestId: string) =>
       api.post<{ success: boolean }>(`/social/requests/${requestId}/accept`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['social', 'friends'] });
-      queryClient.invalidateQueries({ queryKey: ['social', 'requests'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialFriends() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialRequests() });
     },
   });
 }
@@ -925,7 +925,7 @@ export function useRejectFriendRequest() {
     mutationFn: (requestId: string) =>
       api.post<{ success: boolean }>(`/social/requests/${requestId}/reject`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['social', 'requests'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialRequests() });
     },
   });
 }
@@ -937,7 +937,7 @@ export function useRemoveFriend() {
     mutationFn: (friendId: string) =>
       api.delete<{ success: boolean }>(`/social/friends/${friendId}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['social', 'friends'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialFriends() });
     },
   });
 }
@@ -949,7 +949,7 @@ export function useSendGift() {
     mutationFn: (data: { friendId: string; giftType: string }) =>
       api.post<{ success: boolean }>('/social/gifts/send', data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['social', 'gifts'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialGifts() });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
     },
   });
@@ -962,7 +962,7 @@ export function useClaimGift() {
     mutationFn: (giftId: string) =>
       api.post<{ success: boolean; rewards: unknown[] }>(`/social/gifts/${giftId}/claim`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['social', 'gifts'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialGifts() });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
     },
   });
@@ -974,7 +974,7 @@ export function useClaimAllGifts() {
   return useMutation({
     mutationFn: () => api.post<{ success: boolean; rewards: unknown[] }>('/social/gifts/claim-all'),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['social', 'gifts'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialGifts() });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
     },
   });
@@ -1000,7 +1000,7 @@ export function useLeaveGuestbook() {
         message: data.message,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['social', 'guestbook'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.socialGuestbook() });
     },
   });
 }

@@ -7,30 +7,30 @@ import { IsString, IsNumber, Min } from 'class-validator';
 
 class ConstructBuildingDto {
   @IsString()
-  typeId: string;
+  typeId!: string;
 
   @IsNumber()
   @Min(0)
-  positionX: number;
+  positionX!: number;
 
   @IsNumber()
   @Min(0)
-  positionY: number;
+  positionY!: number;
 }
 
 class MovePositionDto {
   @IsNumber()
   @Min(0)
-  positionX: number;
+  positionX!: number;
 
   @IsNumber()
   @Min(0)
-  positionY: number;
+  positionY!: number;
 }
 
 class AssignGreatFigureDto {
   @IsString()
-  greatFigureId: string;
+  greatFigureId!: string;
 }
 
 @ApiTags('buildings')

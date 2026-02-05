@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { BuildingStatus } from '@prisma/client';
+import { Building, BuildingStatus } from '@prisma/client';
 import { MAX_BUILDING_LEVEL } from '@dino-park/shared';
 
 /**
@@ -53,7 +53,7 @@ export class BuildingService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return buildings.map((building) => this.enrichBuildingData(building));
+    return buildings.map((building: Building) => this.enrichBuildingData(building));
   }
 
   /**

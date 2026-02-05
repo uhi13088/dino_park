@@ -16,21 +16,21 @@ class UpdateNicknameDto {
 class MovePositionDto {
   @IsNumber()
   @Min(0)
-  positionX: number;
+  positionX!: number;
 
   @IsNumber()
   @Min(0)
-  positionY: number;
+  positionY!: number;
 }
 
 class PlaceInParkDto {
   @IsNumber()
   @Min(0)
-  positionX: number;
+  positionX!: number;
 
   @IsNumber()
   @Min(0)
-  positionY: number;
+  positionY!: number;
 }
 
 @ApiTags('dinosaurs')

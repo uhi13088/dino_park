@@ -42,3 +42,4 @@ prisma/migrations/*.sql
 .cache/
 tmp/
 temp/
+tsup.config.bundled_*.mjs

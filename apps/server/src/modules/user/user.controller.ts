@@ -9,14 +9,14 @@ class UpdateNicknameDto {
   @IsString()
   @MinLength(2)
   @MaxLength(12)
-  nickname: string;
+  nickname!: string;
 }
 
 class UpdateTutorialDto {
   @IsNumber()
   @Min(0)
   @Max(100)
-  step: number;
+  step!: number;
 }
 
 @ApiTags('users')

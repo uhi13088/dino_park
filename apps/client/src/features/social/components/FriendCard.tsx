@@ -9,7 +9,7 @@ interface FriendCardProps {
   onRemove?: () => void;
 }
 
-export default function FriendCard({ friend, onVisitPark, onSendGift, onRemove }: FriendCardProps) {
+function FriendCard({ friend, onVisitPark, onSendGift, onRemove }: FriendCardProps) {
   const statusConfig = STATUS_CONFIG[friend.status];
 
   // 마지막 접속 시간 포맷
@@ -122,3 +122,5 @@ export default function FriendCard({ friend, onVisitPark, onSendGift, onRemove }
     </motion.div>
   );
 }
+
+export default React.memo(FriendCard);

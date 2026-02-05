@@ -5,7 +5,6 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('EconomyService', () => {
   let service: EconomyService;
-  let prisma: PrismaService;
 
   const mockPrismaService = {
     currency: {
@@ -64,7 +63,6 @@ describe('EconomyService', () => {
     }).compile();
 
     service = module.get<EconomyService>(EconomyService);
-    prisma = module.get<PrismaService>(PrismaService);
 
     jest.clearAllMocks();
   });
@@ -291,7 +289,7 @@ describe('EconomyService', () => {
 
       const result = await service.rechargeEnergy('user-1');
 
-      expect(result.explorationEnergy).toBe(13);
+      expect(result!.explorationEnergy).toBe(13);
     });
 
     it('should not exceed max energy', async () => {
@@ -308,7 +306,7 @@ describe('EconomyService', () => {
 
       const result = await service.rechargeEnergy('user-1');
 
-      expect(result.explorationEnergy).toBe(30);
+      expect(result!.explorationEnergy).toBe(30);
     });
   });
 

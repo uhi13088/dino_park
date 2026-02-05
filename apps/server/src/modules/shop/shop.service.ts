@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   ALL_IAP_PRODUCTS,
@@ -12,9 +13,8 @@ import {
   getIAPProductById,
   getGoldShopItemById,
   getAdRewardConfig,
-  getSpecialPackageByTrigger,
 } from '@dino-park/game-data';
-import type { IAPProduct, IAPReward, GoldShopItem, SpecialPackage } from '@dino-park/shared';
+import type { IAPReward, GoldShopItem, SpecialPackage } from '@dino-park/shared';
 
 // 일일 상점 설정
 const DAILY_SHOP_ITEM_COUNT = 6;
@@ -143,7 +143,7 @@ export class ShopService {
     }
 
     // 트랜잭션으로 처리
-    const result = await this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 재화 차감
       const updatedCurrency = await tx.currency.update({
         where: { userId },
@@ -248,7 +248,7 @@ export class ShopService {
     }
 
     // 트랜잭션으로 처리
-    const result = await this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 재화 차감
       const updatedCurrency = await tx.currency.update({
         where: { userId },
@@ -280,7 +280,7 @@ export class ShopService {
       originalPrice: item.price,
       discountedPrice,
       discountPercent: discount,
-      rewards: result.rewards,
+      rewards: result.grantedRewards,
     };
   }
 
@@ -327,7 +327,7 @@ export class ShopService {
     }
 
     // 보상 지급
-    const result = await this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 보상 지급
       const grantedRewards = await this.grantRewards(tx, userId, product.rewards);
 
@@ -356,36 +356,32 @@ export class ShopService {
   }
 
   /**
-   * 영수증 검증 (스텁)
+   * 영수증 검증
+   * 개발 환경: 항상 통과
+   * 프로덕션: 미구현 시 결제 차단 (보안상 항상 false)
    */
   private async validateReceipt(receipt: {
     transactionId: string;
     platform: string;
     payload: string;
   }): Promise<boolean> {
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+      return true;
+    }
+
+    // 프로덕션에서는 실제 검증 로직이 구현될 때까지 결제를 차단
     // TODO: 실제 플랫폼별 영수증 검증 구현
     // - Toss: Toss Payments API
     // - iOS: App Store Server API
     // - Android: Google Play Developer API
-
-    // 현재는 개발용으로 항상 true 반환
-    if (process.env.NODE_ENV === 'development') {
-      return true;
+    switch (receipt.platform) {
+      case 'toss':
+      case 'ios':
+      case 'android':
+        return false;
+      default:
+        return false;
     }
-
-    // 프로덕션에서는 실제 검증 필요
-    // switch (receipt.platform) {
-    //   case 'toss':
-    //     return this.validateTossReceipt(receipt.payload);
-    //   case 'ios':
-    //     return this.validateAppStoreReceipt(receipt.payload);
-    //   case 'android':
-    //     return this.validatePlayStoreReceipt(receipt.payload);
-    //   default:
-    //     return false;
-    // }
-
-    return true;
   }
 
   // ================================================================
@@ -399,7 +395,7 @@ export class ShopService {
     const todayAdWatches = await this.getUserDailyAdWatches(userId);
 
     return AD_REWARD_CONFIGS.filter((config) => config.isActive).map((config) => {
-      const watchedCount = todayAdWatches.get(config.placement) || 0;
+      const watchedCount = (todayAdWatches.get(config.placement) as number) || 0;
       const lastWatchedAt = todayAdWatches.get(`${config.placement}_time`) as Date | undefined;
       const cooldownEndsAt = lastWatchedAt
         ? new Date(lastWatchedAt.getTime() + config.cooldownMinutes * 60 * 1000)
@@ -442,7 +438,7 @@ export class ShopService {
     }
 
     // 보상 지급
-    const result = await this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const grantedRewards = await this.grantRewards(tx, userId, config.rewards);
 
       // 광고 시청 기록 (Transaction 사용)
@@ -619,7 +615,7 @@ export class ShopService {
    * 보상 지급
    */
   private async grantRewards(
-    tx: any,
+    tx: Prisma.TransactionClient,
     userId: string,
     rewards: IAPReward[],
   ): Promise<Array<{ type: string; id?: string; quantity: number }>> {
@@ -764,7 +760,7 @@ export class ShopService {
   private async countTodayPurchases(
     userId: string,
     itemId: string,
-    type: 'goldShop' | 'dailyShop',
+    _type: 'goldShop' | 'dailyShop',
   ): Promise<number> {
     const todayStart = this.getTodayStart();
 
@@ -879,11 +875,20 @@ export class ShopService {
    */
   private getTodayStart(): Date {
     const now = new Date();
-    const today = new Date(now);
-    today.setHours(DAILY_SHOP_REFRESH_HOUR, 0, 0, 0);
+    const today = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        DAILY_SHOP_REFRESH_HOUR,
+        0,
+        0,
+        0,
+      ),
+    );
 
     if (now < today) {
-      today.setDate(today.getDate() - 1);
+      today.setUTCDate(today.getUTCDate() - 1);
     }
 
     return today;
@@ -954,11 +959,20 @@ export class ShopService {
    */
   private getNextRefreshTime(): Date {
     const now = new Date();
-    const nextRefresh = new Date(now);
-    nextRefresh.setHours(DAILY_SHOP_REFRESH_HOUR, 0, 0, 0);
+    const nextRefresh = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        DAILY_SHOP_REFRESH_HOUR,
+        0,
+        0,
+        0,
+      ),
+    );
 
     if (nextRefresh <= now) {
-      nextRefresh.setDate(nextRefresh.getDate() + 1);
+      nextRefresh.setUTCDate(nextRefresh.getUTCDate() + 1);
     }
 
     return nextRefresh;

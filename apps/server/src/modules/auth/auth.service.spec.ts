@@ -7,8 +7,6 @@ import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let prisma: PrismaService;
-  let jwtService: JwtService;
 
   const mockPrismaService = {
     user: {
@@ -73,8 +71,6 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    prisma = module.get<PrismaService>(PrismaService);
-    jwtService = module.get<JwtService>(JwtService);
 
     jest.clearAllMocks();
   });
@@ -118,7 +114,7 @@ describe('AuthService', () => {
         nickname: '신입 사육사',
       });
 
-      const result = await service.tossLogin({
+      await service.tossLogin({
         tossId: 'toss-new-user',
       });
 
@@ -189,8 +185,8 @@ describe('AuthService', () => {
       expect(result.user.id).toBe('user-1');
       expect(result.user.nickname).toBe('TestUser');
       expect(result.currency).toBeDefined();
-      expect(result.park.dinosaurCount).toBe(5);
-      expect(result.park.buildingCount).toBe(3);
+      expect(result.park!.dinosaurCount).toBe(5);
+      expect(result.park!.buildingCount).toBe(3);
       expect(result.stats.greatFigureCount).toBe(2);
     });
 

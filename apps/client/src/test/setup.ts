@@ -51,7 +51,8 @@ global.requestAnimationFrame = vi.fn((callback) => {
 global.cancelAnimationFrame = vi.fn();
 
 // PixiJS 캔버스 관련 모킹
-HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(HTMLCanvasElement.prototype as any).getContext = vi.fn(() => ({
   fillRect: vi.fn(),
   clearRect: vi.fn(),
   getImageData: vi.fn(() => ({ data: new Array(4) })),

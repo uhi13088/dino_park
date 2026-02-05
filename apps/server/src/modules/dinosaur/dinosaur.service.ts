@@ -5,6 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { Dinosaur, Prisma } from '@prisma/client';
 import {
   MAX_DINOSAUR_LEVEL,
   MAX_HAPPINESS,
@@ -16,6 +17,14 @@ import {
   FEEDING_HUNGER_REDUCE,
   RARITY_REVENUE_MULTIPLIER,
 } from '@dino-park/shared';
+import { RARITY_BASE_STATS, DINOSAUR_STATUS } from '@dino-park/game-data';
+
+// === Module-level constants for magic numbers ===
+const FEED_COST_GOLD = 100;
+const INTERACTION_COOLDOWN_MINUTES = 5;
+const INTERACTION_INTIMACY_GAIN = 10;
+const INTERACTION_HAPPINESS_GAIN = 5;
+const BASE_DNA_PER_LEVEL = 5;
 
 /**
  * 공룡 레벨별 필요 경험치
@@ -48,6 +57,15 @@ export class DinosaurService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * 위치 유효성 검사
+   */
+  private validatePosition(x: number, y: number, gridX: number, gridY: number): void {
+    if (x < 0 || y < 0 || x >= gridX || y >= gridY) {
+      throw new BadRequestException('유효하지 않은 위치입니다.');
+    }
+  }
+
+  /**
    * 유저 ID로 공룡 목록 조회 (상태 업데이트 포함)
    */
   async getByUserId(userId: string) {
@@ -65,7 +83,7 @@ export class DinosaurService {
     });
 
     // 상태 계산 후 반환 (실제 DB 업데이트는 하지 않음 - 조회 성능)
-    return dinosaurs.map((dino) => this.calculateCurrentState(dino));
+    return dinosaurs.map((dino: Dinosaur) => this.calculateCurrentState(dino));
   }
 
   /**
@@ -112,14 +130,7 @@ export class DinosaurService {
     }
 
     // 위치 유효성 검사
-    if (
-      positionX < 0 ||
-      positionY < 0 ||
-      positionX >= park.gridSizeX ||
-      positionY >= park.gridSizeY
-    ) {
-      throw new BadRequestException('유효하지 않은 위치입니다.');
-    }
+    this.validatePosition(positionX, positionY, park.gridSizeX, park.gridSizeY);
 
     return this.prisma.dinosaur.create({
       data: {
@@ -139,7 +150,7 @@ export class DinosaurService {
    * 공룡 닉네임 변경
    */
   async updateNickname(dinosaurId: string, userId: string, nickname: string) {
-    const dinosaur = await this.getById(dinosaurId, userId);
+    await this.getById(dinosaurId, userId);
 
     if (nickname && (nickname.length < 1 || nickname.length > 12)) {
       throw new BadRequestException('닉네임은 1~12자여야 합니다.');
@@ -169,14 +180,7 @@ export class DinosaurService {
     }
 
     // 위치 유효성 검사
-    if (
-      positionX < 0 ||
-      positionY < 0 ||
-      positionX >= dinosaur.park.gridSizeX ||
-      positionY >= dinosaur.park.gridSizeY
-    ) {
-      throw new BadRequestException('유효하지 않은 위치입니다.');
-    }
+    this.validatePosition(positionX, positionY, dinosaur.park.gridSizeX, dinosaur.park.gridSizeY);
 
     return this.prisma.dinosaur.update({
       where: { id: dinosaurId },
@@ -193,8 +197,8 @@ export class DinosaurService {
   async feed(dinosaurId: string, userId: string) {
     const dinosaur = await this.getById(dinosaurId, userId);
 
-    // 먹이 비용 (기본 100골드)
-    const feedCost = 100;
+    // 먹이 비용
+    const feedCost = FEED_COST_GOLD;
 
     // 골드 차감
     const currency = await this.prisma.currency.findUnique({
@@ -215,7 +219,10 @@ export class DinosaurService {
 
     const newHappiness = Math.min(MAX_HAPPINESS, currentState.happiness + FEEDING_HAPPINESS_GAIN);
     const newHunger = Math.max(0, currentState.hunger - FEEDING_HUNGER_REDUCE);
-    const newIntimacy = Math.min(MAX_INTIMACY, currentState.intimacy + 5); // 먹이 시 친밀도 +5
+    const newIntimacy = Math.min(
+      MAX_INTIMACY,
+      currentState.intimacy + DINOSAUR_STATUS.intimacyPerFeed,
+    );
 
     // 트랜잭션으로 골드 차감 + 공룡 상태 업데이트
     const [, updated] = await this.prisma.$transaction([
@@ -252,37 +259,73 @@ export class DinosaurService {
   async interact(dinosaurId: string, userId: string) {
     const dinosaur = await this.getById(dinosaurId, userId);
 
-    // 쿨타임 체크 (마지막 상호작용으로부터 5분)
-    const cooldownMinutes = 5;
+    // 쿨타임 체크 (마지막 상호작용으로부터 N분)
     const lastInteraction = dinosaur.lastFedAt; // 임시로 lastFedAt 사용
     const now = new Date();
     const minutesSinceLastInteraction = (now.getTime() - lastInteraction.getTime()) / (1000 * 60);
 
-    if (minutesSinceLastInteraction < cooldownMinutes) {
-      const remainingSeconds = Math.ceil((cooldownMinutes - minutesSinceLastInteraction) * 60);
+    if (minutesSinceLastInteraction < INTERACTION_COOLDOWN_MINUTES) {
+      const remainingSeconds = Math.ceil(
+        (INTERACTION_COOLDOWN_MINUTES - minutesSinceLastInteraction) * 60,
+      );
       throw new BadRequestException(
         `아직 쿨타임 중입니다. ${remainingSeconds}초 후에 다시 시도해주세요.`,
       );
     }
 
     const currentState = this.calculateCurrentState(dinosaur);
-    const newHappiness = Math.min(MAX_HAPPINESS, currentState.happiness + 5);
-    const newIntimacy = Math.min(MAX_INTIMACY, currentState.intimacy + 10);
+    const newHappiness = Math.min(
+      MAX_HAPPINESS,
+      currentState.happiness + INTERACTION_HAPPINESS_GAIN,
+    );
+    const newIntimacy = Math.min(MAX_INTIMACY, currentState.intimacy + INTERACTION_INTIMACY_GAIN);
 
     // 경험치 획득 (친밀도에 비례)
     const expGain = Math.floor(10 + currentState.intimacy / 100);
 
-    const updated = await this.prisma.dinosaur.update({
-      where: { id: dinosaurId },
-      data: {
-        happiness: newHappiness,
-        intimacy: newIntimacy,
-        exp: { increment: expGain },
-      },
-    });
+    // 트랜잭션으로 공룡 상태 업데이트 + 레벨업 체크를 원자적으로 처리
+    const { updated, levelUpResult } = await this.prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        const updatedDino = await tx.dinosaur.update({
+          where: { id: dinosaurId },
+          data: {
+            happiness: newHappiness,
+            intimacy: newIntimacy,
+            exp: { increment: expGain },
+          },
+        });
 
-    // 레벨업 체크
-    const levelUpResult = await this.checkLevelUp(dinosaurId);
+        // 레벨업 체크 (트랜잭션 내에서)
+        let levelResult: { leveledUp: boolean; newLevel?: number } = { leveledUp: false };
+        let currentExp = updatedDino.exp;
+        let currentLevel = updatedDino.level;
+        let leveledUp = false;
+
+        while (currentLevel < MAX_DINOSAUR_LEVEL) {
+          const expNeeded = getExpForDinoLevel(currentLevel);
+          if (currentExp >= expNeeded) {
+            currentExp -= expNeeded;
+            currentLevel++;
+            leveledUp = true;
+          } else {
+            break;
+          }
+        }
+
+        if (leveledUp) {
+          await tx.dinosaur.update({
+            where: { id: dinosaurId },
+            data: {
+              level: currentLevel,
+              exp: currentExp,
+            },
+          });
+          levelResult = { leveledUp: true, newLevel: currentLevel };
+        }
+
+        return { updated: updatedDino, levelUpResult: levelResult };
+      },
+    );
 
     return {
       ...this.calculateCurrentState(updated),
@@ -364,14 +407,7 @@ export class DinosaurService {
     }
 
     // 위치 유효성 검사
-    if (
-      positionX < 0 ||
-      positionY < 0 ||
-      positionX >= dinosaur.park.gridSizeX ||
-      positionY >= dinosaur.park.gridSizeY
-    ) {
-      throw new BadRequestException('유효하지 않은 위치입니다.');
-    }
+    this.validatePosition(positionX, positionY, dinosaur.park.gridSizeX, dinosaur.park.gridSizeY);
 
     return this.prisma.dinosaur.update({
       where: { id: dinosaurId },
@@ -391,8 +427,7 @@ export class DinosaurService {
     const dinosaur = await this.getById(dinosaurId, userId);
 
     // 방생 시 DNA 획득 (레벨과 희귀도에 따라)
-    // TODO: game-data에서 희귀도 가져오기
-    const dnaReward = dinosaur.level * 5;
+    const dnaReward = dinosaur.level * BASE_DNA_PER_LEVEL;
 
     await this.prisma.$transaction([
       this.prisma.dinosaur.delete({
@@ -421,9 +456,10 @@ export class DinosaurService {
 
     const currentState = this.calculateCurrentState(dinosaur);
 
-    // TODO: game-data에서 baseRevenue와 rarity 가져오기
-    const baseRevenue = 100;
-    const rarity = 'common';
+    // TODO: look up actual rarity from species
+    const rarityKey = 'common' as keyof typeof RARITY_BASE_STATS;
+    const baseRevenue = RARITY_BASE_STATS[rarityKey].baseRevenue;
+    const rarity = rarityKey;
 
     const hourlyRevenue = calculateDinosaurRevenue(
       baseRevenue,
@@ -444,7 +480,23 @@ export class DinosaurService {
   /**
    * 시간에 따른 상태 변화 계산 (실제 DB 업데이트 X)
    */
-  private calculateCurrentState(dinosaur: any) {
+  private calculateCurrentState(dinosaur: {
+    id: string;
+    parkId: string;
+    speciesId: string;
+    nickname: string | null;
+    level: number;
+    exp: number;
+    happiness: number;
+    hunger: number;
+    intimacy: number;
+    positionX: number;
+    positionY: number;
+    isInPark: boolean;
+    lastFedAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
     const now = new Date();
     const lastFed = new Date(dinosaur.lastFedAt);
     const hoursPassed = (now.getTime() - lastFed.getTime()) / (1000 * 60 * 60);

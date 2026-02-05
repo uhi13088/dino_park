@@ -7,7 +7,7 @@ import { IsString } from 'class-validator';
 
 class StartExplorationDto {
   @IsString()
-  regionId: string;
+  regionId!: string;
 }
 
 @ApiTags('explorations')
