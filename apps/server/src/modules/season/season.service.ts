@@ -688,7 +688,9 @@ export class SeasonService {
       select: { flagId: true },
     });
 
-    return flags.map((f: { flagId: string }) => f.flagId.replace(`season-chapter-${seasonId}-`, ''));
+    return flags.map((f: { flagId: string }) =>
+      f.flagId.replace(`season-chapter-${seasonId}-`, ''),
+    );
   }
 
   /**

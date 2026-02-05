@@ -326,9 +326,7 @@ export default function SocialPage() {
                             수령
                           </button>
                         )}
-                        {gift.isClaimed && (
-                          <span className="text-sm text-gray-500">수령 완료</span>
-                        )}
+                        {gift.isClaimed && <span className="text-sm text-gray-500">수령 완료</span>}
                       </motion.div>
                     );
                   })}

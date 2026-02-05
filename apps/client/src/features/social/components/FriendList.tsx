@@ -9,8 +9,7 @@ interface FriendListProps {
 }
 
 export default function FriendList({ onVisitPark, onSendGift }: FriendListProps) {
-  const { friends, friendRequests, acceptRequest, rejectRequest } =
-    useSocialStore();
+  const { friends, friendRequests, acceptRequest, rejectRequest } = useSocialStore();
 
   const [activeTab, setActiveTab] = useState<'friends' | 'requests'>('friends');
   const [statusFilter, setStatusFilter] = useState<FriendStatus | 'all'>('all');
@@ -127,7 +126,9 @@ export default function FriendList({ onVisitPark, onSendGift }: FriendListProps)
                     friend={friend}
                     onVisitPark={() => onVisitPark(friend.id)}
                     onSendGift={() => onSendGift(friend.id)}
-                    onRemove={() => { /* TODO: implement removeFriend */ }}
+                    onRemove={() => {
+                      /* TODO: implement removeFriend */
+                    }}
                   />
                 </motion.div>
               ))}
@@ -166,37 +167,37 @@ export default function FriendList({ onVisitPark, onSendGift }: FriendListProps)
           ) : (
             <div className="space-y-2">
               {friendRequests.map((request) => (
-                  <motion.div
-                    key={request.id}
-                    className="flex items-center justify-between rounded-lg bg-gray-800 p-4"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold">
-                        {request.fromNickname.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <div className="font-medium text-white">{request.fromNickname}</div>
-                        <div className="text-xs text-gray-500">Lv.{request.fromLevel}</div>
-                      </div>
+                <motion.div
+                  key={request.id}
+                  className="flex items-center justify-between rounded-lg bg-gray-800 p-4"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold">
+                      {request.fromNickname.charAt(0).toUpperCase()}
                     </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => acceptRequest(request.id)}
-                        className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium transition-all hover:bg-green-500"
-                      >
-                        수락
-                      </button>
-                      <button
-                        onClick={() => rejectRequest(request.id)}
-                        className="rounded-lg bg-gray-700 px-4 py-2 text-sm font-medium transition-all hover:bg-red-900 hover:text-red-400"
-                      >
-                        거절
-                      </button>
+                    <div>
+                      <div className="font-medium text-white">{request.fromNickname}</div>
+                      <div className="text-xs text-gray-500">Lv.{request.fromLevel}</div>
                     </div>
-                  </motion.div>
-                ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => acceptRequest(request.id)}
+                      className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium transition-all hover:bg-green-500"
+                    >
+                      수락
+                    </button>
+                    <button
+                      onClick={() => rejectRequest(request.id)}
+                      className="rounded-lg bg-gray-700 px-4 py-2 text-sm font-medium transition-all hover:bg-red-900 hover:text-red-400"
+                    >
+                      거절
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           )}
         </div>

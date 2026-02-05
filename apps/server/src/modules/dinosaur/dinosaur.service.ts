@@ -284,46 +284,48 @@ export class DinosaurService {
     const expGain = Math.floor(10 + currentState.intimacy / 100);
 
     // 트랜잭션으로 공룡 상태 업데이트 + 레벨업 체크를 원자적으로 처리
-    const { updated, levelUpResult } = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      const updatedDino = await tx.dinosaur.update({
-        where: { id: dinosaurId },
-        data: {
-          happiness: newHappiness,
-          intimacy: newIntimacy,
-          exp: { increment: expGain },
-        },
-      });
-
-      // 레벨업 체크 (트랜잭션 내에서)
-      let levelResult: { leveledUp: boolean; newLevel?: number } = { leveledUp: false };
-      let currentExp = updatedDino.exp;
-      let currentLevel = updatedDino.level;
-      let leveledUp = false;
-
-      while (currentLevel < MAX_DINOSAUR_LEVEL) {
-        const expNeeded = getExpForDinoLevel(currentLevel);
-        if (currentExp >= expNeeded) {
-          currentExp -= expNeeded;
-          currentLevel++;
-          leveledUp = true;
-        } else {
-          break;
-        }
-      }
-
-      if (leveledUp) {
-        await tx.dinosaur.update({
+    const { updated, levelUpResult } = await this.prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        const updatedDino = await tx.dinosaur.update({
           where: { id: dinosaurId },
           data: {
-            level: currentLevel,
-            exp: currentExp,
+            happiness: newHappiness,
+            intimacy: newIntimacy,
+            exp: { increment: expGain },
           },
         });
-        levelResult = { leveledUp: true, newLevel: currentLevel };
-      }
 
-      return { updated: updatedDino, levelUpResult: levelResult };
-    });
+        // 레벨업 체크 (트랜잭션 내에서)
+        let levelResult: { leveledUp: boolean; newLevel?: number } = { leveledUp: false };
+        let currentExp = updatedDino.exp;
+        let currentLevel = updatedDino.level;
+        let leveledUp = false;
+
+        while (currentLevel < MAX_DINOSAUR_LEVEL) {
+          const expNeeded = getExpForDinoLevel(currentLevel);
+          if (currentExp >= expNeeded) {
+            currentExp -= expNeeded;
+            currentLevel++;
+            leveledUp = true;
+          } else {
+            break;
+          }
+        }
+
+        if (leveledUp) {
+          await tx.dinosaur.update({
+            where: { id: dinosaurId },
+            data: {
+              level: currentLevel,
+              exp: currentExp,
+            },
+          });
+          levelResult = { leveledUp: true, newLevel: currentLevel };
+        }
+
+        return { updated: updatedDino, levelUpResult: levelResult };
+      },
+    );
 
     return {
       ...this.calculateCurrentState(updated),

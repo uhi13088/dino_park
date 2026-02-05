@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  useSeasonStore,
-  useClaimableRewardsCount,
-} from '../stores/useSeasonStore';
+import { useSeasonStore, useClaimableRewardsCount } from '../stores/useSeasonStore';
 import SeasonPassTrack from '../components/SeasonPassTrack';
 import SeasonChapterList from '../components/SeasonChapterList';
 import { SeasonEventsList } from '../components/SeasonEventCard';

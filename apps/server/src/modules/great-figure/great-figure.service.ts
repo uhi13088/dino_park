@@ -6,10 +6,7 @@ import {
 } from '@nestjs/common';
 import { UserGreatFigure } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import {
-  GREAT_FIGURE_DATA,
-  getGreatFigureById,
-} from '@dino-park/game-data';
+import { GREAT_FIGURE_DATA, getGreatFigureById } from '@dino-park/game-data';
 import type { GreatFigureType } from '@dino-park/shared';
 
 // 레벨업 경험치 테이블
