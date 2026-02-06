@@ -1,11 +1,25 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiParam,
+  ApiProperty,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { DinosaurService } from './dinosaur.service';
 import { IsString, IsNumber, IsOptional, Min, MinLength, MaxLength } from 'class-validator';
 
 class UpdateNicknameDto {
+  @ApiProperty({
+    description: '공룡 닉네임',
+    example: '렉스',
+    required: false,
+    minLength: 1,
+    maxLength: 12,
+  })
   @IsString()
   @IsOptional()
   @MinLength(1)
@@ -14,20 +28,24 @@ class UpdateNicknameDto {
 }
 
 class MovePositionDto {
+  @ApiProperty({ description: 'X 좌표', example: 10, minimum: 0 })
   @IsNumber()
   @Min(0)
   positionX!: number;
 
+  @ApiProperty({ description: 'Y 좌표', example: 15, minimum: 0 })
   @IsNumber()
   @Min(0)
   positionY!: number;
 }
 
 class PlaceInParkDto {
+  @ApiProperty({ description: 'X 좌표', example: 10, minimum: 0 })
   @IsNumber()
   @Min(0)
   positionX!: number;
 
+  @ApiProperty({ description: 'Y 좌표', example: 15, minimum: 0 })
   @IsNumber()
   @Min(0)
   positionY!: number;

@@ -1,15 +1,24 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiParam,
+  ApiBody,
+  ApiProperty,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { StoryService } from './story.service';
 
 // DTO 정의
 class MakeChoiceDto {
+  @ApiProperty({ description: '선택지 ID', example: 'choice_1' })
   choiceId!: string;
 }
 
 class AdvanceSceneDto {
+  @ApiProperty({ description: '다음 씬 ID (옵션)', example: 'scene_2', required: false })
   nextSceneId?: string;
 }
 

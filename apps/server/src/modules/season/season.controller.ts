@@ -1,11 +1,19 @@
 import { Controller, Get, Post, Body, Param, UseGuards, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiParam,
+  ApiBody,
+  ApiProperty,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { SeasonService } from './season.service';
 
 // DTO 정의
 class AddExpDto {
+  @ApiProperty({ description: '추가할 시즌 경험치', example: 50 })
   exp!: number;
 }
 

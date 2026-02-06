@@ -1,11 +1,12 @@
 import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiProperty } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserService } from './user.service';
 import { IsString, IsNumber, Min, Max, MinLength, MaxLength } from 'class-validator';
 
 class UpdateNicknameDto {
+  @ApiProperty({ description: '새 닉네임', example: '공룡왕', minLength: 2, maxLength: 12 })
   @IsString()
   @MinLength(2)
   @MaxLength(12)
@@ -13,6 +14,7 @@ class UpdateNicknameDto {
 }
 
 class UpdateTutorialDto {
+  @ApiProperty({ description: '튜토리얼 단계', example: 5, minimum: 0, maximum: 100 })
   @IsNumber()
   @Min(0)
   @Max(100)
