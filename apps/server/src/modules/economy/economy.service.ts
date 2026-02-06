@@ -1,13 +1,13 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { TransactionType, Prisma } from '@prisma/client';
+import { TransactionType } from '@prisma/client';
 import {
   MAX_EXPLORATION_ENERGY,
   ENERGY_RECHARGE_MINUTES,
   MAX_OFFLINE_HOURS,
   OFFLINE_REVENUE_RATE,
 } from '@dino-park/shared';
-import { RARITY_BASE_STATS } from '@dino-park/game-data';
+import { getDinosaurById } from '@dino-park/game-data';
 
 @Injectable()
 export class EconomyService {
@@ -100,10 +100,10 @@ export class EconomyService {
     let totalMaintenanceCost = 0;
 
     for (const dino of user.park.dinosaurs) {
-      // game-data에서 희귀도별 baseRevenue 참조 (speciesId에서 rarity 추정, 기본 common)
-      const rarityKey = 'common' as keyof typeof RARITY_BASE_STATS;
-      const baseRevenue = RARITY_BASE_STATS[rarityKey].baseRevenue;
-      const maintenanceCost = RARITY_BASE_STATS[rarityKey].maintenanceCost;
+      // game-data에서 baseRevenue 가져오기
+      const speciesData = getDinosaurById(dino.speciesId);
+      const baseRevenue = speciesData?.stats.baseRevenue || 100;
+      const maintenanceCost = speciesData?.stats.maintenanceCost || Math.floor(baseRevenue * 0.1);
       const levelMultiplier = 1 + (dino.level - 1) * 0.1;
       const happinessMultiplier = 0.5 + (dino.happiness / 100) * 0.5;
 
@@ -111,9 +111,9 @@ export class EconomyService {
       totalMaintenanceCost += maintenanceCost;
     }
 
-    // 건물 보너스 (최대 50% 캡)
-    const buildingBonusRate = Math.min(0.5, user.park.buildings.length * 0.05);
-    hourlyRevenue = Math.floor(hourlyRevenue * (1 + buildingBonusRate));
+    // 건물 보너스
+    const buildingBonus = user.park.buildings.length * 0.05;
+    hourlyRevenue = Math.floor(hourlyRevenue * (1 + buildingBonus));
 
     // 순수익
     const netHourlyRevenue = hourlyRevenue - totalMaintenanceCost;
@@ -148,7 +148,7 @@ export class EconomyService {
       totalRevenue: offlineRevenue,
       collected: true,
       dinosaurCount: user.park.dinosaurs.length,
-      buildingBonus: Math.floor(buildingBonusRate * 100),
+      buildingBonus: Math.floor(buildingBonus * 100),
     };
   }
 
@@ -174,10 +174,32 @@ export class EconomyService {
   }
 
   /**
-   * 골드 차감 (atomic operation으로 race condition 방지)
+   * 골드 차감
    */
   async spendGold(userId: string, amount: number, reason: string) {
-    return this.spendCurrency(userId, 'gold', amount, reason);
+    const currency = await this.prisma.currency.findUnique({
+      where: { userId },
+    });
+
+    if (!currency || currency.gold < amount) {
+      throw new BadRequestException('골드가 부족합니다.');
+    }
+
+    const updated = await this.prisma.currency.update({
+      where: { userId },
+      data: { gold: { decrement: amount } },
+    });
+
+    await this.recordTransaction(
+      userId,
+      TransactionType.SPEND,
+      'gold',
+      -amount,
+      reason,
+      updated.gold,
+    );
+
+    return updated;
   }
 
   /**
@@ -202,10 +224,32 @@ export class EconomyService {
   }
 
   /**
-   * 다이아 차감 (atomic operation으로 race condition 방지)
+   * 다이아 차감
    */
   async spendDiamond(userId: string, amount: number, reason: string) {
-    return this.spendCurrency(userId, 'diamond', amount, reason);
+    const currency = await this.prisma.currency.findUnique({
+      where: { userId },
+    });
+
+    if (!currency || currency.diamond < amount) {
+      throw new BadRequestException('다이아가 부족합니다.');
+    }
+
+    const updated = await this.prisma.currency.update({
+      where: { userId },
+      data: { diamond: { decrement: amount } },
+    });
+
+    await this.recordTransaction(
+      userId,
+      TransactionType.SPEND,
+      'diamond',
+      -amount,
+      reason,
+      updated.diamond,
+    );
+
+    return updated;
   }
 
   /**
@@ -223,52 +267,32 @@ export class EconomyService {
   }
 
   /**
-   * DNA 차감 (atomic operation으로 race condition 방지)
+   * DNA 차감
    */
   async spendDna(userId: string, amount: number, reason: string) {
-    return this.spendCurrency(userId, 'dna', amount, reason);
-  }
-
-  /**
-   * 통합 재화 차감 (atomic transaction으로 race condition 방지)
-   */
-  private async spendCurrency(
-    userId: string,
-    currencyType: 'gold' | 'diamond' | 'dna',
-    amount: number,
-    reason: string,
-  ) {
-    const currencyLabels = { gold: '골드', diamond: '다이아', dna: 'DNA' } as const;
-
-    const result = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      const currency = await tx.currency.findUnique({
-        where: { userId },
-      });
-
-      if (!currency || currency[currencyType] < amount) {
-        throw new BadRequestException(`${currencyLabels[currencyType]}가 부족합니다.`);
-      }
-
-      const updated = await tx.currency.update({
-        where: { userId },
-        data: { [currencyType]: { decrement: amount } },
-      });
-
-      await tx.transaction.create({
-        data: {
-          userId,
-          type: TransactionType.SPEND,
-          currencyType,
-          amount: -amount,
-          reason,
-          balanceAfter: updated[currencyType],
-        },
-      });
-
-      return updated;
+    const currency = await this.prisma.currency.findUnique({
+      where: { userId },
     });
 
-    return result;
+    if (!currency || currency.dna < amount) {
+      throw new BadRequestException('DNA가 부족합니다.');
+    }
+
+    const updated = await this.prisma.currency.update({
+      where: { userId },
+      data: { dna: { decrement: amount } },
+    });
+
+    await this.recordTransaction(
+      userId,
+      TransactionType.SPEND,
+      'dna',
+      -amount,
+      reason,
+      updated.dna,
+    );
+
+    return updated;
   }
 
   /**
@@ -327,20 +351,20 @@ export class EconomyService {
    * 에너지 즉시 충전 (다이아 사용)
    */
   async refillEnergy(userId: string) {
-    const ENERGY_REFILL_DIAMOND_COST = 30;
+    const diamondCost = 30;
 
     const currency = await this.prisma.currency.findUnique({
       where: { userId },
     });
 
-    if (!currency || currency.diamond < ENERGY_REFILL_DIAMOND_COST) {
+    if (!currency || currency.diamond < diamondCost) {
       throw new BadRequestException('다이아가 부족합니다.');
     }
 
     const updated = await this.prisma.currency.update({
       where: { userId },
       data: {
-        diamond: { decrement: ENERGY_REFILL_DIAMOND_COST },
+        diamond: { decrement: diamondCost },
         explorationEnergy: MAX_EXPLORATION_ENERGY,
         energyLastRechargedAt: new Date(),
       },
@@ -350,14 +374,14 @@ export class EconomyService {
       userId,
       TransactionType.SPEND,
       'diamond',
-      -ENERGY_REFILL_DIAMOND_COST,
+      -diamondCost,
       '에너지 충전',
       updated.diamond,
     );
 
     return {
       ...updated,
-      diamondSpent: ENERGY_REFILL_DIAMOND_COST,
+      diamondSpent: diamondCost,
       energyRefilled: MAX_EXPLORATION_ENERGY,
     };
   }
@@ -375,7 +399,7 @@ export class EconomyService {
   ) {
     const { currencyType, limit = 20, offset = 0 } = options;
 
-    const where: { userId: string; currencyType?: string } = { userId };
+    const where: any = { userId };
     if (currencyType) {
       where.currencyType = currencyType;
     }

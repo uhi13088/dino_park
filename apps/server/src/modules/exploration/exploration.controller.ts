@@ -179,4 +179,34 @@ export class ExplorationController {
   async claimRewards(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.explorationService.claim(id, userId);
   }
+
+  // ================================================================
+  // 부화 관련 API (Hatching)
+  // ================================================================
+
+  /**
+   * 부화 대기열 조회
+   */
+  @Get('hatching')
+  @ApiOperation({ summary: '부화 대기열 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '부화 중인 알 목록',
+    schema: {
+      example: [
+        {
+          id: 'clx1234...',
+          eggType: 'common',
+          speciesId: null,
+          startedAt: '2024-01-15T10:00:00Z',
+          completesAt: '2024-01-15T10:30:00Z',
+          remainingSeconds: 1200,
+          isComplete: false,
+        },
+      ],
+    },
+  })
+  async getHatchingQueue(@CurrentUser('id') userId: string) {
+    return this.explorationService.getHatchingQueue(userId);
+  }
 }

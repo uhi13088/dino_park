@@ -4,139 +4,148 @@ import { useSocialStore, type Friend } from '../stores/useSocialStore';
 import FriendList from '../components/FriendList';
 import FriendParkVisit from '../components/FriendParkVisit';
 import AddFriendModal from '../components/AddFriendModal';
+import {
+  useFriends,
+  useFriendRequests,
+  useGifts,
+  useGuestbook,
+  useSendGift,
+  useClaimGift,
+  useClaimAllGifts,
+} from '../../../api/queries';
 
 export default function SocialPage() {
   const {
     friends,
     friendRequests,
-    guestbook,
+    guestbooks,
     gifts,
     setFriends,
     setFriendRequests,
-    setGuestbook,
+    setGuestbooks,
     setGifts,
-    claimGift,
+    leaveGuestbook,
   } = useSocialStore();
 
-  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'friends' | 'gifts' | 'guestbook'>('friends');
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
 
-  // 초기 데이터 로드
+  // API 쿼리
+  const { data: friendsData, isLoading: friendsLoading } = useFriends();
+  const { data: requestsData, isLoading: requestsLoading } = useFriendRequests();
+  const { data: giftsData, isLoading: giftsLoading } = useGifts();
+  const { data: guestbookData, isLoading: guestbookLoading } = useGuestbook();
+
+  // API 뮤테이션
+  const sendGiftMutation = useSendGift();
+  const claimGiftMutation = useClaimGift();
+  const claimAllGiftsMutation = useClaimAllGifts();
+
+  const isLoading = friendsLoading || requestsLoading || giftsLoading || guestbookLoading;
+
+  // API 데이터를 스토어에 동기화
   useEffect(() => {
-    const loadSocialData = async () => {
-      setIsLoading(true);
+    if (friendsData?.friends) {
+      const mappedFriends: Friend[] = (
+        friendsData.friends as Array<{
+          id: string;
+          nickname: string;
+          level: number;
+          profileImage?: string;
+          status?: 'online' | 'offline' | 'playing';
+          lastOnline?: string;
+          parkName?: string;
+          intimacy?: number;
+          canSendGift?: boolean;
+        }>
+      ).map((f) => ({
+        id: f.id,
+        nickname: f.nickname,
+        level: f.level,
+        profileImage: f.profileImage,
+        status: f.status || 'offline',
+        lastOnline: f.lastOnline ? new Date(f.lastOnline) : new Date(),
+        parkName: f.parkName || '이름 없는 파크',
+        intimacy: f.intimacy || 0,
+        canSendGift: f.canSendGift ?? true,
+      }));
+      setFriends(mappedFriends);
+    }
+  }, [friendsData, setFriends]);
 
-      // 실제로는 API 호출
-      await new Promise((resolve) => setTimeout(resolve, 500));
+  useEffect(() => {
+    if (requestsData?.received) {
+      const mappedRequests = (
+        requestsData.received as Array<{
+          id: string;
+          fromUserId: string;
+          fromNickname: string;
+          fromLevel: number;
+          createdAt: string;
+          profileImage?: string;
+        }>
+      ).map((r) => ({
+        id: r.id,
+        fromUserId: r.fromUserId,
+        fromNickname: r.fromNickname,
+        fromLevel: r.fromLevel,
+        createdAt: new Date(r.createdAt),
+        profileImage: r.profileImage,
+      }));
+      setFriendRequests(mappedRequests);
+    }
+  }, [requestsData, setFriendRequests]);
 
-      // 임시 데이터
-      const mockFriends: Friend[] = [
-        {
-          id: 'friend1',
-          nickname: 'DinoMaster',
-          level: 25,
-          profileImage: undefined,
-          status: 'online',
-          lastOnline: new Date(),
-          parkName: '다이노 마스터 파크',
-          intimacy: 85,
-          canSendGift: true,
-        },
-        {
-          id: 'friend2',
-          nickname: 'JurassicFan',
-          level: 18,
-          profileImage: undefined,
-          status: 'playing',
-          lastOnline: new Date(),
-          parkName: '쥬라기 왕국',
-          intimacy: 60,
-          canSendGift: true,
-        },
-        {
-          id: 'friend3',
-          nickname: 'ParkBuilder',
-          level: 32,
-          profileImage: undefined,
-          status: 'offline',
-          lastOnline: new Date(Date.now() - 3600000 * 5),
-          parkName: '빌더의 낙원',
-          intimacy: 45,
-          canSendGift: false,
-        },
-        {
-          id: 'friend4',
-          nickname: 'DinoLover',
-          level: 15,
-          profileImage: undefined,
-          status: 'offline',
-          lastOnline: new Date(Date.now() - 3600000 * 24),
-          parkName: '공룡 사랑 파크',
-          intimacy: 30,
-          canSendGift: true,
-        },
-      ];
+  useEffect(() => {
+    if (giftsData?.gifts) {
+      const mappedGifts = (
+        giftsData.gifts as Array<{
+          id: string;
+          senderId: string;
+          senderNickname: string;
+          giftType: string;
+          giftItemId: string;
+          status: string;
+          createdAt: string;
+        }>
+      ).map((g) => ({
+        id: g.id,
+        fromUserId: g.senderId,
+        fromNickname: g.senderNickname,
+        type: g.giftType,
+        quantity: 1,
+        receivedAt: new Date(g.createdAt),
+        isClaimed: g.status === 'CLAIMED',
+      }));
+      setGifts(mappedGifts);
+    }
+  }, [giftsData, setGifts]);
 
-      const mockRequests = [
-        {
-          id: 'req1',
-          fromUserId: 'user1',
-          fromNickname: 'NewDinoFan',
-          fromLevel: 5,
-          createdAt: new Date(),
-        },
-        {
-          id: 'req2',
-          fromUserId: 'user2',
-          fromNickname: 'RexHunter',
-          fromLevel: 12,
-          createdAt: new Date(Date.now() - 3600000),
-        },
-      ];
-
-      const mockGifts = [
-        {
-          id: 'gift1',
-          fromUserId: 'friend1',
-          fromNickname: 'DinoMaster',
-          type: 'gold',
-          quantity: 1000,
-          isClaimed: false,
-          receivedAt: new Date(),
-        },
-        {
-          id: 'gift2',
-          fromUserId: 'friend2',
-          fromNickname: 'JurassicFan',
-          type: 'energy',
-          quantity: 5,
-          isClaimed: false,
-          receivedAt: new Date(Date.now() - 3600000),
-        },
-      ];
-
-      const mockGuestbooks = [
-        {
-          id: 'gb1',
-          visitorId: 'friend1',
-          visitorNickname: 'DinoMaster',
-          visitorLevel: 25,
-          message: '멋진 파크네요! 다음에 또 올게요 🦕',
-          createdAt: new Date(),
-        },
-      ];
-
-      setFriends(mockFriends);
-      setFriendRequests(mockRequests);
-      setGifts(mockGifts);
-      setGuestbook(mockGuestbooks);
-      setIsLoading(false);
-    };
-
-    loadSocialData();
-  }, [setFriends, setFriendRequests, setGifts, setGuestbook]);
+  useEffect(() => {
+    if (guestbookData?.entries) {
+      const mappedGuestbooks = (
+        guestbookData.entries as Array<{
+          id: string;
+          visitorId: string;
+          visitorNickname: string;
+          visitorLevel?: number;
+          message: string;
+          createdAt: string;
+          profileImage?: string;
+        }>
+      ).map((e) => ({
+        id: e.id,
+        visitorId: e.visitorId,
+        visitorNickname: e.visitorNickname,
+        visitorLevel: e.visitorLevel || 1,
+        message: e.message,
+        createdAt: new Date(e.createdAt),
+        profileImage: e.profileImage,
+      }));
+      setGuestbooks(mappedGuestbooks);
+    }
+  }, [guestbookData, setGuestbooks]);
 
   const handleVisitPark = (friendId: string) => {
     const friend = friends.find((f) => f.id === friendId);
@@ -145,12 +154,34 @@ export default function SocialPage() {
     }
   };
 
-  const handleSendGift = async (_friendId: string) => {
-    // TODO: API 호출로 선물 보내기 구현
+  const handleSendGift = async (friendId: string) => {
+    try {
+      await sendGiftMutation.mutateAsync({ friendId, giftType: 'daily_gold' });
+    } catch (error) {
+      console.error('Failed to send gift:', error);
+    }
   };
 
-  const handleLeaveGuestbook = async (_message: string) => {
-    // TODO: API 호출로 방명록 남기기 구현
+  const handleClaimGift = async (giftId: string) => {
+    try {
+      await claimGiftMutation.mutateAsync(giftId);
+    } catch (error) {
+      console.error('Failed to claim gift:', error);
+    }
+  };
+
+  const handleClaimAllGifts = async () => {
+    try {
+      await claimAllGiftsMutation.mutateAsync();
+    } catch (error) {
+      console.error('Failed to claim all gifts:', error);
+    }
+  };
+
+  const handleLeaveGuestbook = async (message: string) => {
+    if (selectedFriend) {
+      await leaveGuestbook(selectedFriend.id, message);
+    }
   };
 
   const unclaimedGiftCount = gifts.filter((g) => !g.isClaimed).length;
@@ -159,7 +190,7 @@ export default function SocialPage() {
   const tabs = [
     { id: 'friends' as const, label: '친구', icon: '👥', count: friends.length },
     { id: 'gifts' as const, label: '선물함', icon: '🎁', count: unclaimedGiftCount },
-    { id: 'guestbook' as const, label: '방명록', icon: '📝', count: guestbook.length },
+    { id: 'guestbook' as const, label: '방명록', icon: '📝', count: guestbooks.length },
   ];
 
   const giftTypeConfig: Record<string, { icon: string; label: string; color: string }> = {
@@ -280,8 +311,14 @@ export default function SocialPage() {
             >
               {/* 일괄 수령 버튼 */}
               {unclaimedGiftCount > 0 && (
-                <button className="w-full rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 py-3 font-medium transition-all hover:from-pink-500 hover:to-purple-500">
-                  🎁 {unclaimedGiftCount}개 선물 일괄 수령
+                <button
+                  onClick={handleClaimAllGifts}
+                  disabled={claimAllGiftsMutation.isPending}
+                  className="w-full rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 py-3 font-medium transition-all hover:from-pink-500 hover:to-purple-500 disabled:opacity-50"
+                >
+                  {claimAllGiftsMutation.isPending
+                    ? '수령 중...'
+                    : `🎁 ${unclaimedGiftCount}개 선물 일괄 수령`}
                 </button>
               )}
 
@@ -294,7 +331,7 @@ export default function SocialPage() {
               ) : (
                 <div className="space-y-2">
                   {gifts.map((gift) => {
-                    const config = giftTypeConfig[gift.type];
+                    const config = giftTypeConfig[gift.type] || giftTypeConfig.gold;
                     return (
                       <motion.div
                         key={gift.id}
@@ -320,10 +357,11 @@ export default function SocialPage() {
                         </div>
                         {!gift.isClaimed && (
                           <button
-                            onClick={() => claimGift(gift.id)}
-                            className="rounded-lg bg-pink-600 px-4 py-2 text-sm font-medium transition-all hover:bg-pink-500"
+                            onClick={() => handleClaimGift(gift.id)}
+                            disabled={claimGiftMutation.isPending}
+                            className="rounded-lg bg-pink-600 px-4 py-2 text-sm font-medium transition-all hover:bg-pink-500 disabled:opacity-50"
                           >
-                            수령
+                            {claimGiftMutation.isPending ? '...' : '수령'}
                           </button>
                         )}
                         {gift.isClaimed && <span className="text-sm text-gray-500">수령 완료</span>}
@@ -345,7 +383,7 @@ export default function SocialPage() {
             >
               <h3 className="font-semibold text-white">내 파크 방명록</h3>
 
-              {guestbook.length === 0 ? (
+              {guestbooks.length === 0 ? (
                 <div className="flex h-48 flex-col items-center justify-center rounded-xl bg-gray-800 text-gray-500">
                   <span className="mb-2 text-4xl">📝</span>
                   <span>아직 방명록이 없습니다</span>
@@ -353,7 +391,7 @@ export default function SocialPage() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {guestbook.map((entry: (typeof guestbook)[number]) => (
+                  {guestbooks.map((entry) => (
                     <motion.div
                       key={entry.id}
                       className="rounded-lg bg-gray-800 p-4"

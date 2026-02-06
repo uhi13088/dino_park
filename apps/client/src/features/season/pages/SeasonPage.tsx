@@ -1,9 +1,22 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSeasonStore, useClaimableRewardsCount } from '../stores/useSeasonStore';
+import {
+  useSeasonStore,
+  useClaimableRewardsCount,
+  type SeasonChapter,
+  type SeasonEvent,
+} from '../stores/useSeasonStore';
 import SeasonPassTrack from '../components/SeasonPassTrack';
 import SeasonChapterList from '../components/SeasonChapterList';
 import { SeasonEventsList } from '../components/SeasonEventCard';
+import {
+  useCurrentSeason,
+  useSeasonPass,
+  useSeasonChapters,
+  useSeasonEvents,
+  useClaimSeasonReward,
+  useUpgradeSeasonPass,
+} from '../../../api/queries';
 
 export default function SeasonPage() {
   const {
@@ -17,8 +30,6 @@ export default function SeasonPage() {
     setSeasonPass,
     setChapters,
     setEvents,
-    setLoading,
-    isLoading,
     claimFreeReward,
     claimPremiumReward,
     upgradeToPremium,
@@ -26,30 +37,56 @@ export default function SeasonPage() {
 
   const claimableCount = useClaimableRewardsCount();
 
-  // 데이터 로드 (TODO: API 연동)
+  // API 쿼리
+  const { data: seasonData, isLoading: seasonLoading } = useCurrentSeason();
+  const { data: passData, isLoading: passLoading } = useSeasonPass();
+  const { data: chaptersData, isLoading: chaptersLoading } = useSeasonChapters();
+  const { data: eventsData, isLoading: eventsLoading } = useSeasonEvents();
+
+  // API 뮤테이션
+  const claimRewardMutation = useClaimSeasonReward();
+  const upgradePassMutation = useUpgradeSeasonPass();
+
+  const isLoading = seasonLoading || passLoading || chaptersLoading || eventsLoading;
+
+  // API 데이터를 스토어에 동기화
   useEffect(() => {
-    loadSeasonData();
-  }, []);
-
-  const loadSeasonData = async () => {
-    setLoading(true);
-
-    // Mock 데이터 (TODO: API 연동)
-    try {
-      // 현재 시즌
+    if (seasonData?.season) {
+      const season = seasonData.season as {
+        id: string;
+        name: string;
+        nameKo?: string;
+        theme: string;
+        startDate: string;
+        endDate: string;
+        maxLevel: number;
+        isActive: boolean;
+      };
       setCurrentSeason({
-        id: 'season-1',
-        name: 'Return of the Founder',
-        nameKo: '창립자의 귀환',
-        theme: 'founder',
-        startDate: '2026-01-01',
-        endDate: '2026-03-31',
-        maxLevel: 50,
-        isActive: true,
+        id: season.id,
+        name: season.name,
+        nameKo: season.nameKo || season.name,
+        theme: season.theme,
+        startDate: season.startDate,
+        endDate: season.endDate,
+        maxLevel: season.maxLevel,
+        isActive: season.isActive,
       });
+    }
+  }, [seasonData, setCurrentSeason]);
 
-      // 시즌 패스 Mock 데이터
-      const mockRewards = Array.from({ length: 50 }, (_, i) => ({
+  useEffect(() => {
+    if (passData && seasonData?.season) {
+      const pass = passData as {
+        level: number;
+        exp: number;
+        isPremium: boolean;
+        claimedRewards: number[];
+      };
+      const season = seasonData.season as { maxLevel: number; nameKo?: string; name: string };
+
+      // 기본 보상 데이터 생성
+      const rewards = Array.from({ length: season.maxLevel }, (_, i) => ({
         level: i + 1,
         freeReward: {
           type: i % 3 === 0 ? 'diamond' : i % 3 === 1 ? 'gold' : 'dna',
@@ -67,144 +104,108 @@ export default function SeasonPage() {
           quantity: (i + 1) * (i % 3 === 0 ? 20 : 2000),
           id: (i + 1) % 10 === 0 ? 'velociraptor-misty' : undefined,
         },
-        canClaimFree: i < 15 && i >= 10,
-        canClaimPremium: false,
-        isFreeClaimed: i < 10,
-        isPremiumClaimed: false,
+        canClaimFree: i < pass.level && !pass.claimedRewards.includes(i + 1),
+        canClaimPremium:
+          pass.isPremium && i < pass.level && !pass.claimedRewards.includes(-(i + 1)),
+        isFreeClaimed: pass.claimedRewards.includes(i + 1),
+        isPremiumClaimed: pass.claimedRewards.includes(-(i + 1)),
       }));
 
       setSeasonPass({
-        id: 'pass-1',
-        level: 15,
-        exp: 750,
-        isPremium: false,
-        seasonName: '창립자의 귀환',
-        maxLevel: 50,
-        nextLevelExp: 1600,
-        expProgress: 0.47,
-        daysRemaining: 58,
-        rewards: mockRewards,
+        id: `pass-${season.maxLevel}`,
+        level: pass.level,
+        exp: pass.exp,
+        isPremium: pass.isPremium,
+        seasonName: season.nameKo || season.name,
+        maxLevel: season.maxLevel,
+        nextLevelExp: pass.level * 100 + 500,
+        expProgress: pass.exp / (pass.level * 100 + 500),
+        daysRemaining: seasonData?.daysRemaining || 0,
+        rewards,
       });
-
-      // 시즌 챕터 Mock 데이터
-      setChapters([
-        {
-          id: 's1-ch1',
-          order: 1,
-          title: 'The Hidden Journal',
-          titleKo: '숨겨진 일지',
-          isUnlocked: true,
-          isCompleted: true,
-          sceneCount: 3,
-          rewards: [
-            { type: 'seasonPoint', amount: 500 },
-            { type: 'gold', amount: 50000 },
-          ],
-        },
-        {
-          id: 's1-ch2',
-          order: 2,
-          title: 'Beyond the Mist',
-          titleKo: '안개 너머',
-          isUnlocked: true,
-          isCompleted: false,
-          sceneCount: 3,
-          rewards: [
-            { type: 'seasonPoint', amount: 700 },
-            { type: 'dinosaur', amount: 1, id: 'protoceratops-alpha' },
-          ],
-        },
-        {
-          id: 's1-ch3',
-          order: 3,
-          title: "Noah's Ark",
-          titleKo: '노아의 방주',
-          isUnlocked: false,
-          isCompleted: false,
-          sceneCount: 3,
-          rewards: [
-            { type: 'seasonPoint', amount: 1000 },
-            { type: 'diamond', amount: 200 },
-          ],
-        },
-        {
-          id: 's1-ch4',
-          order: 4,
-          title: 'Heart of Eden',
-          titleKo: '에덴의 심장',
-          isUnlocked: false,
-          isCompleted: false,
-          sceneCount: 2,
-          rewards: [
-            { type: 'seasonPoint', amount: 1500 },
-            { type: 'item', amount: 1, id: 'eden-crystal-shard' },
-          ],
-        },
-        {
-          id: 's1-ch5',
-          order: 5,
-          title: 'The Founder',
-          titleKo: '창립자',
-          isUnlocked: false,
-          isCompleted: false,
-          sceneCount: 3,
-          rewards: [
-            { type: 'seasonPoint', amount: 3000 },
-            { type: 'greatFigure', amount: 1, id: 'arthur-hammond' },
-          ],
-        },
-      ]);
-
-      // 시즌 이벤트 Mock 데이터
-      setEvents([
-        {
-          id: 's1-event-1',
-          name: "Founder's Legacy Collection",
-          nameKo: '창립자의 유산 컬렉션',
-          type: 'collection',
-          daysRemaining: 7,
-          description: '아서 해먼드의 연구 기록 조각을 수집하세요.',
-          rewards: [
-            { type: 'gold', quantity: 100000 },
-            { type: 'diamond', quantity: 200 },
-          ],
-        },
-        {
-          id: 's1-event-2',
-          name: 'Mist Explorer Challenge',
-          nameKo: '안개 탐험가 챌린지',
-          type: 'challenge',
-          daysRemaining: 2,
-          description: '안개 지역 탐험을 완료하고 특별 보상을 획득하세요.',
-          rewards: [
-            { type: 'dna', quantity: 1000 },
-            { type: 'dinosaur', quantity: 1, id: 'velociraptor-misty' },
-          ],
-        },
-      ]);
-    } catch (error) {
-      console.error('Failed to load season data:', error);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [passData, seasonData, setSeasonPass]);
+
+  useEffect(() => {
+    if (chaptersData?.chapters) {
+      const mappedChapters: SeasonChapter[] = (
+        chaptersData.chapters as Array<{
+          id: string;
+          order: number;
+          title: string;
+          titleKo?: string;
+          isUnlocked: boolean;
+          isCompleted: boolean;
+          sceneCount: number;
+          rewards: Array<{ type: string; amount: number; id?: string }>;
+        }>
+      ).map((c) => ({
+        id: c.id,
+        order: c.order,
+        title: c.title,
+        titleKo: c.titleKo || c.title,
+        isUnlocked: c.isUnlocked,
+        isCompleted: c.isCompleted,
+        sceneCount: c.sceneCount,
+        rewards: c.rewards,
+      }));
+      setChapters(mappedChapters);
+    }
+  }, [chaptersData, setChapters]);
+
+  useEffect(() => {
+    if (eventsData?.events) {
+      const mappedEvents: SeasonEvent[] = (
+        eventsData.events as Array<{
+          id: string;
+          name: string;
+          nameKo?: string;
+          type: string;
+          daysRemaining: number;
+          description: string;
+          rewards: Array<{ type: string; quantity: number; id?: string }>;
+        }>
+      ).map((e) => ({
+        id: e.id,
+        name: e.name,
+        nameKo: e.nameKo || e.name,
+        type: e.type,
+        daysRemaining: e.daysRemaining,
+        description: e.description,
+        rewards: e.rewards,
+      }));
+      setEvents(mappedEvents);
+    }
+  }, [eventsData, setEvents]);
 
   // 무료 보상 수령
   const handleClaimFree = async (level: number) => {
-    // TODO: API 호출
-    claimFreeReward(level);
+    try {
+      await claimRewardMutation.mutateAsync({ level, isPremium: false });
+      claimFreeReward(level);
+    } catch (error) {
+      console.error('Failed to claim free reward:', error);
+    }
   };
 
   // 프리미엄 보상 수령
   const handleClaimPremium = async (level: number) => {
-    // TODO: API 호출
-    claimPremiumReward(level);
+    try {
+      await claimRewardMutation.mutateAsync({ level, isPremium: true });
+      claimPremiumReward(level);
+    } catch (error) {
+      console.error('Failed to claim premium reward:', error);
+    }
   };
 
   // 프리미엄 업그레이드
-  const handleUpgradePremium = () => {
-    // TODO: 구매 모달 또는 상점으로 이동
-    upgradeToPremium();
+  const handleUpgradePremium = async () => {
+    try {
+      await upgradePassMutation.mutateAsync();
+      upgradeToPremium();
+    } catch (error) {
+      console.error('Failed to upgrade to premium:', error);
+    }
   };
 
   // 챕터 선택

@@ -638,7 +638,7 @@ export class SeasonService {
     userId: string,
     reward: { type: string; amount?: number; id?: string },
   ) {
-    const { type, amount = 0, id } = reward;
+    const { type, amount = 1, id } = reward;
 
     switch (type) {
       case 'seasonPoint':
@@ -688,9 +688,7 @@ export class SeasonService {
       select: { flagId: true },
     });
 
-    return flags.map((f: { flagId: string }) =>
-      f.flagId.replace(`season-chapter-${seasonId}-`, ''),
-    );
+    return flags.map((f) => f.flagId.replace(`season-chapter-${seasonId}-`, ''));
   }
 
   /**

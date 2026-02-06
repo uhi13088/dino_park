@@ -137,7 +137,7 @@ export const ENERGY = {
 export const DINOSAUR_STATUS = {
   maxHappiness: 100,
   maxHunger: 100,
-  maxIntimacy: 1000,
+  maxIntimacy: 100,
   happinessDecayPerHour: 2, // 시간당 행복도 감소
   hungerIncreasePerHour: 5, // 시간당 배고픔 증가
   feedingHappinessGain: 20, // 먹이 시 행복도 증가
@@ -258,10 +258,10 @@ export const OFFLINE = {
 } as const;
 
 // ========================================
-// 상점 - 다이아 패키지
+// 상점 - 다이아 패키지 가격표 (계산용)
 // ========================================
 
-export const DIAMOND_PACK_PRICING = [
+export const DIAMOND_PACK_PRICES = [
   { id: 'diamond_60', diamonds: 60, bonusDiamonds: 0, priceKRW: 1100 },
   { id: 'diamond_330', diamonds: 330, bonusDiamonds: 30, priceKRW: 5500, isPopular: true },
   { id: 'diamond_700', diamonds: 700, bonusDiamonds: 80, priceKRW: 11000 },
@@ -281,10 +281,10 @@ export const GOLD_SHOP = [
 ] as const;
 
 // ========================================
-// 구독 상품
+// 구독 상품 설정 (계산용)
 // ========================================
 
-export const SUBSCRIPTION_PRICING = {
+export const SUBSCRIPTION_CONFIG = {
   dinoPass: {
     id: 'dino_pass',
     monthlyPriceKRW: 9900,

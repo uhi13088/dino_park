@@ -142,6 +142,32 @@ export class SocialController {
   }
 
   /**
+   * 유저 검색 (친구 추가용)
+   */
+  @Get('search')
+  @ApiOperation({ summary: '유저 검색 (닉네임으로 친구 추가용)' })
+  @ApiQuery({ name: 'q', description: '검색어 (닉네임)' })
+  @ApiResponse({
+    status: 200,
+    description: '검색된 유저 목록 (최대 20명)',
+    schema: {
+      example: [
+        {
+          userId: 'clx1234...',
+          nickname: '다이노마스터',
+          level: 25,
+          parkName: '공룡천국',
+          isFriend: false,
+          hasPendingRequest: false,
+        },
+      ],
+    },
+  })
+  async searchUsers(@CurrentUser('id') userId: string, @Query('q') query: string) {
+    return this.socialService.searchUsers(userId, query);
+  }
+
+  /**
    * 친구 요청 보내기
    */
   @Post('friends/request')

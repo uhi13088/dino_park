@@ -282,7 +282,7 @@ export class StoryService {
       where: { userId_chapterId: { userId, chapterId } },
       data: {
         choices: [...existingChoices, choiceId],
-        effects: mergedEffects,
+        effects: JSON.parse(JSON.stringify(mergedEffects)),
       },
     });
 

@@ -330,6 +330,34 @@ export class ExplorationService {
   }
 
   /**
+   * 부화 대기열 조회
+   */
+  async getHatchingQueue(userId: string) {
+    const hatchingQueue = await this.prisma.hatchingQueue.findMany({
+      where: {
+        userId,
+        completed: false,
+      },
+      orderBy: { startedAt: 'asc' },
+    });
+
+    return hatchingQueue.map((item) => {
+      const completesAt = new Date(item.completesAt);
+      const now = new Date();
+      const remainingSeconds = Math.max(
+        0,
+        Math.ceil((completesAt.getTime() - now.getTime()) / 1000),
+      );
+
+      return {
+        ...item,
+        remainingSeconds,
+        isComplete: remainingSeconds === 0,
+      };
+    });
+  }
+
+  /**
    * 보상 생성
    */
   private generateRewards(region: typeof EXPLORATION_REGIONS.grassland) {
