@@ -206,7 +206,7 @@ export class SeasonService {
     const grantedReward = await this.grantReward(userId, passReward.freeReward);
 
     // 수령 기록
-    const updatedPass = await this.prisma.seasonPass.update({
+    await this.prisma.seasonPass.update({
       where: { id: seasonPass.id },
       data: {
         claimedRewards: [...claimedRewards, rewardKey],
@@ -368,7 +368,7 @@ export class SeasonService {
     const seasonPass = await this.getOrCreateSeasonPass(userId, season.id);
     const completedChapters = await this.getCompletedSeasonChapters(userId, season.id);
 
-    return season.chapters.map((chapter, index) => {
+    return season.chapters.map((chapter, _index) => {
       const isUnlocked = this.isChapterUnlocked(chapter, seasonPass.level, completedChapters);
       const isCompleted = completedChapters.includes(chapter.id);
 

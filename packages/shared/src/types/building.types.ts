@@ -40,6 +40,9 @@ export interface BuildingType {
   category: BuildingCategory;
   maxLevel: number;
   baseStats: BuildingStats;
+  baseCost?: number; // 기본 건설 비용 (골드) - 없으면 unlockCondition.cost.gold 사용
+  baseBonus?: number; // 기본 보너스 (%)
+  constructionTime?: number; // 건설 시간 (초)
   size: { width: number; height: number };
   unlockCondition: {
     parkLevel: number;

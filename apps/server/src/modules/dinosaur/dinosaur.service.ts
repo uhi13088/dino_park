@@ -140,7 +140,7 @@ export class DinosaurService {
    * 공룡 닉네임 변경
    */
   async updateNickname(dinosaurId: string, userId: string, nickname: string) {
-    const dinosaur = await this.getById(dinosaurId, userId);
+    await this.getById(dinosaurId, userId);
 
     if (nickname && (nickname.length < 1 || nickname.length > 12)) {
       throw new BadRequestException('닉네임은 1~12자여야 합니다.');
@@ -393,7 +393,7 @@ export class DinosaurService {
 
     // 방생 시 DNA 획득 (레벨과 희귀도에 따라)
     const speciesData = getDinosaurById(dinosaur.speciesId);
-    const rarityMultiplier = RARITY_REVENUE_MULTIPLIER[speciesData?.stats.rarity || 'common'] || 1;
+    const rarityMultiplier = RARITY_REVENUE_MULTIPLIER[speciesData?.rarity || 'common'] || 1;
     const dnaReward = Math.floor(dinosaur.level * 5 * rarityMultiplier);
 
     await this.prisma.$transaction([
@@ -426,7 +426,7 @@ export class DinosaurService {
     // game-data에서 baseRevenue와 rarity 가져오기
     const speciesData = getDinosaurById(dinosaur.speciesId);
     const baseRevenue = speciesData?.stats.baseRevenue || 100;
-    const rarity = speciesData?.stats.rarity || 'common';
+    const rarity = speciesData?.rarity || 'common';
 
     const hourlyRevenue = calculateDinosaurRevenue(
       baseRevenue,

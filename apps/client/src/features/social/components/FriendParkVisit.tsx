@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { type Friend, useSocialStore } from '../stores/useSocialStore';
 import { useVisitFriendPark } from '../../../api/queries';

@@ -25,7 +25,7 @@ export default function DinosaurPage() {
       {/* 탭 컨텐츠 */}
       <div className="flex-1 overflow-auto p-4">
         {activeTab === 'collection' ? (
-          <CollectionView dinosaurs={dinosaursData || []} isLoading={isLoading} />
+          <CollectionView dinosaurs={dinosaursData?.dinosaurs || []} isLoading={isLoading} />
         ) : (
           <CodexView />
         )}
@@ -60,7 +60,7 @@ function TabButton({
 interface DinosaurData {
   id: string;
   speciesId: string;
-  nickname?: string;
+  nickname: string | null;
   level: number;
   happiness: number;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   useSeasonStore,
@@ -17,9 +17,6 @@ import {
   useClaimSeasonReward,
   useUpgradeSeasonPass,
 } from '../../../api/queries';
-
-// 탭 타입
-type TabType = 'pass' | 'story' | 'events';
 
 export default function SeasonPage() {
   const {

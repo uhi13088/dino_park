@@ -342,7 +342,6 @@ export class ExplorationService {
     });
 
     return hatchingQueue.map((item) => {
-      const startedAt = new Date(item.startedAt);
       const completesAt = new Date(item.completesAt);
       const now = new Date();
       const remainingSeconds = Math.max(
