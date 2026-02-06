@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Building, BuildingStatus } from '@dino-park/shared';
 import { useBuildingStore } from '../stores/useBuildingStore';
 
@@ -38,7 +39,7 @@ const STATUS_CONFIG: Record<BuildingStatus, { label: string; color: string }> = 
   inactive: { label: '비활성', color: 'bg-gray-400' },
 };
 
-export default function BuildingCard({ building, buildingType, onClick }: BuildingCardProps) {
+function BuildingCard({ building, buildingType, onClick }: BuildingCardProps) {
   const { showUpgradeModal, showAssignModal } = useBuildingStore();
 
   // typeId에서 카테고리 추출
@@ -161,3 +162,5 @@ export default function BuildingCard({ building, buildingType, onClick }: Buildi
     </div>
   );
 }
+
+export default React.memo(BuildingCard);

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 // 게임 모드
-export type GameMode = 'view' | 'build' | 'place_dinosaur' | 'place_building';
+export type GameMode = 'normal' | 'view' | 'build' | 'place_dinosaur' | 'place_building';
 
 // 선택된 엔티티 타입
 interface SelectedEntity {
@@ -87,7 +87,7 @@ export const useGameStore = create<GameState>()(
       selectEntity: (entity) =>
         set({
           selectedEntity: entity,
-          mode: entity ? 'view' : 'view',
+          mode: entity ? 'view' : 'normal',
         }),
 
       // 배치 시작

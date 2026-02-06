@@ -6,6 +6,7 @@ import {
   ApiResponse,
   ApiParam,
   ApiQuery,
+  ApiProperty,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -18,9 +19,16 @@ import { Type } from 'class-transformer';
 // ============================================================
 
 class SendFriendRequestDto {
+  @ApiProperty({ description: '친구 요청을 보낼 유저 ID', example: 'user-id-123' })
   @IsString()
   targetUserId!: string;
 
+  @ApiProperty({
+    description: '친구 요청 메시지 (옵션)',
+    example: '친구하자!',
+    required: false,
+    maxLength: 100,
+  })
   @IsString()
   @IsOptional()
   @MaxLength(100)
@@ -28,12 +36,20 @@ class SendFriendRequestDto {
 }
 
 class SendGiftDto {
+  @ApiProperty({ description: '선물 받을 유저 ID', example: 'user-id-456' })
   @IsString()
   receiverId!: string;
 
+  @ApiProperty({ description: '선물 아이템 ID', example: 'gift_gold_100' })
   @IsString()
   giftItemId!: string;
 
+  @ApiProperty({
+    description: '선물 메시지 (옵션)',
+    example: '선물이야!',
+    required: false,
+    maxLength: 100,
+  })
   @IsString()
   @IsOptional()
   @MaxLength(100)
@@ -41,9 +57,16 @@ class SendGiftDto {
 }
 
 class EndParkVisitDto {
+  @ApiProperty({ description: '좋아요 남기기 여부', example: true })
   @IsBoolean()
   leftLike!: boolean;
 
+  @ApiProperty({
+    description: '방명록 메시지 (옵션)',
+    example: '멋진 파크네요!',
+    required: false,
+    maxLength: 200,
+  })
   @IsString()
   @IsOptional()
   @MaxLength(200)
@@ -51,12 +74,14 @@ class EndParkVisitDto {
 }
 
 class PaginationQuery {
+  @ApiProperty({ description: '페이지 번호', example: 1, default: 1, required: false })
   @IsInt()
   @Min(1)
   @Type(() => Number)
   @IsOptional()
   page?: number = 1;
 
+  @ApiProperty({ description: '페이지당 항목 수', example: 20, default: 20, required: false })
   @IsInt()
   @Min(1)
   @Type(() => Number)

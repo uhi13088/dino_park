@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { Transaction, CurrencyType, TransactionType } from '@dino-park/shared';
+import type { Transaction } from '@dino-park/shared';
 
 // 거래 내역 필터 타입
 export type TransactionFilter = 'all' | 'earn' | 'spend' | 'purchase' | 'reward';

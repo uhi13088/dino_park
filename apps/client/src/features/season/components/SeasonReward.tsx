@@ -11,7 +11,7 @@ interface SeasonRewardProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export default function SeasonReward({
+function SeasonReward({
   reward,
   isClaimed,
   canClaim,
@@ -103,3 +103,5 @@ export default function SeasonReward({
     </motion.div>
   );
 }
+
+export default React.memo(SeasonReward);

@@ -7,7 +7,7 @@ interface DinosaurCardProps {
   onClick: () => void;
 }
 
-export default function DinosaurCard({ dinosaur, onClick }: DinosaurCardProps) {
+function DinosaurCard({ dinosaur, onClick }: DinosaurCardProps) {
   const categoryConfig = CATEGORY_CONFIG[dinosaur.species.category];
   const rarityConfig = RARITY_CONFIG[dinosaur.species.rarity];
 
@@ -138,3 +138,5 @@ export default function DinosaurCard({ dinosaur, onClick }: DinosaurCardProps) {
     </motion.button>
   );
 }
+
+export default React.memo(DinosaurCard);

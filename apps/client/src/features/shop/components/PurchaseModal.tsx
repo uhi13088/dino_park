@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   type DiamondProduct,
@@ -7,7 +6,6 @@ import {
   type GoldShopItem,
   type PurchaseResult,
   CURRENCY_CONFIG,
-  PRODUCT_TYPE_ICONS,
   useShopStore,
 } from '../stores/useShopStore';
 
@@ -39,7 +37,7 @@ export default function PurchaseModal({
   isOpen,
   onClose,
   product,
-  productType,
+  productType: _productType,
   onConfirm,
 }: PurchaseModalProps) {
   const { gold, diamond, isLoading, canAfford } = useShopStore();
@@ -66,21 +64,6 @@ export default function PurchaseModal({
   const priceInfo = getPriceInfo();
   const currencyConfig = CURRENCY_CONFIG[priceInfo.currency];
   const affordable = canAfford(priceInfo.price, priceInfo.currency);
-
-  // 상품명 추출
-  const getProductName = () => {
-    if (isDiamondProduct(product)) {
-      const total = product.diamonds + product.bonusDiamonds;
-      return `💎 다이아 ${total.toLocaleString()}개`;
-    }
-    if (isPackageProduct(product)) {
-      return product.nameKo;
-    }
-    if (isDailyShopItem(product) || isGoldShopItem(product)) {
-      return product.name;
-    }
-    return '상품';
-  };
 
   return (
     <AnimatePresence>

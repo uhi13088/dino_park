@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiProperty } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ExplorationService } from './exploration.service';
 import { IsString } from 'class-validator';
 
 class StartExplorationDto {
+  @ApiProperty({ description: '탐험 지역 ID', example: 'forest_region' })
   @IsString()
   regionId!: string;
 }

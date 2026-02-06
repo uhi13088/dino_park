@@ -1,4 +1,4 @@
-import { useEconomyStore, CURRENCY_CONFIG } from '../stores/useEconomyStore';
+import { useEconomyStore } from '../stores/useEconomyStore';
 
 interface CurrencyPanelProps {
   compact?: boolean;

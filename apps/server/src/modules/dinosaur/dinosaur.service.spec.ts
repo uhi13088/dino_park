@@ -5,7 +5,6 @@ import { NotFoundException, BadRequestException, ForbiddenException } from '@nes
 
 describe('DinosaurService', () => {
   let service: DinosaurService;
-  let prisma: PrismaService;
 
   const mockPrismaService = {
     park: {
@@ -72,7 +71,6 @@ describe('DinosaurService', () => {
     }).compile();
 
     service = module.get<DinosaurService>(DinosaurService);
-    prisma = module.get<PrismaService>(PrismaService);
 
     // Reset all mocks
     jest.clearAllMocks();
@@ -338,6 +336,157 @@ describe('DinosaurService', () => {
       mockPrismaService.dinosaur.findUnique.mockResolvedValue(null);
 
       await expect(service.calculateRevenue('invalid-id')).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('interact', () => {
+    it('should interact with dinosaur and gain happiness/intimacy', async () => {
+      const readyForInteraction = {
+        ...mockDinosaur,
+        lastFedAt: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
+        park: { userId: 'user-1' },
+      };
+
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue(readyForInteraction);
+      mockPrismaService.$transaction.mockImplementation(async (callback) => {
+        const tx = {
+          dinosaur: {
+            update: jest.fn().mockResolvedValue({
+              ...readyForInteraction,
+              happiness: 85,
+              intimacy: 60,
+              exp: 110,
+            }),
+          },
+        };
+        return callback(tx);
+      });
+
+      const result = await service.interact('dino-1', 'user-1');
+
+      expect(result.happinessGain).toBeGreaterThan(0);
+      expect(result.intimacyGain).toBeGreaterThan(0);
+      expect(result.expGain).toBeGreaterThan(0);
+    });
+
+    it('should throw BadRequestException when on cooldown', async () => {
+      const recentlyInteracted = {
+        ...mockDinosaur,
+        lastFedAt: new Date(), // Just now
+        park: { userId: 'user-1' },
+      };
+
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue(recentlyInteracted);
+
+      await expect(service.interact('dino-1', 'user-1')).rejects.toThrow(BadRequestException);
+    });
+
+    it('should level up dinosaur when enough exp gained', async () => {
+      const highExpDinosaur = {
+        ...mockDinosaur,
+        exp: 990, // Close to level up
+        level: 1,
+        lastFedAt: new Date(Date.now() - 10 * 60 * 1000),
+        park: { userId: 'user-1' },
+      };
+
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue(highExpDinosaur);
+
+      let updateCallCount = 0;
+      mockPrismaService.$transaction.mockImplementation(async (callback) => {
+        const tx = {
+          dinosaur: {
+            update: jest.fn().mockImplementation(() => {
+              updateCallCount++;
+              if (updateCallCount === 1) {
+                return Promise.resolve({
+                  ...highExpDinosaur,
+                  exp: 1000, // After adding expGain
+                  happiness: 85,
+                  intimacy: 60,
+                });
+              }
+              // Second call is for level up
+              return Promise.resolve({
+                ...highExpDinosaur,
+                level: 2,
+                exp: 0,
+              });
+            }),
+          },
+        };
+        return callback(tx);
+      });
+
+      const result = await service.interact('dino-1', 'user-1');
+
+      expect(result.leveledUp).toBe(true);
+      expect(result.newLevel).toBeGreaterThan(1);
+    });
+  });
+
+  describe('checkLevelUp', () => {
+    it('should level up dinosaur when enough exp', async () => {
+      const highExpDinosaur = {
+        ...mockDinosaur,
+        exp: 2000, // High exp for level 3
+        level: 3,
+      };
+
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue(highExpDinosaur);
+      mockPrismaService.dinosaur.update.mockResolvedValue({
+        ...highExpDinosaur,
+        level: 5,
+        exp: 0,
+      });
+
+      const result = await service.checkLevelUp('dino-1');
+
+      expect(result!.leveledUp).toBe(true);
+      expect(result!.newLevel).toBeGreaterThan(3);
+    });
+
+    it('should not level up when insufficient exp', async () => {
+      const lowExpDinosaur = {
+        ...mockDinosaur,
+        exp: 30, // Level 1 needs 50 exp (50 * 1^1.5 = 50)
+        level: 1,
+      };
+
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue(lowExpDinosaur);
+
+      const result = await service.checkLevelUp('dino-1');
+
+      expect(result!.leveledUp).toBe(false);
+      expect(mockPrismaService.dinosaur.update).not.toHaveBeenCalled();
+    });
+
+    it('should return null when dinosaur not found', async () => {
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue(null);
+
+      const result = await service.checkLevelUp('invalid-id');
+
+      expect(result).toBeNull();
+    });
+
+    it('should handle multiple level ups', async () => {
+      const veryHighExpDinosaur = {
+        ...mockDinosaur,
+        exp: 10000, // Enough for multiple levels
+        level: 1,
+      };
+
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue(veryHighExpDinosaur);
+      mockPrismaService.dinosaur.update.mockResolvedValue({
+        ...veryHighExpDinosaur,
+        level: 5,
+        exp: 500,
+      });
+
+      const result = await service.checkLevelUp('dino-1');
+
+      expect(result!.leveledUp).toBe(true);
+      expect(result!.newLevel).toBeGreaterThan(1);
     });
   });
 });

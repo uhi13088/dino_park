@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   type GreatFigure,
@@ -15,7 +15,7 @@ interface GreatFigureAssignProps {
 }
 
 export default function GreatFigureAssign({ isOpen, onClose, figure }: GreatFigureAssignProps) {
-  const { buildings, assignFigure, isLoading, getAvailableBuildings } = useGreatFigureStore();
+  const { assignFigure, isLoading, getAvailableBuildings } = useGreatFigureStore();
 
   const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
 
