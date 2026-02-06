@@ -7,7 +7,7 @@
 
 ## 📋 QUEUE (대기)
 
-_(모든 작업 완료!)_
+(없음)
 
 ---
 
@@ -15,11 +15,37 @@ _(모든 작업 완료!)_
 
 <!-- 한 번에 1개만 -->
 
-_(없음)_
+(없음)
 
 ---
 
 ## ✅ DONE (완료)
+
+### 테스트 작업
+
+- [x] **T18: E2E 통합 테스트** ✅ 2026-02-06
+  - 생성 파일:
+    - `apps/server/test/user-flow.e2e-spec.ts` (유저 가입 → 파크 생성 → 공룡 부화)
+    - `apps/server/test/economy-flow.e2e-spec.ts` (재화 획득/소비 플로우)
+    - `apps/server/test/social-flow.e2e-spec.ts` (친구 추가/선물 플로우)
+    - `apps/server/jest-e2e.config.js` (E2E 테스트 설정)
+  - 테스트 수: 30개 통과
+
+- [x] **T17: Swagger API 문서화** ✅ 2026-02-06
+  - 수정 파일: 11개 controller 파일
+  - 추가 내용:
+    - @ApiTags, @ApiOperation: 기존 120개 적용됨
+    - @ApiProperty: 37개 추가 (모든 DTO 필드에 적용)
+  - Swagger UI: http://localhost:4000/api/docs
+
+- [x] **T16: 핵심 서비스 유닛 테스트** ✅ 2026-02-06
+  - 수정 파일:
+    - `apps/server/src/modules/dinosaur/dinosaur.service.spec.ts` (341줄 → 472줄)
+    - `apps/server/src/modules/economy/economy.service.spec.ts` (373줄, $transaction 모킹 수정)
+  - 테스트 커버리지:
+    - DinosaurService: 97.1% (feed, interact, levelUp 포함)
+    - EconomyService: 97.93% (spendCurrency, collectOffline 포함)
+  - 총 58개 테스트 통과
 
 ### 코드 작업
 
@@ -199,11 +225,11 @@ _(없음)_
 
 | 우선순위  | 티켓 수 | 완료      |
 | --------- | ------- | --------- |
-| 🔴 높음   | 3       | 3 ✅      |
-| 🟠 중간   | 4       | 4 ✅      |
-| 🟡 낮음   | 6       | 6 ✅      |
+| 🔴 높음   | 4       | 4 ✅      |
+| 🟠 중간   | 5       | 5 ✅      |
+| 🟡 낮음   | 7       | 7 ✅      |
 | ⚪ 인프라 | 2       | 2 ✅      |
-| **합계**  | **15**  | **15** ✅ |
+| **합계**  | **18**  | **18** ✅ |
 
 ---
 

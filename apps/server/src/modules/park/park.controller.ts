@@ -1,11 +1,12 @@
 import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiProperty } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ParkService } from './park.service';
 import { IsString, MinLength, MaxLength } from 'class-validator';
 
 class RenameParkDto {
+  @ApiProperty({ description: '파크 이름', example: '공룡 왕국', minLength: 2, maxLength: 20 })
   @IsString()
   @MinLength(2)
   @MaxLength(20)

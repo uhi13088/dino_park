@@ -6,20 +6,34 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 describe('EconomyService', () => {
   let service: EconomyService;
 
+  const mockCurrencyModel = {
+    findUnique: jest.fn(),
+    update: jest.fn(),
+  };
+
+  const mockUserModel = {
+    findUnique: jest.fn(),
+    update: jest.fn(),
+  };
+
+  const mockTransactionModel = {
+    create: jest.fn(),
+    findMany: jest.fn(),
+    count: jest.fn(),
+  };
+
   const mockPrismaService = {
-    currency: {
-      findUnique: jest.fn(),
-      update: jest.fn(),
-    },
-    user: {
-      findUnique: jest.fn(),
-      update: jest.fn(),
-    },
-    transaction: {
-      create: jest.fn(),
-      findMany: jest.fn(),
-      count: jest.fn(),
-    },
+    currency: mockCurrencyModel,
+    user: mockUserModel,
+    transaction: mockTransactionModel,
+    $transaction: jest.fn((callback: (tx: unknown) => Promise<unknown>) => {
+      // Mock transaction client that uses the same mock models
+      const txClient = {
+        currency: mockCurrencyModel,
+        transaction: mockTransactionModel,
+      };
+      return callback(txClient);
+    }),
   };
 
   const mockCurrency = {

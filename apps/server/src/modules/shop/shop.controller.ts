@@ -1,26 +1,44 @@
 import { Controller, Get, Post, Body, Query, Param, UseGuards, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiBody, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiParam,
+  ApiBody,
+  ApiQuery,
+  ApiProperty,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ShopService } from './shop.service';
 
 // DTO 정의
 class PurchaseGoldShopDto {
+  @ApiProperty({ description: '구매할 아이템 ID', example: 'gold_energy_refill' })
   itemId!: string;
 }
 
 class PurchaseDailyShopDto {
+  @ApiProperty({ description: '일일 상점 슬롯 인덱스', example: 0, minimum: 0, maximum: 5 })
   slotIndex!: number;
 }
 
 class PurchaseIAPDto {
+  @ApiProperty({ description: '상품 ID', example: 'diamond_pack_small' })
   productId!: string;
+
+  @ApiProperty({ description: '트랜잭션 ID', example: 'txn_12345' })
   transactionId!: string;
+
+  @ApiProperty({ description: '결제 플랫폼', example: 'toss', enum: ['toss', 'ios', 'android'] })
   platform!: 'toss' | 'ios' | 'android';
+
+  @ApiProperty({ description: '결제 페이로드 (영수증)', example: 'receipt_data_here' })
   payload!: string;
 }
 
 class ClaimAdRewardDto {
+  @ApiProperty({ description: '광고 위치', example: 'main_lobby' })
   placement!: string;
 }
 
