@@ -29,10 +29,10 @@ export function screenToGrid(screenX: number, screenY: number): { x: number; y: 
   const adjustedX = screenX - ISO_CONFIG.ORIGIN_X;
   const adjustedY = screenY - ISO_CONFIG.ORIGIN_Y;
 
-  const gridX = Math.floor(
+  const gridX = Math.round(
     (adjustedX / (ISO_CONFIG.TILE_WIDTH / 2) + adjustedY / (ISO_CONFIG.TILE_HEIGHT / 2)) / 2,
   );
-  const gridY = Math.floor(
+  const gridY = Math.round(
     (adjustedY / (ISO_CONFIG.TILE_HEIGHT / 2) - adjustedX / (ISO_CONFIG.TILE_WIDTH / 2)) / 2,
   );
 
@@ -47,6 +47,8 @@ export class IsometricGrid extends PIXI.Container {
   private gridHeight: number;
   private tiles: PIXI.Container;
   private entities: PIXI.Container;
+  private gridLines = new PIXI.Graphics();
+  private highlight = new PIXI.Graphics();
 
   constructor(width: number, height: number) {
     super();
@@ -58,8 +60,8 @@ export class IsometricGrid extends PIXI.Container {
     this.tiles = new PIXI.Container(); // 바닥 타일
     this.entities = new PIXI.Container(); // 공룡, 건물 등
 
-    this.addChild(this.tiles);
-    this.addChild(this.entities);
+    this.addChild(this.tiles, this.gridLines, this.entities, this.highlight);
+    this.gridLines.visible = false;
 
     // 기본 그리드 생성
     this.createBaseTiles();
@@ -105,9 +107,72 @@ export class IsometricGrid extends PIXI.Container {
       y, // 좌측
     ]);
     tile.fill(color);
-    tile.stroke({ width: 1, color: 0x689f38, alpha: 0.5 });
+    this.gridLines.poly([x, y - hh, x + hw, y, x, y + hh, x - hw, y]);
+    this.gridLines.stroke({ width: 1, color: 0x466f2a, alpha: 0.5 });
 
     return tile;
+  }
+
+  setShowGrid(show: boolean): void {
+    this.gridLines.visible = show;
+  }
+
+  attachScenery(scenery: {
+    ground: PIXI.Container;
+    backFence: PIXI.Container;
+    frontFence: PIXI.Container;
+    visitors: PIXI.Container;
+  }): void {
+    this.addChildAt(scenery.ground, 1);
+    this.addChildAt(scenery.backFence, 3);
+    this.addChildAt(scenery.frontFence, this.children.length - 1);
+    this.entities.addChild(scenery.visitors);
+  }
+
+  setGridSize(width: number, height: number): void {
+    if (this.gridWidth === width && this.gridHeight === height) return;
+    this.gridWidth = width;
+    this.gridHeight = height;
+    for (const child of this.tiles.removeChildren()) child.destroy();
+    this.gridLines.clear();
+    this.createBaseTiles();
+  }
+
+  highlightArea(
+    position: { x: number; y: number },
+    width: number,
+    height: number,
+    valid: boolean,
+  ): void {
+    this.highlight.clear();
+    for (let dx = 0; dx < width; dx++) {
+      for (let dy = 0; dy < height; dy++) {
+        const { x, y } = gridToScreen(position.x + dx, position.y + dy);
+        this.highlight
+          .poly([x, y - 16, x + 32, y, x, y + 16, x - 32, y])
+          .fill({ color: valid ? 0xffeb9a : 0xef7676, alpha: 0.55 })
+          .stroke({ color: valid ? 0xffffff : 0x9c2626, width: 2 });
+      }
+    }
+  }
+
+  highlightTile(position: { x: number; y: number } | null): void {
+    this.highlight.clear();
+    if (!position) return;
+    const point = gridToScreen(position.x, position.y);
+    const hw = ISO_CONFIG.TILE_WIDTH / 2;
+    const hh = ISO_CONFIG.TILE_HEIGHT / 2;
+    this.highlight.poly([
+      point.x,
+      point.y - hh,
+      point.x + hw,
+      point.y,
+      point.x,
+      point.y + hh,
+      point.x - hw,
+      point.y,
+    ]);
+    this.highlight.fill({ color: 0xffeb9a, alpha: 0.65 }).stroke({ color: 0xffffff, width: 3 });
   }
 
   /**
@@ -126,7 +191,7 @@ export class IsometricGrid extends PIXI.Container {
    * 엔티티 Z-정렬 (public으로 변경하여 GameEngine에서 호출 가능)
    */
   sortEntities(): void {
-    this.entities.children.sort((a, b) => a.y - b.y);
+    this.entities.children.sort((a, b) => a.zIndex - b.zIndex || a.y - b.y);
   }
 
   /**

@@ -8,6 +8,7 @@ import { Park } from './park.types';
 import { Currency, TransactionType } from './economy.types';
 import { BuildingStatus } from './building.types';
 import { ExplorationStatus } from './exploration.types';
+import type { DinosaurCompetitiveStats } from './dinosaur.types';
 
 // ========================================
 // 공통 타입
@@ -129,6 +130,10 @@ export interface UpdateParkNameRequest {
   name: string;
 }
 
+export interface StarterParkResponse {
+  granted: boolean;
+}
+
 // ========================================
 // 공룡 API
 // ========================================
@@ -145,6 +150,24 @@ export interface DinosaurResponse {
   positionX: number;
   positionY: number;
   isInPark: boolean;
+  competitiveStats?: DinosaurCompetitiveStats | null;
+}
+
+export interface HybridExhibitSelection {
+  currentId: string;
+  candidateId: string;
+}
+
+export interface HybridExhibitRate {
+  demandPerMinute: number;
+  visitorsPerMinute: number;
+  capacityPerMinute: number;
+}
+
+export interface HybridExhibitPreview {
+  current: HybridExhibitRate;
+  proposed: HybridExhibitRate | null;
+  unavailableReason: string | null;
 }
 
 export interface DinosaurListResponse {
@@ -165,7 +188,17 @@ export interface UpdateDinosaurRequest {
   positionY?: number;
 }
 
-export interface FeedDinosaurResponse extends DinosaurResponse {}
+export interface PlaceDinosaurRequest {
+  positionX: number;
+  positionY: number;
+}
+
+export interface FeedDinosaurResponse extends DinosaurResponse {
+  goldSpent: number;
+  happinessGain: number;
+  hungerReduce: number;
+  intimacyGain: number;
+}
 
 export interface InteractDinosaurResponse {
   dinosaur: DinosaurResponse;
@@ -185,6 +218,7 @@ export interface BuildingResponse {
   positionY: number;
   status: BuildingStatus;
   assignedGreatFigureId: string | null;
+  completesAt?: string | null;
 }
 
 export interface BuildingListResponse {
@@ -344,6 +378,9 @@ export interface GreatFigurePointsResponse {
 // ========================================
 
 export interface HatchingItemResponse {
+  readyToStart?: boolean;
+  sourceExplorationId?: string | null;
+  claimedDinosaurId?: string | null;
   id: string;
   eggType: string;
   speciesId: string | null;
@@ -415,4 +452,32 @@ export interface AdvanceSceneResponse {
     quantity: number;
   }>;
   isChapterComplete: boolean;
+}
+
+/** Server-owned paid admission state; visitors drawn on the map are illustrative. */
+export interface ParkOperationsResponse {
+  isOpen: boolean;
+  canOpen: boolean;
+  openingRequirements: string[];
+  ticketPrice: number;
+  visitorsPerMinute: number;
+  demandPerMinute: number;
+  capacity: number;
+  totalVisitors: number;
+  totalAdmissionGold: number;
+  hourlyMaintenance: number;
+  gold: number;
+  parkLevel: number;
+  firstVisitorsGoal: { current: number; target: number; rewarded: boolean };
+  pathTiles: Array<{ x: number; y: number }>;
+  entrance: {
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    onBoundary: boolean;
+  } | null;
+  suggestedEntrance: { x: number; y: number } | null;
+  viewingPlatform: { id: string; level: number; status: string; completesAt: string | null } | null;
 }

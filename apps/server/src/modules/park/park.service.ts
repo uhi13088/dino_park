@@ -1,19 +1,15 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { STARTER_PARK } from '@dino-park/game-data';
+import { ParkOperationsService } from './park-operations.service';
+import type { StarterParkResponse } from '@dino-park/shared';
 import {
   MAX_PARK_LEVEL,
+  getParkLevelExperience,
   INITIAL_GRID_SIZE,
   GRID_SIZE_PER_LEVEL,
   MAX_GRID_SIZE,
 } from '@dino-park/shared';
-
-/**
- * 파크 레벨별 필요 경험치 계산
- * 공식: 200 * level^1.8 (문서 기준)
- */
-function getExpForParkLevel(level: number): number {
-  return Math.floor(200 * Math.pow(level, 1.8));
-}
 
 /**
  * 파크 레벨에 따른 그리드 크기 계산
@@ -25,7 +21,46 @@ function getGridSizeForLevel(level: number): number {
 
 @Injectable()
 export class ParkService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly operations: ParkOperationsService,
+  ) {}
+
+  async claimStarter(userId: string): Promise<StarterParkResponse> {
+    return this.prisma.$transaction(async (tx) => {
+      const park = await tx.park.findUnique({
+        where: { userId },
+        include: { _count: { select: { dinosaurs: true, buildings: true } } },
+      });
+      if (!park) throw new NotFoundException('파크를 찾을 수 없습니다.');
+
+      // Unique receipt serializes concurrent claims; a failed grant rolls it back too.
+      const receipt = await tx.storyFlag.createMany({
+        data: { userId, flagId: STARTER_PARK.receiptFlag, value: true },
+        skipDuplicates: true,
+      });
+      if (!receipt.count || park._count.dinosaurs || park._count.buildings) {
+        return { granted: false };
+      }
+
+      const dinosaur = await tx.dinosaur.create({
+        data: { parkId: park.id, ...STARTER_PARK.dinosaur },
+      });
+      await tx.dinosaurCollection.upsert({
+        where: { parkId_speciesId: { parkId: park.id, speciesId: dinosaur.speciesId } },
+        create: {
+          parkId: park.id,
+          speciesId: dinosaur.speciesId,
+          firstCollectedAt: dinosaur.createdAt,
+        },
+        update: {},
+      });
+      await tx.building.createMany({
+        data: STARTER_PARK.buildings.map((building) => ({ parkId: park.id, ...building })),
+      });
+      return { granted: true };
+    });
+  }
 
   /**
    * 유저 ID로 파크 조회
@@ -49,7 +84,7 @@ export class ParkService {
 
     return {
       ...park,
-      expForNextLevel: getExpForParkLevel(park.level),
+      expForNextLevel: getParkLevelExperience(park.level),
       maxGridSize: getGridSizeForLevel(park.level),
     };
   }
@@ -76,7 +111,7 @@ export class ParkService {
       name: park.name,
       level: park.level,
       exp: park.exp,
-      expForNextLevel: getExpForParkLevel(park.level),
+      expForNextLevel: getParkLevelExperience(park.level),
       gridSizeX: park.gridSizeX,
       gridSizeY: park.gridSizeY,
       dinosaurCount: park._count.dinosaurs,
@@ -137,7 +172,7 @@ export class ParkService {
 
     // 레벨업 체크
     while (currentLevel < MAX_PARK_LEVEL) {
-      const expNeeded = getExpForParkLevel(currentLevel);
+      const expNeeded = getParkLevelExperience(currentLevel);
       if (currentExp >= expNeeded) {
         currentExp -= expNeeded;
         currentLevel++;
@@ -190,63 +225,17 @@ export class ParkService {
    * 파크 수익 계산 (현재 배치된 공룡 + 건물 기준)
    */
   async calculateRevenue(userId: string) {
-    const park = await this.prisma.park.findUnique({
-      where: { userId },
-      include: {
-        dinosaurs: {
-          where: { isInPark: true },
-          select: {
-            id: true,
-            speciesId: true,
-            level: true,
-            happiness: true,
-          },
-        },
-        buildings: {
-          where: { status: 'ACTIVE' },
-          select: {
-            id: true,
-            typeId: true,
-            level: true,
-          },
-        },
-      },
-    });
-
-    if (!park) {
-      throw new NotFoundException('파크를 찾을 수 없습니다.');
-    }
-
-    // TODO: Phase 2.3에서 공룡별 수익 계산 연동
-    // TODO: Phase 2.4에서 건물별 보너스 계산 연동
-    // 현재는 기본 공식만 적용
-
-    let totalRevenue = 0;
-    let totalMaintenanceCost = 0;
-
-    // 공룡 수익 (간단 계산 - 나중에 game-data 연동)
-    for (const dino of park.dinosaurs) {
-      const baseRevenue = 100; // 기본값, game-data에서 가져와야 함
-      const happinessMultiplier = dino.happiness / 100;
-      const levelMultiplier = 1 + (dino.level - 1) * 0.1;
-
-      totalRevenue += Math.floor(baseRevenue * happinessMultiplier * levelMultiplier);
-      totalMaintenanceCost += Math.floor(baseRevenue * 0.1); // 유지비 10%
-    }
-
-    // 건물 보너스 (간단 계산)
-    const buildingBonus = park.buildings.length * 0.05; // 건물당 5% 보너스
-
-    totalRevenue = Math.floor(totalRevenue * (1 + buildingBonus));
-
+    const state = await this.operations.getOperations(userId, false);
+    const grossRevenue = state.visitorsPerMinute * 60 * state.ticketPrice;
     return {
-      grossRevenue: totalRevenue,
-      maintenanceCost: totalMaintenanceCost,
-      netRevenue: totalRevenue - totalMaintenanceCost,
-      revenuePerMinute: Math.floor((totalRevenue - totalMaintenanceCost) / 60),
-      dinosaurCount: park.dinosaurs.length,
-      buildingCount: park.buildings.length,
-      buildingBonus: Math.floor(buildingBonus * 100),
+      grossRevenue,
+      maintenanceCost: state.hourlyMaintenance,
+      netRevenue: grossRevenue - state.hourlyMaintenance,
+      revenuePerMinute: (grossRevenue - state.hourlyMaintenance) / 60,
+      buildingBonus: 0,
+      ticketPrice: state.ticketPrice,
+      totalVisitors: state.totalVisitors,
+      totalAdmissionGold: state.totalAdmissionGold,
     };
   }
 

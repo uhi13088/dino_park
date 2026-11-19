@@ -26,14 +26,14 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // ResizeObserver 모킹
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+globalThis.ResizeObserver = class {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+};
 
 // IntersectionObserver 모킹
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+globalThis.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
@@ -43,12 +43,12 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
 }));
 
 // requestAnimationFrame 모킹
-global.requestAnimationFrame = vi.fn((callback) => {
+globalThis.requestAnimationFrame = vi.fn((callback) => {
   setTimeout(callback, 0);
   return 0;
 });
 
-global.cancelAnimationFrame = vi.fn();
+globalThis.cancelAnimationFrame = vi.fn();
 
 // PixiJS 캔버스 관련 모킹
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

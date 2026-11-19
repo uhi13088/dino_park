@@ -5,6 +5,7 @@ import { cn } from '@/utils/cn';
 const navItems = [
   { path: '/', icon: '🏠', label: '홈' },
   { path: '/park', icon: '🦕', label: '파크' },
+  { path: '/dinosaur', icon: '📚', label: '도감' },
   { path: '/exploration', icon: '🧭', label: '탐험' },
   { path: '/story', icon: '📖', label: '스토리' },
   { path: '/shop', icon: '🛒', label: '상점' },
@@ -28,7 +29,7 @@ export default function BottomNav() {
             key={item.path}
             to={item.path}
             className={cn(
-              'relative flex flex-col items-center rounded-xl px-4 py-1 transition-all',
+              'relative flex min-h-11 min-w-0 flex-1 flex-col items-center rounded-xl px-1 py-1 transition-colors',
               isActive ? 'text-white' : 'text-white/60 hover:text-white/80 active:scale-95',
             )}
           >
@@ -42,7 +43,9 @@ export default function BottomNav() {
             )}
 
             {/* 아이콘 & 라벨 */}
-            <span className="relative z-10 text-2xl">{item.icon}</span>
+            <span className="relative z-10 text-2xl" aria-hidden="true">
+              {item.icon}
+            </span>
             <span className="relative z-10 mt-0.5 text-[10px] font-medium">{item.label}</span>
           </NavLink>
         );

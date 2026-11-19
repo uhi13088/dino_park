@@ -1,6 +1,7 @@
 /**
  * 테스트 유틸리티 함수들
  */
+import type { ModuleMetadata } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../src/prisma/prisma.service';
 
@@ -87,8 +88,8 @@ export const mockPrismaService = {
  * 테스트 모듈 생성 헬퍼
  */
 export async function createTestingModule(
-  providers: any[],
-  imports: any[] = [],
+  providers: NonNullable<ModuleMetadata['providers']>,
+  imports: NonNullable<ModuleMetadata['imports']> = [],
 ): Promise<TestingModule> {
   return Test.createTestingModule({
     imports,

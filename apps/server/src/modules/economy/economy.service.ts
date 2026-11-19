@@ -1,17 +1,20 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { TransactionType } from '@prisma/client';
+import { Prisma, TransactionType } from '@prisma/client';
 import {
   MAX_EXPLORATION_ENERGY,
   ENERGY_RECHARGE_MINUTES,
   MAX_OFFLINE_HOURS,
   OFFLINE_REVENUE_RATE,
 } from '@dino-park/shared';
-import { getDinosaurById } from '@dino-park/game-data';
+import { ParkOperationsService } from '../park/park-operations.service';
 
 @Injectable()
 export class EconomyService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly operations: ParkOperationsService,
+  ) {}
 
   /**
    * 재화 현황 조회
@@ -56,100 +59,18 @@ export class EconomyService {
    * 오프라인 수익 계산 및 수령
    */
   async collectOfflineRevenue(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        park: {
-          include: {
-            dinosaurs: {
-              where: { isInPark: true },
-            },
-            buildings: {
-              where: { status: 'ACTIVE' },
-            },
-          },
-        },
-      },
-    });
-
-    if (!user || !user.park) {
-      throw new NotFoundException('파크를 찾을 수 없습니다.');
-    }
-
-    const now = new Date();
-    const lastLogin = user.lastLoginAt;
-    const hoursPassed = Math.min(
-      MAX_OFFLINE_HOURS,
-      (now.getTime() - lastLogin.getTime()) / (1000 * 60 * 60),
-    );
-
-    // 최소 1분 이상 지나야 수익 발생
-    if (hoursPassed < 1 / 60) {
+    return this.prisma.$transaction(async (tx) => {
+      const settled = await this.operations.settleInTransaction(tx, userId);
       return {
-        offlineHours: 0,
+        offlineHours: Math.min(MAX_OFFLINE_HOURS, Math.max(0, settled.elapsedHours)),
         baseRevenue: 0,
         offlineRate: OFFLINE_REVENUE_RATE,
-        totalRevenue: 0,
-        collected: false,
-        message: '오프라인 수익이 아직 쌓이지 않았습니다.',
+        totalRevenue: Math.max(0, settled.gross - settled.maintenance),
+        collected: settled.gross > 0,
+        grossAdmissionGold: settled.gross,
+        maintenanceGold: settled.maintenance,
       };
-    }
-
-    // 시간당 수익 계산
-    let hourlyRevenue = 0;
-    let totalMaintenanceCost = 0;
-
-    for (const dino of user.park.dinosaurs) {
-      // game-data에서 baseRevenue 가져오기
-      const speciesData = getDinosaurById(dino.speciesId);
-      const baseRevenue = speciesData?.stats.baseRevenue || 100;
-      const maintenanceCost = speciesData?.stats.maintenanceCost || Math.floor(baseRevenue * 0.1);
-      const levelMultiplier = 1 + (dino.level - 1) * 0.1;
-      const happinessMultiplier = 0.5 + (dino.happiness / 100) * 0.5;
-
-      hourlyRevenue += Math.floor(baseRevenue * levelMultiplier * happinessMultiplier);
-      totalMaintenanceCost += maintenanceCost;
-    }
-
-    // 건물 보너스
-    const buildingBonus = user.park.buildings.length * 0.05;
-    hourlyRevenue = Math.floor(hourlyRevenue * (1 + buildingBonus));
-
-    // 순수익
-    const netHourlyRevenue = hourlyRevenue - totalMaintenanceCost;
-
-    // 오프라인 수익 (50% 적용)
-    const offlineRevenue = Math.floor(netHourlyRevenue * hoursPassed * OFFLINE_REVENUE_RATE);
-
-    if (offlineRevenue <= 0) {
-      return {
-        offlineHours: Math.floor(hoursPassed * 10) / 10,
-        baseRevenue: netHourlyRevenue,
-        offlineRate: OFFLINE_REVENUE_RATE,
-        totalRevenue: 0,
-        collected: false,
-        message: '수령할 수익이 없습니다.',
-      };
-    }
-
-    // 골드 지급
-    await this.addGold(userId, offlineRevenue, `오프라인 수익 (${Math.floor(hoursPassed)}시간)`);
-
-    // 마지막 로그인 시간 업데이트
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { lastLoginAt: now },
     });
-
-    return {
-      offlineHours: Math.floor(hoursPassed * 10) / 10,
-      baseRevenue: netHourlyRevenue,
-      offlineRate: OFFLINE_REVENUE_RATE,
-      totalRevenue: offlineRevenue,
-      collected: true,
-      dinosaurCount: user.park.dinosaurs.length,
-      buildingBonus: Math.floor(buildingBonus * 100),
-    };
   }
 
   /**
@@ -399,7 +320,7 @@ export class EconomyService {
   ) {
     const { currencyType, limit = 20, offset = 0 } = options;
 
-    const where: any = { userId };
+    const where: Prisma.TransactionWhereInput = { userId };
     if (currencyType) {
       where.currencyType = currencyType;
     }

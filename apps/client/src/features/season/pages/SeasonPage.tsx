@@ -209,15 +209,13 @@ export default function SeasonPage() {
   };
 
   // 챕터 선택
-  const handleSelectChapter = (chapterId: string) => {
+  const handleSelectChapter = (_chapterId: string) => {
     // TODO: 스토리 플레이어로 이동
-    console.log('Select chapter:', chapterId);
   };
 
   // 이벤트 참여
-  const handleParticipateEvent = (eventId: string) => {
+  const handleParticipateEvent = (_eventId: string) => {
     // TODO: 이벤트 상세 페이지로 이동
-    console.log('Participate event:', eventId);
   };
 
   if (isLoading) {

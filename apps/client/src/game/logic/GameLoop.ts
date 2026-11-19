@@ -14,7 +14,7 @@ import {
   MINUTE,
 } from '@dino-park/shared';
 import type { DinosaurResponse, BuildingResponse, CurrencyResponse } from '@dino-park/shared';
-import { revenueCalculator, type ParkRevenueResult } from './RevenueCalculator';
+import type { ParkRevenueResult } from './RevenueCalculator';
 
 /**
  * 게임 상태
@@ -123,8 +123,6 @@ export class GameLoop {
     this.intervalId = setInterval(() => {
       this.tick();
     }, GAME_TICK_INTERVAL);
-
-    console.log('🎮 GameLoop started');
   }
 
   /**
@@ -136,7 +134,6 @@ export class GameLoop {
       this.intervalId = null;
     }
     this.isRunning = false;
-    console.log('🎮 GameLoop stopped');
   }
 
   /**
@@ -151,16 +148,16 @@ export class GameLoop {
     // 공룡 상태 업데이트 (1시간마다 상태 변화, 여기선 비율로 계산)
     const dinosaurUpdates = this.updateDinosaurStates(deltaTime);
 
-    // 수익 계산
-    const revenueResult = revenueCalculator.calculateParkRevenue(
-      this.state.dinosaurs,
-      this.state.buildings,
-      this.state.greatFigureBonus,
-    );
-
-    // 골드 누적 (1초당 수익)
-    const goldEarned = revenueResult.netRevenue;
-    this.state.accumulatedGold += goldEarned;
+    // Currency is settled by /parks/me/operations. Local ticks never mint gold.
+    const revenueResult: ParkRevenueResult = {
+      dinosaurRevenues: [],
+      totalDinosaurRevenue: 0,
+      buildingBonus: 0,
+      greatFigureBonus: 0,
+      totalRevenue: 0,
+      maintenanceCost: 0,
+      netRevenue: 0,
+    };
 
     // 에너지 충전 체크
     const energyUpdate = this.updateEnergy(now);
@@ -169,7 +166,6 @@ export class GameLoop {
     this.state.lastTickTime = now;
     this.state.currency = {
       ...this.state.currency,
-      gold: this.state.currency.gold + goldEarned,
       ...energyUpdate,
     };
 
@@ -298,20 +294,8 @@ export class GameLoop {
     const offlineMs = now - lastLoginAt.getTime();
     const offlineHours = Math.min(8, offlineMs / HOUR); // 최대 8시간
 
-    // 수익 계산
-    const revenueResult = revenueCalculator.calculateParkRevenue(
-      this.state.dinosaurs,
-      this.state.buildings,
-      this.state.greatFigureBonus,
-    );
-
-    const hourlyRevenue = revenueCalculator.calculateHourlyRevenue(revenueResult.netRevenue);
-    const offlineGold = revenueCalculator.calculateOfflineRevenue(
-      hourlyRevenue,
-      offlineHours,
-      8,
-      0.5,
-    );
+    // Offline earnings use the same server settlement as online admission.
+    const offlineGold = 0;
 
     // 공룡 상태 업데이트
     const dinosaurUpdates = this.state.dinosaurs

@@ -13,6 +13,7 @@ import { ShopModule } from './modules/shop/shop.module';
 import { SeasonModule } from './modules/season/season.module';
 import { EconomyModule } from './modules/economy/economy.module';
 import { SocialModule } from './modules/social/social.module';
+import { MilestoneSynthesisModule } from './modules/milestone-synthesis/milestone-synthesis.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { SocialModule } from './modules/social/social.module';
     BuildingModule,
     GreatFigureModule,
     ExplorationModule,
+    MilestoneSynthesisModule,
     StoryModule,
     ShopModule,
     SeasonModule,

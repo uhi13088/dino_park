@@ -1,112 +1,453 @@
+import { useCallback, useEffect, useRef } from 'react';
+import { getBuildingById } from '@dino-park/game-data';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  FIRST_HYBRID_LAB_ID,
+  FIRST_HYBRID_SPECIES_ID,
+  PARK_ADMISSION,
+  type DinosaurResponse,
+} from '@dino-park/shared';
 import { useGameEngine } from '@/hooks';
-import { useGameStore, useUIStore } from '@/stores';
-import { cn } from '@/utils/cn';
+import { useAuthStore, useGameStore, useUIStore } from '@/stores';
+import {
+  useClaimStarterPark,
+  useSetParkOpen,
+  useCompleteBuilding,
+  useFirstExpedition,
+  useClaimHatchingEgg,
+} from '@/api';
+import { useFirstSynthesis } from '@/api/queries/hybridMilestone';
+import { Button } from '@/components/ui';
+import ParkPanel from '../components/ParkPanel';
+import ParkOperationsPanel from '../components/ParkOperationsPanel';
+import ResourcePanel from '../components/ResourcePanel';
+import ParkGrowthPanel from '../components/ParkGrowthPanel';
 
-/**
- * 파크 페이지 - 메인 게임 화면 (PixiJS 캔버스)
- */
 export default function ParkPage() {
-  const { containerRef, isReady, error } = useGameEngine();
-  const { mode, cancelPlacement, showGrid, toggleGrid } = useGameStore();
-  const { openSidePanel } = useUIStore();
+  const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+  const compareHybrid = params.get('compareHybrid');
+  const returnToGrowth = params.get('panel') === 'growth';
+  const growthTrigger = useRef<HTMLButtonElement>(null);
+  const firstExpedition = useFirstExpedition();
+  const firstSynthesis = useFirstSynthesis(firstExpedition.data?.stage === 'complete');
+  const claimHatch = useClaimHatchingEgg();
+  const {
+    containerRef,
+    isReady,
+    error,
+    engine,
+    handleMapKeyDown,
+    isPlacing,
+    isSavingPlacement,
+    isPlacementReady,
+    targetTile,
+    confirmPlacement,
+    canConfirmPlacement,
+    placementIssue,
+    dinosaursQuery,
+    buildingsQuery,
+    operationsQuery,
+  } = useGameEngine();
+  const { cancelPlacement, startPlacement, placementData, showGrid, toggleGrid } = useGameStore();
+  const { sidePanel, openSidePanel, closeSidePanel, openModal, closeModal, showToast } =
+    useUIStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { mutate: claimStarter, isPending, error: starterError } = useClaimStarterPark();
+  const setParkOpen = useSetParkOpen();
+  const completeBuilding = useCompleteBuilding();
+  const openGrowth = useCallback(() => {
+    cancelPlacement();
+    closeModal();
+    openSidePanel('growth');
+  }, [cancelPlacement, closeModal, openSidePanel]);
+  useEffect(() => {
+    if (isAuthenticated) claimStarter();
+  }, [isAuthenticated, claimStarter]);
 
-  if (error) {
+  useEffect(() => {
+    if (isPlacing) closeSidePanel();
+  }, [isPlacing, closeSidePanel]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !returnToGrowth || compareHybrid) return;
+    openGrowth();
+    setParams(
+      (previous) => {
+        const next = new URLSearchParams(previous);
+        next.delete('panel');
+        return next;
+      },
+      { replace: true },
+    );
+  }, [isAuthenticated, returnToGrowth, compareHybrid, openGrowth, setParams]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !compareHybrid || !dinosaursQuery.data) return;
+    const dinosaur = dinosaursQuery.data.dinosaurs.find(
+      ({ id, speciesId }) => id === compareHybrid && speciesId === FIRST_HYBRID_SPECIES_ID,
+    );
+    if (dinosaur) {
+      cancelPlacement();
+      closeSidePanel();
+      openModal('dinosaur_detail', { dinosaurId: dinosaur.id });
+    } else {
+      if (dinosaursQuery.isFetching) return;
+      if (!dinosaursQuery.isFetchedAfterMount) {
+        void dinosaursQuery.refetch();
+        return;
+      }
+    }
+    setParams(
+      (previous) => {
+        const next = new URLSearchParams(previous);
+        next.delete('compareHybrid');
+        return next;
+      },
+      { replace: true },
+    );
+  }, [
+    isAuthenticated,
+    compareHybrid,
+    dinosaursQuery.data,
+    dinosaursQuery.isFetching,
+    dinosaursQuery.isFetchedAfterMount,
+    dinosaursQuery.refetch,
+    cancelPlacement,
+    closeSidePanel,
+    openModal,
+    setParams,
+  ]);
+
+  if (!isAuthenticated) return <Navigate to="/" replace />;
+  if (error)
     return (
-      <div className="flex h-full items-center justify-center bg-red-50">
-        <div className="text-center text-red-600">
-          <p className="mb-2 text-xl font-bold">게임 로딩 실패</p>
-          <p className="text-sm">{error.message}</p>
-        </div>
+      <div
+        role="alert"
+        className="flex h-full items-center justify-center bg-red-50 p-6 text-center text-red-800"
+      >
+        파크를 열지 못했어요. {error.message}
       </div>
     );
-  }
+  const dinosaurs = dinosaursQuery.data?.dinosaurs ?? [];
+  const buildings = buildingsQuery.data?.buildings ?? [];
+  const operations = operationsQuery.data;
+  const dataError =
+    starterError ||
+    dinosaursQuery.error ||
+    buildingsQuery.error ||
+    operationsQuery.error ||
+    firstExpedition.error;
+  const openPanel = (type: 'dinosaur_list' | 'building_list') => {
+    cancelPlacement();
+    closeModal();
+    openSidePanel(type);
+  };
+  const preparePlacement = () => {
+    closeModal();
+    closeSidePanel();
+  };
+  const placeDinosaur = (dinosaur: DinosaurResponse) => {
+    preparePlacement();
+    startPlacement({ type: 'dinosaur', id: dinosaur.id, speciesId: dinosaur.speciesId });
+  };
+  const reportFailure = (cause: unknown) => {
+    showToast({
+      type: 'error',
+      message: cause instanceof Error ? cause.message : '저장하지 못했어요. 다시 시도해주세요.',
+    });
+  };
+  const openResources = () => {
+    cancelPlacement();
+    closeModal();
+    openSidePanel('resources');
+  };
+  const buildingPlacement = placementData?.type === 'building';
+  const placementBuilding = buildingPlacement
+    ? getBuildingById(placementData.typeId ?? '')
+    : undefined;
+  const placementCost =
+    placementBuilding?.baseCost ?? placementBuilding?.unlockCondition.cost.gold ?? 0;
+  const entrancePlacement = placementData?.type === 'entrance';
+  const firstHybridPlacement = placementData?.speciesId === FIRST_HYBRID_SPECIES_ID;
+  const canAffordPlacement = !buildingPlacement || (operations?.gold ?? 0) >= placementCost;
 
   return (
-    <div className="flex h-full flex-col">
-      {/* 게임 캔버스 영역 */}
-      <div ref={containerRef} className="relative flex-1 overflow-hidden">
-        {/* 로딩 표시 */}
-        {!isReady && (
-          <div className="absolute inset-0 flex items-center justify-center bg-sky-400">
-            <div className="text-center text-white">
-              <div className="mb-4 animate-bounce text-4xl">🦕</div>
-              <p className="text-lg font-medium">파크 로딩 중...</p>
-            </div>
-          </div>
-        )}
-
-        {/* 배치 모드 안내 */}
-        {(mode === 'place_dinosaur' || mode === 'place_building') && (
-          <div className="absolute left-1/2 top-4 z-10 -translate-x-1/2">
-            <div className="flex items-center gap-2 rounded-full bg-black/70 px-4 py-2 text-sm text-white">
-              <span>
-                {mode === 'place_dinosaur' ? '🦕 공룡 배치' : '🏗️ 건물 배치'}: 원하는 위치를
-                탭하세요
-              </span>
-              <button
+    <div className="relative flex h-full flex-col">
+      {isPlacing ? (
+        <section
+          id="placement-help"
+          className="shrink-0 border-b border-green-200 bg-white px-3 py-3 text-slate-800"
+          aria-label="배치 안내"
+        >
+          <div className="mx-auto max-w-3xl">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h1 className="text-sm font-bold">
+                  {isSavingPlacement
+                    ? '배치를 저장하고 있어요…'
+                    : buildingPlacement
+                      ? `${placementBuilding?.nameKo ?? '시설'} 건설 위치를 골라주세요`
+                      : entrancePlacement
+                        ? '입구를 놓을 테두리를 골라주세요'
+                        : firstHybridPlacement
+                          ? '스테고케라톱스 전시 위치를 골라주세요'
+                          : '공룡이 지낼 칸을 골라주세요'}
+                </h1>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                  {buildingPlacement
+                    ? '빈칸에서 위치를 미리 보고 건설을 확정하세요. 취소하면 골드는 나가지 않아요.'
+                    : entrancePlacement
+                      ? '기존 시설과 겹치지 않는 파크 테두리로 무료로 옮겨요.'
+                      : firstHybridPlacement
+                        ? '개장한 파크의 관람길과 이어진 초식 하이브리드 서식지에 배치하세요.'
+                        : '초원의 빈칸을 눌러 미리 본 뒤 확정하세요. 취소하면 기존 위치를 유지해요.'}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                className="min-h-11 shrink-0 text-sm"
+                disabled={isSavingPlacement}
                 onClick={cancelPlacement}
-                className="rounded-full bg-red-500 px-2 py-0.5 text-xs hover:bg-red-600"
               >
                 취소
-              </button>
+              </Button>
+            </div>
+            <p className="mt-1 text-xs leading-relaxed text-slate-600">
+              선택 ({targetTile.x}, {targetTile.y}) · 방향키로 이동 · Enter로{' '}
+              {buildingPlacement ? '건설' : '배치'} · Esc로 취소
+            </p>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+              <p
+                className={
+                  canConfirmPlacement && canAffordPlacement
+                    ? 'text-xs text-green-800'
+                    : 'text-xs text-red-800'
+                }
+                role="status"
+              >
+                {!isPlacementReady
+                  ? '지도와 배치 위치를 준비하고 있어요…'
+                  : !canAffordPlacement
+                    ? '건설에 필요한 골드를 더 모아주세요.'
+                    : canConfirmPlacement
+                      ? '이 위치에 배치할 수 있어요.'
+                      : (placementIssue ?? '겹치지 않는 위치와 길·테두리 연결을 확인해주세요.')}
+              </p>
+              <Button
+                className="min-h-11 bg-green-800 text-sm hover:bg-green-900"
+                disabled={isSavingPlacement || !canConfirmPlacement || !canAffordPlacement}
+                isLoading={isSavingPlacement}
+                onClick={() => void confirmPlacement()}
+              >
+                {buildingPlacement
+                  ? `${placementBuilding?.nameKo ?? '시설'} 건설 · ${placementCost.toLocaleString()}골드`
+                  : entrancePlacement
+                    ? '입구 옮기기 · 무료'
+                    : '공룡 배치 확정'}
+              </Button>
             </div>
           </div>
-        )}
-
-        {/* 그리드 토글 버튼 */}
-        <button
-          onClick={toggleGrid}
-          className={cn(
-            'absolute right-4 top-4 z-10 rounded-full p-2 shadow-lg transition-all',
-            showGrid ? 'bg-primary-500 text-white' : 'bg-white/90 text-gray-700',
-          )}
-        >
-          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 10h16M4 14h16M4 18h16"
-            />
-          </svg>
-        </button>
-      </div>
-
-      {/* 하단 퀵 액션 바 */}
-      <div className="flex justify-around border-t border-gray-200 bg-white p-2">
-        <QuickActionButton icon="🦕" label="공룡" onClick={() => openSidePanel('dinosaur_list')} />
-        <QuickActionButton icon="🏗️" label="건물" onClick={() => openSidePanel('building_list')} />
-        <QuickActionButton
-          icon="👤"
-          label="위인"
-          onClick={() => openSidePanel('great_figure_list')}
+        </section>
+      ) : operations ? (
+        <ParkOperationsPanel
+          operations={operations}
+          dinosaurs={dinosaurs}
+          busy={
+            setParkOpen.isPending ||
+            completeBuilding.isPending ||
+            claimHatch.isPending ||
+            !!dataError
+          }
+          onOpenChange={(isOpen) => {
+            void setParkOpen.mutateAsync(isOpen).catch(reportFailure);
+          }}
+          onPlaceDinosaur={placeDinosaur}
+          onCareDinosaur={(dinosaur) => {
+            preparePlacement();
+            openModal('dinosaur_detail', { dinosaurId: dinosaur.id });
+          }}
+          onMoveEntrance={() => {
+            if (!operations.entrance) return;
+            preparePlacement();
+            startPlacement({ type: 'entrance', id: operations.entrance.id });
+          }}
+          onBuildPlatform={() => {
+            preparePlacement();
+            startPlacement({ type: 'building', typeId: PARK_ADMISSION.platformTypeId });
+          }}
+          onCompletePlatform={(id) => {
+            void completeBuilding.mutateAsync(id).catch(reportFailure);
+          }}
+          onShowBuildings={() => openPanel('building_list')}
+          firstExpedition={firstExpedition.data}
+          onExplore={() => {
+            preparePlacement();
+            navigate('/exploration');
+          }}
+          onClaimHatch={(id) => {
+            void claimHatch.mutateAsync(id).catch(reportFailure);
+          }}
+          onShowResources={openResources}
+          firstHybridExhibited={!!firstSynthesis.data?.job?.exhibitedAt}
+          onShowGrowth={openGrowth}
+          growthTrigger={growthTrigger}
+          onFirstHybrid={() => {
+            preparePlacement();
+            navigate(
+              firstSynthesis.data?.job?.exhibitedAt
+                ? '/exploration?tab=repeat'
+                : firstSynthesis.data?.job
+                  ? '/exploration?tab=synthesis'
+                  : '/exploration',
+            );
+          }}
         />
-        <QuickActionButton icon="📦" label="인벤" onClick={() => {}} />
-      </div>
-    </div>
-  );
-}
-
-interface QuickActionButtonProps {
-  icon: string;
-  label: string;
-  onClick?: () => void;
-  badge?: number;
-}
-
-function QuickActionButton({ icon, label, onClick, badge }: QuickActionButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      className="relative flex flex-col items-center rounded-lg px-4 py-1 transition-all hover:bg-gray-100 active:scale-95"
-    >
-      <span className="text-2xl">{icon}</span>
-      <span className="mt-1 text-xs text-gray-600">{label}</span>
-      {badge !== undefined && badge > 0 && (
-        <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
-          {badge > 9 ? '9+' : badge}
-        </span>
+      ) : (
+        <p role="status" className="shrink-0 bg-white p-3 text-sm text-green-900">
+          운영 정보를 확인하고 있어요…
+        </p>
       )}
-    </button>
+      {dataError && (
+        <div
+          role="alert"
+          className="flex shrink-0 items-center justify-between gap-3 bg-red-50 px-3 py-2 text-sm text-red-800"
+        >
+          <p>파크 정보를 갱신하지 못했어요. {dataError.message}</p>
+          <Button
+            variant="ghost"
+            className="min-h-11 shrink-0 text-sm"
+            onClick={() => {
+              claimStarter();
+              void dinosaursQuery.refetch();
+              void buildingsQuery.refetch();
+              void operationsQuery.refetch();
+              void firstExpedition.refetch();
+            }}
+          >
+            다시 시도
+          </Button>
+        </div>
+      )}
+      <div
+        ref={containerRef}
+        role="region"
+        aria-label="파크 지도"
+        tabIndex={0}
+        aria-describedby={isPlacing ? 'placement-help' : undefined}
+        aria-busy={isPlacing && (!isPlacementReady || isSavingPlacement)}
+        onKeyDown={(event) => {
+          if (event.target === event.currentTarget) handleMapKeyDown(event);
+        }}
+        data-testid="park-map"
+        className="relative min-h-0 flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-900"
+      >
+        {(!isReady || isPending) && (
+          <div
+            role="status"
+            className="absolute inset-0 z-30 flex items-center justify-center bg-sky-300 text-lg font-semibold text-sky-950"
+          >
+            파크를 준비하고 있어요…
+          </div>
+        )}
+        {!isPlacing && operations?.isOpen && (
+          <p className="pointer-events-none absolute bottom-2 left-3 z-10 rounded bg-white/90 px-2 py-1 text-[10px] text-green-950">
+            지도 속 방문객은 관람 연출이에요
+          </p>
+        )}
+        <div
+          className="absolute bottom-3 right-3 z-10 flex flex-col gap-1 rounded-xl bg-white p-1 text-green-950"
+          aria-label="지도 확대와 축소"
+        >
+          <Button
+            variant="ghost"
+            className="min-h-11 min-w-11 text-xs"
+            disabled={!isReady}
+            aria-label="지도 확대"
+            onClick={() => engine.setZoom(engine.getCameraState().zoom * 1.25)}
+          >
+            확대
+          </Button>
+          <Button
+            variant="ghost"
+            className="min-h-11 min-w-11 text-xs"
+            disabled={!isReady}
+            aria-label="지도 축소"
+            onClick={() => engine.setZoom(engine.getCameraState().zoom * 0.8)}
+          >
+            축소
+          </Button>
+        </div>
+        <ParkPanel dinosaurs={dinosaurs} buildings={buildings} onShowResources={openResources} />
+        {!isPlacing && sidePanel === 'resources' && (
+          <ResourcePanel
+            onClose={closeSidePanel}
+            onPlaceBuilding={(typeId) => {
+              preparePlacement();
+              startPlacement({ type: 'building', typeId });
+            }}
+          />
+        )}
+      </div>
+      <div className="grid grid-cols-5 gap-1 border-t border-green-100 bg-white p-2 text-xs text-slate-700">
+        <Button
+          variant="ghost"
+          className="min-h-11 min-w-0 px-1 text-xs sm:text-sm"
+          onClick={() => openPanel('dinosaur_list')}
+        >
+          공룡 {dinosaurs.length}
+        </Button>
+        <Button
+          variant="ghost"
+          className="min-h-11 min-w-0 px-1 text-xs sm:text-sm"
+          onClick={() => openPanel('building_list')}
+        >
+          시설 {buildings.length}
+        </Button>
+        <Button
+          variant="ghost"
+          className="min-h-11 min-w-0 px-1 text-xs sm:text-sm"
+          onClick={openResources}
+        >
+          자원 시설
+        </Button>
+        <Button
+          variant="ghost"
+          className="min-h-11 min-w-0 px-1 text-xs sm:text-sm"
+          aria-pressed={showGrid}
+          onClick={toggleGrid}
+        >
+          격자
+        </Button>
+        <Button
+          variant="ghost"
+          className="min-h-11 min-w-0 px-1 text-xs sm:text-sm"
+          onClick={() => {
+            engine.fitPark();
+          }}
+        >
+          전체 보기
+        </Button>
+      </div>
+      {!isPlacing && sidePanel === 'growth' && (
+        <ParkGrowthPanel
+          isParkOpen={!!operations?.isOpen}
+          onClose={() => {
+            closeSidePanel();
+            growthTrigger.current?.focus();
+          }}
+          onShowFacilities={() => openPanel('building_list')}
+          onShowResources={openResources}
+          onPrepareLab={() => {
+            if (buildings.some((building) => building.typeId === FIRST_HYBRID_LAB_ID)) {
+              openPanel('building_list');
+            } else {
+              preparePlacement();
+              startPlacement({ type: 'building', typeId: FIRST_HYBRID_LAB_ID });
+            }
+          }}
+        />
+      )}
+    </div>
   );
 }

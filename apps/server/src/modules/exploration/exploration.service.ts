@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Exploration, ExplorationStatus } from '@prisma/client';
+import type { ExplorationResponse } from '@dino-park/shared';
 import { ENERGY_PER_EXPLORATION, RARITY_DROP_RATES } from '@dino-park/shared';
+import { FIRST_EXPEDITION } from '@dino-park/game-data';
+import { FirstExpeditionService } from './first-expedition.service';
+import { ParkOperationsService } from '../park/park-operations.service';
 
 // 탐험 지역 정보 (나중에 game-data로 이동)
 const EXPLORATION_REGIONS = {
@@ -44,7 +48,11 @@ const EXPLORATION_REGIONS = {
 
 @Injectable()
 export class ExplorationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly first: FirstExpeditionService,
+    private readonly operations: ParkOperationsService,
+  ) {}
 
   /**
    * 탐험 지역 목록 조회
@@ -71,7 +79,7 @@ export class ExplorationService {
    */
   async getByUserId(userId: string) {
     const explorations = await this.prisma.exploration.findMany({
-      where: { userId },
+      where: { userId, missionId: null },
       orderBy: { startedAt: 'desc' },
       take: 50,
     });
@@ -87,6 +95,7 @@ export class ExplorationService {
       where: {
         userId,
         status: ExplorationStatus.IN_PROGRESS,
+        missionId: null,
       },
       orderBy: { startedAt: 'desc' },
     });
@@ -99,234 +108,167 @@ export class ExplorationService {
    */
   async start(userId: string, regionId: string) {
     const region = EXPLORATION_REGIONS[regionId as keyof typeof EXPLORATION_REGIONS];
-
-    if (!region) {
-      throw new BadRequestException('존재하지 않는 탐험 지역입니다.');
-    }
-
-    // 유저 레벨 확인
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { level: true },
-    });
-
-    if (!user || user.level < region.unlockLevel) {
-      throw new BadRequestException(`이 지역은 레벨 ${region.unlockLevel} 이상에서 해금됩니다.`);
-    }
-
-    // 에너지 확인
-    const currency = await this.prisma.currency.findUnique({
-      where: { userId },
-    });
-
-    if (!currency || currency.explorationEnergy < ENERGY_PER_EXPLORATION) {
-      throw new BadRequestException('탐험 에너지가 부족합니다.');
-    }
-
-    // 에너지 차감 및 탐험 생성
-    const [, exploration] = await this.prisma.$transaction([
-      this.prisma.currency.update({
+    if (!region) throw new BadRequestException('존재하지 않는 탐험 지역입니다.');
+    return this.prisma.$transaction(async (tx) => {
+      await this.operations.settleInTransaction(tx, userId, true);
+      const user = await tx.user.findUnique({ where: { id: userId }, select: { level: true } });
+      if (!user || user.level < region.unlockLevel)
+        throw new BadRequestException(`이 지역은 레벨 ${region.unlockLevel} 이상에서 해금됩니다.`);
+      if (await tx.exploration.count({ where: { userId, status: 'IN_PROGRESS' } }))
+        throw new BadRequestException('진행 중인 탐험을 먼저 완료해주세요.');
+      if (await tx.driveRun.findFirst({ where: { park: { userId }, activeSlot: { not: null } } }))
+        throw new BadRequestException('진행 중인 주행을 먼저 완료해주세요.');
+      const currency = await tx.currency.findUnique({ where: { userId } });
+      if (!currency || currency.explorationEnergy < ENERGY_PER_EXPLORATION)
+        throw new BadRequestException('탐험 에너지가 부족합니다.');
+      await tx.currency.update({
         where: { userId },
         data: { explorationEnergy: { decrement: ENERGY_PER_EXPLORATION } },
-      }),
-      this.prisma.exploration.create({
-        data: {
-          userId,
-          regionId,
-          status: ExplorationStatus.IN_PROGRESS,
-        },
-      }),
-    ]);
-
-    const completesAt = new Date(Date.now() + region.duration * 1000);
-
-    return {
-      ...exploration,
-      regionName: region.name,
-      duration: region.duration,
-      completesAt,
-      energyUsed: ENERGY_PER_EXPLORATION,
-    };
+      });
+      const exploration = await tx.exploration.create({
+        data: { userId, regionId, status: ExplorationStatus.IN_PROGRESS },
+      });
+      return {
+        ...exploration,
+        regionName: region.name,
+        duration: region.duration,
+        completesAt: new Date(Date.now() + region.duration * 1000),
+        energyUsed: ENERGY_PER_EXPLORATION,
+      };
+    });
   }
 
   /**
    * 탐험 완료 확인 및 보상 생성
    */
   async checkCompletion(explorationId: string, userId: string) {
-    const exploration = await this.prisma.exploration.findUnique({
-      where: { id: explorationId },
+    return this.prisma.$transaction(async (tx) => {
+      await this.operations.settleInTransaction(tx, userId, true);
+      const exploration = await tx.exploration.findUnique({ where: { id: explorationId } });
+      if (!exploration || exploration.userId !== userId)
+        throw new NotFoundException('탐험을 찾을 수 없습니다.');
+      if (exploration.missionId === FIRST_EXPEDITION.id)
+        throw new BadRequestException('첫 조사는 단서를 직접 확인해 완료해주세요.');
+      if (exploration.status === ExplorationStatus.CLAIMED)
+        throw new BadRequestException('이미 보상을 수령했습니다.');
+      if (exploration.status === ExplorationStatus.COMPLETED)
+        return this.enrichExplorationData(exploration);
+      const region = EXPLORATION_REGIONS[exploration.regionId as keyof typeof EXPLORATION_REGIONS];
+      if (!region) throw new BadRequestException('탐험 지역 정보를 찾을 수 없습니다.');
+      const now = new Date();
+      const elapsed = (now.getTime() - exploration.startedAt.getTime()) / 1000;
+      if (elapsed < region.duration)
+        return {
+          ...this.enrichExplorationData(exploration),
+          completed: false,
+          remainingSeconds: Math.ceil(region.duration - elapsed),
+        };
+      const rewards = this.generateRewards(region);
+      const updated = await tx.exploration.update({
+        where: { id: explorationId },
+        data: { status: ExplorationStatus.COMPLETED, completedAt: now, rewards },
+      });
+      return { ...this.enrichExplorationData(updated), completed: true, rewards };
     });
-
-    if (!exploration || exploration.userId !== userId) {
-      throw new NotFoundException('탐험을 찾을 수 없습니다.');
-    }
-
-    if (exploration.status === ExplorationStatus.CLAIMED) {
-      throw new BadRequestException('이미 보상을 수령했습니다.');
-    }
-
-    if (exploration.status === ExplorationStatus.COMPLETED) {
-      return this.enrichExplorationData(exploration);
-    }
-
-    const region = EXPLORATION_REGIONS[exploration.regionId as keyof typeof EXPLORATION_REGIONS];
-    if (!region) {
-      throw new BadRequestException('탐험 지역 정보를 찾을 수 없습니다.');
-    }
-
-    const now = new Date();
-    const startedAt = new Date(exploration.startedAt);
-    const elapsedSeconds = (now.getTime() - startedAt.getTime()) / 1000;
-
-    if (elapsedSeconds < region.duration) {
-      const remainingSeconds = Math.ceil(region.duration - elapsedSeconds);
-      return {
-        ...this.enrichExplorationData(exploration),
-        completed: false,
-        remainingSeconds,
-      };
-    }
-
-    // 탐험 완료 - 보상 생성
-    const rewards = this.generateRewards(region);
-
-    const updated = await this.prisma.exploration.update({
-      where: { id: explorationId },
-      data: {
-        status: ExplorationStatus.COMPLETED,
-        completedAt: now,
-        rewards,
-      },
-    });
-
-    return {
-      ...this.enrichExplorationData(updated),
-      completed: true,
-      rewards,
-    };
   }
 
   /**
    * 탐험 즉시 완료 (다이아 사용)
    */
   async instantComplete(explorationId: string, userId: string) {
-    const exploration = await this.prisma.exploration.findUnique({
-      where: { id: explorationId },
-    });
-
-    if (!exploration || exploration.userId !== userId) {
-      throw new NotFoundException('탐험을 찾을 수 없습니다.');
-    }
-
-    if (exploration.status !== ExplorationStatus.IN_PROGRESS) {
-      throw new BadRequestException('진행 중인 탐험이 아닙니다.');
-    }
-
-    // 다이아 비용 계산 (남은 시간에 비례)
-    const region = EXPLORATION_REGIONS[exploration.regionId as keyof typeof EXPLORATION_REGIONS];
-    const startedAt = new Date(exploration.startedAt);
-    const elapsedSeconds = (Date.now() - startedAt.getTime()) / 1000;
-    const remainingSeconds = Math.max(0, region.duration - elapsedSeconds);
-    const diamondCost = Math.max(1, Math.ceil(remainingSeconds / 60)); // 분당 1다이아
-
-    const currency = await this.prisma.currency.findUnique({
-      where: { userId },
-    });
-
-    if (!currency || currency.diamond < diamondCost) {
-      throw new BadRequestException('다이아가 부족합니다.');
-    }
-
-    const rewards = this.generateRewards(region);
-
-    const [, updated] = await this.prisma.$transaction([
-      this.prisma.currency.update({
-        where: { userId },
+    return this.prisma.$transaction(async (tx) => {
+      await this.operations.settleInTransaction(tx, userId, true);
+      const exploration = await tx.exploration.findUnique({ where: { id: explorationId } });
+      if (!exploration || exploration.userId !== userId)
+        throw new NotFoundException('탐험을 찾을 수 없습니다.');
+      if (exploration.missionId === FIRST_EXPEDITION.id)
+        throw new BadRequestException('첫 조사는 단서를 직접 확인해 완료해주세요.');
+      if (exploration.status !== ExplorationStatus.IN_PROGRESS)
+        throw new BadRequestException('진행 중인 탐험이 아닙니다.');
+      const region = EXPLORATION_REGIONS[exploration.regionId as keyof typeof EXPLORATION_REGIONS];
+      if (!region) throw new BadRequestException('탐험 지역 정보를 찾을 수 없습니다.');
+      const remaining = Math.max(
+        0,
+        region.duration - (Date.now() - exploration.startedAt.getTime()) / 1000,
+      );
+      const diamondCost = Math.max(1, Math.ceil(remaining / 60));
+      const debit = await tx.currency.updateMany({
+        where: { userId, diamond: { gte: diamondCost } },
         data: { diamond: { decrement: diamondCost } },
-      }),
-      this.prisma.exploration.update({
+      });
+      if (!debit.count) throw new BadRequestException('다이아가 부족합니다.');
+      const rewards = this.generateRewards(region);
+      const updated = await tx.exploration.update({
         where: { id: explorationId },
-        data: {
-          status: ExplorationStatus.COMPLETED,
-          completedAt: new Date(),
-          rewards,
-        },
-      }),
-    ]);
-
-    return {
-      ...this.enrichExplorationData(updated),
-      diamondSpent: diamondCost,
-      rewards,
-    };
+        data: { status: ExplorationStatus.COMPLETED, completedAt: new Date(), rewards },
+      });
+      return { ...this.enrichExplorationData(updated), diamondSpent: diamondCost, rewards };
+    });
   }
 
   /**
    * 보상 수령
    */
   async claim(explorationId: string, userId: string) {
-    const exploration = await this.prisma.exploration.findUnique({
-      where: { id: explorationId },
-    });
-
-    if (!exploration || exploration.userId !== userId) {
+    const original = await this.prisma.exploration.findUnique({ where: { id: explorationId } });
+    if (!original || original.userId !== userId)
       throw new NotFoundException('탐험을 찾을 수 없습니다.');
-    }
-
-    if (exploration.status !== ExplorationStatus.COMPLETED) {
-      throw new BadRequestException('아직 탐험이 완료되지 않았습니다.');
-    }
-
-    const rewards = exploration.rewards as any;
-
-    // 보상 지급
-    const updates: any[] = [];
-
-    if (rewards.gold) {
-      updates.push(
-        this.prisma.currency.update({
+    if (original.missionId === FIRST_EXPEDITION.id) return this.first.claim(userId, explorationId);
+    return this.prisma.$transaction(async (tx) => {
+      await this.operations.settleInTransaction(tx, userId, true);
+      const exploration = await tx.exploration.findUnique({ where: { id: explorationId } });
+      if (!exploration || exploration.userId !== userId)
+        throw new NotFoundException('탐험을 찾을 수 없습니다.');
+      const rewards = (exploration.rewards ?? {}) as NonNullable<ExplorationResponse['rewards']>;
+      if (exploration.status === ExplorationStatus.CLAIMED)
+        return { claimed: false, exploration: this.enrichExplorationData(exploration), rewards };
+      if (exploration.status !== ExplorationStatus.COMPLETED)
+        throw new BadRequestException('아직 탐험이 완료되지 않았습니다.');
+      if (rewards.gold || rewards.dna) {
+        const currency = await tx.currency.update({
           where: { userId },
-          data: { gold: { increment: rewards.gold } },
-        }),
-      );
-    }
-
-    if (rewards.dna) {
-      updates.push(
-        this.prisma.currency.update({
-          where: { userId },
-          data: { dna: { increment: rewards.dna } },
-        }),
-      );
-    }
-
-    // 알 보상은 부화 큐에 추가
-    if (rewards.egg) {
-      updates.push(
-        this.prisma.hatchingQueue.create({
+          data: {
+            ...(rewards.gold ? { gold: { increment: rewards.gold } } : {}),
+            ...(rewards.dna ? { dna: { increment: rewards.dna } } : {}),
+          },
+        });
+        if (rewards.gold)
+          await tx.transaction.create({
+            data: {
+              userId,
+              type: 'REWARD',
+              currencyType: 'gold',
+              amount: rewards.gold,
+              reason: '기존 탐험 보상',
+              balanceAfter: currency.gold,
+            },
+          });
+        if (rewards.dna)
+          await tx.transaction.create({
+            data: {
+              userId,
+              type: 'REWARD',
+              currencyType: 'dna',
+              amount: rewards.dna,
+              reason: '기존 탐험 보상',
+              balanceAfter: currency.dna,
+            },
+          });
+      }
+      if (rewards.egg)
+        await tx.hatchingQueue.create({
           data: {
             userId,
             eggType: rewards.egg.type,
             completesAt: new Date(Date.now() + rewards.egg.hatchTime * 1000),
           },
-        }),
-      );
-    }
-
-    // 탐험 상태 업데이트
-    updates.push(
-      this.prisma.exploration.update({
+        });
+      const updated = await tx.exploration.update({
         where: { id: explorationId },
         data: { status: ExplorationStatus.CLAIMED },
-      }),
-    );
-
-    await this.prisma.$transaction(updates);
-
-    return {
-      claimed: true,
-      rewards,
-    };
+      });
+      return { claimed: true, exploration: this.enrichExplorationData(updated), rewards };
+    });
   }
 
   /**
@@ -337,6 +279,8 @@ export class ExplorationService {
       where: {
         userId,
         completed: false,
+        sourceExplorationId: null,
+        sourceDriveId: null,
       },
       orderBy: { startedAt: 'asc' },
     });
@@ -361,7 +305,7 @@ export class ExplorationService {
    * 보상 생성
    */
   private generateRewards(region: typeof EXPLORATION_REGIONS.grassland) {
-    const rewards: any = {};
+    const rewards: NonNullable<ExplorationResponse['rewards']> = {};
 
     // 골드 보상 (항상)
     const baseGold = 100 * (Object.keys(EXPLORATION_REGIONS).indexOf(region.id) + 1);
@@ -410,7 +354,7 @@ export class ExplorationService {
   /**
    * 탐험 데이터 보강
    */
-  private enrichExplorationData(exploration: any) {
+  private enrichExplorationData(exploration: Exploration) {
     const region = EXPLORATION_REGIONS[exploration.regionId as keyof typeof EXPLORATION_REGIONS];
 
     if (!region) {

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { STORY_CHAPTERS, getChapterById, getSceneById } from '@dino-park/game-data';
+import { EARLY_SYNTHESIS_SAFETY_FLAG } from '@dino-park/shared';
 import type { StoryChapter, StoryChoice, StoryReward } from '@dino-park/shared';
 
 // 호감도 레벨별 필요 경험치
@@ -204,6 +205,7 @@ export class StoryService {
 
     // 다음 씬이 없으면 챕터 완료
     if (!nextScene) {
+      await this.assertMilestoneComplete(userId, chapterId);
       const updatedProgress = await this.prisma.storyProgress.update({
         where: { userId_chapterId: { userId, chapterId } },
         data: {
@@ -660,10 +662,29 @@ export class StoryService {
    * 챕터 완료 처리 (레거시)
    */
   async completeChapter(userId: string, chapterId: string) {
+    const progress = await this.prisma.storyProgress.findUnique({
+      where: { userId_chapterId: { userId, chapterId } },
+    });
+    if (!progress?.completed) await this.assertMilestoneComplete(userId, chapterId);
     return this.prisma.storyProgress.update({
       where: { userId_chapterId: { userId, chapterId } },
       data: { completed: true },
     });
+  }
+
+  private async assertMilestoneComplete(userId: string, chapterId: string) {
+    if (
+      chapterId === 'chapter-2' &&
+      !(await this.hasStoryFlag(userId, EARLY_SYNTHESIS_SAFETY_FLAG))
+    )
+      throw new BadRequestException('원종 돌봄과 2장 안전 점검을 마쳐주세요.');
+    if (chapterId !== 'chapter-3') return;
+    const milestone = await this.prisma.firstSynthesisJob.findFirst({
+      where: { park: { userId }, exhibitedAt: { not: null } },
+      select: { parkId: true },
+    });
+    if (!milestone)
+      throw new BadRequestException('첫 스테고케라톱스 전시를 마치면 3장이 완료돼요.');
   }
 
   // ================================================================

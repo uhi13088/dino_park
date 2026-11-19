@@ -2,6 +2,7 @@
  * API 클라이언트 설정
  * TanStack Query와 함께 사용
  */
+import type { ApiResponse, RefreshTokenResponse } from '@dino-park/shared';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -76,7 +77,7 @@ async function refreshAccessToken(): Promise<boolean> {
       return false;
     }
 
-    const data = await response.json();
+    const { data } = (await response.json()) as ApiResponse<RefreshTokenResponse>;
     tokenManager.setTokens(data.accessToken, data.refreshToken);
     return true;
   } catch {
@@ -135,7 +136,8 @@ async function request<T>(endpoint: string, options: RequestInit = {}, retry = t
     return undefined as T;
   }
 
-  return response.json();
+  const body = (await response.json()) as ApiResponse<T>;
+  return body.data;
 }
 
 /**

@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/utils/cn';
@@ -48,9 +49,13 @@ interface ToastItemProps {
   onRemove: () => void;
 }
 
-function ToastItem({ toast, onRemove }: ToastItemProps) {
+const ToastItem = forwardRef<HTMLDivElement, ToastItemProps>(function ToastItem(
+  { toast, onRemove },
+  ref,
+) {
   return (
     <motion.div
+      ref={ref}
       layout
       initial={{ opacity: 0, x: 100, scale: 0.9 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -64,6 +69,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       <span className="flex-shrink-0">{toastIcons[toast.type]}</span>
       <p className="flex-1 text-sm font-medium">{toast.message}</p>
       <button
+        aria-label="알림 닫기"
         onClick={onRemove}
         className="flex-shrink-0 rounded-full p-1 transition-colors hover:bg-white/20"
       >
@@ -78,7 +84,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       </button>
     </motion.div>
   );
-}
+});
 
 export function ToastContainer() {
   const { toasts, removeToast } = useUIStore();

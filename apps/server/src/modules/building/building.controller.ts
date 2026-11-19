@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiProperty } from '
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { BuildingService } from './building.service';
-import { IsString, IsNumber, Min } from 'class-validator';
+import { IsString, IsInt, IsOptional, Min } from 'class-validator';
 
 class ConstructBuildingDto {
   @ApiProperty({ description: '건물 타입 ID', example: 'food_stand_1' })
@@ -11,24 +11,24 @@ class ConstructBuildingDto {
   typeId!: string;
 
   @ApiProperty({ description: 'X 좌표', example: 10, minimum: 0 })
-  @IsNumber()
+  @IsInt()
   @Min(0)
   positionX!: number;
 
   @ApiProperty({ description: 'Y 좌표', example: 15, minimum: 0 })
-  @IsNumber()
+  @IsInt()
   @Min(0)
   positionY!: number;
 }
 
 class MovePositionDto {
   @ApiProperty({ description: 'X 좌표', example: 10, minimum: 0 })
-  @IsNumber()
+  @IsInt()
   @Min(0)
   positionX!: number;
 
   @ApiProperty({ description: 'Y 좌표', example: 15, minimum: 0 })
-  @IsNumber()
+  @IsInt()
   @Min(0)
   positionY!: number;
 }
@@ -37,6 +37,13 @@ class AssignGreatFigureDto {
   @ApiProperty({ description: '위인 ID', example: 'great-figure-id-123' })
   @IsString()
   greatFigureId!: string;
+}
+
+class UpgradeBuildingDto {
+  @IsOptional()
+  @IsInt()
+  @Min(2)
+  targetLevel?: number;
 }
 
 @ApiTags('buildings')
@@ -71,7 +78,8 @@ export class BuildingController {
     },
   })
   async getMyBuildings(@CurrentUser('id') userId: string) {
-    return this.buildingService.getByUserId(userId);
+    const buildings = await this.buildingService.getByUserId(userId);
+    return { buildings, total: buildings.length };
   }
 
   /**
@@ -177,8 +185,12 @@ export class BuildingController {
       },
     },
   })
-  async upgradeBuilding(@Param('id') id: string, @CurrentUser('id') userId: string) {
-    return this.buildingService.upgrade(id, userId);
+  async upgradeBuilding(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @Body() dto?: UpgradeBuildingDto,
+  ) {
+    return this.buildingService.upgrade(id, userId, dto?.targetLevel ?? undefined);
   }
 
   /**

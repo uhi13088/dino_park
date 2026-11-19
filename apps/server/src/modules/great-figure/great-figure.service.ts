@@ -242,7 +242,7 @@ export class GreatFigureService {
     const buildingId = userFigure.assignedBuildingId;
 
     // 배정 해제 (트랜잭션)
-    const [updatedFigure, _] = await this.prisma.$transaction([
+    const [updatedFigure] = await this.prisma.$transaction([
       this.prisma.userGreatFigure.update({
         where: { userId_figureId: { userId, figureId } },
         data: { assignedBuildingId: null },

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -10,7 +20,9 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { DinosaurService } from './dinosaur.service';
-import { IsString, IsNumber, IsOptional, Min, MinLength, MaxLength } from 'class-validator';
+import { DinosaurCodexService } from './dinosaur-codex.service';
+import { IsString, IsInt, IsOptional, Min, MinLength, MaxLength } from 'class-validator';
+import type { HybridExhibitSelection } from '@dino-park/shared';
 
 class UpdateNicknameDto {
   @ApiProperty({
@@ -29,26 +41,38 @@ class UpdateNicknameDto {
 
 class MovePositionDto {
   @ApiProperty({ description: 'X 좌표', example: 10, minimum: 0 })
-  @IsNumber()
+  @IsInt()
   @Min(0)
   positionX!: number;
 
   @ApiProperty({ description: 'Y 좌표', example: 15, minimum: 0 })
-  @IsNumber()
+  @IsInt()
   @Min(0)
   positionY!: number;
 }
 
 class PlaceInParkDto {
   @ApiProperty({ description: 'X 좌표', example: 10, minimum: 0 })
-  @IsNumber()
+  @IsInt()
   @Min(0)
   positionX!: number;
 
   @ApiProperty({ description: 'Y 좌표', example: 15, minimum: 0 })
-  @IsNumber()
+  @IsInt()
   @Min(0)
   positionY!: number;
+}
+
+class HybridExhibitSelectionDto implements HybridExhibitSelection {
+  @IsString()
+  @MinLength(1)
+  @MaxLength(128)
+  currentId!: string;
+
+  @IsString()
+  @MinLength(1)
+  @MaxLength(128)
+  candidateId!: string;
 }
 
 @ApiTags('dinosaurs')
@@ -56,7 +80,34 @@ class PlaceInParkDto {
 @UseGuards(JwtAuthGuard)
 @Controller('dinosaurs')
 export class DinosaurController {
-  constructor(private readonly dinosaurService: DinosaurService) {}
+  constructor(
+    private readonly dinosaurService: DinosaurService,
+    private readonly codexService: DinosaurCodexService,
+  ) {}
+
+  @Get('codex')
+  @ApiOperation({ summary: '공룡 도감과 내 영구 수집/현재 보유 현황' })
+  async getCodex(@CurrentUser('id') userId: string) {
+    return this.codexService.getByUserId(userId);
+  }
+
+  @Get('hybrid-exhibit')
+  @ApiOperation({ summary: '스테고케라톱스 전시 교체에 따른 예상 입장객 조회' })
+  async getHybridExhibitPreview(
+    @CurrentUser('id') userId: string,
+    @Query() selection: HybridExhibitSelectionDto,
+  ) {
+    return this.dinosaurService.getHybridExhibitPreview(userId, selection);
+  }
+
+  @Patch('hybrid-exhibit')
+  @ApiOperation({ summary: '전시 중인 스테고케라톱스를 대기 개체로 교체' })
+  async replaceHybridExhibit(
+    @CurrentUser('id') userId: string,
+    @Body() selection: HybridExhibitSelectionDto,
+  ) {
+    return this.dinosaurService.replaceHybridExhibit(userId, selection);
+  }
 
   /**
    * 내 공룡 목록 조회
@@ -88,7 +139,8 @@ export class DinosaurController {
     },
   })
   async getMyDinosaurs(@CurrentUser('id') userId: string) {
-    return this.dinosaurService.getByUserId(userId);
+    const dinosaurs = await this.dinosaurService.getByUserId(userId);
+    return { dinosaurs, total: dinosaurs.length };
   }
 
   /**

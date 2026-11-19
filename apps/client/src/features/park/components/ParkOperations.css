@@ -1,0 +1,157 @@
+.park-operations {
+  flex-shrink: 0;
+  padding: 12px 16px 10px;
+  background: #f5fbf4;
+  border-bottom: 1px solid #cfe3ce;
+  color: #234c32;
+}
+.park-operations button {
+  min-height: 44px;
+  height: auto;
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow: none;
+}
+.park-operations button:focus-visible {
+  outline: 2px solid #234c32;
+  outline-offset: 3px;
+}
+.park-operations__heading,
+.park-operations__name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.park-operations__heading {
+  justify-content: space-between;
+}
+.park-operations__name h1 {
+  font-size: 16px;
+  font-weight: 800;
+}
+.park-operations__name span {
+  border-radius: 6px;
+  padding: 3px 6px;
+  background: #e4eae3;
+  color: #475d48;
+  font-size: 11px;
+  font-weight: 700;
+}
+.park-operations__name .park-operations__open {
+  background: #d5ead2;
+  color: #285b27;
+}
+.park-operations__numbers {
+  display: flex;
+  gap: 24px;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.park-operations__numbers div {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.park-operations__numbers dt {
+  color: #526951;
+  font-size: 12px;
+}
+.park-operations__numbers dd {
+  font-size: 14px;
+  font-weight: 700;
+}
+.park-operations__goal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #dbe9d8;
+}
+.park-operations__goal h2 {
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+.park-operations__goal p {
+  margin-top: 2px;
+  max-width: 65ch;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #526951;
+}
+.park-operations__goal .park-operations__requirements {
+  color: #7b491c;
+}
+.park-operations__action {
+  flex-shrink: 0;
+}
+.park-operations__capacity {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #526951;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+  .park-operations {
+    padding: 8px 12px;
+  }
+  .park-operations__numbers {
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .park-operations__numbers div {
+    display: block;
+  }
+  .park-operations__numbers dd {
+    font-size: 13px;
+  }
+  .park-operations__goal {
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+  .park-operations__goal h2 {
+    font-size: 13px;
+  }
+  .park-operations__goal p {
+    font-size: 12px;
+  }
+  .park-operations__capacity {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .park-operations button {
+    transition: none;
+    transform: none;
+  }
+}
+
+.park-operations .park-operations__primary {
+  background: #2e6a3a;
+  color: #fff;
+}
+.park-operations .park-operations__primary:hover {
+  background: #1c4f2c;
+}
+.park-operations .park-operations__secondary {
+  border-color: #2e6a3a;
+  color: #234c32;
+}
+
+.park-operations__shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.park-operations .park-operations__growth {
+  border: 1px solid #2e6a3a;
+  color: #234c32;
+}

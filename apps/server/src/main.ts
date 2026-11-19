@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
@@ -61,8 +61,8 @@ async function bootstrap() {
   const port = process.env.PORT || 4000;
   await app.listen(port);
 
-  console.log(`🦕 Dino Park Tycoon API is running on: http://localhost:${port}`);
-  console.log(`📚 API Docs: http://localhost:${port}/api/docs`);
+  new Logger('Bootstrap').log(`🦕 Dino Park Tycoon API is running on: http://localhost:${port}`);
+  new Logger('Bootstrap').log(`📚 API Docs: http://localhost:${port}/api/docs`);
 }
 
 bootstrap();

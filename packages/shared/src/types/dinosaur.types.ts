@@ -14,6 +14,13 @@ export enum DinosaurCategory {
   HYBRID = 'hybrid', // 하이브리드
 }
 
+// 계보는 생태 분류·희귀도와 별개다.
+export enum DinosaurOrigin {
+  NATURAL = 'natural',
+  VARIANT = 'variant',
+  HYBRID = 'hybrid',
+}
+
 // 공룡 크기
 export enum DinosaurSize {
   SMALL = 'small',
@@ -28,6 +35,13 @@ export interface DinosaurStats {
   popularity: number; // 인기도 (%)
   maintenanceCost: number; // 유지비 (골드/시간)
   space: number; // 필요 공간 (칸)
+}
+
+export interface DinosaurCompetitiveStats {
+  appeal: number;
+  speed: number;
+  stamina: number;
+  aggression: number;
 }
 
 // 해금 조건
@@ -51,6 +65,7 @@ export interface DinosaurSpecies {
   name: string; // 영문명
   nameKo: string; // 한글명
   category: DinosaurCategory;
+  origin?: DinosaurOrigin;
   rarity: Rarity;
   size: DinosaurSize;
   stats: DinosaurStats;
@@ -74,6 +89,7 @@ export interface Dinosaur extends BaseEntity {
   positionX: number;
   positionY: number;
   isInPark: boolean;
+  competitiveStats?: DinosaurCompetitiveStats | null;
   lastFedAt: Date;
 }
 

@@ -1,0 +1,158 @@
+{
+  "source": "docs/current/research-trees.md",
+  "sourceSha256": "a4e12adec11c28fc9608b014500124dd2acbb1e39163d8660b643d24edd61eb7",
+  "nodeCount": 72,
+  "edgeCount": 65,
+  "rootCount": 8,
+  "accountState": false,
+  "requiredFirstLab": {
+    "ops-entry": 1,
+    "ops-flow": 5,
+    "ops-view-facilities": 5,
+    "ops-land": 5,
+    "ops-engineering": 5,
+    "ops-construction": 10,
+    "ops-processing": 5,
+    "ops-batch": 10,
+    "ops-storage": 10,
+    "ops-maintenance": 5,
+    "ops-materials": 5,
+    "ops-procurement": 5,
+    "ops-finance": 10,
+    "ops-building-budget": 10,
+    "ops-offline": 10,
+    "ops-marketing": 10,
+    "ops-comfort": 10,
+    "ops-exhibitions": 15,
+    "care-adaptation": 1,
+    "care-upkeep": 5,
+    "care-nutrition": 5,
+    "care-interaction": 5,
+    "care-group-feeding": 10,
+    "care-group-interaction": 15,
+    "care-incubation": 5,
+    "care-hatch-capacity": 15,
+    "care-nursery": 20,
+    "care-desert": 10,
+    "care-volcanic": 20,
+    "care-glacier": 25,
+    "care-aerial": 15,
+    "care-marine": 20,
+    "care-giant": 15,
+    "care-isolation": 2,
+    "care-transfer": 20,
+    "care-feeding-plans": 20,
+    "exp-field-mapping": 1,
+    "exp-frontier-routes": 10,
+    "exp-deep-expedition": 20,
+    "exp-collection": 10,
+    "exp-quality-survey": 10,
+    "exp-highgrade-sampling": 20,
+    "exp-cave-strata": 5,
+    "exp-wetland-crossing": 10,
+    "exp-crater-reading": 15,
+    "exp-risk-reading": 5,
+    "exp-ruin-containment": 15,
+    "exp-apex-tracking": 25,
+    "exp-tank": 1,
+    "exp-recovery": 5,
+    "exp-expedition-supply": 15,
+    "exp-clue-comparison": 1,
+    "exp-objective-choice": 10,
+    "exp-evidence-validation": 20,
+    "gene-common-herbivore": 1,
+    "gene-uncommon-herbivore": 5,
+    "gene-rare-herbivore": 10,
+    "gene-common-carnivore": 1,
+    "gene-uncommon-carnivore": 5,
+    "gene-rare-carnivore": 10,
+    "gene-analysis": 1,
+    "gene-epic-natural": 15,
+    "gene-legend-natural": 20,
+    "gene-combination-foundation": 5,
+    "gene-combination-special": 15,
+    "gene-combination-legendary": 20,
+    "gene-culture": 5,
+    "gene-synthesis-budget": 10,
+    "gene-dna-quantification": 15,
+    "gene-preservation": 10,
+    "gene-study-budget": 10,
+    "gene-study-protocol": 15
+  },
+  "labelOverflow": [],
+  "families": [
+    {
+      "key": "ops",
+      "nodes": 18,
+      "edges": 17,
+      "columns": [
+        1,
+        4,
+        5,
+        8
+      ]
+    },
+    {
+      "key": "care",
+      "nodes": 18,
+      "edges": 17,
+      "columns": [
+        1,
+        6,
+        8,
+        3
+      ]
+    },
+    {
+      "key": "exp",
+      "nodes": 18,
+      "edges": 16,
+      "columns": [
+        3,
+        7,
+        5,
+        2,
+        1
+      ]
+    },
+    {
+      "key": "gene",
+      "nodes": 18,
+      "edges": 15,
+      "columns": [
+        3,
+        6,
+        7,
+        1,
+        1
+      ]
+    }
+  ],
+  "files": [
+    {
+      "name": "research-tree-overview",
+      "width": 4048,
+      "height": 3370
+    },
+    {
+      "name": "research-tree-ops",
+      "width": 1940,
+      "height": 1450
+    },
+    {
+      "name": "research-tree-care",
+      "width": 1940,
+      "height": 1450
+    },
+    {
+      "name": "research-tree-exp",
+      "width": 1940,
+      "height": 1450
+    },
+    {
+      "name": "research-tree-gene",
+      "width": 1940,
+      "height": 1450
+    }
+  ]
+}

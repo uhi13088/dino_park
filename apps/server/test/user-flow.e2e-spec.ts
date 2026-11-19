@@ -3,19 +3,13 @@
  */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('User Flow E2E', () => {
   let app: INestApplication;
-  let prismaService: PrismaService;
-  let authToken: string;
   let userId: string;
   let parkId: string;
-
-  // Mock JWT token for testing
-  const mockTossToken = 'mock-toss-auth-token';
 
   const mockPrismaService = {
     user: {
@@ -60,8 +54,6 @@ describe('User Flow E2E', () => {
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     await app.init();
-
-    prismaService = moduleFixture.get<PrismaService>(PrismaService);
   });
 
   afterAll(async () => {

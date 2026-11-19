@@ -4,3 +4,4 @@
 
 export * from './time.utils';
 export * from './format.utils';
+export * from './expedition-drive.utils';

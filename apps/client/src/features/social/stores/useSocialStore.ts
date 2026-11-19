@@ -160,9 +160,8 @@ export const useSocialStore = create<SocialState>()(
         });
       },
 
-      sendFriendRequest: async (userId: string) => {
+      sendFriendRequest: async (_userId: string) => {
         // TODO: API 호출
-        console.log('Send friend request to:', userId);
       },
 
       acceptFriendRequest: async (requestId: string) => {
@@ -188,9 +187,8 @@ export const useSocialStore = create<SocialState>()(
         set({ guestbooks: [entry, ...guestbooks].slice(0, 50) });
       },
 
-      leaveGuestbook: async (friendId: string, message: string) => {
+      leaveGuestbook: async (_friendId: string, _message: string) => {
         // TODO: API 호출
-        console.log('Leave guestbook for:', friendId, message);
       },
 
       setGifts: (gifts) => set({ gifts }),
@@ -202,9 +200,8 @@ export const useSocialStore = create<SocialState>()(
         });
       },
 
-      sendGift: async (friendId: string, giftType: string, amount: number) => {
+      sendGift: async (_friendId: string, _giftType: string, _amount: number) => {
         // TODO: API 호출
-        console.log('Send gift to:', friendId, giftType, amount);
       },
 
       setVisitingPark: (visitingPark) => set({ visitingPark }),
