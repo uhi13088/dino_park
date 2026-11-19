@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/stores';
-import { useCurrency } from '@/api';
+import { useCurrency, useParkMe } from '@/api';
 import { CurrencyBar } from '@/components/ui';
 import { cn } from '@/utils/cn';
 
@@ -9,8 +9,9 @@ import { cn } from '@/utils/cn';
 export default function TopBar() {
   const { user, park } = useAuthStore();
   const { data: currencyData } = useCurrency();
+  const { data: parkData } = useParkMe();
 
-  const level = user?.level ?? 1;
+  const level = parkData?.level ?? park?.level ?? 1;
   const gold = currencyData?.gold ?? 0;
   const diamond = currencyData?.diamond ?? 0;
   const energy = currencyData?.explorationEnergy ?? 0;

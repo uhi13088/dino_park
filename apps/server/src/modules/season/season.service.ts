@@ -283,7 +283,11 @@ export class SeasonService {
     const seasonPass = await this.getOrCreateSeasonPass(userId, season.id);
     const claimedRewards = (seasonPass.claimedRewards as string[]) || [];
     const newClaims: string[] = [];
-    const grantedRewards: Array<{ level: number; type: string; reward: any }> = [];
+    const grantedRewards: Array<{
+      level: number;
+      type: string;
+      reward: Awaited<ReturnType<SeasonService['grantReward']>>;
+    }> = [];
 
     for (let level = 1; level <= seasonPass.level; level++) {
       const passReward = getSeasonPassReward(season.id, level);
@@ -439,7 +443,7 @@ export class SeasonService {
     }
 
     // 보상 지급
-    const grantedRewards: any[] = [];
+    const grantedRewards: Awaited<ReturnType<SeasonService['grantChapterReward']>>[] = [];
     for (const reward of chapter.rewards) {
       const granted = await this.grantChapterReward(userId, reward);
       grantedRewards.push(granted);

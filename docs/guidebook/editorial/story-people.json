@@ -1,0 +1,3391 @@
+{
+  "kind": "현행 스토리와 인물 정본에서 편집한 가이드북 내용",
+  "source_sha256": {
+    "docs/current/story-and-characters.md": "89a1fc78400c618b05f8c32312922a9d1ba90152cde8298977d2ea93a073e105",
+    "docs/current/story-progression.md": "3dc9475940e9e76f18f7b17b67332585d8062ccd981efccfa70b2b464cfc98a5",
+    "docs/current/park-progression.md": "d4f89f794e6042836509fcd8abe26bb0a8e1fc211fd3f01543612fd3482791c8"
+  },
+  "content": {
+    "title": "스토리와 인물 통합 기획",
+    "as_of": "2026-11-17",
+    "kind": "현행 스토리와 인물 정본의 가이드북 편집본",
+    "status_legend": {
+      "현행 스토리 기획": "본편·사이드·시즌을 하나의 세계관으로 정리한 내용",
+      "현행 인물 설정": "이름·역할·관계의 통일 기준",
+      "구현 상태": "첫 전시의 2장 안전 점검과 3장 첫 실험을 게임에 적용했다. 전체 대본 적용과 실제 검증 범위는 작업 기록에서 확인한다."
+    },
+    "sections": [
+      {
+        "id": "story-read-first",
+        "title": "스토리와 파크 운영",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "다이노 파크는 공룡을 돌보고 방문객을 맞으며 오래 운영하는 파크를 재건하는 이야기다. 플레이어는 창립자 아서 해먼드의 편지를 받고 이슬라 소르나로 향한다. 첫 파라와 작은 관람 구역에서 시작해 탐험·시설·연구로 자신만의 파크를 키운다.",
+          "본편은 프롤로그와 여섯 장, 에필로그의35장면·선택지27개·세 결말로 구성된다. 첫18장면의 대본과 실제 플레이 조건은 첫 합성까지의 스토리 정본을 따른다. 이후 사건·인물·사이드·시즌은 이 장의 한 세계관 안에서 이어진다.",
+          "본편의 결말은 파크 운영의 종료가 아니다. 선택한 결말을 기록한 뒤에도 시설 확장·연구·탐험·공룡 수집과 전시를 계속하고 동료의 후일담과 확장 이야기를 만난다. 이야기 소품을 기본 재료로 추가하거나 장면 연출만으로 소유 공룡을 지급하지 않는다.",
+          "첫 합성 이후 Park5~50의 유한 성장180목표는 파크 성장 정본이 소유한다. 본편 후반17장면의 실제 시설·연구·탐험 연결은 스토리 진행 정본11절을 따르며, 장면 재열람으로 성장XP나 자산을 중복 지급하지 않는다."
+        ],
+        "index_terms": [
+          "스토리 기준",
+          "스포일러",
+          "이슬라 소르나"
+        ]
+      },
+      {
+        "id": "story-world",
+        "title": "세계관과 과거 사건",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "플레이어는 생물학을 전공한 전직 동물원 큐레이터다. 어린 시절 보았던 공룡 파크의 꿈과 생명을 돌본 경험을 바탕으로 창립자의 재건 요청에 응한다.",
+          "아서 해먼드는 파크의 창립자다. 파크는20년 전 전성기를 맞았고15년 전 폐쇄되었다. 공식 발표는 태풍 피해와 경제적 문제였지만, 비밀 하이브리드 실험·탈출·희생과 증언 은폐가 사건의 중심에 있다. 닥터 진과 동료들은 그 책임을 피하지 않고 재건 과정에서 진실을 밝힌다.",
+          "이야기의 주제는 꿈의 계승, 생명에 대한 책임, 과학의 윤리와 공존이다. 희망적인 재건과 발견을 중심에 두고 위기·후회·화해를 배치한다. 과거의 특정 인도미누스와 플레이어가 레시피로 합성하는 개체는 서로 다른 개체다."
+        ],
+        "index_terms": [
+          "세계관",
+          "폐쇄 사건",
+          "키메라 프로젝트",
+          "공존",
+          "화산 지대"
+        ],
+        "table": {
+          "headers": [
+            "무대",
+            "이야기의 역할"
+          ],
+          "rows": [
+            [
+              "본관·초원",
+              "재건과 개장, 동료와 관람객의 첫 만남"
+            ],
+            [
+              "밀림 구역",
+              "랩터와 안전 절차, 올리비아의 과거"
+            ],
+            [
+              "지하 연구소",
+              "키메라 기록과 진의 고백"
+            ],
+            [
+              "해안·해양 동굴",
+              "자연 해양종과 보호 책임"
+            ],
+            [
+              "화산 지대",
+              "과거 인도미누스와 최종 대응"
+            ],
+            [
+              "안개 절벽·방주",
+              "창립자의 보존 계획과 유산"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-prologue",
+        "title": "프롤로그 유산",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "창립자의 편지로 섬에 도착해 폐허와 야생 공룡을 만난다. 파크를 다시 열 이유를 발견한다.",
+          "시작 파라·경계·입구·초원 안내로 연결한다."
+        ],
+        "index_terms": [
+          "프롤로그 유산",
+          "prologue"
+        ],
+        "level": 2,
+        "section_type": "chapter"
+      },
+      {
+        "id": "story-prologue-scene-1",
+        "title": "편지",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "아서의 편지가 생물학을 공부하고 생명을 돌봐 온 플레이어에게 파크 재건을 부탁한다. 꿈의 계승이 섬으로 향할 동기가 된다.",
+          "편지 읽기 뒤 도착 장면으로 이어진다. 편지·열쇠·지도는 이야기 소품이다."
+        ],
+        "index_terms": [
+          "편지",
+          "prologue-scene-1",
+          "아서 해먼드"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "prologue",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "prologue-scene-1"
+            ],
+            [
+              "대사 등장",
+              "아서 해먼드"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-prologue-scene-2",
+        "title": "도착",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "진이 부두에서 플레이어를 맞고 함께 작은 구역부터 재건하자고 제안한다. 첫 인사나 과거 질문으로 관계의 태도를 정한다.",
+          "기존 세 선택을 기록하고 모두 폐허 탐색으로 이어진다. 선택은 시작 콘텐츠와 첫 합성을 막지 않는다."
+        ],
+        "index_terms": [
+          "도착",
+          "prologue-scene-2",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "prologue",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "prologue-scene-2"
+            ],
+            [
+              "대사 등장",
+              "닥터 진"
+            ],
+            [
+              "선택지",
+              "반갑습니다. 잘 부탁드려요. / 15년 전... 무슨 일이 있었죠? / (묵묵히 악수만 한다)"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-prologue-scene-3",
+        "title": "폐허",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "본관을 둘러보며 파크 외곽 경계·서식지 울타리·방문객 길의 차이를 배운다. 먼 곳의 공룡 소리가 탐색을 이끈다.",
+          "공간 안내 뒤 첫 만남으로 이어진다. 폐허 전체를 철거하거나 별도 소품을 모을 필요는 없다."
+        ],
+        "index_terms": [
+          "폐허",
+          "prologue-scene-3",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "prologue",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "prologue-scene-3"
+            ],
+            [
+              "대사 등장",
+              "닥터 진"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-prologue-scene-4",
+        "title": "첫 만남",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "야생 브라키오사우루스를 목격한 플레이어가 섬에 남은 생명에게 다시 집을 만들어 주기로 한다.",
+          "브라키오 목격은 소유·도감 등록이 아니다. 시작 파라와 첫 조작 안내로 이어진다."
+        ],
+        "index_terms": [
+          "첫 만남",
+          "prologue-scene-4",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "prologue",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "prologue-scene-4"
+            ],
+            [
+              "대사 등장",
+              "닥터 진"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-chapter-1",
+        "title": "챕터1 새로운 시작",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "마르코와 함께 파크를 열고 이구아노돈을 맞는다. 관람객의 반응을 통해 돌봄과 운영의 첫 성취를 확인한다.",
+          "개장→첫 입장료→관람대→초원 정찰→이구아노돈 부화, 이후 원종 두 종과 자재 준비로 이어진다."
+        ],
+        "index_terms": [
+          "챕터 1 새로운 시작",
+          "chapter-1"
+        ],
+        "level": 2,
+        "section_type": "chapter"
+      },
+      {
+        "id": "story-ch1-scene-1",
+        "title": "설계자의 귀환",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "옛 설계자 마르코가 돌아와 파라 배치·돌봄, 길 확인, 개장과 첫 입장료, 관람대 건설을 돕는다.",
+          "파라 돌봄→유료 입장→관람대 완공 순서다. 방문객 입장료가 수입이며 공룡이 직접 골드를 만들지 않는다."
+        ],
+        "index_terms": [
+          "설계자의 귀환",
+          "ch1-scene-1",
+          "마르코",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-1",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch1-scene-1"
+            ],
+            [
+              "대사 등장",
+              "마르코, 닥터 진"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch1-scene-2",
+        "title": "첫 부화",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "첫 초원 정찰에서 단서를 대조해 이구아노돈 알을 회수하고 기본 자리에서 직접 부화시킨다. 새 이웃을 파크에 배치한다.",
+          "알·부화·실제 개체 수령을 구별한다. 건강한 첫 부화 목표와 기존 완료 이력을 인정한다."
+        ],
+        "index_terms": [
+          "첫 부화",
+          "ch1-scene-2",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-1",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch1-scene-2"
+            ],
+            [
+              "대사 등장",
+              "닥터 진"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch1-scene-3",
+        "title": "다시 찾아온 관람객",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "이미 개장한 파크에 가족이 찾아온다. 파라와 이구아노돈을 보고 기뻐하는 아이를 통해 재건의 의미를 확인한다.",
+          "실제 첫 유료 개장은 앞선 목표에서 진행한다. 이 장면이 개장이나 공룡3마리의 새 선행이 되지 않는다."
+        ],
+        "index_terms": [
+          "첫 개장",
+          "ch1-scene-3",
+          "마르코",
+          "어린 관람객",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-1",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch1-scene-3"
+            ],
+            [
+              "대사 등장",
+              "마르코, 어린 관람객, 닥터 진"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-chapter-2",
+        "title": "챕터2 포식자의 귀환",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "올리비아와 랩터를 만나고 안전 절차를 준비한다. 한 번의 이탈 사건을 수습하며 생명 전시의 책임을 배운다.",
+          "파크Lv.4의 육식·보안 준비→안전 목표→파크Lv.5 순서를 따른다."
+        ],
+        "index_terms": [
+          "챕터 2 포식자의 귀환",
+          "chapter-2"
+        ],
+        "level": 2,
+        "section_type": "chapter"
+      },
+      {
+        "id": "story-ch2-scene-1",
+        "title": "밀림의 소리",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "외곽 조사로에서 랩터 무리를 만난다. 올리비아가 휘파람으로 무리를 물러나게 해 인간과 공룡 사이의 신뢰를 보여준다.",
+          "밤은 장면 배경이다. 실제 밤 접속이나 야간 기능을 요구하지 않는다."
+        ],
+        "index_terms": [
+          "밀림의 소리",
+          "ch2-scene-1",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-2",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch2-scene-1"
+            ],
+            [
+              "대사 등장",
+              "올리비아"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch2-scene-2",
+        "title": "올리비아의 과거",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "올리비아는15년 전 부모를 잃었지만 랩터들에게 보호받았음을 밝힌다. 이번에는 안전한 집을 준비하고 싶다고 말한다.",
+          "돕기·위험 질문·과거 질문의 태도를 기록하고 육식 구역 준비로 이어진다."
+        ],
+        "index_terms": [
+          "올리비아의 과거",
+          "ch2-scene-2",
+          "닥터 진",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-2",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch2-scene-2"
+            ],
+            [
+              "대사 등장",
+              "닥터 진, 올리비아"
+            ],
+            [
+              "선택지",
+              "도와줄게. 함께 하자. / 위험하지 않을까? / 네 과거에 대해 더 알고 싶어."
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch2-scene-3",
+        "title": "랩터 작전",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "마르코와 로버트가 육식 서식지·보안·관람 동선을 준비한다. 올리비아는 블루·델타·에코의 성격을 소개하고 구조 인계를 시작한다.",
+          "파크Lv.4의 기존 시설 조건을 따른다. 현장 무리의 등장은 플레이어에게3마리를 무료 지급하는 처리가 아니다."
+        ],
+        "index_terms": [
+          "랩터 작전",
+          "ch2-scene-3",
+          "마르코",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-2",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch2-scene-3"
+            ],
+            [
+              "대사 등장",
+              "마르코, 올리비아"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch2-scene-4",
+        "title": "첫 위기 탈출",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "인계 점검 중 이야기 속 관리구역에서 랩터가 이탈한다. 플레이어는 진정·유인·제압 중 대응 방식을 정하고 동료들과 상황을 수습한다.",
+          "한 번의 서사 사건이다. 상시 탈출 확률·보유 공룡 삭제·시설 파괴·추가 재료 소비를 만들지 않는다."
+        ],
+        "index_terms": [
+          "첫 위기 - 탈출",
+          "ch2-scene-4",
+          "로버트",
+          "닥터 진",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-2",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch2-scene-4"
+            ],
+            [
+              "대사 등장",
+              "로버트, 닥터 진, 올리비아"
+            ],
+            [
+              "선택지",
+              "진정제로 무력화 (올리비아 추천) / 미끼로 유인 (다니엘 추천) / 무력 제압 (로버트 추천)"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch2-scene-5",
+        "title": "반성과 교훈",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "생물공학 박사 토마스가 전시와 생명 창조의 책임을 묻는다. 진과 플레이어는 안전 절차를 재점검하고 과거를 조사할 이유를 얻는다.",
+          "시설·동선·대응 완료와 안전 목표를 확인한 뒤 파크Lv.5 준비로 이어진다. 실제 랩터 보유를 새 필수조건으로 붙이지 않는다."
+        ],
+        "index_terms": [
+          "반성과 교훈",
+          "ch2-scene-5",
+          "토마스",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-2",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch2-scene-5"
+            ],
+            [
+              "대사 등장",
+              "토마스, 닥터 진"
+            ],
+            [
+              "선택지",
+              "계속하겠습니다. 더 잘할 거예요. / 무슨 일이 있었는지 알고 싶습니다. / 당신 말이 맞을 수도 있어요."
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-chapter-3",
+        "title": "챕터3 금지된 실험",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "과거 기록과 진의 고백, 루이스의 제안을 거쳐 연구 원칙을 세운다. 탐험 재료와 실제 원종으로 첫 스테고케라톱스를 만든다.",
+          "첫 지정 합성100%·30분·원종 보존, 개체 수령·도감·실제 전시로 마친다."
+        ],
+        "index_terms": [
+          "챕터 3 금지된 실험",
+          "chapter-3"
+        ],
+        "level": 2,
+        "section_type": "chapter"
+      },
+      {
+        "id": "story-ch3-scene-1",
+        "title": "지하의 문",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "다니엘이 지도에 없는 철문을 찾는다. 진이 그 장소를 알아보며 감춰진 연구소로 들어갈 결심을 한다.",
+          "안전과 첫 DNA·배양액 조사 이력을 확인한다. 촉매는 다음 장면에서 회수하므로 진입 선행이 아니다."
+        ],
+        "index_terms": [
+          "지하의 문",
+          "ch3-scene-1",
+          "다니엘",
+          "닥터 진",
+          "플레이어"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-3",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch3-scene-1"
+            ],
+            [
+              "대사 등장",
+              "다니엘, 닥터 진, 플레이어"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch3-scene-2",
+        "title": "과거의 흔적",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "키메라 일지에서 헨리의 실험과 창립자의 중단 명령을 확인한다. 보관 기록과 밀봉 상태를 대조해 중급 촉매를 회수한다.",
+          "기록은 조사 정보다. 촉매는 실제 미션에서 한 번 수령하며 자동 채취·별도 종별DNA는 없다."
+        ],
+        "index_terms": [
+          "과거의 흔적",
+          "ch3-scene-2",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-3",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch3-scene-2"
+            ],
+            [
+              "대사 등장",
+              "닥터 진"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch3-scene-3",
+        "title": "닥터 진의 고백",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "진이 인도미누스의 창조와 탈출, 열두 명의 희생, 올리비아 부모의 죽음과 자신의 도피를 고백한다. 플레이어는 그 책임을 어떻게 받아들일지 답한다.",
+          "위로·추궁·올리비아 질문의 반응을 남긴다. 어느 태도도 첫 합성의100%·비용·시간을 바꾸지 않는다."
+        ],
+        "index_terms": [
+          "닥터 진의 고백",
+          "ch3-scene-3",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-3",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch3-scene-3"
+            ],
+            [
+              "대사 등장",
+              "닥터 진"
+            ],
+            [
+              "선택지",
+              "과거는 바꿀 수 없어. 앞으로가 중요해. / 왜 지금까지 숨겼어? / 올리비아는 알고 있어?"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch3-scene-4",
+        "title": "찾아온 유혹",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "바이오젠 대표 루이스가 재건 지원을 조건으로 하이브리드 연구 자료를 요구한다. 플레이어는 거절·협상 검토·조사 중 태도를 선택한다.",
+          "자료를 즉시 넘기는 계약은 성립하지 않는다. 선택만으로 잔액을 삭감하거나 투자금을 지급하지 않는다."
+        ],
+        "index_terms": [
+          "찾아온 유혹",
+          "ch3-scene-4",
+          "루이스",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-3",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch3-scene-4"
+            ],
+            [
+              "대사 등장",
+              "루이스, 닥터 진"
+            ],
+            [
+              "선택지",
+              "거절한다 / 일단 협상한다 / 더 알아본다"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch3-scene-5",
+        "title": "선택의 무게",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "토마스는 바이오젠의 군사적 이용 위험을 경고한다. 진과 플레이어는 연구 목적을 공개하고 돌볼 수 있는 생명을 만들겠다는 원칙을 세운다.",
+          "앞선 선택에 맞는 한 문장 응답을 보여주고 실제 원종·재료·연구소 준비로 이어진다."
+        ],
+        "index_terms": [
+          "선택의 무게",
+          "ch3-scene-5",
+          "닥터 진",
+          "토마스"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-3",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch3-scene-5"
+            ],
+            [
+              "대사 등장",
+              "닥터 진, 토마스"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch3-scene-6",
+        "title": "첫 하이브리드",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-progression.md",
+        "paragraphs": [
+          "실제 스테고와 트리케라, 탐험 재료를 확인해 첫 스테고케라톱스를 합성한다. 영웅 개체를 수령해 도감에 등록하고 안전한 새 서식지에 배치한다.",
+          "첫 지정100%·30분, 원종 보존이다.3-6진입→합성 시작→수령→전시 안내→3장 완료로 진행하고 별도 부화 시간을 더하지 않는다."
+        ],
+        "index_terms": [
+          "첫 하이브리드",
+          "ch3-scene-6",
+          "닥터 진",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-3",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch3-scene-6"
+            ],
+            [
+              "대사 등장",
+              "닥터 진, 올리비아"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-chapter-4",
+        "title": "챕터4 심연의 비밀",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "해양관을 준비하고 수중 보존 기지를 조사한다. 전설 자연종 리바이어던을 마주하며 구조와 통제의 경계를 묻는다.",
+          "해양관Lv.1·기존 해양 사육 권한과 호환 해양종 하나의 실제 관람을 준비한다. 권장Park와 습지 연계조사의 상세 조건은 스토리 진행 정본11절을 따른다. 모사·리바이어던의 보유·고레벨 전시는 본편4장의 필수가 아니다."
+        ],
+        "index_terms": [
+          "챕터 4 심연의 비밀",
+          "chapter-4"
+        ],
+        "level": 2,
+        "section_type": "chapter"
+      },
+      {
+        "id": "story-ch4-scene-1",
+        "title": "바다의 부름",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "나탈리가 모사사우루스의 흔적을 발견하고 해양 탐사를 제안한다. 파크가 육상에서 바다로 관람과 보호의 범위를 넓힌다.",
+          "해양 조사·사육의 실제 권한을 준비한다. 발견 장면은 소유 개체 지급이 아니다."
+        ],
+        "index_terms": [
+          "바다의 부름",
+          "ch4-scene-1",
+          "나탈리"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-4",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch4-scene-1"
+            ],
+            [
+              "대사 등장",
+              "나탈리"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch4-scene-2",
+        "title": "해양관 프로젝트",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "마르코·나오미가 해양관을 설계하고 메이가 적응과 돌봄 절차를 설명한다. 전시 공간과 바다의 생활 환경을 함께 준비한다.",
+          "완공 시설·호환·안전·동선을 확인한다. 물·전력·해양용 연료를 새 기본 재고로 추가하지 않는다."
+        ],
+        "index_terms": [
+          "해양관 프로젝트",
+          "ch4-scene-2",
+          "마르코",
+          "나오미",
+          "나탈리"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-4",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch4-scene-2"
+            ],
+            [
+              "대사 등장",
+              "마르코, 나오미, 나탈리, 메이"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch4-scene-3",
+        "title": "해저 동굴",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "나탈리와 진이 오래된 수중 연구 기지에 도착한다. 헬렌은 보존 자료를 판독해 프로젝트 리바이어던이 자연 해양종의 보존·관찰 연구였음을 확인한다.",
+          "기지에서 발견한 알은 전설 자연종의 보호 대상이다. 연구명은 합성 레시피나 새 재료를 뜻하지 않는다."
+        ],
+        "index_terms": [
+          "해저 동굴",
+          "ch4-scene-3",
+          "나탈리",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-4",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch4-scene-3"
+            ],
+            [
+              "대사 등장",
+              "나탈리, 닥터 진, 헬렌 박사"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch4-scene-4",
+        "title": "리바이어던",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "진은 보존된 자연종 알을 부화시켜 보호하자고 하고 토마스는 준비되지 않은 위험을 경고한다. 플레이어는 부화·표본 폐기·보류 중 대응을 고른다.",
+          "리바이어던은 전설 자연종이다. 이 선택은 현장의 특정 알을 대상으로 하며 도감의 종 전체·다른 소유 개체·향후 자연종 획득 경로를 삭제하지 않는다. 현장 알의 보호 부화·폐기·보류는 서사 기록이며 플레이어 소유 알·개체·도감을 무료 지급하지 않는다."
+        ],
+        "index_terms": [
+          "리바이어던",
+          "ch4-scene-4",
+          "닥터 진",
+          "토마스"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-4",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch4-scene-4"
+            ],
+            [
+              "대사 등장",
+              "닥터 진, 토마스"
+            ],
+            [
+              "선택지",
+              "부화시킨다 / 파괴한다 / 보류한다"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch4-scene-5",
+        "title": "올리비아의 진실",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "올리비아가 부모를 잃은 날과 진의 고백을 연결하며 자신의 감정을 말한다. 플레이어는 용서를 권하거나 시간을 주거나 조용히 곁을 지킨다.",
+          "화해를 강요하지 않는 관계 장면이다. 선택은 대화 태도를 남기고 합성 확률과 전시 수익 보너스를 만들지 않는다."
+        ],
+        "index_terms": [
+          "올리비아의 진실",
+          "ch4-scene-5",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-4",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch4-scene-5"
+            ],
+            [
+              "대사 등장",
+              "올리비아"
+            ],
+            [
+              "선택지",
+              "용서할 수 있을 거야. / 천천히 해도 돼. / (조용히 옆에 앉는다)"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-chapter-5",
+        "title": "챕터5 폭풍 전야",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "태풍과 데이터 탈취가 겹친 위기 속에서 진이 책임을 인정하고 동료들이 힘을 모은다. 올리비아와의 화해가 새로운 관계를 만든다.",
+          "이야기의 위기로 현재 자산을 무작위 삭제하거나 새 기본 자원을 만들지 않는다."
+        ],
+        "index_terms": [
+          "챕터 5 폭풍 전야",
+          "chapter-5"
+        ],
+        "level": 2,
+        "section_type": "chapter"
+      },
+      {
+        "id": "story-ch5-scene-1",
+        "title": "경고",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "빅터가 태풍 접근을 알린다. 마르코와 로버트가 시설 점검과 대피를 준비하며 동료들은15년 전과 같은 실수를 반복하지 않기로 한다.",
+          "방문객 동선과 시설 운영을 점검하는 이야기 목표다. 실제 대규모 자산 손실을 자동 정산하지 않는다."
+        ],
+        "index_terms": [
+          "경고",
+          "ch5-scene-1",
+          "빅터",
+          "마르코",
+          "로버트",
+          "플레이어"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-5",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch5-scene-1"
+            ],
+            [
+              "대사 등장",
+              "빅터, 마르코, 로버트, 플레이어"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch5-scene-2",
+        "title": "배신",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "로버트가 진의 보조 연구원 제이콥의 접근 기록을 확인한다. 루이스에게 매수된 제이콥이 데이터 탈취와 보안 무력화를 도왔음이 드러난다.",
+          "고유 인물 제이콥의 사건이다. 플레이어가 고용한 일반 연구원을 무작위로 배신·제거하지 않는다."
+        ],
+        "index_terms": [
+          "배신",
+          "ch5-scene-2",
+          "로버트",
+          "제이콥",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-5",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch5-scene-2"
+            ],
+            [
+              "대사 등장",
+              "로버트, 제이콥, 닥터 진"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch5-scene-3",
+        "title": "폭풍 속에서",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "빅터는 설비를 복구하고 마르코는 통로를 지키며 로버트는 관람객을 대피시킨다. 올리비아와 진은 공룡을 안정시키고 루이스의 자료 탈취를 막는다.",
+          "동료들의 역할과 협력으로 위기를 넘긴다. 발전 연료·수리 부품·치료약 같은 추가 기본 재료를 요구하지 않는다."
+        ],
+        "index_terms": [
+          "폭풍 속에서",
+          "ch5-scene-3",
+          "루이스"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-5",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch5-scene-3"
+            ],
+            [
+              "대사 등장",
+              "루이스"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch5-scene-4",
+        "title": "진의 참회",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "루이스가 진의 안전 절차 위반을 폭로한다. 진은 변명 대신 책임을 인정하고 올리비아에게 직접 사과한다. 블루가 루이스 일행을 물러나게 한다.",
+          "루이스는 본편의 적대자다. 이후 협력은 책임 인정과 자료 반환을 다루는 별도 인물 이야기이며 이 장면에서 자동 영입되지 않는다."
+        ],
+        "index_terms": [
+          "진의 참회",
+          "ch5-scene-4",
+          "닥터 진",
+          "루이스",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-5",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch5-scene-4"
+            ],
+            [
+              "대사 등장",
+              "닥터 진, 루이스, 올리비아"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-chapter-6",
+        "title": "챕터6 인도미누스",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "15년 전 인도미누스와 마주해 제거·격리·공존 중 대응을 결정한다. 재건의 목표가 단순한 흥행을 넘어 무엇을 책임질지 묻는다.",
+          "최종 선택으로 세 결말 중 하나를 기록한다. 소유 인도미누스나 그 후속 합성종 없이 야생 사건 개체의 대응을 완료한다. 선택한6장 분기 한 개의 정상 완료 뒤 플레이어 소유 인도미누스의 기존 합성 경로를 연다."
+        ],
+        "index_terms": [
+          "챕터 6 인도미누스",
+          "chapter-6"
+        ],
+        "level": 2,
+        "section_type": "chapter"
+      },
+      {
+        "id": "story-ch6-scene-1",
+        "title": "그녀가 돌아왔다",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "태풍 뒤 화산 지대에서15년 전 인도미누스의 흔적이 확인된다. 진과 올리비아는 자신들이 피할 수 없던 과거와 다시 마주한다.",
+          "사건 속 인도미누스는 특정 야생 개체다. 플레이어가 합성해 소유한 인도미누스와 동일 개체로 처리하지 않는다."
+        ],
+        "index_terms": [
+          "그녀가 돌아왔다",
+          "ch6-scene-1",
+          "로버트",
+          "닥터 진",
+          "토마스",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-6",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch6-scene-1"
+            ],
+            [
+              "대사 등장",
+              "로버트, 닥터 진, 토마스, 올리비아"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch6-scene-2",
+        "title": "작전 회의",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "로버트가 제거·격리·공존의 세 대응을 제시한다. 토마스·진·올리비아가 각 입장을 밝히고 플레이어가 최종 책임을 선택한다.",
+          "선택한 대응이 본편의 세 결말 중 하나로 이어진다. 누적 호감도·유료 상품·합성 성공률로 이 선택을 구매하거나 추첨하지 않는다. 소유 인도미누스·부모·후속 합성종의 확보는 작전 선행이 아니다."
+        ],
+        "index_terms": [
+          "작전 회의",
+          "ch6-scene-2",
+          "로버트",
+          "토마스",
+          "닥터 진",
+          "올리비아"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-6",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch6-scene-2"
+            ],
+            [
+              "대사 등장",
+              "로버트, 토마스, 닥터 진, 올리비아"
+            ],
+            [
+              "선택지",
+              "무력 제거 / 포획 후 격리 / 공존 시도"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch6-scene-3-hopeful",
+        "title": "화산 지대 공존",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "올리비아가 랩터의 지원을 받으며 인도미누스에게 접근한다. 사건의 가해와 피해를 구별하며 강제로 만든 생명도 책임져야 한다는 결단을 행동으로 옮긴다.",
+          "희망의 새벽으로 이어진다. 특정 작전 연출을 일반 합성 성공 판정으로 사용하지 않는다."
+        ],
+        "index_terms": [
+          "화산 지대 - 공존",
+          "ch6-scene-3-hopeful",
+          "올리비아",
+          "플레이어",
+          "닥터 진",
+          "토마스"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-6",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch6-scene-3-hopeful"
+            ],
+            [
+              "대사 등장",
+              "올리비아, 플레이어, 닥터 진, 토마스"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch6-scene-3-realistic",
+        "title": "화산 지대 격리",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "로버트와 진이 인도미누스를 제압해 보호와 안전을 위한 격리 구역으로 옮긴다. 동료들은 통제의 필요와 한계를 받아들인다.",
+          "새장 속 평화로 이어진다. 작전 장비는 이야기 연출이며 새 상시 소모품 체계를 만들지 않는다."
+        ],
+        "index_terms": [
+          "화산 지대 - 격리",
+          "ch6-scene-3-realistic",
+          "로버트",
+          "닥터 진",
+          "올리비아",
+          "토마스"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-6",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch6-scene-3-realistic"
+            ],
+            [
+              "대사 등장",
+              "로버트, 닥터 진, 올리비아, 토마스"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-ch6-scene-3-tragic",
+        "title": "화산 지대 제거",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "무력 대응으로 과거의 위협을 끝낸다. 토마스와 올리비아의 다른 반응을 통해 안전을 얻은 대가와 상실을 보여준다.",
+          "필요악으로 이어진다. 사건 속 개체의 결말이며 플레이어의 수집 공룡을 삭제하지 않는다."
+        ],
+        "index_terms": [
+          "화산 지대 - 제거",
+          "ch6-scene-3-tragic",
+          "로버트",
+          "올리비아",
+          "토마스",
+          "닥터 진"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "chapter-6",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "ch6-scene-3-tragic"
+            ],
+            [
+              "대사 등장",
+              "로버트, 올리비아, 토마스, 닥터 진"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-epilogue",
+        "title": "에필로그와 세 결말",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "선택한 운영 철학과 동료들의 변화가 재건된 파크의 일상에 남는다. 사건의 끝에서 장기 운영의 다음 목표를 바라본다.",
+          "선택한6장 분기와 같은 에필로그 한 개를 기록하고 본편 뒤에도 수집·시설·연구·탐험을 계속한다. 나머지 결말·83종 전수집·15합성 전체 완료를 강제하지 않으며 사이드·시즌의 세부 해금은 후속 범위다."
+        ],
+        "index_terms": [
+          "에필로그와 세 결말",
+          "epilogue"
+        ],
+        "level": 2,
+        "section_type": "chapter"
+      },
+      {
+        "id": "story-epilogue-scene-hopeful",
+        "title": "희망의 새벽",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "인도미누스와의 공존을 택한 파크가 다시 관람객을 맞는다. 아서의 메시지는 꿈을 이어 갈 사람이 진정한 유산이라고 전한다.",
+          "공존 결말을 기록하고 파크 운영·연구·수집과 동료 후일담을 계속한다."
+        ],
+        "index_terms": [
+          "희망의 새벽",
+          "epilogue-scene-hopeful",
+          "아서 해먼드",
+          "플레이어"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "epilogue",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "epilogue-scene-hopeful"
+            ],
+            [
+              "대사 등장",
+              "아서 해먼드, 플레이어"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-epilogue-scene-realistic",
+        "title": "새장 속 평화",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "파크는 운영에 성공하지만 인도미누스는 보호 격리 구역에 남는다. 안전을 책임진 선택과 완전한 공존에 이르지 못한 여운을 함께 보여준다.",
+          "격리 결말을 기록한다. 결말 전용 추가 수입이나 새로운 운영 화폐를 지급하지 않는다."
+        ],
+        "index_terms": [
+          "새장 속 평화",
+          "epilogue-scene-realistic",
+          "아서 해먼드",
+          "올리비아",
+          "플레이어"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "epilogue",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "epilogue-scene-realistic"
+            ],
+            [
+              "대사 등장",
+              "아서 해먼드, 올리비아, 플레이어"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-epilogue-scene-tragic",
+        "title": "필요악",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "인도미누스의 부재를 남긴 채 안전한 파크가 일상을 되찾는다. 동료들은 선택을 잊지 않고 앞으로 돌볼 생명을 바라본다.",
+          "제거 결말을 기록하고 운영을 이어 간다. 전설 공룡 수집 경로를 영구 폐쇄하지 않는다."
+        ],
+        "index_terms": [
+          "필요악",
+          "epilogue-scene-tragic",
+          "토마스",
+          "올리비아",
+          "닥터 진",
+          "플레이어"
+        ],
+        "level": 3,
+        "section_type": "scene",
+        "chapter_id": "epilogue",
+        "table": {
+          "headers": [
+            "확인 항목",
+            "내용"
+          ],
+          "rows": [
+            [
+              "장면 ID",
+              "epilogue-scene-tragic"
+            ],
+            [
+              "대사 등장",
+              "토마스, 올리비아, 닥터 진, 플레이어"
+            ],
+            [
+              "선택지",
+              "선택지 없음"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-hidden-ending",
+        "title": "계승 후일담 진정한 계승자",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "존 해먼드 주니어가 재건된 파크를 찾아와 보호와 공존의 성과를 이어 가자고 제안한다. 플레이어와 동료가 어떤 파크를 만들었는지 돌아보는 추가 후일담이다.",
+          "본편의 세 결말을 대체하는 네 번째 필수 엔딩이 아니다. 상세 해금 목표는 결정 대기이며, 그 전에는 모든 인물 호감도MAX·유료 구매·시즌 보상 같은 조건을 적용하지 않는다. 후일담은 존 해먼드 주니어의 영입 자격과 연결하고 실제 컬렉션 등록은 위인 기획의 GP 규칙을 따른다. 합성 확률과 첫 영웅 경로는 바꾸지 않는다."
+        ],
+        "index_terms": [
+          "히든 엔딩",
+          "진정한 계승자",
+          "존 해먼드 주니어"
+        ]
+      },
+      {
+        "id": "story-side-overview",
+        "title": "동료의 사이드 스토리",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "여섯 인물 이야기는 본편에서 충분히 다루지 못한 관계와 꿈을 이어 준다. 파크 확장·해양 운영·창립자의 유산 등 이미 진행한 성취를 돌아보며 다음 운영의 의미를 만든다.",
+          "읽는 시점은 아래 맥락을 따르고 상세 목표와 보상은 해당 인물·운영 정본에서 연결한다. 대사를 읽었다는 이유로 영구 수익·합성 성공률·직원 수를 추가하지 않는다."
+        ],
+        "index_terms": [
+          "사이드 스토리",
+          "개인 이야기"
+        ],
+        "table": {
+          "headers": [
+            "번호",
+            "제목",
+            "주요 인물",
+            "이야기 맥락"
+          ],
+          "rows": [
+            [
+              "S-01",
+              "랩터의 기억",
+              "올리비아·블루",
+              "본편 관계 진전"
+            ],
+            [
+              "S-02",
+              "과학자의 후회",
+              "닥터 진·토마스",
+              "5장 이후"
+            ],
+            [
+              "S-03",
+              "건축가의 꿈",
+              "마르코",
+              "부지·시설 확장"
+            ],
+            [
+              "S-04",
+              "바다의 노래",
+              "나탈리·메이",
+              "해양관 운영"
+            ],
+            [
+              "S-05",
+              "렉스의 비밀",
+              "렉스",
+              "프로젝트 브릿지 조사"
+            ],
+            [
+              "S-06",
+              "해먼드의 일기",
+              "아서의 기록",
+              "시즌1 이후"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-side-s-01",
+        "title": "S-01 랩터의 기억",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "올리비아와 블루가15년 전 서로를 지켜 준 밤을 돌아본다. 공룡을 위험 요소로만 보지 않고 관계와 기억을 가진 생명으로 이해한다.",
+          "올리비아의 본편 관계 진전 뒤 읽는 인물 이야기다."
+        ],
+        "index_terms": [
+          "S-01",
+          "랩터의 기억",
+          "올리비아",
+          "블루"
+        ],
+        "level": 3,
+        "section_type": "side-story"
+      },
+      {
+        "id": "story-side-s-02",
+        "title": "S-02 과학자의 후회",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "닥터 진과 생물공학 박사 토마스가 당시의 구조 기록과 생존자들을 만난다. 진은 죄책감을 숨기는 대신 책임을 인정하고 다시 연구할 이유를 찾는다.",
+          "5장 참회 이후의 감정과 관계를 잇는다. 토마스의 직업과 과거 연구 관계는 본편과 같다."
+        ],
+        "index_terms": [
+          "S-02",
+          "과학자의 후회",
+          "닥터 진",
+          "토마스"
+        ],
+        "level": 3,
+        "section_type": "side-story"
+      },
+      {
+        "id": "story-side-s-03",
+        "title": "S-03 건축가의 꿈",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "마르코가 인간과 공룡이 안전하게 함께 지내는 파크를 설계해 온 꿈을 말한다. 현재 파크의 동선과 전시를 돌아보며 다음 확장의 청사진을 그린다.",
+          "건물·부지 확장의 성취에 연결한다. 별도 새 필수 건물군을 지급하거나 건설비를 자동 할인하지 않는다."
+        ],
+        "index_terms": [
+          "S-03",
+          "건축가의 꿈",
+          "마르코"
+        ],
+        "level": 3,
+        "section_type": "side-story"
+      },
+      {
+        "id": "story-side-s-04",
+        "title": "S-04 바다의 노래",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "나탈리와 메이가 해양 생물의 울음과 행동 패턴을 관찰한다. 소리를 음악과 기록으로 남기며 단순한 전시를 넘어 이해하는 방법을 찾는다.",
+          "해양관 운영 뒤의 발견 이야기다. 관찰 기록은 소품이며 별도 재료 재고가 아니다."
+        ],
+        "index_terms": [
+          "S-04",
+          "바다의 노래",
+          "나탈리",
+          "모사사우루스"
+        ],
+        "level": 3,
+        "section_type": "side-story"
+      },
+      {
+        "id": "story-side-s-05",
+        "title": "S-05 렉스의 비밀",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "렉스와 프로젝트 브릿지의 기록을 따라 인간과 공룡의 신호를 잇는 연구를 조사한다. 렉스는 자신의 과거와 아담이라는 이름을 밝히며 중재자로 살아갈 길을 선택한다.",
+          "신체 정체의 구체 묘사는 결정 대기다. 인간 혼합 DNA·새 합성 재료·추가 종 분류를 이 이야기로 만들지 않는다."
+        ],
+        "index_terms": [
+          "S-05",
+          "렉스의 비밀",
+          "렉스"
+        ],
+        "level": 3,
+        "section_type": "side-story"
+      },
+      {
+        "id": "story-side-s-06",
+        "title": "S-06 해먼드의 일기",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "아서가 남긴 개인 일지에서 파크와 방주를 생명 보존의 수단으로 보았던 꿈을 읽는다. 창립자의 선택과 실패를 함께 받아들이며 유산을 이어 간다.",
+          "시즌1의 마지막 여정 뒤 기록과 회상으로 이어진다. 아서를 현역 직원으로 되돌려 대화시키지 않는다."
+        ],
+        "index_terms": [
+          "S-06",
+          "해먼드의 일기",
+          "아서"
+        ],
+        "level": 3,
+        "section_type": "side-story"
+      },
+      {
+        "id": "story-season-legacy",
+        "title": "확장 이야기의 흐름",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "시즌 이야기는 재건한 파크의 다음 탐험과 동료 관계를 이어 간다. 창립자의 귀환→우 박사의 유산→빙하기의 부활→심연의 제왕 순으로 보존과 공존의 범위를 넓힌다. 장기 파크 운영을 계속하면서 관련 지역·환경이 준비된 뒤 만난다.",
+          "아서의 마지막 여정과 유산은 시즌1에서 마무리한다. 이후 아서는 일지·음성·홀로그램 기록으로 등장하며 살아 있는 직원으로 배정되거나 부활하지 않는다. 시즌2의 엘리자베스는 진의 스승인60대 연구자다.",
+          "시즌의 빛나는 핵·일지·관찰 기록은 서사와 탐험의 소재다. 기본 자원·연구 재료의 종류를 늘리거나 광고·유료 패스 구매를 본편과 첫 합성의 선행으로 만들지 않는다. 상세 공개 일정·진입 목표·보상은 각 시즌을 구현할 때 연결한다."
+        ],
+        "index_terms": [
+          "시즌 이야기",
+          "창립자의 귀환",
+          "우 박사의 유산",
+          "빙하기의 부활",
+          "심연의 제왕",
+          "엘리자베스 우",
+          "아서의 유산"
+        ],
+        "table": {
+          "headers": [
+            "시즌 장",
+            "제목",
+            "핵심 전개"
+          ],
+          "rows": [
+            [
+              "s1-1",
+              "숨겨진 일지",
+              "본관 벽 뒤에서 아서의 일지를 찾아 방주와 에덴의 심장, 이를 노리는 바이오젠을 알게 된다."
+            ],
+            [
+              "s1-2",
+              "안개 너머",
+              "안개 절벽을 탐사해 특별한 프로토케라톱스와 생명을 보존한 방주 시설을 발견한다."
+            ],
+            [
+              "s1-3",
+              "노아의 방주",
+              "보존 캡슐과 아서의 홀로그램 기록을 통해 파크와 방주가 생명에게 두 번째 기회를 주려던 계획임을 이해한다."
+            ],
+            [
+              "s1-4",
+              "에덴의 심장",
+              "지하 동굴의 빛나는 핵과 보존 현상을 조사한다. 아서의 기록은 힘을 독점하기보다 생명을 지킬 책임을 묻는다."
+            ],
+            [
+              "s1-5",
+              "창립자",
+              "살아 있는 아서를 만나 그의 마지막 뜻을 듣는다. 아서는 마지막 여정을 마치고, 동료들은 남겨진 기록과 꿈을 이어 간다."
+            ],
+            [
+              "s2-1",
+              "발견",
+              "헨리의 봉인된 연구실에서 보존 연구의 흔적을 발견한다."
+            ],
+            [
+              "s2-2",
+              "일지",
+              "키메라 실험과 생태계 복원 연구가 뒤섞인 기록을 읽고 과학적 성취와 책임을 함께 검토한다."
+            ],
+            [
+              "s2-3",
+              "제자",
+              "60대 연구자이자 진의 스승인 엘리자베스 우가 나타나 기록의 맥락을 설명한다."
+            ],
+            [
+              "s2-4",
+              "진실",
+              "엘리자베스와 진은 자연 복귀라는 목적과 통제되지 않은 실험이 남긴 결과를 구별한다."
+            ],
+            [
+              "s2-5",
+              "화해",
+              "진과 엘리자베스가 과거의 책임을 인정하고 공개된 원칙 아래 복원 연구를 이어 가기로 한다."
+            ],
+            [
+              "s3-1",
+              "이상 기온",
+              "섬 북부의 이상 기온을 따라 빙하 동굴과 봉인된 빙하기 생물을 발견한다."
+            ],
+            [
+              "s3-2",
+              "해빙",
+              "보존되었던 생명이 깨어나고 시간의 균열이 드러난다. 탐험대는 무리한 회수보다 관찰과 안전을 우선한다."
+            ],
+            [
+              "s3-3",
+              "고대 문명",
+              "빙하 속 유적과 에덴의 흔적을 발견해 보존 현상의 기원을 추적한다."
+            ],
+            [
+              "s3-4",
+              "빙하기의 왕",
+              "불안정한 균열 너머의 거대한 매머드와 마주해 위협을 줄이고 공존할 방법을 찾는다."
+            ],
+            [
+              "s3-5",
+              "영원의 겨울",
+              "고대 생명의 생활 환경을 보호하고 새로운 공존의 범위를 합의한다. 빙하와 에덴의 연결이 다음 탐사를 예고한다."
+            ],
+            [
+              "s4-1",
+              "심연으로",
+              "해양관 확장에서 발견한 수중 구조물을 따라 심해 탐사를 시작한다."
+            ],
+            [
+              "s4-2",
+              "어둠의 눈",
+              "빛이 닿지 않는 바다에서 해저 유적과 거대한 리바이어던의 눈을 목격한다."
+            ],
+            [
+              "s4-3",
+              "수호자들",
+              "유적 주변의 해양 생물이 공격이 아닌 경계를 보임을 이해하고 접근 방식을 조절한다."
+            ],
+            [
+              "s4-4",
+              "심연의 핵",
+              "에덴의 심장과 공명하는 수중 핵을 발견하며 생명 보존 현상이 섬 전체와 연결됐음을 알게 된다."
+            ],
+            [
+              "s4-5",
+              "군주",
+              "전설 자연종 리바이어던과 대면해 유적의 보호자로 받아들여진다. 생명을 소유하기보다 지키는 운영의 의미를 되새긴다."
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-season-runtime",
+        "title": "시즌1 창립자의 귀환",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "본관의 일지에서 출발해 안개 절벽·방주·에덴의 심장을 거쳐 창립자와 재회하는 다섯 장의 이야기다. 아래 열네 장면은 하나의 여정 안에서 이어진다.",
+          "아서가 남긴 홀로그램은 생전의 기록이다. 마지막 재회 뒤 아서는 생을 마치며 플레이어와 동료에게 유산을 맡긴다. 시즌1 완료는 유산 기록의 영입 자격으로 연결하며 실제 컬렉션 등록은 위인 기획의 GP 규칙을 따른다. 수집 프로필은 창립자의 업적과 기억을 보존하는 기록이며 사후에 현역 직원으로 일하거나 새 대화를 하는 인물이 아니다."
+        ],
+        "index_terms": [
+          "에덴의 심장",
+          "노아의 방주",
+          "아서의 마지막 여정",
+          "창립자의 귀환",
+          "프로토케라톱스 알파",
+          "아서 홀로그램"
+        ],
+        "table": {
+          "headers": [
+            "장",
+            "장면",
+            "등장",
+            "주요 내용"
+          ],
+          "rows": [
+            [
+              "숨겨진 일지",
+              "발견",
+              "마르코, 닥터 진, 플레이어",
+              "본관 벽 뒤에서 창립자의 숨겨진 금고와 일지를 발견한다."
+            ],
+            [
+              "숨겨진 일지",
+              "일지의 내용",
+              "아서 해먼드의 기록",
+              "파크와 방주, 에덴의 심장에 관한 계획과 바이오젠의 접근을 확인한다."
+            ],
+            [
+              "숨겨진 일지",
+              "마지막 페이지",
+              "아서 해먼드의 기록, 플레이어",
+              "마지막 기록이 안개 너머의 방주로 향할 단서가 된다."
+            ],
+            [
+              "안개 너머",
+              "안개 절벽 탐험",
+              "다니엘, 올리비아, 플레이어",
+              "안개 절벽의 흔적과 거대한 그림자를 조사한다."
+            ],
+            [
+              "안개 너머",
+              "프로토케라톱스 알파 발견",
+              "닥터 진, 올리비아",
+              "특별한 자연종의 존재와 보존된 환경을 확인한다."
+            ],
+            [
+              "안개 너머",
+              "노아의 방주 발견",
+              "마르코, 닥터 진",
+              "생명의 두 번째 기회를 위한 방주 시설을 발견한다."
+            ],
+            [
+              "노아의 방주",
+              "방주 내부",
+              "닥터 진, 올리비아",
+              "보존된 여러 알과 생활 환경을 확인한다."
+            ],
+            [
+              "노아의 방주",
+              "홀로그램 아서",
+              "아서의 기록, 플레이어",
+              "아서의 홀로그램 기록이 시설의 목적을 설명한다."
+            ],
+            [
+              "노아의 방주",
+              "연구 기록",
+              "아서의 기록",
+              "보존 계획의 과정과 책임을 읽는다."
+            ],
+            [
+              "에덴의 심장",
+              "지하 동굴",
+              "아서의 기록, 닥터 진",
+              "푸른 빛의 핵과 생명 보존 현상을 관찰한다."
+            ],
+            [
+              "에덴의 심장",
+              "에덴의 비밀",
+              "아서의 기록",
+              "현상을 독점할지 보호할지에 관한 창립자의 질문을 듣는다."
+            ],
+            [
+              "창립자",
+              "최종 여정",
+              "아서의 기록, 올리비아",
+              "기록을 따라 살아 있는 아서가 기다리는 곳으로 향한다."
+            ],
+            [
+              "창립자",
+              "재회",
+              "아서 해먼드, 플레이어",
+              "창립자와 만나 그의 마지막 뜻을 직접 듣는다."
+            ],
+            [
+              "창립자",
+              "유산",
+              "아서 해먼드, 플레이어",
+              "아서는 마지막 여정을 마치고 꿈과 기록을 플레이어에게 남긴다."
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-choice-systems",
+        "title": "선택과 관계의 결과",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "선택은 플레이어가 동료를 대하는 태도와 안전·연구·공존에 관한 판단을 기록한다. 해당 장면과 직후 대사는 선택에 맞춰 달라지고, 기록은 다시 읽을 수 있다. 선택 장면을 생략하더라도 답을 임의로 결정하지 않는다.",
+          "본편의 최종 제거·격리·공존 선택은 세 결말에 직접 연결된다. 초반 선택은 첫 합성을 차단하거나 비용·재료·100% 보장을 바꾸지 않는다. 관계는 별도 화폐나 합성 확률 보너스가 아니다.",
+          "장기 관계의 수치와 사이드·추가 후일담 해금 목표는 결정 대기다. 위인의 영입·보유·배치 효과는 인물 정본을 따르고, 영웅50%·전설30%와 시간 하한은 각 담당 규칙을 유지한다."
+        ],
+        "index_terms": [
+          "호감도",
+          "선택 분기",
+          "공존 포인트",
+          "안전 포인트",
+          "엔딩 조건"
+        ]
+      },
+      {
+        "id": "story-direction",
+        "title": "연출과 대사 톤",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "핵심 감정은 컷신과 인물 대화로, 운영 목표는 파크 화면과 목표 카드로 전달한다. 장면의 읽기·대사 생략과 실제 탐험·공사·부화·합성 완료를 구별한다. 제작 전에는 정지 이미지와 인게임 카메라를 활용하고 실물 파일이 준비된 연출만 연결한다.",
+          "진은 열정과 주저함을 함께 드러내고 마르코는 장인다운 따뜻함을 보인다. 올리비아는 짧고 깊게 말하며 토마스는 과학자로서 책임을 묻는다. 로버트는 명확하게 지시하고 다니엘은 낙천적인 농담을 섞는다. 아서는 따뜻하고 철학적인 어조로 꿈과 책임을 함께 말한다."
+        ],
+        "index_terms": [
+          "컷신",
+          "연출",
+          "대사 톤",
+          "비주얼 노벨",
+          "회상"
+        ],
+        "table": {
+          "headers": [
+            "번호",
+            "컷신",
+            "유형",
+            "찾아볼 장면"
+          ],
+          "rows": [
+            [
+              "C-01",
+              "편지",
+              "풀 시네마틱",
+              "프롤로그의 부름"
+            ],
+            [
+              "C-02",
+              "첫 만남",
+              "풀 시네마틱",
+              "브라키오와 생명의 경이"
+            ],
+            [
+              "C-03",
+              "랩터 탈출",
+              "인게임 연출",
+              "첫 안전 위기"
+            ],
+            [
+              "C-04",
+              "지하 연구소",
+              "인게임 연출",
+              "과거 비밀의 발견"
+            ],
+            [
+              "C-05",
+              "닥터 진의 고백",
+              "비주얼 노벨",
+              "죄책감과 책임"
+            ],
+            [
+              "C-06",
+              "태풍의 밤",
+              "풀 시네마틱",
+              "동료들의 공동 위기"
+            ],
+            [
+              "C-07",
+              "인도미누스 대면",
+              "풀 시네마틱",
+              "공존과 책임의 결단"
+            ],
+            [
+              "C-08",
+              "세 엔딩",
+              "풀 시네마틱",
+              "선택이 만든 미래"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "story-conflicts",
+        "title": "인물과 세계관의 기준",
+        "status": "현행 스토리 기획",
+        "source": "docs/current/story-and-characters.md",
+        "paragraphs": [
+          "이야기와 인물의 표기는 아래 기준으로 통일한다. 장면·도감·인물 프로필과 시즌은 같은 이름과 관계를 사용한다.",
+          "첫18장면의 세부 플레이 조건과 후반17장면의 시설·연구·탐험 연결은 [스토리 진행 정본](story-progression.md#11-첫-합성-이후-본편의-성장-연결)을 따른다. 권장Park는 새 필수 해금 레벨이 아니며 정상 선완료·기존 진행 이력을 인정한다. 성장 목표와XP는 [파크 성장 정본](park-progression.md)이 소유하고, 이야기 대사에서 새로운 레벨·비용·자원을 임의로 만들지 않는다."
+        ],
+        "index_terms": [
+          "세계관 기준",
+          "인물 관계",
+          "아서의 유산",
+          "토마스",
+          "엘리자베스 우",
+          "리바이어던",
+          "헬렌 등장",
+          "메이 등장"
+        ],
+        "table": {
+          "headers": [
+            "대상",
+            "설정",
+            "이야기에서 지킬 기준"
+          ],
+          "rows": [
+            [
+              "창립자",
+              "아서 해먼드 gf-047",
+              "시즌1 마지막 여정 뒤에는 유산 기록으로 등장한다."
+            ],
+            [
+              "토마스",
+              "생물공학 박사 gf-003",
+              "본편과 과학자의 후회에서 같은 과거 연구 관계를 유지한다."
+            ],
+            [
+              "엘리자베스 우",
+              "60대 연구자·진의 스승 gf-048",
+              "시즌2에서 헨리의 연구 기록을 해석한다."
+            ],
+            [
+              "헨리",
+              "헨리 gf-010·별칭 헨리 우",
+              "키메라 기록의 연구 책임자다."
+            ],
+            [
+              "리바이어던",
+              "전설 자연종",
+              "보존·부화·보호의 대상이며 하이브리드 레시피가 아니다."
+            ],
+            [
+              "첫 공룡과 개장",
+              "파라 시작·개장 뒤 이구아노돈 첫 부화",
+              "가족 방문 장면은 실제 최초 유료 개장 뒤에 온다."
+            ],
+            [
+              "첫 하이브리드",
+              "스테고케라톱스100%·30분",
+              "실제 원종과 탐험 재료를 사용하고 원종은 보존한다."
+            ],
+            [
+              "헬렌과 메이",
+              "고생물 자료 해석·해양 돌봄",
+              "해저 동굴과 해양관 장면에 역할을 연결한다."
+            ],
+            [
+              "루이스",
+              "본편의 바이오젠 적대자",
+              "책임 인정과 자료 반환의 인물 이야기 없이 자동 동료가 되지 않는다."
+            ],
+            [
+              "인물과 일반 인력",
+              "이름 있는 인물·건설자·연구원",
+              "대사 합류만으로 고용 인원과 작업 슬롯을 늘리지 않는다."
+            ],
+            [
+              "보상과 소유",
+              "각 목표·탐험·합성의 수령 기록",
+              "장면을 다시 읽거나 사건 속 생명을 보았다고 자산을 중복 지급하지 않는다."
+            ]
+          ]
+        }
+      }
+    ],
+    "characters": [
+      {
+        "id": "player",
+        "name": "플레이어",
+        "role": "파크 재건의 책임자",
+        "affiliation": "재건팀",
+        "description": "생물학을 전공한 전직 동물원 큐레이터. 어린 시절의 공룡 파크에 대한 꿈과 생명을 돌본 경험을 바탕으로 창립자의 편지에 응한다.",
+        "arc": "작은 파크의 재개장부터 과거의 책임과 최종 대응을 선택하고, 본편 뒤에도 장기 운영을 이어 간다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "플레이어",
+          "파크 재건의 책임자",
+          "주인공",
+          "알렉스 주인공"
+        ],
+        "aliases": [
+          "주인공",
+          "알렉스 주인공"
+        ],
+        "identity_note": "기본 이름 알렉스는 마케팅 위인 알렉스 gf-018과 구별한다."
+      },
+      {
+        "id": "jin",
+        "name": "닥터 진",
+        "role": "유전공학자와 핵심 파트너",
+        "affiliation": "재건팀",
+        "description": "열정적인 연구자이며15년 전 키메라 실험에 참여한 죄책감을 안고 있다. 진실을 숨기던 태도에서 공개된 책임으로 변화한다.",
+        "arc": "프롤로그 합류→3장 고백→5장 참회와 화해→6장 책임의 선택→엘리자베스와의 복원 연구.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "닥터 진",
+          "유전공학자와 핵심 파트너",
+          "Dr. Jin",
+          "gf-001"
+        ],
+        "aliases": [
+          "Dr. Jin"
+        ],
+        "catalog_id": "gf-001",
+        "catalog_name": "닥터 진"
+      },
+      {
+        "id": "marco",
+        "name": "마르코",
+        "role": "건축가와 재건 파트너",
+        "affiliation": "재건팀",
+        "description": "옛 파크의 설계자. 창립자의 부탁으로 돌아와 공룡과 관람객 모두에게 안전한 공간을 만들려 한다.",
+        "arc": "1장 재건→해양관 설계→폭풍 속 통로 보호→그랜드 비전과 방주 발견.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "마르코",
+          "건축가와 재건 파트너",
+          "마르코 로시",
+          "Marco Rossi",
+          "gf-011"
+        ],
+        "aliases": [
+          "마르코 로시",
+          "Marco Rossi"
+        ],
+        "catalog_id": "gf-011",
+        "catalog_name": "마르코"
+      },
+      {
+        "id": "olivia",
+        "name": "올리비아",
+        "role": "수석 조련사",
+        "affiliation": "재건팀",
+        "description": "15년 전 부모를 잃은 어린 생존자. 자신을 보호한 랩터와 깊은 유대를 맺었고 생명을 위험으로만 판단하지 않는다.",
+        "arc": "2장 합류→4장 상처 고백→5장 진과 화해→6장 인도미누스 대응→랩터의 기억.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "올리비아",
+          "수석 조련사",
+          "올리비아 브라운",
+          "Olivia Brown",
+          "gf-031"
+        ],
+        "aliases": [
+          "올리비아 브라운",
+          "Olivia Brown"
+        ],
+        "catalog_id": "gf-031",
+        "catalog_name": "올리비아"
+      },
+      {
+        "id": "helen",
+        "name": "헬렌 박사",
+        "role": "고생물학자와 도감 지식 제공자",
+        "affiliation": "재건팀",
+        "description": "차분하게 화석과 생태 자료를 읽는 고생물학자. 도감 조사와 보존 기록 해석으로 무분별한 발견·연구 판단을 경계한다.",
+        "arc": "도감의 학술 해설→4장 해저 동굴의 보존 자료 판독→확장 탐험의 생태 해석.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "헬렌 박사",
+          "고생물학자와 도감 지식 제공자",
+          "gf-002"
+        ],
+        "identity_note": "",
+        "catalog_id": "gf-002",
+        "catalog_name": "헬렌 박사"
+      },
+      {
+        "id": "daniel",
+        "name": "다니엘",
+        "role": "탐험 대장",
+        "affiliation": "재건팀",
+        "description": "낙천적인 탐험가. 과감하게 현장을 찾되 동료의 안전과 관찰 근거를 중시하는 방향으로 성장한다.",
+        "arc": "2장 유인 작전→3장 지하 입구 발견→안개 절벽과 방주 탐사.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "다니엘",
+          "탐험 대장",
+          "다니엘 헌터",
+          "Daniel Hunter",
+          "gf-025"
+        ],
+        "aliases": [
+          "다니엘 헌터",
+          "Daniel Hunter"
+        ],
+        "catalog_id": "gf-025",
+        "catalog_name": "다니엘"
+      },
+      {
+        "id": "robert",
+        "name": "로버트",
+        "role": "보안 책임자",
+        "affiliation": "재건팀",
+        "description": "경험 많고 냉철한 베테랑이며 과거 사건의 생존자. 공룡을 존중하면서도 관람객과 동료의 안전을 책임진다.",
+        "arc": "2장 대피와 대응→5장 배신 추적→6장 최종 작전 제시.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "로버트",
+          "보안 책임자",
+          "로버트 멀둔",
+          "Robert Muldoon",
+          "gf-043"
+        ],
+        "aliases": [
+          "로버트 멀둔",
+          "Robert Muldoon"
+        ],
+        "catalog_id": "gf-043",
+        "catalog_name": "로버트"
+      },
+      {
+        "id": "thomas",
+        "name": "토마스",
+        "role": "생물공학 박사와 윤리적 비판자",
+        "affiliation": "재건팀의 연구 자문",
+        "description": "진의 스승이자 과학적 라이벌. 생명 창조와 통제에 따르는 책임을 경고한다.",
+        "arc": "2장 경고→3장 바이오젠 목적 설명→6장 최종 판단→진과 생존자를 만나는 과학자의 후회.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "토마스",
+          "생물공학 박사와 윤리적 비판자",
+          "토마스 라이트",
+          "Thomas Wright",
+          "gf-003"
+        ],
+        "aliases": [
+          "토마스 라이트",
+          "Thomas Wright"
+        ],
+        "identity_note": "",
+        "catalog_id": "gf-003",
+        "catalog_name": "토마스"
+      },
+      {
+        "id": "lewis",
+        "name": "루이스",
+        "role": "바이오젠 대표와 적대자",
+        "affiliation": "바이오젠",
+        "description": "투자 제안으로 접근해 하이브리드 연구 자료를 노린다. 자신의 목적을 위해 제이콥을 매수하고 파크의 안전을 위협한다.",
+        "arc": "3장 제안→5장 침입과 철수. 이후 책임 인정과 자료 반환을 다루는 인물 이야기에서 제한적 협력 여부를 다룬다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "루이스",
+          "바이오젠 대표와 적대자",
+          "루이스 도지슨",
+          "Lewis Dodgson",
+          "gf-007"
+        ],
+        "aliases": [
+          "루이스 도지슨",
+          "Lewis Dodgson"
+        ],
+        "identity_note": "",
+        "catalog_id": "gf-007",
+        "catalog_name": "루이스"
+      },
+      {
+        "id": "arthur",
+        "name": "아서 해먼드",
+        "role": "파크 창립자와 유산의 주인",
+        "affiliation": "해먼드 재단",
+        "description": "파크의 꿈과 폐쇄 사건의 책임을 안고 플레이어에게 편지를 보낸 창립자. 방주와 보존 기록을 남겼다.",
+        "arc": "편지와 재건 요청→본편 에필로그의 메시지→시즌1의 재회와 마지막 여정→일지와 홀로그램 기록의 계승.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "아서 해먼드",
+          "파크 창립자와 정신적 지주",
+          "Arthur Hammond",
+          "아서",
+          "gf-047"
+        ],
+        "aliases": [
+          "Arthur Hammond",
+          "아서"
+        ],
+        "identity_note": "시즌1 이후의 수집 프로필은 유산 기록이다. 살아 있는 직원으로 배정하거나 사후 대화하지 않는다.",
+        "catalog_id": "gf-047",
+        "catalog_name": "아서 해먼드"
+      },
+      {
+        "id": "rex",
+        "name": "렉스",
+        "role": "공룡과 소통하는 미스터리 인물",
+        "affiliation": "프로젝트 브릿지와 연관된 조력자",
+        "description": "정체를 숨기며 인간과 공룡의 신호를 잇는 인물. 아담이라는 이름과 프로젝트 브릿지의 기록이 과거를 추적할 단서다.",
+        "arc": "탐험에서 만나는 중재자→렉스의 비밀에서 과거와 이름을 밝히고 자신의 역할을 선택한다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "렉스",
+          "공룡과 소통하는 미스터리 인물",
+          "Rex",
+          "아담",
+          "gf-049"
+        ],
+        "aliases": [
+          "Rex",
+          "아담"
+        ],
+        "identity_note": "정확한 신체 정체의 묘사는 결정 대기이며 기본 재료·종 분류를 확장하지 않는다.",
+        "catalog_id": "gf-049",
+        "catalog_name": "렉스"
+      },
+      {
+        "id": "natalie",
+        "name": "나탈리",
+        "role": "해양 탐사 전문가",
+        "affiliation": "재건팀",
+        "description": "침착하고 용감한 해양 탐험가. 생물을 전시하기 전에 바다의 생활 환경과 신호를 이해하려 한다.",
+        "arc": "4장 바다의 흔적과 해저 동굴→바다의 노래→심연의 제왕 탐사.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "나탈리",
+          "해양 탐사 전문가",
+          "gf-026"
+        ],
+        "catalog_id": "gf-026",
+        "catalog_name": "나탈리"
+      },
+      {
+        "id": "naomi",
+        "name": "나오미",
+        "role": "수족관 설계사",
+        "affiliation": "재건팀",
+        "description": "해양 생물의 생활 공간과 수중 관람을 설계하는 전문가. 마르코와 다른 환경의 건축 조건을 함께 검토한다.",
+        "arc": "4장 해양관 프로젝트→해양 환경 확장과 안전한 관람 동선.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "나오미",
+          "수족관 설계사",
+          "gf-015"
+        ],
+        "catalog_id": "gf-015",
+        "catalog_name": "나오미"
+      },
+      {
+        "id": "mei",
+        "name": "메이",
+        "role": "해양 생물 조련사",
+        "affiliation": "재건팀",
+        "description": "해양 생물의 적응·급식·관찰에 능한 조련사. 생물의 신호를 읽어 급한 전시보다 안정된 돌봄을 우선한다.",
+        "arc": "4장 해양관의 적응 절차 설명→나탈리와 바다의 노래→확장 해양 돌봄.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "메이",
+          "해양 생물 조련사",
+          "gf-034"
+        ],
+        "catalog_id": "gf-034",
+        "catalog_name": "메이"
+      },
+      {
+        "id": "victor",
+        "name": "빅터",
+        "role": "전력 시스템 엔지니어",
+        "affiliation": "재건팀",
+        "description": "설비와 비상 복구에 강한 엔지니어. 위험 징후를 빠르게 알리고 동료가 역할을 수행할 기반을 지킨다.",
+        "arc": "5장 태풍 경고→폭풍 속 설비 복구→장기 파크의 안정된 운영 지원.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "빅터",
+          "전력 시스템 엔지니어",
+          "gf-013"
+        ],
+        "catalog_id": "gf-013",
+        "catalog_name": "빅터"
+      },
+      {
+        "id": "jacob",
+        "name": "제이콥",
+        "role": "진의 보조 연구원과 배신 사건의 인물",
+        "affiliation": "연구소·바이오젠의 매수 대상",
+        "description": "금전 때문에 루이스에게 접근 권한을 넘긴 연구 보조 인물. 제이콥의 사건은 고유 서사이며 일반 연구원의 무작위 배신이 아니다.",
+        "arc": "5장 접근 기록에서 발각→자료 탈취의 배후와 안전 절차의 허점을 드러낸다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "제이콥",
+          "진의 보조 연구원"
+        ]
+      },
+      {
+        "id": "henry-wu",
+        "name": "헨리",
+        "role": "키메라 프로젝트의 과거 연구 책임자",
+        "affiliation": "과거 연구팀",
+        "description": "카탈로그 표시명은 헨리이며 연구 기록에서는 헨리 우라고도 불린다. 키메라와 보존 연구에 남긴 성취와 잘못을 기록·회상으로 다룬다.",
+        "arc": "3장 키메라 일지→4장 수중 보존 자료→시즌2에서 엘리자베스와 진이 연구의 목적과 책임을 재해석한다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "헨리 우",
+          "과거 키메라 프로젝트의 연구 책임자",
+          "gf-010",
+          "헨리"
+        ],
+        "identity_note": "",
+        "catalog_id": "gf-010",
+        "catalog_name": "헨리",
+        "aliases": [
+          "헨리 우",
+          "Henry Wu"
+        ]
+      },
+      {
+        "id": "elizabeth-wu",
+        "name": "엘리자베스 우",
+        "role": "60대 연구자와 진의 스승",
+        "affiliation": "연구 자문·우 박사의 유산",
+        "description": "60대의 연구자이자 닥터 진의 스승. 헨리의 연구 세대와 기록을 알고 있으며 과학적 목적과 실제 책임을 구별하도록 돕는다.",
+        "arc": "시즌2에서 봉인 기록을 해석→진과 과거의 책임을 마주함→공개된 원칙 아래 복원 연구를 잇는다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "엘리자베스 우",
+          "우 박사의 유산을 잇는 후속 인물",
+          "gf-048"
+        ],
+        "identity_note": "",
+        "catalog_id": "gf-048",
+        "catalog_name": "엘리자베스 우"
+      },
+      {
+        "id": "john-hammond-jr",
+        "name": "존 해먼드 주니어",
+        "role": "꿈의 계승을 제안하는 지원자",
+        "affiliation": "해먼드의 유산을 잇는 지원 인물",
+        "description": "재건된 파크의 보호·공존 성과를 보고 더 넓은 협력을 제안한다. 창립자 아서와 별개의 인물이다.",
+        "arc": "계승 후일담 진정한 계승자에서 플레이어와 동료의 성취를 확인하고 다음 운영을 지원한다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "존 해먼드 주니어",
+          "계승을 제안하는 후속 인물",
+          "gf-050"
+        ],
+        "catalog_id": "gf-050",
+        "catalog_name": "존 해먼드 주니어"
+      },
+      {
+        "id": "blue",
+        "name": "블루",
+        "role": "알파 랩터",
+        "affiliation": "올리비아와 유대를 맺은 무리",
+        "description": "가장 영리하고 관찰력이 뛰어난 랩터.15년 전 올리비아를 보호한 기억과 신뢰를 지닌다.",
+        "arc": "2장 인계와 이탈→5장 루이스 일행을 물러나게 함→6장 공존 작전 지원.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "블루",
+          "알파 랩터"
+        ],
+        "kind": "dinosaur_partner"
+      },
+      {
+        "id": "delta",
+        "name": "델타",
+        "role": "경계심과 공격성이 강한 랩터",
+        "affiliation": "올리비아와 유대를 맺은 무리",
+        "description": "무리에서 강하게 경계하고 행동하는 개체. 같은 종이라도 개체별 성격과 대응이 다름을 보여준다.",
+        "arc": "2장 랩터 작전에서 소개되고 무리의 안전과 돌봄 연출에 함께한다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "델타",
+          "공격적인 랩터"
+        ],
+        "kind": "dinosaur_partner"
+      },
+      {
+        "id": "echo",
+        "name": "에코",
+        "role": "호기심이 많은 랩터",
+        "affiliation": "올리비아와 유대를 맺은 무리",
+        "description": "주변을 탐색하고 새로운 자극을 살피는 개체. 무리의 다른 성격과 학습 행동을 보여준다.",
+        "arc": "2장 랩터 작전에서 소개되고 무리의 관찰·돌봄 장면에 함께한다.",
+        "source": "docs/current/story-and-characters.md",
+        "status": "현행 인물 설정",
+        "index_terms": [
+          "에코",
+          "호기심 많은 랩터"
+        ],
+        "kind": "dinosaur_partner"
+      }
+    ],
+    "main_scenes": [
+      {
+        "id": "prologue-scene-1",
+        "chapter_id": "prologue",
+        "title": "편지",
+        "speakers": [
+          "아서 해먼드"
+        ],
+        "summary": "아서의 편지가 생물학을 공부하고 생명을 돌봐 온 플레이어에게 파크 재건을 부탁한다. 꿈의 계승이 섬으로 향할 동기가 된다.",
+        "latest_adaptation": "편지 읽기 뒤 도착 장면으로 이어진다. 편지·열쇠·지도는 이야기 소품이다.",
+        "choices": []
+      },
+      {
+        "id": "prologue-scene-2",
+        "chapter_id": "prologue",
+        "title": "도착",
+        "speakers": [
+          "닥터 진"
+        ],
+        "summary": "진이 부두에서 플레이어를 맞고 함께 작은 구역부터 재건하자고 제안한다. 첫 인사나 과거 질문으로 관계의 태도를 정한다.",
+        "latest_adaptation": "기존 세 선택을 기록하고 모두 폐허 탐색으로 이어진다. 선택은 시작 콘텐츠와 첫 합성을 막지 않는다.",
+        "choices": [
+          "반갑습니다. 잘 부탁드려요.",
+          "15년 전... 무슨 일이 있었죠?",
+          "(묵묵히 악수만 한다)"
+        ]
+      },
+      {
+        "id": "prologue-scene-3",
+        "chapter_id": "prologue",
+        "title": "폐허",
+        "speakers": [
+          "닥터 진"
+        ],
+        "summary": "본관을 둘러보며 파크 외곽 경계·서식지 울타리·방문객 길의 차이를 배운다. 먼 곳의 공룡 소리가 탐색을 이끈다.",
+        "latest_adaptation": "공간 안내 뒤 첫 만남으로 이어진다. 폐허 전체를 철거하거나 별도 소품을 모을 필요는 없다.",
+        "choices": []
+      },
+      {
+        "id": "prologue-scene-4",
+        "chapter_id": "prologue",
+        "title": "첫 만남",
+        "speakers": [
+          "닥터 진"
+        ],
+        "summary": "야생 브라키오사우루스를 목격한 플레이어가 섬에 남은 생명에게 다시 집을 만들어 주기로 한다.",
+        "latest_adaptation": "브라키오 목격은 소유·도감 등록이 아니다. 시작 파라와 첫 조작 안내로 이어진다.",
+        "choices": []
+      },
+      {
+        "id": "ch1-scene-1",
+        "chapter_id": "chapter-1",
+        "title": "설계자의 귀환",
+        "speakers": [
+          "마르코",
+          "닥터 진"
+        ],
+        "summary": "옛 설계자 마르코가 돌아와 파라 배치·돌봄, 길 확인, 개장과 첫 입장료, 관람대 건설을 돕는다.",
+        "latest_adaptation": "파라 돌봄→유료 입장→관람대 완공 순서다. 방문객 입장료가 수입이며 공룡이 직접 골드를 만들지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch1-scene-2",
+        "chapter_id": "chapter-1",
+        "title": "첫 부화",
+        "speakers": [
+          "닥터 진"
+        ],
+        "summary": "첫 초원 정찰에서 단서를 대조해 이구아노돈 알을 회수하고 기본 자리에서 직접 부화시킨다. 새 이웃을 파크에 배치한다.",
+        "latest_adaptation": "알·부화·실제 개체 수령을 구별한다. 건강한 첫 부화 목표와 기존 완료 이력을 인정한다.",
+        "choices": []
+      },
+      {
+        "id": "ch1-scene-3",
+        "chapter_id": "chapter-1",
+        "title": "다시 찾아온 관람객",
+        "speakers": [
+          "마르코",
+          "어린 관람객",
+          "닥터 진"
+        ],
+        "summary": "이미 개장한 파크에 가족이 찾아온다. 파라와 이구아노돈을 보고 기뻐하는 아이를 통해 재건의 의미를 확인한다.",
+        "latest_adaptation": "실제 첫 유료 개장은 앞선 목표에서 진행한다. 이 장면이 개장이나 공룡3마리의 새 선행이 되지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch2-scene-1",
+        "chapter_id": "chapter-2",
+        "title": "밀림의 소리",
+        "speakers": [
+          "올리비아"
+        ],
+        "summary": "외곽 조사로에서 랩터 무리를 만난다. 올리비아가 휘파람으로 무리를 물러나게 해 인간과 공룡 사이의 신뢰를 보여준다.",
+        "latest_adaptation": "밤은 장면 배경이다. 실제 밤 접속이나 야간 기능을 요구하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch2-scene-2",
+        "chapter_id": "chapter-2",
+        "title": "올리비아의 과거",
+        "speakers": [
+          "닥터 진",
+          "올리비아"
+        ],
+        "summary": "올리비아는15년 전 부모를 잃었지만 랩터들에게 보호받았음을 밝힌다. 이번에는 안전한 집을 준비하고 싶다고 말한다.",
+        "latest_adaptation": "돕기·위험 질문·과거 질문의 태도를 기록하고 육식 구역 준비로 이어진다.",
+        "choices": [
+          "도와줄게. 함께 하자.",
+          "위험하지 않을까?",
+          "네 과거에 대해 더 알고 싶어."
+        ]
+      },
+      {
+        "id": "ch2-scene-3",
+        "chapter_id": "chapter-2",
+        "title": "랩터 작전",
+        "speakers": [
+          "마르코",
+          "올리비아"
+        ],
+        "summary": "마르코와 로버트가 육식 서식지·보안·관람 동선을 준비한다. 올리비아는 블루·델타·에코의 성격을 소개하고 구조 인계를 시작한다.",
+        "latest_adaptation": "파크Lv.4의 기존 시설 조건을 따른다. 현장 무리의 등장은 플레이어에게3마리를 무료 지급하는 처리가 아니다.",
+        "choices": []
+      },
+      {
+        "id": "ch2-scene-4",
+        "chapter_id": "chapter-2",
+        "title": "첫 위기 탈출",
+        "speakers": [
+          "로버트",
+          "닥터 진",
+          "올리비아"
+        ],
+        "summary": "인계 점검 중 이야기 속 관리구역에서 랩터가 이탈한다. 플레이어는 진정·유인·제압 중 대응 방식을 정하고 동료들과 상황을 수습한다.",
+        "latest_adaptation": "한 번의 서사 사건이다. 상시 탈출 확률·보유 공룡 삭제·시설 파괴·추가 재료 소비를 만들지 않는다.",
+        "choices": [
+          "진정제로 무력화 (올리비아 추천)",
+          "미끼로 유인 (다니엘 추천)",
+          "무력 제압 (로버트 추천)"
+        ]
+      },
+      {
+        "id": "ch2-scene-5",
+        "chapter_id": "chapter-2",
+        "title": "반성과 교훈",
+        "speakers": [
+          "토마스",
+          "닥터 진"
+        ],
+        "summary": "생물공학 박사 토마스가 전시와 생명 창조의 책임을 묻는다. 진과 플레이어는 안전 절차를 재점검하고 과거를 조사할 이유를 얻는다.",
+        "latest_adaptation": "시설·동선·대응 완료와 안전 목표를 확인한 뒤 파크Lv.5 준비로 이어진다. 실제 랩터 보유를 새 필수조건으로 붙이지 않는다.",
+        "choices": [
+          "계속하겠습니다. 더 잘할 거예요.",
+          "무슨 일이 있었는지 알고 싶습니다.",
+          "당신 말이 맞을 수도 있어요."
+        ]
+      },
+      {
+        "id": "ch3-scene-1",
+        "chapter_id": "chapter-3",
+        "title": "지하의 문",
+        "speakers": [
+          "다니엘",
+          "닥터 진",
+          "플레이어"
+        ],
+        "summary": "다니엘이 지도에 없는 철문을 찾는다. 진이 그 장소를 알아보며 감춰진 연구소로 들어갈 결심을 한다.",
+        "latest_adaptation": "안전과 첫 DNA·배양액 조사 이력을 확인한다. 촉매는 다음 장면에서 회수하므로 진입 선행이 아니다.",
+        "choices": []
+      },
+      {
+        "id": "ch3-scene-2",
+        "chapter_id": "chapter-3",
+        "title": "과거의 흔적",
+        "speakers": [
+          "닥터 진"
+        ],
+        "summary": "키메라 일지에서 헨리의 실험과 창립자의 중단 명령을 확인한다. 보관 기록과 밀봉 상태를 대조해 중급 촉매를 회수한다.",
+        "latest_adaptation": "기록은 조사 정보다. 촉매는 실제 미션에서 한 번 수령하며 자동 채취·별도 종별DNA는 없다.",
+        "choices": []
+      },
+      {
+        "id": "ch3-scene-3",
+        "chapter_id": "chapter-3",
+        "title": "닥터 진의 고백",
+        "speakers": [
+          "닥터 진"
+        ],
+        "summary": "진이 인도미누스의 창조와 탈출, 열두 명의 희생, 올리비아 부모의 죽음과 자신의 도피를 고백한다. 플레이어는 그 책임을 어떻게 받아들일지 답한다.",
+        "latest_adaptation": "위로·추궁·올리비아 질문의 반응을 남긴다. 어느 태도도 첫 합성의100%·비용·시간을 바꾸지 않는다.",
+        "choices": [
+          "과거는 바꿀 수 없어. 앞으로가 중요해.",
+          "왜 지금까지 숨겼어?",
+          "올리비아는 알고 있어?"
+        ]
+      },
+      {
+        "id": "ch3-scene-4",
+        "chapter_id": "chapter-3",
+        "title": "찾아온 유혹",
+        "speakers": [
+          "루이스",
+          "닥터 진"
+        ],
+        "summary": "바이오젠 대표 루이스가 재건 지원을 조건으로 하이브리드 연구 자료를 요구한다. 플레이어는 거절·협상 검토·조사 중 태도를 선택한다.",
+        "latest_adaptation": "자료를 즉시 넘기는 계약은 성립하지 않는다. 선택만으로 잔액을 삭감하거나 투자금을 지급하지 않는다.",
+        "choices": [
+          "거절한다",
+          "일단 협상한다",
+          "더 알아본다"
+        ]
+      },
+      {
+        "id": "ch3-scene-5",
+        "chapter_id": "chapter-3",
+        "title": "선택의 무게",
+        "speakers": [
+          "닥터 진",
+          "토마스"
+        ],
+        "summary": "토마스는 바이오젠의 군사적 이용 위험을 경고한다. 진과 플레이어는 연구 목적을 공개하고 돌볼 수 있는 생명을 만들겠다는 원칙을 세운다.",
+        "latest_adaptation": "앞선 선택에 맞는 한 문장 응답을 보여주고 실제 원종·재료·연구소 준비로 이어진다.",
+        "choices": []
+      },
+      {
+        "id": "ch3-scene-6",
+        "chapter_id": "chapter-3",
+        "title": "첫 하이브리드",
+        "speakers": [
+          "닥터 진",
+          "올리비아"
+        ],
+        "summary": "실제 스테고와 트리케라, 탐험 재료를 확인해 첫 스테고케라톱스를 합성한다. 영웅 개체를 수령해 도감에 등록하고 안전한 새 서식지에 배치한다.",
+        "latest_adaptation": "첫 지정100%·30분, 원종 보존이다.3-6진입→합성 시작→수령→전시 안내→3장 완료로 진행하고 별도 부화 시간을 더하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch4-scene-1",
+        "chapter_id": "chapter-4",
+        "title": "바다의 부름",
+        "speakers": [
+          "나탈리"
+        ],
+        "summary": "나탈리가 모사사우루스의 흔적을 발견하고 해양 탐사를 제안한다. 파크가 육상에서 바다로 관람과 보호의 범위를 넓힌다.",
+        "latest_adaptation": "해양 조사·사육의 실제 권한을 준비한다. 발견 장면은 소유 개체 지급이 아니다.",
+        "choices": []
+      },
+      {
+        "id": "ch4-scene-2",
+        "chapter_id": "chapter-4",
+        "title": "해양관 프로젝트",
+        "speakers": [
+          "마르코",
+          "나오미",
+          "나탈리",
+          "메이"
+        ],
+        "summary": "마르코·나오미가 해양관을 설계하고 메이가 적응과 돌봄 절차를 설명한다. 전시 공간과 바다의 생활 환경을 함께 준비한다.",
+        "latest_adaptation": "완공 시설·호환·안전·동선을 확인한다. 물·전력·해양용 연료를 새 기본 재고로 추가하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch4-scene-3",
+        "chapter_id": "chapter-4",
+        "title": "해저 동굴",
+        "speakers": [
+          "나탈리",
+          "닥터 진",
+          "헬렌 박사"
+        ],
+        "summary": "나탈리와 진이 오래된 수중 연구 기지에 도착한다. 헬렌은 보존 자료를 판독해 프로젝트 리바이어던이 자연 해양종의 보존·관찰 연구였음을 확인한다.",
+        "latest_adaptation": "기지에서 발견한 알은 전설 자연종의 보호 대상이다. 연구명은 합성 레시피나 새 재료를 뜻하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch4-scene-4",
+        "chapter_id": "chapter-4",
+        "title": "리바이어던",
+        "speakers": [
+          "닥터 진",
+          "토마스"
+        ],
+        "summary": "진은 보존된 자연종 알을 부화시켜 보호하자고 하고 토마스는 준비되지 않은 위험을 경고한다. 플레이어는 부화·표본 폐기·보류 중 대응을 고른다.",
+        "latest_adaptation": "리바이어던은 전설 자연종이다. 이 선택은 현장의 특정 알을 대상으로 하며 도감의 종 전체·다른 소유 개체·향후 자연종 획득 경로를 삭제하지 않는다. 현장 알의 보호 부화·폐기·보류는 서사 기록이며 플레이어 소유 알·개체·도감을 무료 지급하지 않는다.",
+        "choices": [
+          "부화시킨다",
+          "파괴한다",
+          "보류한다"
+        ]
+      },
+      {
+        "id": "ch4-scene-5",
+        "chapter_id": "chapter-4",
+        "title": "올리비아의 진실",
+        "speakers": [
+          "올리비아"
+        ],
+        "summary": "올리비아가 부모를 잃은 날과 진의 고백을 연결하며 자신의 감정을 말한다. 플레이어는 용서를 권하거나 시간을 주거나 조용히 곁을 지킨다.",
+        "latest_adaptation": "화해를 강요하지 않는 관계 장면이다. 선택은 대화 태도를 남기고 합성 확률과 전시 수익 보너스를 만들지 않는다.",
+        "choices": [
+          "용서할 수 있을 거야.",
+          "천천히 해도 돼.",
+          "(조용히 옆에 앉는다)"
+        ]
+      },
+      {
+        "id": "ch5-scene-1",
+        "chapter_id": "chapter-5",
+        "title": "경고",
+        "speakers": [
+          "빅터",
+          "마르코",
+          "로버트",
+          "플레이어"
+        ],
+        "summary": "빅터가 태풍 접근을 알린다. 마르코와 로버트가 시설 점검과 대피를 준비하며 동료들은15년 전과 같은 실수를 반복하지 않기로 한다.",
+        "latest_adaptation": "방문객 동선과 시설 운영을 점검하는 이야기 목표다. 실제 대규모 자산 손실을 자동 정산하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch5-scene-2",
+        "chapter_id": "chapter-5",
+        "title": "배신",
+        "speakers": [
+          "로버트",
+          "제이콥",
+          "닥터 진"
+        ],
+        "summary": "로버트가 진의 보조 연구원 제이콥의 접근 기록을 확인한다. 루이스에게 매수된 제이콥이 데이터 탈취와 보안 무력화를 도왔음이 드러난다.",
+        "latest_adaptation": "고유 인물 제이콥의 사건이다. 플레이어가 고용한 일반 연구원을 무작위로 배신·제거하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch5-scene-3",
+        "chapter_id": "chapter-5",
+        "title": "폭풍 속에서",
+        "speakers": [
+          "루이스"
+        ],
+        "summary": "빅터는 설비를 복구하고 마르코는 통로를 지키며 로버트는 관람객을 대피시킨다. 올리비아와 진은 공룡을 안정시키고 루이스의 자료 탈취를 막는다.",
+        "latest_adaptation": "동료들의 역할과 협력으로 위기를 넘긴다. 발전 연료·수리 부품·치료약 같은 추가 기본 재료를 요구하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch5-scene-4",
+        "chapter_id": "chapter-5",
+        "title": "진의 참회",
+        "speakers": [
+          "닥터 진",
+          "루이스",
+          "올리비아"
+        ],
+        "summary": "루이스가 진의 안전 절차 위반을 폭로한다. 진은 변명 대신 책임을 인정하고 올리비아에게 직접 사과한다. 블루가 루이스 일행을 물러나게 한다.",
+        "latest_adaptation": "루이스는 본편의 적대자다. 이후 협력은 책임 인정과 자료 반환을 다루는 별도 인물 이야기이며 이 장면에서 자동 영입되지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch6-scene-1",
+        "chapter_id": "chapter-6",
+        "title": "그녀가 돌아왔다",
+        "speakers": [
+          "로버트",
+          "닥터 진",
+          "토마스",
+          "올리비아"
+        ],
+        "summary": "태풍 뒤 화산 지대에서15년 전 인도미누스의 흔적이 확인된다. 진과 올리비아는 자신들이 피할 수 없던 과거와 다시 마주한다.",
+        "latest_adaptation": "사건 속 인도미누스는 특정 야생 개체다. 플레이어가 합성해 소유한 인도미누스와 동일 개체로 처리하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch6-scene-2",
+        "chapter_id": "chapter-6",
+        "title": "작전 회의",
+        "speakers": [
+          "로버트",
+          "토마스",
+          "닥터 진",
+          "올리비아"
+        ],
+        "summary": "로버트가 제거·격리·공존의 세 대응을 제시한다. 토마스·진·올리비아가 각 입장을 밝히고 플레이어가 최종 책임을 선택한다.",
+        "latest_adaptation": "선택한 대응이 본편의 세 결말 중 하나로 이어진다. 누적 호감도·유료 상품·합성 성공률로 이 선택을 구매하거나 추첨하지 않는다. 소유 인도미누스·부모·후속 합성종의 확보는 작전 선행이 아니다.",
+        "choices": [
+          "무력 제거",
+          "포획 후 격리",
+          "공존 시도"
+        ]
+      },
+      {
+        "id": "ch6-scene-3-hopeful",
+        "chapter_id": "chapter-6",
+        "title": "화산 지대 공존",
+        "speakers": [
+          "올리비아",
+          "플레이어",
+          "닥터 진",
+          "토마스"
+        ],
+        "summary": "올리비아가 랩터의 지원을 받으며 인도미누스에게 접근한다. 사건의 가해와 피해를 구별하며 강제로 만든 생명도 책임져야 한다는 결단을 행동으로 옮긴다.",
+        "latest_adaptation": "희망의 새벽으로 이어진다. 특정 작전 연출을 일반 합성 성공 판정으로 사용하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch6-scene-3-realistic",
+        "chapter_id": "chapter-6",
+        "title": "화산 지대 격리",
+        "speakers": [
+          "로버트",
+          "닥터 진",
+          "올리비아",
+          "토마스"
+        ],
+        "summary": "로버트와 진이 인도미누스를 제압해 보호와 안전을 위한 격리 구역으로 옮긴다. 동료들은 통제의 필요와 한계를 받아들인다.",
+        "latest_adaptation": "새장 속 평화로 이어진다. 작전 장비는 이야기 연출이며 새 상시 소모품 체계를 만들지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "ch6-scene-3-tragic",
+        "chapter_id": "chapter-6",
+        "title": "화산 지대 제거",
+        "speakers": [
+          "로버트",
+          "올리비아",
+          "토마스",
+          "닥터 진"
+        ],
+        "summary": "무력 대응으로 과거의 위협을 끝낸다. 토마스와 올리비아의 다른 반응을 통해 안전을 얻은 대가와 상실을 보여준다.",
+        "latest_adaptation": "필요악으로 이어진다. 사건 속 개체의 결말이며 플레이어의 수집 공룡을 삭제하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "epilogue-scene-hopeful",
+        "chapter_id": "epilogue",
+        "title": "희망의 새벽",
+        "speakers": [
+          "아서 해먼드",
+          "플레이어"
+        ],
+        "summary": "인도미누스와의 공존을 택한 파크가 다시 관람객을 맞는다. 아서의 메시지는 꿈을 이어 갈 사람이 진정한 유산이라고 전한다.",
+        "latest_adaptation": "공존 결말을 기록하고 파크 운영·연구·수집과 동료 후일담을 계속한다.",
+        "choices": []
+      },
+      {
+        "id": "epilogue-scene-realistic",
+        "chapter_id": "epilogue",
+        "title": "새장 속 평화",
+        "speakers": [
+          "아서 해먼드",
+          "올리비아",
+          "플레이어"
+        ],
+        "summary": "파크는 운영에 성공하지만 인도미누스는 보호 격리 구역에 남는다. 안전을 책임진 선택과 완전한 공존에 이르지 못한 여운을 함께 보여준다.",
+        "latest_adaptation": "격리 결말을 기록한다. 결말 전용 추가 수입이나 새로운 운영 화폐를 지급하지 않는다.",
+        "choices": []
+      },
+      {
+        "id": "epilogue-scene-tragic",
+        "chapter_id": "epilogue",
+        "title": "필요악",
+        "speakers": [
+          "토마스",
+          "올리비아",
+          "닥터 진",
+          "플레이어"
+        ],
+        "summary": "인도미누스의 부재를 남긴 채 안전한 파크가 일상을 되찾는다. 동료들은 선택을 잊지 않고 앞으로 돌볼 생명을 바라본다.",
+        "latest_adaptation": "제거 결말을 기록하고 운영을 이어 간다. 전설 공룡 수집 경로를 영구 폐쇄하지 않는다.",
+        "choices": []
+      }
+    ],
+    "legacy_season_chapters": [
+      {
+        "id": "s1-1",
+        "title": "숨겨진 일지",
+        "summary": "본관 벽 뒤에서 아서의 일지를 찾아 방주와 에덴의 심장, 이를 노리는 바이오젠을 알게 된다."
+      },
+      {
+        "id": "s1-2",
+        "title": "안개 너머",
+        "summary": "안개 절벽을 탐사해 특별한 프로토케라톱스와 생명을 보존한 방주 시설을 발견한다."
+      },
+      {
+        "id": "s1-3",
+        "title": "노아의 방주",
+        "summary": "보존 캡슐과 아서의 홀로그램 기록을 통해 파크와 방주가 생명에게 두 번째 기회를 주려던 계획임을 이해한다."
+      },
+      {
+        "id": "s1-4",
+        "title": "에덴의 심장",
+        "summary": "지하 동굴의 빛나는 핵과 보존 현상을 조사한다. 아서의 기록은 힘을 독점하기보다 생명을 지킬 책임을 묻는다."
+      },
+      {
+        "id": "s1-5",
+        "title": "창립자",
+        "summary": "살아 있는 아서를 만나 그의 마지막 뜻을 듣는다. 아서는 마지막 여정을 마치고, 동료들은 남겨진 기록과 꿈을 이어 간다."
+      },
+      {
+        "id": "s2-1",
+        "title": "발견",
+        "summary": "헨리의 봉인된 연구실에서 보존 연구의 흔적을 발견한다."
+      },
+      {
+        "id": "s2-2",
+        "title": "일지",
+        "summary": "키메라 실험과 생태계 복원 연구가 뒤섞인 기록을 읽고 과학적 성취와 책임을 함께 검토한다."
+      },
+      {
+        "id": "s2-3",
+        "title": "제자",
+        "summary": "60대 연구자이자 진의 스승인 엘리자베스 우가 나타나 기록의 맥락을 설명한다."
+      },
+      {
+        "id": "s2-4",
+        "title": "진실",
+        "summary": "엘리자베스와 진은 자연 복귀라는 목적과 통제되지 않은 실험이 남긴 결과를 구별한다."
+      },
+      {
+        "id": "s2-5",
+        "title": "화해",
+        "summary": "진과 엘리자베스가 과거의 책임을 인정하고 공개된 원칙 아래 복원 연구를 이어 가기로 한다."
+      },
+      {
+        "id": "s3-1",
+        "title": "이상 기온",
+        "summary": "섬 북부의 이상 기온을 따라 빙하 동굴과 봉인된 빙하기 생물을 발견한다."
+      },
+      {
+        "id": "s3-2",
+        "title": "해빙",
+        "summary": "보존되었던 생명이 깨어나고 시간의 균열이 드러난다. 탐험대는 무리한 회수보다 관찰과 안전을 우선한다."
+      },
+      {
+        "id": "s3-3",
+        "title": "고대 문명",
+        "summary": "빙하 속 유적과 에덴의 흔적을 발견해 보존 현상의 기원을 추적한다."
+      },
+      {
+        "id": "s3-4",
+        "title": "빙하기의 왕",
+        "summary": "불안정한 균열 너머의 거대한 매머드와 마주해 위협을 줄이고 공존할 방법을 찾는다."
+      },
+      {
+        "id": "s3-5",
+        "title": "영원의 겨울",
+        "summary": "고대 생명의 생활 환경을 보호하고 새로운 공존의 범위를 합의한다. 빙하와 에덴의 연결이 다음 탐사를 예고한다."
+      },
+      {
+        "id": "s4-1",
+        "title": "심연으로",
+        "summary": "해양관 확장에서 발견한 수중 구조물을 따라 심해 탐사를 시작한다."
+      },
+      {
+        "id": "s4-2",
+        "title": "어둠의 눈",
+        "summary": "빛이 닿지 않는 바다에서 해저 유적과 거대한 리바이어던의 눈을 목격한다."
+      },
+      {
+        "id": "s4-3",
+        "title": "수호자들",
+        "summary": "유적 주변의 해양 생물이 공격이 아닌 경계를 보임을 이해하고 접근 방식을 조절한다."
+      },
+      {
+        "id": "s4-4",
+        "title": "심연의 핵",
+        "summary": "에덴의 심장과 공명하는 수중 핵을 발견하며 생명 보존 현상이 섬 전체와 연결됐음을 알게 된다."
+      },
+      {
+        "id": "s4-5",
+        "title": "군주",
+        "summary": "전설 자연종 리바이어던과 대면해 유적의 보호자로 받아들여진다. 생명을 소유하기보다 지키는 운영의 의미를 되새긴다."
+      }
+    ],
+    "runtime_season_scenes": [
+      [
+        "숨겨진 일지",
+        "발견",
+        "마르코, 닥터 진, 플레이어",
+        "본관 벽 뒤에서 창립자의 숨겨진 금고와 일지를 발견한다."
+      ],
+      [
+        "숨겨진 일지",
+        "일지의 내용",
+        "아서 해먼드의 기록",
+        "파크와 방주, 에덴의 심장에 관한 계획과 바이오젠의 접근을 확인한다."
+      ],
+      [
+        "숨겨진 일지",
+        "마지막 페이지",
+        "아서 해먼드의 기록, 플레이어",
+        "마지막 기록이 안개 너머의 방주로 향할 단서가 된다."
+      ],
+      [
+        "안개 너머",
+        "안개 절벽 탐험",
+        "다니엘, 올리비아, 플레이어",
+        "안개 절벽의 흔적과 거대한 그림자를 조사한다."
+      ],
+      [
+        "안개 너머",
+        "프로토케라톱스 알파 발견",
+        "닥터 진, 올리비아",
+        "특별한 자연종의 존재와 보존된 환경을 확인한다."
+      ],
+      [
+        "안개 너머",
+        "노아의 방주 발견",
+        "마르코, 닥터 진",
+        "생명의 두 번째 기회를 위한 방주 시설을 발견한다."
+      ],
+      [
+        "노아의 방주",
+        "방주 내부",
+        "닥터 진, 올리비아",
+        "보존된 여러 알과 생활 환경을 확인한다."
+      ],
+      [
+        "노아의 방주",
+        "홀로그램 아서",
+        "아서의 기록, 플레이어",
+        "아서의 홀로그램 기록이 시설의 목적을 설명한다."
+      ],
+      [
+        "노아의 방주",
+        "연구 기록",
+        "아서의 기록",
+        "보존 계획의 과정과 책임을 읽는다."
+      ],
+      [
+        "에덴의 심장",
+        "지하 동굴",
+        "아서의 기록, 닥터 진",
+        "푸른 빛의 핵과 생명 보존 현상을 관찰한다."
+      ],
+      [
+        "에덴의 심장",
+        "에덴의 비밀",
+        "아서의 기록",
+        "현상을 독점할지 보호할지에 관한 창립자의 질문을 듣는다."
+      ],
+      [
+        "창립자",
+        "최종 여정",
+        "아서의 기록, 올리비아",
+        "기록을 따라 살아 있는 아서가 기다리는 곳으로 향한다."
+      ],
+      [
+        "창립자",
+        "재회",
+        "아서 해먼드, 플레이어",
+        "창립자와 만나 그의 마지막 뜻을 직접 듣는다."
+      ],
+      [
+        "창립자",
+        "유산",
+        "아서 해먼드, 플레이어",
+        "아서는 마지막 여정을 마치고 꿈과 기록을 플레이어에게 남긴다."
+      ]
+    ],
+    "conflicts": [
+      [
+        "창립자",
+        "아서 해먼드 gf-047",
+        "시즌1 마지막 여정 뒤에는 유산 기록으로 등장한다."
+      ],
+      [
+        "토마스",
+        "생물공학 박사 gf-003",
+        "본편과 과학자의 후회에서 같은 과거 연구 관계를 유지한다."
+      ],
+      [
+        "엘리자베스 우",
+        "60대 연구자·진의 스승 gf-048",
+        "시즌2에서 헨리의 연구 기록을 해석한다."
+      ],
+      [
+        "헨리",
+        "헨리 gf-010·별칭 헨리 우",
+        "키메라 기록의 연구 책임자다."
+      ],
+      [
+        "리바이어던",
+        "전설 자연종",
+        "보존·부화·보호의 대상이며 하이브리드 레시피가 아니다."
+      ],
+      [
+        "첫 공룡과 개장",
+        "파라 시작·개장 뒤 이구아노돈 첫 부화",
+        "가족 방문 장면은 실제 최초 유료 개장 뒤에 온다."
+      ],
+      [
+        "첫 하이브리드",
+        "스테고케라톱스100%·30분",
+        "실제 원종과 탐험 재료를 사용하고 원종은 보존한다."
+      ],
+      [
+        "헬렌과 메이",
+        "고생물 자료 해석·해양 돌봄",
+        "해저 동굴과 해양관 장면에 역할을 연결한다."
+      ],
+      [
+        "루이스",
+        "본편의 바이오젠 적대자",
+        "책임 인정과 자료 반환의 인물 이야기 없이 자동 동료가 되지 않는다."
+      ],
+      [
+        "인물과 일반 인력",
+        "이름 있는 인물·건설자·연구원",
+        "대사 합류만으로 고용 인원과 작업 슬롯을 늘리지 않는다."
+      ],
+      [
+        "보상과 소유",
+        "각 목표·탐험·합성의 수령 기록",
+        "장면을 다시 읽거나 사건 속 생명을 보았다고 자산을 중복 지급하지 않는다."
+      ]
+    ],
+    "source_sha256": {
+      "docs/current/story-and-characters.md": "89a1fc78400c618b05f8c32312922a9d1ba90152cde8298977d2ea93a073e105",
+      "docs/current/story-progression.md": "3dc9475940e9e76f18f7b17b67332585d8062ccd981efccfa70b2b464cfc98a5",
+      "docs/current/park-progression.md": "d4f89f794e6042836509fcd8abe26bb0a8e1fc211fd3f01543612fd3482791c8"
+    },
+    "coverage": {
+      "main_chapters_including_prologue_epilogue": 8,
+      "main_scenes": 35,
+      "main_choice_options": 27,
+      "side_stories": 6,
+      "legacy_season_chapters": 20,
+      "runtime_seasons": 1,
+      "runtime_season_chapters": 5,
+      "runtime_season_scenes": 14,
+      "cutscene_topics": 8,
+      "character_records_including_named_dinosaurs": 22,
+      "curated_sections": 58,
+      "current_screenplay_scenes": 18,
+      "current_screenplay_choices": 18,
+      "season_chapters": 20,
+      "season_storylines": 4,
+      "current_canon_characters": 22,
+      "canonical_main_scenes": 35,
+      "later_story_connected_scenes": 17,
+      "park_growth_transitions": 45,
+      "park_growth_goals": 180
+    },
+    "editorial_limits": [
+      "게임 적용과 검증은 작업 기록에서 관리한다.",
+      "비용·시간·확률·인물 효과는 각 담당 정본에서 읽는다.",
+      "초반18장면의 실제 대본과 목표 조건은 첫 합성까지의 스토리 정본이 소유한다.",
+      "장기 관계 해금·렉스의 신체 정체·시즌 공개 일정은 구체적인 후속 결정 항목이다.",
+      "후반17장면 연결과6장 선택분기 완료는 스토리 진행 정본11절, 유한180개 성장 목표와XP는 park-progression.md가 소유한다. 권장Park는 새 하드 해금이 아니며 정상 선완료 이력을 인정한다."
+    ],
+    "index_hints": {
+      "preferred_main_character_key": "스토리 화자 ID",
+      "preferred_figure_key": "카탈로그 gf-001~gf-050",
+      "never_use_legacy_story_figure_map": true,
+      "separate_alex_entities": [
+        "플레이어 알렉스",
+        "마케팅 위인 알렉스 gf-018"
+      ],
+      "search_fields": [
+        "title",
+        "name",
+        "catalog_id",
+        "catalog_name",
+        "aliases",
+        "index_terms",
+        "source"
+      ]
+    }
+  },
+  "review_note": "2026-11-18: 83종 획득 완결 범위를 원천과 대조. 추가17목표·변종2레시피·첫 랩터 선택 경로를 연결하고 기존 위인/서사·경제 수치 보존. 기획과 실제 게임 적용을 구별.\n2026-11-18: 후반17장면 연결·180성장목표의 단일 소유·권장Park/선완료 인정·현장 알 서사와 소유 구별·6장 선택분기 완료 뒤 인도미누스 합성을 원천과 대조했다. 기존 대본·인물·선택·시즌 줄거리는 유지했다.\n2026-11-19: 첫 전시 구현의 안전 점검·첫 실험 상태를 스토리 진행 정본에서 확인했다. 수록 대사·장면·선택 ID는 유지했다.\n2026-11-19 첫 전시 뒤 Lv.5→6 성장 경로를 대조했다. 기존 스토리 장면, 보상 및 진입 조건은 유지한다."
+}

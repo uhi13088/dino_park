@@ -8,6 +8,7 @@ export * from './common.types';
 
 // Domain types
 export * from './dinosaur.types';
+export * from './codex.types';
 export * from './building.types';
 export * from './great-figure.types';
 export * from './park.types';
@@ -21,3 +22,10 @@ export * from './social.types';
 
 // API types
 export * from './api.types';
+
+export * from './first-expedition.types';
+export * from './drive-expedition.types';
+
+export * from './resources.types';
+export * from './milestone-synthesis.types';
+export * from './repeat-synthesis.types';

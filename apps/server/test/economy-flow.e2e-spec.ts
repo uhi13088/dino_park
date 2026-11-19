@@ -2,15 +2,15 @@
  * E2E Test: 재화 획득/소비 플로우
  */
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { EconomyService } from '../src/modules/economy/economy.service';
+import { ParkOperationsService } from '../src/modules/park/park-operations.service';
 
 describe('Economy Flow E2E', () => {
-  let app: INestApplication;
   let economyService: EconomyService;
 
   const userId = 'test-user-id';
+  const mockOperations = { settleInTransaction: jest.fn() };
 
   const mockPrismaService = {
     currency: {
@@ -33,6 +33,7 @@ describe('Economy Flow E2E', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [
         EconomyService,
+        { provide: ParkOperationsService, useValue: mockOperations },
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -45,74 +46,29 @@ describe('Economy Flow E2E', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockOperations.settleInTransaction.mockResolvedValue({
+      elapsedHours: 0,
+      gross: 0,
+      maintenance: 0,
+    });
   });
 
-  describe('1. 오프라인 수익 획득 플로우', () => {
-    it('4시간 오프라인 후 수익 수령', async () => {
-      // Given: 4시간 전에 로그인한 유저
-      const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
-
-      mockPrismaService.user.findUnique.mockResolvedValue({
-        id: userId,
-        lastLoginAt: fourHoursAgo,
-        park: {
-          id: 'park-id',
-          dinosaurs: [
-            { id: 'dino-1', level: 5, happiness: 80, isInPark: true },
-            { id: 'dino-2', level: 3, happiness: 60, isInPark: true },
-          ],
-          buildings: [{ id: 'building-1', status: 'ACTIVE' }],
-        },
+  describe('1. 입장료 정산 연결', () => {
+    it('방문객 입장료의 공통 정산 결과만 반환한다', async () => {
+      mockOperations.settleInTransaction.mockResolvedValue({
+        elapsedHours: 4,
+        gross: 12000,
+        maintenance: 400,
       });
-
-      mockPrismaService.currency.update.mockResolvedValue({
-        userId,
-        gold: 15000, // 10000 + 5000 offline revenue
-      });
-
-      mockPrismaService.user.update.mockResolvedValue({
-        id: userId,
-        lastLoginAt: new Date(),
-      });
-
-      mockPrismaService.transaction.create.mockResolvedValue({});
-
-      // When: 오프라인 수익 수령
       const result = await economyService.collectOfflineRevenue(userId);
-
-      // Then: 수익이 지급됨
+      expect(result.totalRevenue).toBe(11600);
       expect(result.collected).toBe(true);
-      expect(result.offlineHours).toBeGreaterThan(0);
-      expect(result.totalRevenue).toBeGreaterThan(0);
+      expect(mockPrismaService.user.findUnique).not.toHaveBeenCalled();
     });
-
-    it('최대 8시간 수익만 지급', async () => {
-      // Given: 24시간 전에 로그인한 유저
-      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-      mockPrismaService.user.findUnique.mockResolvedValue({
-        id: userId,
-        lastLoginAt: twentyFourHoursAgo,
-        park: {
-          id: 'park-id',
-          dinosaurs: [{ id: 'dino-1', level: 5, happiness: 80, isInPark: true }],
-          buildings: [],
-        },
-      });
-
-      mockPrismaService.currency.update.mockResolvedValue({
-        userId,
-        gold: 20000,
-      });
-
-      mockPrismaService.user.update.mockResolvedValue({ id: userId });
-      mockPrismaService.transaction.create.mockResolvedValue({});
-
-      // When: 오프라인 수익 수령
+    it('이미 정산한 입장료를 다시 지급하지 않는다', async () => {
       const result = await economyService.collectOfflineRevenue(userId);
-
-      // Then: 최대 8시간까지만 적용
-      expect(result.offlineHours).toBeLessThanOrEqual(8);
+      expect(result.collected).toBe(false);
+      expect(mockPrismaService.currency.update).not.toHaveBeenCalled();
     });
   });
 

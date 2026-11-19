@@ -1,5 +1,14 @@
 import * as PIXI from 'pixi.js';
-import { IsometricGrid, ISO_CONFIG, gridToScreen } from './IsometricGrid';
+import { IsometricGrid, ISO_CONFIG, gridToScreen, screenToGrid } from './IsometricGrid';
+import { ParkScenery } from './ParkScenery';
+import { buildingArtwork, dinosaurArtwork, parkTexturePaths } from '../parkArtwork';
+import {
+  getBuildingById,
+  getDinosaurById,
+  getViewingPlatformCompletedLevel,
+} from '@dino-park/game-data';
+import { PARK_ADMISSION } from '@dino-park/shared';
+import type { BuildingResponse, DinosaurResponse, ParkOperationsResponse } from '@dino-park/shared';
 
 // 이벤트 타입
 export interface GameEngineEvents {
@@ -20,18 +29,28 @@ export class GameEngine {
 
   // 게임 상태
   private isInitialized = false;
+  private initializationId = 0;
   private isPaused = false;
 
   // 레이어
   private worldContainer: PIXI.Container | null = null;
   private grid: IsometricGrid | null = null;
   private uiContainer: PIXI.Container | null = null;
+  private scenery: ParkScenery | null = null;
+  private placementPreview: PIXI.Sprite | null = null;
+  private resizeObserver: ResizeObserver | null = null;
+  private hasPresentedPark = false;
+  private parkIsOpen = false;
 
   // 카메라
   private cameraX = 0;
   private cameraY = 0;
   private cameraZoom = 1;
   private isDragging = false;
+  private didDrag = false;
+  private pointerStart = { x: 0, y: 0 };
+  private isPlacing = false;
+  private parkTextures: Record<string, PIXI.Texture> = {};
   private lastPointerPosition = { x: 0, y: 0 };
 
   // 엔티티 맵
@@ -54,22 +73,42 @@ export class GameEngine {
       return;
     }
 
+    // Keep pending applications local: cleanup/remount can happen while Pixi initializes.
+    const initializationId = ++this.initializationId;
+    const app = new PIXI.Application();
+
+    let textures: Record<string, PIXI.Texture>;
+    try {
+      await app.init({
+        width: container.clientWidth,
+        height: container.clientHeight,
+        backgroundColor: 0x87ceeb,
+        resolution: window.devicePixelRatio || 1,
+        autoDensity: true,
+        antialias: true,
+      });
+      textures = await PIXI.Assets.load(parkTexturePaths);
+    } catch (error) {
+      if (app.renderer) {
+        app.destroy(true, { children: true });
+      } else {
+        app.stage.destroy({ children: true });
+      }
+      throw error;
+    }
+
+    // Pixi must finish initializing before it can safely be destroyed.
+    if (initializationId !== this.initializationId) {
+      app.destroy(true, { children: true });
+      return;
+    }
+
+    this.parkTextures = textures;
+    this.app = app;
     this.container = container;
 
-    // PIXI Application 생성
-    this.app = new PIXI.Application();
-
-    await this.app.init({
-      width: container.clientWidth,
-      height: container.clientHeight,
-      backgroundColor: 0x87ceeb,
-      resolution: window.devicePixelRatio || 1,
-      autoDensity: true,
-      antialias: true,
-    });
-
     // DOM에 캔버스 추가
-    container.appendChild(this.app.canvas);
+    container.appendChild(app.canvas);
 
     // 레이어 구조 생성
     this.worldContainer = new PIXI.Container();
@@ -81,6 +120,8 @@ export class GameEngine {
     // 아이소메트릭 그리드 생성
     this.grid = new IsometricGrid(gridSize, gridSize);
     this.worldContainer.addChild(this.grid);
+    this.scenery = new ParkScenery();
+    this.grid.attachScenery(this.scenery);
 
     // 초기 카메라 위치 (그리드 중앙)
     this.centerCamera();
@@ -90,21 +131,28 @@ export class GameEngine {
 
     // 리사이즈 핸들러
     window.addEventListener('resize', this.handleResize);
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(this.handleResize);
+      this.resizeObserver.observe(container);
+    }
 
     // 게임 루프 시작
     this.app.ticker.add(this.update);
 
     this.isInitialized = true;
-    console.log('🎮 GameEngine initialized');
   }
 
   /**
    * 게임 엔진 정리
    */
   destroy(): void {
-    if (!this.isInitialized) return;
+    // Invalidate pending initialization even before there is an active renderer.
+    this.initializationId++;
 
     window.removeEventListener('resize', this.handleResize);
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+    this.app?.canvas.removeEventListener('wheel', this.onWheel);
 
     // 엔티티 정리
     this.dinosaurs.clear();
@@ -114,16 +162,21 @@ export class GameEngine {
     this.eventListeners.clear();
 
     if (this.app) {
-      this.app.destroy(true);
+      this.app.destroy(true, { children: true });
       this.app = null;
     }
 
     this.worldContainer = null;
     this.grid = null;
     this.uiContainer = null;
+    this.scenery = null;
+    this.placementPreview = null;
+    this.hasPresentedPark = false;
+    this.parkIsOpen = false;
+    this.container = null;
 
     this.isInitialized = false;
-    console.log('🎮 GameEngine destroyed');
+    this.isDragging = false;
   }
 
   /**
@@ -143,7 +196,7 @@ export class GameEngine {
     this.app.stage.on('pointermove', this.onPointerMove);
 
     // 휠 이벤트 (줌)
-    this.container?.addEventListener('wheel', this.onWheel, { passive: false });
+    this.app.canvas.addEventListener('wheel', this.onWheel, { passive: false });
   }
 
   /**
@@ -151,6 +204,8 @@ export class GameEngine {
    */
   private onPointerDown = (event: PIXI.FederatedPointerEvent): void => {
     this.isDragging = true;
+    this.didDrag = false;
+    this.pointerStart = { x: event.globalX, y: event.globalY };
     this.lastPointerPosition = { x: event.globalX, y: event.globalY };
   };
 
@@ -158,14 +213,8 @@ export class GameEngine {
    * 포인터 업
    */
   private onPointerUp = (event: PIXI.FederatedPointerEvent): void => {
-    // 클릭 감지 (드래그가 아닌 경우)
-    if (this.isDragging) {
-      const dx = Math.abs(event.globalX - this.lastPointerPosition.x);
-      const dy = Math.abs(event.globalY - this.lastPointerPosition.y);
-
-      if (dx < 5 && dy < 5) {
-        this.handleClick(event.globalX, event.globalY);
-      }
+    if (this.isDragging && !this.didDrag) {
+      this.handleClick(event.globalX, event.globalY);
     }
 
     this.isDragging = false;
@@ -177,6 +226,10 @@ export class GameEngine {
   private onPointerMove = (event: PIXI.FederatedPointerEvent): void => {
     if (!this.isDragging) return;
 
+    if (Math.hypot(event.globalX - this.pointerStart.x, event.globalY - this.pointerStart.y) > 5) {
+      this.didDrag = true;
+    }
+    if (!this.didDrag) return;
     const dx = event.globalX - this.lastPointerPosition.x;
     const dy = event.globalY - this.lastPointerPosition.y;
 
@@ -206,22 +259,9 @@ export class GameEngine {
     const worldY = (screenY - this.worldContainer.y) / this.cameraZoom;
 
     // 그리드 좌표로 변환
-    const { x: gridX, y: gridY } = this.screenToGrid(worldX, worldY);
+    const { x: gridX, y: gridY } = screenToGrid(worldX, worldY);
 
     this.emit('tile:click', { gridX, gridY });
-  }
-
-  /**
-   * 화면 좌표를 그리드 좌표로 변환
-   */
-  private screenToGrid(worldX: number, worldY: number): { x: number; y: number } {
-    const hw = ISO_CONFIG.TILE_WIDTH / 2;
-    const hh = ISO_CONFIG.TILE_HEIGHT / 2;
-
-    const gridX = Math.floor((worldX / hw + worldY / hh) / 2);
-    const gridY = Math.floor((worldY / hh - worldX / hw) / 2);
-
-    return { x: gridX, y: gridY };
   }
 
   /**
@@ -241,12 +281,9 @@ export class GameEngine {
   private update = (ticker: PIXI.Ticker): void => {
     if (this.isPaused) return;
 
-    const delta = ticker.deltaTime;
-
     // 엔티티 정렬 (z-index)
     this.grid?.sortEntities();
-
-    void delta; // 임시
+    this.scenery?.update(ticker.deltaMS);
   };
 
   /**
@@ -275,7 +312,7 @@ export class GameEngine {
    * 줌 설정
    */
   setZoom(zoom: number): void {
-    this.cameraZoom = Math.max(0.5, Math.min(2, zoom));
+    this.cameraZoom = Math.max(0.2, Math.min(2, zoom));
     this.updateCamera();
     this.emit('camera:zoom', { zoom: this.cameraZoom });
   }
@@ -294,106 +331,247 @@ export class GameEngine {
     this.worldContainer.scale.set(this.cameraZoom);
   }
 
-  /**
-   * 공룡 추가
-   */
-  addDinosaur(id: string, gridX: number, gridY: number, color = 0x4caf50): PIXI.Container {
-    if (this.dinosaurs.has(id)) {
-      return this.dinosaurs.get(id)!;
+  setPlacementMode(active: boolean): void {
+    this.isPlacing = active;
+    if (!active) {
+      this.grid?.highlightTile(null);
+      this.placementPreview?.destroy();
+      this.placementPreview = null;
     }
+  }
 
-    // Placeholder 공룡 (사각형)
-    const dino = new PIXI.Container();
-    const graphics = new PIXI.Graphics();
+  highlightTile(x: number, y: number): void {
+    this.grid?.highlightTile({ x, y });
+  }
 
-    graphics.rect(-20, -40, 40, 40);
-    graphics.fill(color);
-    graphics.rect(-15, -45, 10, 10); // 머리
-    graphics.fill(color);
+  setShowGrid(show: boolean): void {
+    this.grid?.setShowGrid(show);
+  }
 
-    dino.addChild(graphics);
+  syncPark(width: number, height: number, operations: ParkOperationsResponse): void {
+    if (!this.isInitialized || !this.grid) return;
+    this.grid.setGridSize(width, height);
+    this.parkIsOpen = operations.isOpen;
+    for (const building of this.buildings.values()) this.updateGateAppearance(building);
+    this.scenery?.sync(width, height, operations);
+    if (!this.hasPresentedPark) {
+      this.hasPresentedPark = true;
+      this.fitPark();
+    }
+  }
 
-    // 클릭 이벤트
-    dino.eventMode = 'static';
-    dino.cursor = 'pointer';
-    dino.on('pointerdown', (e) => {
-      e.stopPropagation();
+  fitPark(): void {
+    if (!this.grid || !this.container) return;
+    const { width, height } = this.grid.getGridSize();
+    this.setZoom(
+      Math.min(
+        1,
+        (this.container.clientWidth - 32) / ((width + height) * 32),
+        (this.container.clientHeight - 56) / ((width + height) * 16),
+      ),
+    );
+    this.centerCamera();
+  }
+
+  focusTile(x: number, y: number): void {
+    const point = gridToScreen(x, y);
+    this.setZoom(1);
+    this.moveCamera(point.x, point.y);
+  }
+
+  previewBuilding(typeId: string, position: { x: number; y: number }, valid: boolean): void {
+    if (!this.grid || !this.isInitialized) return;
+    const type = getBuildingById(typeId);
+    const width = type?.size.width ?? 1,
+      height = type?.size.height ?? 1;
+    this.grid.highlightArea(position, width, height, valid);
+    if (!this.placementPreview) {
+      this.placementPreview = new PIXI.Sprite();
+      this.placementPreview.alpha = 0.55;
+      this.placementPreview.eventMode = 'none';
+      this.grid.addEntity(this.placementPreview, position.x, position.y);
+    }
+    this.setBuildingArtwork(this.placementPreview, typeId, width * ISO_CONFIG.TILE_WIDTH);
+    const point = gridToScreen(position.x + (width - 1) / 2, position.y + (height - 1) / 2);
+    this.placementPreview.position.set(point.x, point.y);
+    this.placementPreview.tint = valid ? 0xffffff : 0xff7777;
+  }
+
+  syncDinosaurs(dinosaurs: DinosaurResponse[]): void {
+    if (!this.isInitialized || !this.grid) return;
+    const visible = dinosaurs.filter((dinosaur) => dinosaur.isInPark);
+    const ids = new Set(visible.map((dinosaur) => dinosaur.id));
+    for (const id of this.dinosaurs.keys()) {
+      if (!ids.has(id)) this.removeDinosaur(id);
+    }
+    for (const dinosaur of visible) {
+      this.addDinosaur(
+        dinosaur.id,
+        dinosaur.positionX,
+        dinosaur.positionY,
+        0x4caf50,
+        dinosaur.nickname || getDinosaurById(dinosaur.speciesId)?.nameKo || dinosaur.speciesId,
+        dinosaur.speciesId,
+      );
+    }
+  }
+
+  syncBuildings(buildings: BuildingResponse[]): void {
+    if (!this.isInitialized || !this.grid) return;
+    const ids = new Set(buildings.map((building) => building.id));
+    for (const id of this.buildings.keys()) {
+      if (!ids.has(id)) this.removeBuilding(id);
+    }
+    for (const building of buildings) {
+      const sprite = this.addBuilding(
+        building.id,
+        building.positionX,
+        building.positionY,
+        building.typeId,
+      );
+      sprite.alpha = building.status.toLowerCase() === 'constructing' ? 0.5 : 1;
+      if (building.typeId === PARK_ADMISSION.platformTypeId) {
+        const upgrading = building.status.toLowerCase() === 'upgrading';
+        const level = getViewingPlatformCompletedLevel(building.level, upgrading);
+        this.setBuildingArtwork(
+          sprite.children[0] as PIXI.Sprite,
+          building.typeId,
+          ISO_CONFIG.TILE_WIDTH,
+          level,
+        );
+        const label = sprite.children[1] as PIXI.Text;
+        label.y = ISO_CONFIG.TILE_HEIGHT / 2 + 3;
+        label.text = `${getBuildingById(building.typeId)?.nameKo ?? '관람대'}${level > 1 ? ` Lv.${level}` : ''}${upgrading ? ' · 확장 중' : ''}`;
+      }
+    }
+  }
+
+  addDinosaur(
+    id: string,
+    gridX: number,
+    gridY: number,
+    color = 0x4caf50,
+    name = '공룡',
+    speciesId = 'parasaurolophus',
+  ): PIXI.Container {
+    const existing = this.dinosaurs.get(id);
+    if (existing) {
+      const { x, y } = gridToScreen(gridX, gridY);
+      existing.position.set(x, y);
+      return existing;
+    }
+    const dinosaur = new PIXI.Container();
+    const shadow = new PIXI.Graphics().ellipse(0, 1, 25, 10).fill({ color: 0x33542a, alpha: 0.2 });
+    const sprite = new PIXI.Sprite(this.parkTextures[dinosaurArtwork(speciesId)]);
+    sprite.anchor.set(0.5, 0.94);
+    sprite.width = 86;
+    sprite.height = 78;
+    sprite.tint = color === 0x4caf50 ? 0xffffff : color;
+    dinosaur.addChild(shadow, sprite, this.makeLabel(name, 18));
+    dinosaur.eventMode = 'static';
+    dinosaur.cursor = 'pointer';
+    dinosaur.on('pointerdown', (event: PIXI.FederatedPointerEvent) => {
+      if (this.isPlacing) return;
+      event.stopPropagation();
       this.emit('entity:click', { type: 'dinosaur', id });
     });
-
-    // 그리드에 추가
-    this.grid?.addEntity(dino, gridX, gridY);
-    this.dinosaurs.set(id, dino);
-
-    return dino;
+    this.grid?.addEntity(dinosaur, gridX, gridY);
+    this.dinosaurs.set(id, dinosaur);
+    return dinosaur;
   }
 
-  /**
-   * 공룡 제거
-   */
   removeDinosaur(id: string): void {
-    const dino = this.dinosaurs.get(id);
-    if (dino) {
-      dino.destroy();
-      this.dinosaurs.delete(id);
-    }
+    this.dinosaurs.get(id)?.destroy({ children: true });
+    this.dinosaurs.delete(id);
   }
 
-  /**
-   * 건물 추가
-   */
-  addBuilding(id: string, gridX: number, gridY: number, color = 0x795548): PIXI.Container {
-    if (this.buildings.has(id)) {
-      return this.buildings.get(id)!;
+  addBuilding(
+    id: string,
+    gridX: number,
+    gridY: number,
+    typeId = 'habitat-grassland',
+  ): PIXI.Container {
+    const type = getBuildingById(typeId);
+    const centerX = gridX + ((type?.size.width ?? 1) - 1) / 2;
+    const centerY = gridY + ((type?.size.height ?? 1) - 1) / 2;
+    const existing = this.buildings.get(id);
+    if (existing) {
+      const point = gridToScreen(centerX, centerY);
+      existing.position.set(point.x, point.y);
+      if (typeId === 'operation-entrance-gate') this.updateGateAppearance(existing);
+      return existing;
     }
-
-    // Placeholder 건물 (큐브)
     const building = new PIXI.Container();
-    const graphics = new PIXI.Graphics();
-
-    // 건물 본체 (아이소메트릭 큐브)
-    const hw = ISO_CONFIG.TILE_WIDTH / 2;
-    const hh = ISO_CONFIG.TILE_HEIGHT / 2;
-    const height = 60;
-
-    // 윗면
-    graphics.poly([0, -height, hw, -height + hh, 0, -height + hh * 2, -hw, -height + hh]);
-    graphics.fill(color + 0x202020);
-
-    // 왼쪽 면
-    graphics.poly([-hw, -height + hh, 0, -height + hh * 2, 0, hh * 2, -hw, hh]);
-    graphics.fill(color - 0x101010);
-
-    // 오른쪽 면
-    graphics.poly([hw, -height + hh, 0, -height + hh * 2, 0, hh * 2, hw, hh]);
-    graphics.fill(color);
-
-    building.addChild(graphics);
-
-    // 클릭 이벤트
+    building.zIndex = type?.category === 'dinosaur' ? -1 : 0;
+    const sprite = new PIXI.Sprite();
+    this.setBuildingArtwork(sprite, typeId, (type?.size.width ?? 3) * ISO_CONFIG.TILE_WIDTH);
+    building.addChild(sprite, this.makeLabel(type?.nameKo ?? typeId, sprite.height * 0.45));
+    if (typeId === 'operation-entrance-gate') {
+      building.label = 'entrance-gate';
+      this.updateGateAppearance(building);
+    }
     building.eventMode = 'static';
     building.cursor = 'pointer';
-    building.on('pointerdown', (e) => {
-      e.stopPropagation();
+    building.on('pointerdown', (event: PIXI.FederatedPointerEvent) => {
+      if (this.isPlacing) return;
+      event.stopPropagation();
       this.emit('entity:click', { type: 'building', id });
     });
-
-    // 그리드에 추가
-    this.grid?.addEntity(building, gridX, gridY);
+    this.grid?.addEntity(building, centerX, centerY);
     this.buildings.set(id, building);
-
     return building;
   }
 
-  /**
-   * 건물 제거
-   */
-  removeBuilding(id: string): void {
-    const building = this.buildings.get(id);
-    if (building) {
-      building.destroy();
-      this.buildings.delete(id);
+  private setBuildingArtwork(
+    sprite: PIXI.Sprite,
+    typeId: string,
+    width: number,
+    completedLevel = 1,
+  ): void {
+    const texture = this.parkTextures[buildingArtwork(typeId, completedLevel)];
+    if (sprite.texture !== texture) sprite.texture = texture;
+    sprite.width = width;
+    if (typeId === PARK_ADMISSION.platformTypeId) {
+      sprite.height = width * (texture.height / texture.width);
+      // Align the cropped sprite's near corner with the front point of its ground tile.
+      sprite.anchor.set(0.5, 1 - ISO_CONFIG.TILE_HEIGHT / 2 / sprite.height);
+      return;
     }
+    const isGate = typeId === 'operation-entrance-gate';
+    sprite.height = width * (isGate ? 152 / 192 : 128 / 192);
+    sprite.anchor.set(0.5, isGate ? 106 / 152 : 63 / 128);
+  }
+
+  private updateGateAppearance(building: PIXI.Container): void {
+    if (building.label !== 'entrance-gate') return;
+    const sprite = building.children[0] as PIXI.Sprite;
+    const label = building.children[1] as PIXI.Text;
+    sprite.texture =
+      this.parkTextures[
+        `/assets/placeholders/operation-entrance-gate${this.parkIsOpen ? '-open' : ''}.svg`
+      ];
+    label.text = `입구 게이트 · ${this.parkIsOpen ? '개장' : '휴장'}`;
+  }
+
+  private makeLabel(text: string, y: number): PIXI.Text {
+    const label = new PIXI.Text({
+      text,
+      style: {
+        fontFamily: 'sans-serif',
+        fontSize: 12,
+        fontWeight: '600',
+        fill: 0x24432e,
+        stroke: { color: 0xffffff, width: 4 },
+      },
+    });
+    label.anchor.set(0.5, 0);
+    label.y = y;
+    return label;
+  }
+
+  removeBuilding(id: string): void {
+    this.buildings.get(id)?.destroy({ children: true });
+    this.buildings.delete(id);
   }
 
   /**

@@ -87,15 +87,55 @@ model Park {
   exp       Int      @default(0)
   gridSizeX Int      @default(20)
   gridSizeY Int      @default(20)
+  isOpen Boolean @default(false)
+  admissionCareCompleted Boolean @default(false)
+  economySettledAt DateTime?
+  onlineUntil DateTime?
+  visitorRemainder Float @default(0)
+  maintenanceRemainder Float @default(0)
+  totalVisitors Int @default(0)
+  totalAdmissionGold Int @default(0)
+  firstVisitorsRewarded Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   dinosaurs Dinosaur[]
+  dinosaurCollections DinosaurCollection[]
   buildings Building[]
+  resourceInventory ResourceInventory[]
+  productionJobs ProductionJob[]
+  driveRuns DriveRun[]
+  firstSynthesis FirstSynthesisJob?
+  repeatSyntheses RepeatSynthesisJob[]
+  growthClaims ParkGrowthClaim[]
+  technologyResearch ParkTechnologyResearch[]
 
   @@map("parks")
+}
+
+model ParkGrowthClaim {
+  parkId    String
+  goalId    String
+  xp        Int
+  claimedAt DateTime @default(now())
+  park      Park     @relation(fields: [parkId], references: [id], onDelete: Cascade)
+
+  @@id([parkId, goalId])
+  @@map("park_growth_claims")
+}
+
+model ParkTechnologyResearch {
+  parkId       String
+  technologyId String
+  level        Int
+  startedAt    DateTime @default(now())
+  completesAt  DateTime
+  park         Park     @relation(fields: [parkId], references: [id], onDelete: Cascade)
+
+  @@id([parkId, technologyId, level])
+  @@map("park_technology_research")
 }
 
 // ========================================
@@ -103,26 +143,40 @@ model Park {
 // ========================================
 
 model Dinosaur {
-  id        String   @id @default(cuid())
-  parkId    String
-  speciesId String   // game-data 참조 (예: "triceratops")
-  nickname  String?
-  level     Int      @default(1)
-  exp       Int      @default(0)
-  happiness Int      @default(100)
-  hunger    Int      @default(0)
-  intimacy  Int      @default(0)
-  positionX Int
-  positionY Int
-  isInPark  Boolean  @default(true)
-  lastFedAt DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(cuid())
+  parkId           String
+  speciesId        String   // game-data 참조 (예: "triceratops")
+  nickname         String?
+  level            Int      @default(1)
+  exp              Int      @default(0)
+  happiness        Int      @default(100)
+  hunger           Int      @default(0)
+  intimacy         Int      @default(0)
+  positionX        Int
+  positionY        Int
+  isInPark         Boolean  @default(true)
+  competitiveStats Json?
+  lastFedAt        DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   // Relations
   park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
 
   @@map("dinosaurs")
+}
+
+// 영구 수집 등록. 현재 보유 개체와 분리하여 방생 후에도 남는다.
+model DinosaurCollection {
+  id               String   @id @default(cuid())
+  parkId           String
+  speciesId        String
+  firstCollectedAt DateTime @default(now())
+
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+
+  @@unique([parkId, speciesId])
+  @@map("dinosaur_collections")
 }
 
 // ========================================
@@ -138,11 +192,13 @@ model Building {
   positionY             Int
   status                BuildingStatus @default(ACTIVE)
   assignedGreatFigureId String?
+  completesAt DateTime?
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
 
   // Relations
   park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+  productionJobs ProductionJob[]
 
   @@map("buildings")
 }
@@ -246,11 +302,14 @@ model Exploration {
   startedAt   DateTime          @default(now())
   completedAt DateTime?
   rewards     Json?
+  missionId   String?
+  missionStep Int @default(0)
   createdAt   DateTime          @default(now())
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, missionId])
   @@map("explorations")
 }
 
@@ -258,6 +317,37 @@ enum ExplorationStatus {
   IN_PROGRESS
   COMPLETED
   CLAIMED
+}
+
+model DriveRun {
+  id String @id @default(cuid())
+  parkId String
+  activeSlot String? @unique
+  missionId String
+  seed Int
+  sector Int @default(0)
+  x Int @default(500)
+  collected Int @default(0)
+  damage Int @default(0)
+  required Int
+  status DriveRunStatus @default(RUNNING)
+  reward Json
+  sectorStartedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  claimedAt DateTime?
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+  egg HatchingQueue?
+
+  @@index([parkId, missionId, status])
+  @@map("drive_runs")
+}
+
+enum DriveRunStatus {
+  RUNNING
+  REWARD
+  FAILED
+  CLAIMED
+  ABANDONED
 }
 
 // ========================================
@@ -272,9 +362,14 @@ model HatchingQueue {
   startedAt   DateTime @default(now())
   completesAt DateTime
   completed   Boolean  @default(false)
+  readyToStart Boolean @default(false)
+  sourceExplorationId String? @unique
+  sourceDriveId String? @unique
+  claimedDinosaurId String?
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceDrive DriveRun? @relation(fields: [sourceDriveId], references: [id], onDelete: SetNull)
 
   @@map("hatching_queue")
 }
@@ -504,4 +599,77 @@ model SocialNotification {
 
   @@index([userId, isRead])
   @@map("social_notifications")
+}
+
+// One inventory owns ordinary resources now and quality-bearing materials later.
+model ResourceInventory {
+  id String @id @default(cuid())
+  parkId String
+  material String
+  quality Int @default(0)
+  amount Int @default(0)
+  updatedAt DateTime @updatedAt
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+
+  @@unique([parkId, material, quality])
+  @@map("resource_inventory")
+}
+
+// activeSlot is the facility ID while unclaimed; nullable unique keeps one live job.
+model ProductionJob {
+  id String @id @default(cuid())
+  parkId String
+  buildingId String
+  activeSlot String? @unique
+  material String
+  lots Int
+  quantity Int
+  costGold Int
+  startedAt DateTime @default(now())
+  readyAt DateTime
+  claimedAt DateTime?
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+
+  @@index([parkId, buildingId])
+  @@map("production_jobs")
+}
+
+model FirstSynthesisJob {
+  parkId String @id
+  parentIds String[]
+  labId String
+  startedAt DateTime @default(now())
+  readyAt DateTime
+  claimedAt DateTime?
+  resultDinosaurId String?
+  exhibitedAt DateTime?
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+
+  @@map("first_synthesis_jobs")
+}
+
+model RepeatSynthesisJob {
+  id               String   @id @default(cuid())
+  parkId           String
+  requestId        String
+  activeSlot       String?  @unique
+  focus            String
+  parentIds        String[]
+  sequence         Int
+  attempt          Int
+  successChance    Float
+  success          Boolean
+  traits           Json?
+  refunds          Json
+  startedAt        DateTime @default(now())
+  readyAt          DateTime
+  claimedAt        DateTime?
+  resultDinosaurId String?
+
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+
+  @@unique([parkId, requestId])
+  @@unique([parkId, sequence])
+  @@map("repeat_synthesis_jobs")
 }

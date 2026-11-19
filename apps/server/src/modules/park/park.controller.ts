@@ -1,9 +1,18 @@
-import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiProperty } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ParkService } from './park.service';
-import { IsString, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsBoolean, IsInt, Min, MinLength, MaxLength } from 'class-validator';
+import { ParkOperationsService } from './park-operations.service';
+
+class ParkOpenDto {
+  @IsBoolean() isOpen!: boolean;
+}
+class EntrancePositionDto {
+  @IsInt() @Min(0) positionX!: number;
+  @IsInt() @Min(0) positionY!: number;
+}
 
 class RenameParkDto {
   @ApiProperty({ description: '파크 이름', example: '공룡 왕국', minLength: 2, maxLength: 20 })
@@ -18,7 +27,31 @@ class RenameParkDto {
 @UseGuards(JwtAuthGuard)
 @Controller('parks')
 export class ParkController {
-  constructor(private readonly parkService: ParkService) {}
+  constructor(
+    private readonly parkService: ParkService,
+    private readonly operations: ParkOperationsService,
+  ) {}
+
+  @Get('me/operations')
+  getOperations(@CurrentUser('id') userId: string) {
+    return this.operations.getOperations(userId);
+  }
+
+  @Patch('me/open')
+  setOpen(@CurrentUser('id') userId: string, @Body() dto: ParkOpenDto) {
+    return this.operations.setOpen(userId, dto.isOpen);
+  }
+
+  @Patch('me/entrance')
+  moveEntrance(@CurrentUser('id') userId: string, @Body() dto: EntrancePositionDto) {
+    return this.operations.moveEntrance(userId, dto.positionX, dto.positionY);
+  }
+
+  @Post('me/starter')
+  @ApiOperation({ summary: '빈 파크에 시작 공룡과 기본 시설을 한 번 지급' })
+  async claimStarter(@CurrentUser('id') userId: string) {
+    return this.parkService.claimStarter(userId);
+  }
 
   /**
    * 내 파크 전체 조회 (공룡, 건물 포함)

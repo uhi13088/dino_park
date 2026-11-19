@@ -24,7 +24,13 @@ export interface Toast {
 }
 
 // 사이드 패널 타입
-export type SidePanelType = 'dinosaur_list' | 'building_list' | 'great_figure_list' | null;
+export type SidePanelType =
+  | 'dinosaur_list'
+  | 'building_list'
+  | 'great_figure_list'
+  | 'resources'
+  | 'growth'
+  | null;
 
 interface UIState {
   // 모달

@@ -518,14 +518,14 @@ export class ShopService {
         }
         break;
 
-      case 'firstPurchase':
+      case 'firstPurchase': {
         const hasNoPurchases = await this.hasNoPurchases(userId);
         if (hasNoPurchases) {
           return user.createdAt;
         }
         break;
-
-      case 'returnUser':
+      }
+      case 'returnUser': {
         const daysSinceLastLogin = Math.floor(
           (Date.now() - user.lastLoginAt.getTime()) / (1000 * 60 * 60 * 24),
         );
@@ -533,6 +533,7 @@ export class ShopService {
           return new Date();
         }
         break;
+      }
     }
 
     return null;

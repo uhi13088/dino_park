@@ -2,7 +2,13 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 // 게임 모드
-export type GameMode = 'normal' | 'view' | 'build' | 'place_dinosaur' | 'place_building';
+export type GameMode =
+  | 'normal'
+  | 'view'
+  | 'build'
+  | 'place_dinosaur'
+  | 'place_building'
+  | 'place_entrance';
 
 // 선택된 엔티티 타입
 interface SelectedEntity {
@@ -12,7 +18,8 @@ interface SelectedEntity {
 
 // 배치 모드 데이터
 interface PlacementData {
-  type: 'dinosaur' | 'building';
+  type: 'dinosaur' | 'building' | 'entrance';
+  id?: string; // 보유한 엔티티 ID
   speciesId?: string; // 공룡 배치 시
   typeId?: string; // 건물 배치 시
 }
@@ -93,7 +100,12 @@ export const useGameStore = create<GameState>()(
       // 배치 시작
       startPlacement: (data) =>
         set({
-          mode: data.type === 'dinosaur' ? 'place_dinosaur' : 'place_building',
+          mode:
+            data.type === 'dinosaur'
+              ? 'place_dinosaur'
+              : data.type === 'entrance'
+                ? 'place_entrance'
+                : 'place_building',
           placementData: data,
           selectedEntity: null,
         }),

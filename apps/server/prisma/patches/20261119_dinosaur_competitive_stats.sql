@@ -1,0 +1,5 @@
+BEGIN;
+
+ALTER TABLE "dinosaurs" ADD COLUMN IF NOT EXISTS "competitiveStats" JSONB;
+
+COMMIT;

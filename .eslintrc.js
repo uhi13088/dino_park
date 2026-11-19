@@ -33,6 +33,15 @@ module.exports = {
     // Prettier
     'prettier/prettier': 'error',
   },
+  overrides: [
+    {
+      files: ['apps/server/test/**/*.ts'],
+      parserOptions: {
+        project: ['./apps/server/tsconfig.eslint.json'],
+        tsconfigRootDir: __dirname,
+      },
+    },
+  ],
   ignorePatterns: [
     'node_modules/',
     'dist/',

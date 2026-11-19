@@ -7,6 +7,8 @@ dist/
 build/
 .next/
 out/
+__pycache__/
+*.py[cod]
 
 # Environment
 .env
@@ -30,6 +32,9 @@ pnpm-debug.log*
 # Testing
 coverage/
 .nyc_output/
+.playwright-mcp/
+playwright-report/
+test-results/
 
 # Turbo
 .turbo/
@@ -43,3 +48,4 @@ prisma/migrations/*.sql
 tmp/
 temp/
 tsup.config.bundled_*.mjs
+.impeccable/review/

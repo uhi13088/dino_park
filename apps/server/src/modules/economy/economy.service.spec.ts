@@ -1,10 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EconomyService } from './economy.service';
+import { ParkOperationsService } from '../park/park-operations.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('EconomyService', () => {
   let service: EconomyService;
+
+  const mockOperations = { settleInTransaction: jest.fn() };
 
   const mockCurrencyModel = {
     findUnique: jest.fn(),
@@ -47,28 +50,11 @@ describe('EconomyService', () => {
     updatedAt: new Date(),
   };
 
-  const mockUser = {
-    id: 'user-1',
-    tossId: 'toss-123',
-    nickname: 'TestUser',
-    lastLoginAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-    park: {
-      id: 'park-1',
-      dinosaurs: [
-        { id: 'dino-1', level: 5, happiness: 80, isInPark: true },
-        { id: 'dino-2', level: 3, happiness: 60, isInPark: true },
-      ],
-      buildings: [
-        { id: 'building-1', status: 'ACTIVE' },
-        { id: 'building-2', status: 'ACTIVE' },
-      ],
-    },
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EconomyService,
+        { provide: ParkOperationsService, useValue: mockOperations },
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -79,6 +65,11 @@ describe('EconomyService', () => {
     service = module.get<EconomyService>(EconomyService);
 
     jest.clearAllMocks();
+    mockOperations.settleInTransaction.mockResolvedValue({
+      elapsedHours: 0,
+      gross: 0,
+      maintenance: 0,
+    });
   });
 
   describe('getCurrency', () => {
@@ -101,41 +92,33 @@ describe('EconomyService', () => {
   });
 
   describe('collectOfflineRevenue', () => {
-    it('should calculate and collect offline revenue', async () => {
-      mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
-      mockPrismaService.currency.update.mockResolvedValue({
-        ...mockCurrency,
-        gold: mockCurrency.gold + 1000,
+    it('delegates to the same paid-admission settlement without using lastLoginAt', async () => {
+      mockOperations.settleInTransaction.mockResolvedValue({
+        elapsedHours: 4,
+        gross: 1200,
+        maintenance: 40,
       });
-      mockPrismaService.user.update.mockResolvedValue(mockUser);
-      mockPrismaService.transaction.create.mockResolvedValue({});
-
       const result = await service.collectOfflineRevenue('user-1');
-
       expect(result.collected).toBe(true);
-      expect(result.offlineHours).toBeGreaterThan(0);
-      expect(result.totalRevenue).toBeGreaterThan(0);
+      expect(result.offlineHours).toBe(4);
+      expect(result.totalRevenue).toBe(1160);
+      expect(mockOperations.settleInTransaction).toHaveBeenCalledWith(expect.anything(), 'user-1');
+      expect(mockPrismaService.user.findUnique).not.toHaveBeenCalled();
+      expect(mockPrismaService.user.update).not.toHaveBeenCalled();
     });
-
-    it('should throw NotFoundException when user not found', async () => {
-      mockPrismaService.user.findUnique.mockResolvedValue(null);
-
+    it('propagates a missing park', async () => {
+      mockOperations.settleInTransaction.mockRejectedValueOnce(
+        new NotFoundException('파크를 찾을 수 없습니다.'),
+      );
       await expect(service.collectOfflineRevenue('invalid-user')).rejects.toThrow(
         NotFoundException,
       );
     });
-
-    it('should return zero revenue for very short offline time', async () => {
-      const recentUser = {
-        ...mockUser,
-        lastLoginAt: new Date(), // Just now
-      };
-      mockPrismaService.user.findUnique.mockResolvedValue(recentUser);
-
+    it('does not invent a second payout when admission was already settled', async () => {
       const result = await service.collectOfflineRevenue('user-1');
-
       expect(result.collected).toBe(false);
       expect(result.totalRevenue).toBe(0);
+      expect(mockPrismaService.currency.update).not.toHaveBeenCalled();
     });
   });
 

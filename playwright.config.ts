@@ -13,7 +13,7 @@ export default defineConfig({
   reporter: 'html',
 
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://127.0.0.1:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -44,8 +44,8 @@ export default defineConfig({
 
   // 로컬 개발 서버 자동 실행
   webServer: {
-    command: 'pnpm --filter @dino-park/client dev',
-    url: 'http://localhost:5173',
+    command: 'corepack pnpm@9.0.0 --filter @dino-park/client dev --host 127.0.0.1',
+    url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

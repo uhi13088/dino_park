@@ -1,10 +1,13 @@
 /**
  * 건물 데이터
- * 참조: docs/dino_park_asset_buildings_characters.md
- * 총 50종: 서식지(8), 연구(6), 관람(6), 편의(12), 생산(6), 운영(6), 장식(6)
+ * 수록량은 BUILDING_STATS에서 계산한다. 카탈로그 수록과 실제 구현 범위는 다르다.
+ * 실제 기능: TASK.md / 역할·통합 검토: docs/current/buildings.md
  */
 
-import { BuildingType, BuildingCategory } from '@dino-park/shared';
+import { BuildingType, BuildingCategory, FIRST_HYBRID_HABITAT_ID } from '@dino-park/shared';
+import { MAX_VIEWING_PLATFORM_LEVEL, VIEWING_PLATFORM_BASE_STATS } from './viewing-platform';
+
+export * from './viewing-platform';
 
 // === 크기별 사이즈 ===
 const SIZE = {
@@ -15,7 +18,7 @@ const SIZE = {
   XL: { width: 4, height: 4 },
 } as const;
 
-// === 공룡 서식지 (8종) ===
+// === 공룡 서식지 ===
 const DINOSAUR_HABITATS: BuildingType[] = [
   {
     id: 'habitat-grassland',
@@ -69,11 +72,27 @@ const DINOSAUR_HABITATS: BuildingType[] = [
       space: 9,
     },
     size: SIZE.L,
+    constructionTime: 180,
     unlockCondition: {
-      parkLevel: 10,
-      cost: { gold: 15000 },
+      parkLevel: 4,
+      cost: { gold: 15000, materials: { wood: 30, stone: 30 } },
     },
     description: '강화된 철제 울타리로 둘러싸인 육식 공룡 전용 서식지. 경고 표지판이 있습니다.',
+  },
+  {
+    id: FIRST_HYBRID_HABITAT_ID,
+    name: 'Herbivore Hybrid Habitat',
+    nameKo: '초식 하이브리드 서식지',
+    category: BuildingCategory.DINOSAUR,
+    maxLevel: 25,
+    baseStats: { capacity: 2, revenue: 0, maintenanceCost: 80, space: 9 },
+    size: SIZE.L,
+    constructionTime: 180,
+    unlockCondition: {
+      parkLevel: 5,
+      cost: { gold: 12000, materials: { wood: 40, stone: 30 } },
+    },
+    description: '스테고케라톱스처럼 온순한 하이브리드를 안전하게 전시하는 서식지입니다.',
   },
   {
     id: 'habitat-pterosaur-dome',
@@ -187,9 +206,10 @@ const RESEARCH_FACILITIES: BuildingType[] = [
       space: 4,
     },
     size: SIZE.M,
+    constructionTime: 120,
     unlockCondition: {
-      parkLevel: 1,
-      cost: { gold: 3000 },
+      parkLevel: 3,
+      cost: { gold: 3000, materials: { wood: 20, stone: 10 } },
     },
     description: '공룡 알을 부화시키는 시설. 유리 패널이 있는 돔 구조로 내부가 보입니다.',
   },
@@ -206,9 +226,10 @@ const RESEARCH_FACILITIES: BuildingType[] = [
       space: 4,
     },
     size: SIZE.M,
+    constructionTime: 300,
     unlockCondition: {
       parkLevel: 3,
-      cost: { gold: 8000 },
+      cost: { gold: 8000, materials: { wood: 40, stone: 30 } },
     },
     description: 'DNA 조합과 유전자 연구를 수행하는 현대적인 연구소. DNA 나선 로고가 있습니다.',
   },
@@ -297,17 +318,18 @@ const VISITOR_FACILITIES: BuildingType[] = [
     name: 'Viewing Platform',
     nameKo: '관람대',
     category: BuildingCategory.VISITOR,
-    maxLevel: 10,
+    maxLevel: MAX_VIEWING_PLATFORM_LEVEL,
+    baseCost: 1500,
+    constructionTime: 30,
     baseStats: {
-      capacity: 20,
-      revenue: 100,
-      maintenanceCost: 20,
+      ...VIEWING_PLATFORM_BASE_STATS,
+      revenue: 0,
       space: 1,
     },
     size: SIZE.S,
     unlockCondition: {
       parkLevel: 2,
-      cost: { gold: 2000 },
+      cost: { gold: 1500 },
     },
     description: '높은 곳에서 서식지를 관람할 수 있는 나무 플랫폼. 안전 난간과 망원경이 있습니다.',
   },
@@ -640,8 +662,36 @@ const AMENITY_FACILITIES: BuildingType[] = [
   },
 ];
 
-// === 생산 시설 (6종) ===
+// === 생산 시설 ===
 const PRODUCTION_FACILITIES: BuildingType[] = [
+  {
+    id: 'production-lumberyard',
+    name: 'Lumberyard',
+    nameKo: '벌목장',
+    category: BuildingCategory.PRODUCTION,
+    maxLevel: 1,
+    baseCost: 1500,
+    constructionTime: 60,
+    baseStats: { capacity: 0, revenue: 0, maintenanceCost: 0, space: 4 },
+    size: SIZE.M,
+    unlockCondition: { parkLevel: 2, cost: { gold: 1500 } },
+    description:
+      '골드와 시간을 들여 건설용 목재를 생산합니다. 작업을 시작하고 완료된 목재를 직접 수령하세요.',
+  },
+  {
+    id: 'production-quarry',
+    name: 'Quarry',
+    nameKo: '채석장',
+    category: BuildingCategory.PRODUCTION,
+    maxLevel: 1,
+    baseCost: 1500,
+    constructionTime: 60,
+    baseStats: { capacity: 0, revenue: 0, maintenanceCost: 0, space: 4 },
+    size: SIZE.M,
+    unlockCondition: { parkLevel: 2, cost: { gold: 1500 } },
+    description:
+      '골드와 시간을 들여 기반 공사용 석재를 생산합니다. 생산 작업이 끝나면 직접 수령하세요.',
+  },
   {
     id: 'production-feed-factory',
     name: 'Feed Factory',
@@ -792,9 +842,10 @@ const OPERATION_FACILITIES: BuildingType[] = [
       space: 4,
     },
     size: SIZE.M,
+    constructionTime: 180,
     unlockCondition: {
-      parkLevel: 8,
-      cost: { gold: 20000 },
+      parkLevel: 4,
+      cost: { gold: 20000, materials: { wood: 20, stone: 40 } },
     },
     description: '보안 카메라와 경비실이 있는 모니터링 시설. 경고등이 있습니다.',
   },

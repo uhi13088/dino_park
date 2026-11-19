@@ -1,151 +1,312 @@
-import { useState } from 'react';
-import { useDinosaurs } from '../../../api/queries';
+import { useEffect, useMemo, useRef } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import {
+  CODEX_ORIGIN_LABELS,
+  CODEX_RARITY_LABELS,
+  DinosaurOrigin,
+  Rarity,
+} from '@dino-park/shared';
+import { tokenManager, useDinosaurCodex } from '@/api';
+import { CodexArtwork } from '../components/CodexArtwork';
+import { CodexDetail } from '../components/CodexDetail';
+import './DinosaurCodex.css';
 
-/**
- * 공룡 페이지 - 공룡 도감/관리 화면
+const RARITIES = Object.values(Rarity);
+const ORIGINS = Object.values(DinosaurOrigin);
+
+/** Existing park palette and type; a searchable collection with a persistent reading pane.
+ * Mobile opens the same detail as a full reading view. Collection figures come only from the API.
  */
 export default function DinosaurPage() {
-  const [activeTab, setActiveTab] = useState<'collection' | 'codex'>('collection');
-  const { data: dinosaursData, isLoading } = useDinosaurs();
+  const { data, isPending, isError, isFetching, refetch } = useDinosaurCodex();
+  const [params, setParams] = useSearchParams();
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const detailPaneRef = useRef<HTMLElement>(null);
+  const lastCardRef = useRef<HTMLButtonElement | null>(null);
+  const returnCardFocus = useRef(false);
+  const search = params.get('q') ?? '';
+  const rarity = params.get('rarity') ?? '';
+  const origin = params.get('origin') ?? '';
+  const collection = params.get('collection') ?? '';
+  const requestedSpecies = params.get('species');
+  const selectedEntry = data?.entries.find((entry) => entry.speciesId === requestedSpecies);
+  const selectedSpeciesId = selectedEntry?.speciesId ?? null;
 
+  const filtered = useMemo(() => {
+    const query = search.trim().toLocaleLowerCase('ko');
+    return (data?.entries ?? [])
+      .filter((entry) => {
+        if (RARITIES.includes(rarity as Rarity) && entry.rarity !== rarity) return false;
+        if (ORIGINS.includes(origin as DinosaurOrigin) && entry.origin !== origin) return false;
+        if (collection === 'owned' && !entry.collection.ownedCount) return false;
+        if (collection === 'collected' && !entry.collection.collected) return false;
+        if (collection === 'missing' && entry.collection.collected) return false;
+        return !query || (entry.nameKo + ' ' + entry.name).toLocaleLowerCase('ko').includes(query);
+      })
+      .sort(
+        (a, b) =>
+          Number(b.collection.collected) - Number(a.collection.collected) ||
+          RARITIES.indexOf(a.rarity) - RARITIES.indexOf(b.rarity) ||
+          a.nameKo.localeCompare(b.nameKo, 'ko'),
+      );
+  }, [data, search, rarity, origin, collection]);
+
+  const detail = selectedEntry ?? filtered[0];
+  const detailSpeciesId = detail?.speciesId ?? null;
+  useEffect(() => {
+    if (detailPaneRef.current) detailPaneRef.current.scrollTop = 0;
+    if (selectedSpeciesId) {
+      headingRef.current?.focus({ preventScroll: true });
+    } else if (returnCardFocus.current) {
+      if (lastCardRef.current?.isConnected) lastCardRef.current.focus();
+      returnCardFocus.current = false;
+    }
+  }, [detailSpeciesId, selectedSpeciesId]);
+
+  function setFilter(name: string, value: string) {
+    if (name !== 'species' || value) returnCardFocus.current = false;
+    setParams(
+      (previous) => {
+        const next = new URLSearchParams(previous);
+        if (value) next.set(name, value);
+        else next.delete(name);
+        if (name !== 'species') next.delete('species');
+        return next;
+      },
+      { replace: name !== 'species', preventScrollReset: true },
+    );
+  }
+
+  function clearFilters() {
+    returnCardFocus.current = false;
+    setParams({}, { replace: true, preventScrollReset: true });
+  }
+
+  function closeDetail() {
+    if (!selectedSpeciesId) return;
+    returnCardFocus.current = true;
+    setFilter('species', '');
+  }
+
+  if (!tokenManager.isAuthenticated()) return <Navigate to="/" replace />;
+  if (isPending)
+    return (
+      <div className="codex-state" role="status">
+        <h1>공룡 도감</h1>
+        <p>도감을 불러오고 있어요…</p>
+      </div>
+    );
+  if (isError || !data)
+    return (
+      <div className="codex-state" role="alert">
+        <h1>도감을 불러오지 못했어요</h1>
+        <p>연결 상태를 확인한 뒤 다시 시도해 주세요.</p>
+        <button className="codex-action" onClick={() => void refetch()}>
+          다시 불러오기
+        </button>
+      </div>
+    );
+
+  const summary = data.summary;
   return (
-    <div className="flex h-full flex-col bg-gray-50">
-      {/* 탭 헤더 */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="flex">
-          <TabButton active={activeTab === 'collection'} onClick={() => setActiveTab('collection')}>
-            🦕 보유 공룡
-          </TabButton>
-          <TabButton active={activeTab === 'codex'} onClick={() => setActiveTab('codex')}>
-            📖 도감
-          </TabButton>
+    <div className={'codex-page' + (selectedEntry ? ' has-selection' : '')}>
+      <header className="codex-heading">
+        <div>
+          <h1>공룡 도감</h1>
+          <p data-testid="codex-summary">
+            수집{' '}
+            <strong>
+              {summary.collectedSpecies}/{summary.totalSpecies}종
+            </strong>{' '}
+            · 현재 {summary.ownedDinosaurs}마리 보유
+          </p>
+          <progress
+            aria-label="도감 수집 진행"
+            max={summary.totalSpecies || 1}
+            value={summary.collectedSpecies}
+          />
+        </div>
+        <button
+          className="codex-refresh"
+          aria-label="도감 새로고침"
+          disabled={isFetching}
+          onClick={() => void refetch()}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            aria-hidden="true"
+          >
+            <path d="M20 11a8 8 0 1 0-2 6M20 4v7h-7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </header>
+      <div className="codex-toolbar">
+        <label className="codex-search">
+          <span className="sr-only">공룡 이름 검색</span>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            aria-hidden="true"
+          >
+            <circle cx="10" cy="10" r="6" />
+            <path d="m15 15 5 5" strokeLinecap="round" />
+          </svg>
+          <input
+            type="search"
+            value={search}
+            maxLength={100}
+            onChange={(event) => setFilter('q', event.target.value)}
+            placeholder="이름으로 공룡 찾기"
+          />
+        </label>
+        <div className="codex-select-row">
+          <label>
+            공룡 등급
+            <select
+              value={RARITIES.includes(rarity as Rarity) ? rarity : ''}
+              onChange={(event) => setFilter('rarity', event.target.value)}
+            >
+              <option value="">모든 등급</option>
+              {RARITIES.map((value) => (
+                <option key={value} value={value}>
+                  {CODEX_RARITY_LABELS[value]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            수집 상태
+            <select
+              value={['owned', 'collected', 'missing'].includes(collection) ? collection : ''}
+              onChange={(event) => setFilter('collection', event.target.value)}
+            >
+              <option value="">전체 공룡</option>
+              <option value="owned">현재 보유 중</option>
+              <option value="collected">수집 완료</option>
+              <option value="missing">아직 미수집</option>
+            </select>
+          </label>
+        </div>
+        <div className="codex-origin-filters" role="group" aria-label="공룡 계보">
+          <button
+            aria-pressed={!ORIGINS.includes(origin as DinosaurOrigin)}
+            onClick={() => setFilter('origin', '')}
+          >
+            전체
+          </button>
+          {ORIGINS.map((value) => (
+            <button
+              key={value}
+              aria-pressed={origin === value}
+              onClick={() => setFilter('origin', value)}
+            >
+              {CODEX_ORIGIN_LABELS[value]}
+            </button>
+          ))}
         </div>
       </div>
-
-      {/* 탭 컨텐츠 */}
-      <div className="flex-1 overflow-auto p-4">
-        {activeTab === 'collection' ? (
-          <CollectionView dinosaurs={dinosaursData?.dinosaurs || []} isLoading={isLoading} />
-        ) : (
-          <CodexView />
+      <div className="codex-workspace">
+        <section className="codex-list" aria-label="공룡 목록">
+          <div className="codex-list-heading">
+            <p role="status">{filtered.length}종 표시</p>
+            {(search || rarity || origin || collection) && (
+              <button onClick={clearFilters}>필터 초기화</button>
+            )}
+          </div>
+          {requestedSpecies && !selectedEntry && (
+            <p className="codex-muted">
+              선택한 공룡을 찾을 수 없어요. 목록에서 다시 선택해 주세요.
+            </p>
+          )}
+          {filtered.length ? (
+            <div className="codex-grid">
+              {filtered.map((entry) => (
+                <button
+                  key={entry.speciesId}
+                  className={
+                    'codex-card' +
+                    (entry.collection.collected ? ' is-collected' : '') +
+                    (detail?.speciesId === entry.speciesId ? ' is-selected' : '')
+                  }
+                  data-testid={'codex-entry-' + entry.speciesId}
+                  data-collected={entry.collection.collected}
+                  aria-label={entry.nameKo + ' 상세 보기'}
+                  aria-describedby={
+                    entry.speciesId +
+                    '-rarity ' +
+                    entry.speciesId +
+                    '-origin ' +
+                    entry.speciesId +
+                    '-status'
+                  }
+                  onClick={(event) => {
+                    lastCardRef.current = event.currentTarget;
+                    setFilter('species', entry.speciesId);
+                  }}
+                >
+                  <div className="codex-card-badges">
+                    <span
+                      id={entry.speciesId + '-rarity'}
+                      className={'codex-rarity rarity-' + entry.rarity}
+                    >
+                      {CODEX_RARITY_LABELS[entry.rarity]}
+                    </span>
+                    <span id={entry.speciesId + '-origin'} className="codex-card-origin">
+                      {CODEX_ORIGIN_LABELS[entry.origin]}
+                    </span>
+                  </div>
+                  <CodexArtwork entry={entry} silhouette={!entry.collection.collected} />
+                  <strong className="codex-card-name">{entry.nameKo}</strong>
+                  <span
+                    id={entry.speciesId + '-status'}
+                    className={
+                      'codex-card-status' + (entry.collection.ownedCount ? ' codex-owned-text' : '')
+                    }
+                  >
+                    {entry.collection.ownedCount
+                      ? entry.collection.ownedCount + '마리 보유'
+                      : entry.collection.collected
+                        ? '수집 완료'
+                        : '미수집'}
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="codex-empty">
+              <h2>조건에 맞는 공룡이 없어요</h2>
+              <p>다른 이름이나 등급으로 찾아보세요.</p>
+              <button className="codex-action" onClick={clearFilters}>
+                전체 공룡 보기
+              </button>
+            </div>
+          )}
+          {summary.unlistedOwnedCount > 0 && (
+            <p className="codex-muted">
+              현재 도감에 등록되지 않은 보유 공룡이 {summary.unlistedOwnedCount}마리 있어요.
+            </p>
+          )}
+        </section>
+        {detail && (
+          <CodexDetail
+            entry={detail}
+            entries={data.entries}
+            onSelect={(speciesId) => setFilter('species', speciesId)}
+            onBack={closeDetail}
+            headingRef={headingRef}
+            paneRef={detailPaneRef}
+          />
         )}
       </div>
-    </div>
-  );
-}
-
-function TabButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex-1 py-3 text-center font-medium transition-colors ${
-        active
-          ? 'text-primary-600 border-primary-600 border-b-2'
-          : 'text-gray-500 hover:text-gray-700'
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
-
-interface DinosaurData {
-  id: string;
-  speciesId: string;
-  nickname: string | null;
-  level: number;
-  happiness: number;
-}
-
-function CollectionView({
-  dinosaurs,
-  isLoading,
-}: {
-  dinosaurs: DinosaurData[];
-  isLoading: boolean;
-}) {
-  if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-center">
-          <span className="text-4xl">🦕</span>
-          <p className="mt-2 text-gray-500">공룡 목록 로딩 중...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (dinosaurs.length === 0) {
-    return (
-      <div className="flex h-full flex-col items-center justify-center text-gray-500">
-        <span className="text-6xl">🥚</span>
-        <p className="mt-4 text-lg font-medium">보유한 공룡이 없습니다</p>
-        <p className="mt-1 text-sm">탐험을 통해 공룡을 부화시켜 보세요!</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-3">
-      {dinosaurs.map((dino) => (
-        <div key={dino.id} className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm">
-          {/* 공룡 썸네일 */}
-          <div className="bg-dino-herbivore flex h-16 w-16 items-center justify-center rounded-lg">
-            <span className="text-2xl">🦕</span>
-          </div>
-
-          {/* 공룡 정보 */}
-          <div className="flex-1">
-            <h3 className="font-bold text-gray-800">{dino.nickname || dino.speciesId}</h3>
-            <p className="text-sm text-gray-500">Lv.{dino.level}</p>
-          </div>
-
-          {/* 상태 */}
-          <div className="text-right">
-            <div className="text-sm text-gray-600">행복도</div>
-            <div className="text-primary-600 font-bold">{dino.happiness}%</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function CodexView() {
-  // Placeholder: 도감 카테고리
-  const categories = [
-    { id: 'herbivore', name: '초식 공룡', icon: '🌿', count: '25/25', color: 'bg-dino-herbivore' },
-    { id: 'carnivore', name: '육식 공룡', icon: '🥩', count: '18/20', color: 'bg-dino-carnivore' },
-    { id: 'pterosaur', name: '익룡', icon: '🦅', count: '8/12', color: 'bg-dino-pterosaur' },
-    { id: 'marine', name: '해양 파충류', icon: '🌊', count: '5/15', color: 'bg-dino-marine' },
-    { id: 'hybrid', name: '하이브리드', icon: '🧬', count: '2/10', color: 'bg-dino-hybrid' },
-  ];
-
-  return (
-    <div className="space-y-3">
-      {categories.map((cat) => (
-        <button
-          key={cat.id}
-          className="flex w-full items-center gap-4 rounded-xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
-        >
-          <div className={`h-12 w-12 rounded-lg ${cat.color} flex items-center justify-center`}>
-            <span className="text-xl">{cat.icon}</span>
-          </div>
-          <div className="flex-1 text-left">
-            <h3 className="font-bold text-gray-800">{cat.name}</h3>
-            <p className="text-sm text-gray-500">{cat.count} 발견</p>
-          </div>
-          <span className="text-gray-400">›</span>
-        </button>
-      ))}
     </div>
   );
 }

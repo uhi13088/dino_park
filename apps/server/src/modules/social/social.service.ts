@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   ConflictException,
 } from '@nestjs/common';
+import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   SOCIAL_CONSTANTS,
@@ -954,7 +955,7 @@ export class SocialService {
     type: string,
     fromUserId?: string,
     fromNickname?: string,
-    data?: Record<string, any>,
+    data?: Prisma.InputJsonObject,
   ) {
     const messages: Record<string, string> = {
       friendRequest: `${fromNickname || '누군가'}님이 친구 요청을 보냈습니다.`,

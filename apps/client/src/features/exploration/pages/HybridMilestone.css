@@ -1,0 +1,209 @@
+.hybrid-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 18px 0 14px;
+}
+
+.hybrid-tabs a,
+.hybrid-text-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: #285b36;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.hybrid-tabs a {
+  padding: 6px 16px;
+  border: 1px solid #aac4a2;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.hybrid-tabs a[aria-current='page'] {
+  border-color: #285b36;
+  background: #285b36;
+  color: #fff;
+}
+
+.hybrid-text-link {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.hybrid-panel {
+  background: #fff;
+  border: 1px solid #d4e1ce;
+  border-radius: 14px;
+  padding: clamp(16px, 3.5vw, 28px);
+}
+
+.hybrid-section-heading,
+.hybrid-task,
+.hybrid-callout,
+.hybrid-feature {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.hybrid-panel h3,
+.hybrid-panel h4 {
+  font-weight: 780;
+}
+
+.hybrid-panel p,
+.hybrid-checklist {
+  color: #435f49;
+  font-size: 14px;
+  line-height: 1.65;
+  margin-top: 4px;
+}
+
+.hybrid-balance,
+.hybrid-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: #315c3b;
+  font-variant-numeric: tabular-nums;
+}
+
+.hybrid-task-list {
+  margin-top: 16px;
+  border-top: 1px solid #dbe6d6;
+}
+
+.hybrid-task {
+  min-height: 84px;
+  border-bottom: 1px solid #dbe6d6;
+  padding: 12px 0;
+}
+
+.hybrid-task .hybrid-task__region,
+.hybrid-panel .hybrid-detail {
+  color: #506551;
+  font-size: 12px;
+}
+
+.hybrid-callout,
+.hybrid-feature {
+  background: #edf5e8;
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 14px 16px;
+}
+
+.hybrid-feature {
+  justify-content: flex-start;
+}
+
+.hybrid-feature img {
+  max-width: 34%;
+  object-fit: contain;
+}
+
+.hybrid-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.hybrid-panel button {
+  padding: 6px 13px;
+  font-size: 13px;
+  font-weight: 750;
+  flex-shrink: 0;
+}
+
+.hybrid-panel button:not(.border-2):not(:disabled) {
+  background: #326c3d;
+}
+
+.hybrid-panel button.border-2 {
+  color: #285b36;
+  border-color: #82a782;
+}
+
+.hybrid-checklist {
+  padding-inline-start: 1.25rem;
+  list-style: disc;
+}
+
+.hybrid-recipe {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.hybrid-parent {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 690;
+}
+
+.hybrid-parent select {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid #aac4a2;
+  border-radius: 8px;
+  padding: 4px 8px;
+  color: #234c32;
+  background: #fff;
+}
+
+.hybrid-materials > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #dbe6d6;
+  padding: 8px 0;
+}
+
+.hybrid-materials dd {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.hybrid-facilities {
+  margin-top: 22px;
+}
+
+.hybrid-panel .hybrid-error {
+  padding: 8px 10px;
+  color: #8d2e16;
+  background: #fff3ee;
+  border-radius: 8px;
+  margin-block: 8px;
+}
+
+@media (max-width: 600px) {
+  .hybrid-section-heading,
+  .hybrid-callout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .hybrid-recipe {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .hybrid-task {
+    gap: 8px;
+  }
+
+  .hybrid-feature {
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

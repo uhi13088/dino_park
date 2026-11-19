@@ -18,9 +18,15 @@ export {
   useParkMe,
   useParkSummary,
   useParkRevenue,
+  useParkOperations,
+  useSetParkOpen,
+  useMoveParkEntrance,
   useUpdateParkName,
   // Dinosaur
   useDinosaurs,
+  useDinosaurCodex,
+  useClaimStarterPark,
+  usePlaceDinosaur,
   useDinosaur,
   useCreateDinosaur,
   useUpdateDinosaur,
@@ -31,6 +37,7 @@ export {
   useBuildings,
   useBuilding,
   useCreateBuilding,
+  useCompleteBuilding,
   useUpgradeBuilding,
   useAssignGreatFigure,
   useUnassignGreatFigure,
@@ -48,6 +55,14 @@ export {
   useCheckExploration,
   useInstantCompleteExploration,
   useClaimExploration,
+  useFirstExpedition,
+  useStartFirstExpedition,
+  useChooseFirstExpedition,
+  useClaimFirstExpedition,
+  useStartHatchingEgg,
+  useClaimHatchingEgg,
   // Hatching
   useHatchingQueue,
 } from './queries';
+
+export * from './queries/resources';

@@ -1,336 +1,313 @@
 import { useState } from 'react';
-import { useGameStore } from '@/stores/useGameStore';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { FIRST_EXPEDITION, getDinosaurById } from '@dino-park/game-data';
+import { PARK_LEVEL_SIX_CATALYST_MISSION_ID } from '@dino-park/shared';
 import {
-  useExplorationRegions,
-  useExplorationInProgress,
-  useStartExploration,
+  useFirstExpedition,
+  useStartFirstExpedition,
+  useChooseFirstExpedition,
+  useClaimFirstExpedition,
+  useStartHatchingEgg,
+  useClaimHatchingEgg,
+  useExplorations,
+  useHatchingQueue,
+  useCheckExploration,
   useClaimExploration,
-} from '@/api/queries';
-import type {
-  ExplorationRegionResponse,
-  ExplorationResponse,
-  ClaimExplorationResponse,
-} from '@dino-park/shared';
-import { Modal, Button, ProgressBar } from '@/components/ui';
+} from '@/api';
+import { useDriveExpedition, useFirstSynthesis } from '@/api/queries/hybridMilestone';
+import { useAuthStore, useGameStore, useUIStore } from '@/stores';
+import { Button } from '@/components/ui';
+import FirstExpeditionPanel from '../components/FirstExpeditionPanel';
+import DriveMissionPanel from '../components/DriveMissionPanel';
+import FirstSynthesisPanel from '../components/FirstSynthesisPanel';
+import RepeatSynthesisPanel from '../components/RepeatSynthesisPanel';
+import './FirstExpedition.css';
+import './HybridMilestone.css';
 
-/**
- * 탐험 페이지 - 탐험 시스템
- */
+const statusName = (status: string) =>
+  ({ IN_PROGRESS: '진행 중', COMPLETED: '보상 수령 대기', CLAIMED: '수령 완료' })[
+    status.toUpperCase()
+  ] ?? status;
+const eggName = (type: string) =>
+  ({ common: '일반', uncommon: '고급', rare: '희귀', epic: '영웅', legendary: '전설' })[type] ??
+  type;
+
 export default function ExplorationPage() {
-  const { explorationEnergy } = useGameStore();
-  const [showRewardModal, setShowRewardModal] = useState(false);
-  const [claimedRewards, setClaimedRewards] = useState<ClaimExplorationResponse['rewards'] | null>(
-    null,
-  );
-
-  // API 연동
-  const { data: regionsData, isLoading: regionsLoading } = useExplorationRegions();
-  const { data: inProgressData } = useExplorationInProgress();
-
-  const startExploration = useStartExploration();
-  const claimExploration = useClaimExploration();
-
-  const regions = regionsData?.regions ?? [];
-  const currentExploration = inProgressData ?? null;
-
-  const handleStartExploration = async (regionId: string) => {
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { startPlacement } = useGameStore();
+  const { closeModal, closeSidePanel, showToast } = useUIStore();
+  const first = useFirstExpedition();
+  const history = useExplorations();
+  const hatching = useHatchingQueue();
+  const start = useStartFirstExpedition();
+  const choose = useChooseFirstExpedition();
+  const claimEgg = useClaimFirstExpedition();
+  const startHatch = useStartHatchingEgg();
+  const claimHatch = useClaimHatchingEgg();
+  const checkLegacy = useCheckExploration();
+  const claimLegacy = useClaimExploration();
+  const [actionError, setActionError] = useState<string | null>(null);
+  const state = first.data;
+  const hatchReceived = state?.stage === 'complete' || state?.stage === 'placement';
+  const drive = useDriveExpedition(hatchReceived);
+  const synthesis = useFirstSynthesis(hatchReceived);
+  const busy =
+    start.isPending ||
+    choose.isPending ||
+    claimEgg.isPending ||
+    startHatch.isPending ||
+    claimHatch.isPending ||
+    checkLegacy.isPending ||
+    claimLegacy.isPending;
+  const run = async (action: () => Promise<unknown>, message?: string) => {
+    setActionError(null);
     try {
-      await startExploration.mutateAsync(regionId);
-    } catch (error) {
-      console.error('탐험 시작 실패:', error);
+      await action();
+      if (message) showToast({ type: 'success', message });
+    } catch (cause) {
+      setActionError(
+        cause instanceof Error ? cause.message : '저장하지 못했어요. 다시 시도해주세요.',
+      );
     }
   };
-
-  const handleClaimRewards = async (explorationId: string) => {
-    try {
-      const result = await claimExploration.mutateAsync(explorationId);
-      setClaimedRewards(result.rewards);
-      setShowRewardModal(true);
-    } catch (error) {
-      console.error('보상 수령 실패:', error);
-    }
-  };
-
-  if (regionsLoading) {
+  if (!isAuthenticated) return <Navigate to="/" replace />;
+  if (!state && first.isPending)
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="border-primary-500 h-8 w-8 animate-spin rounded-full border-b-2" />
+      <div role="status" className="first-expedition__loading">
+        탐험을 준비하고 있어요…
       </div>
     );
-  }
-
-  return (
-    <div className="flex h-full flex-col bg-gray-50">
-      {/* 에너지 표시 */}
-      <div className="border-b border-gray-200 bg-white p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">⚡</span>
-            <div>
-              <p className="text-sm text-gray-500">탐험 에너지</p>
-              <p className="text-lg font-bold">{explorationEnergy} / 30</p>
-            </div>
-          </div>
-          <button className="bg-secondary-500 rounded-lg px-4 py-2 text-sm font-medium text-white">
-            + 충전
-          </button>
-        </div>
-
-        {/* 에너지 바 */}
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-200">
-          <div
-            className="h-full bg-gradient-to-r from-yellow-400 to-yellow-500 transition-all"
-            style={{ width: `${(explorationEnergy / 30) * 100}%` }}
-          />
-        </div>
+  if (!state)
+    return (
+      <div className="first-expedition__loading">
+        <p role="alert">탐험 정보를 불러오지 못했어요. {first.error?.message}</p>
+        <Button onClick={() => void first.refetch()} disabled={first.isFetching}>
+          다시 시도
+        </Button>
       </div>
-
-      {/* 진행 중인 탐험 */}
-      {currentExploration && currentExploration.status !== 'claimed' && (
-        <div className="bg-primary-50 border-primary-200 border-b p-4">
-          <InProgressCard
-            exploration={currentExploration}
-            onClaim={handleClaimRewards}
-            isClaiming={claimExploration.isPending}
-          />
-        </div>
-      )}
-
-      {/* 지역 목록 */}
-      <div className="flex-1 space-y-4 overflow-auto p-4">
-        {regions.map((region) => (
-          <RegionCard
-            key={region.id}
-            region={region}
-            currentEnergy={explorationEnergy}
-            isExploring={!!currentExploration && currentExploration.status === 'in_progress'}
-            onStartExploration={handleStartExploration}
-            isStarting={startExploration.isPending}
-          />
-        ))}
-      </div>
-
-      {/* 보상 모달 */}
-      <Modal isOpen={showRewardModal} onClose={() => setShowRewardModal(false)} title="탐험 완료!">
-        <RewardDisplay rewards={claimedRewards} />
-        <div className="mt-4">
-          <Button variant="primary" className="w-full" onClick={() => setShowRewardModal(false)}>
-            확인
-          </Button>
-        </div>
-      </Modal>
-    </div>
+    );
+  const legacyTrips = (history.data?.explorations ?? []).filter(
+    (item) => item.id !== state.mission?.id,
   );
-}
-
-/**
- * 진행 중인 탐험 카드
- */
-function InProgressCard({
-  exploration,
-  onClaim,
-  isClaiming,
-}: {
-  exploration: ExplorationResponse;
-  onClaim: (id: string) => void;
-  isClaiming: boolean;
-}) {
-  const isCompleted = exploration.status === 'completed';
-  const remainingSeconds = exploration.remainingSeconds ?? 0;
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  const driveEggIds = new Set(drive.data?.missions.map((mission) => mission.egg?.id));
+  const legacyEggs = (hatching.data?.queue ?? []).filter(
+    (item) => item.id !== state.egg?.id && !driveEggIds.has(item.id),
+  );
+  const showSynthesis = hatchReceived && params.get('tab') === 'synthesis';
+  const canRepeat = !!synthesis.data?.job?.exhibitedAt;
+  const showRepeat = canRepeat && params.get('tab') === 'repeat';
+  const pendingLegacy =
+    legacyTrips.some((item) => item.status.toUpperCase() !== 'CLAIMED') || legacyEggs.length > 0;
+  const place = () => {
+    if (!state.dinosaur) return;
+    closeModal();
+    closeSidePanel();
+    startPlacement({
+      type: 'dinosaur',
+      id: state.dinosaur.id,
+      speciesId: state.dinosaur.speciesId,
+    });
+    navigate('/park');
   };
-
   return (
-    <div className="rounded-xl bg-white p-4 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary-100 flex h-12 w-12 items-center justify-center rounded-full">
-            <span className="text-2xl">🦕</span>
-          </div>
+    <div className="first-expedition">
+      <div className="first-expedition__content">
+        <header className="first-expedition__header">
           <div>
-            <p className="font-bold text-gray-800">탐험 진행 중</p>
-            <p className="text-sm text-gray-500">
-              {isCompleted ? '탐험 완료!' : `남은 시간: ${formatTime(remainingSeconds)}`}
-            </p>
+            <h1>{hatchReceived ? '탐험 기지' : '첫 탐험'}</h1>
+            {!hatchReceived && <p>단서에서 알로, 알에서 파크의 새 친구로.</p>}
           </div>
-        </div>
-
-        {isCompleted ? (
-          <Button variant="primary" onClick={() => onClaim(exploration.id)} disabled={isClaiming}>
-            {isClaiming ? '수령 중...' : '보상 수령'}
-          </Button>
-        ) : (
-          <div className="text-right">
-            <p className="text-xs text-gray-500">진행률</p>
-            <p className="text-primary-600 font-bold">
-              {remainingSeconds > 0
-                ? `${Math.round((1 - remainingSeconds / 3600) * 100)}%`
-                : '100%'}
-            </p>
+          <Link to="/park">파크로</Link>
+        </header>
+        {(actionError || first.error) && (
+          <div className="first-expedition__error" role="alert">
+            <p>{actionError ?? `진행 정보를 갱신하지 못했어요. ${first.error?.message ?? ''}`}</p>
+            <Button
+              variant="outline"
+              disabled={busy || first.isFetching}
+              onClick={() => {
+                setActionError(null);
+                void first.refetch();
+              }}
+            >
+              다시 확인
+            </Button>
           </div>
         )}
-      </div>
-
-      {!isCompleted && (
-        <div className="mt-3">
-          <ProgressBar
-            value={remainingSeconds > 0 ? (1 - remainingSeconds / 3600) * 100 : 100}
-            max={100}
-            variant="primary"
+        {state.stage !== 'complete' && (
+          <FirstExpeditionPanel
+            state={state}
+            busy={busy}
+            onStart={() => void run(() => start.mutateAsync(FIRST_EXPEDITION.regionId))}
+            onChoice={(choiceId) => {
+              if (state.mission)
+                void run(() =>
+                  choose.mutateAsync({
+                    id: state.mission!.id,
+                    step: state.mission!.step,
+                    choiceId,
+                  }),
+                );
+            }}
+            onClaimEgg={() => {
+              if (state.mission) void run(() => claimEgg.mutateAsync(state.mission!.id));
+            }}
+            onStartHatch={() => {
+              if (state.egg) void run(() => startHatch.mutateAsync(state.egg!.id));
+            }}
+            onClaimHatch={() => {
+              if (state.egg) void run(() => claimHatch.mutateAsync(state.egg!.id));
+            }}
+            onPlace={place}
+            onRefresh={() => void first.refetch()}
           />
-        </div>
-      )}
-    </div>
-  );
-}
-
-/**
- * 지역 카드
- */
-function RegionCard({
-  region,
-  currentEnergy,
-  isExploring,
-  onStartExploration,
-  isStarting,
-}: {
-  region: ExplorationRegionResponse;
-  currentEnergy: number;
-  isExploring: boolean;
-  onStartExploration: (regionId: string) => void;
-  isStarting: boolean;
-}) {
-  const canExplore = region.isUnlocked && currentEnergy >= region.energyCost && !isExploring;
-
-  return (
-    <div
-      className={`overflow-hidden rounded-xl bg-white shadow-sm ${
-        !region.isUnlocked ? 'opacity-60' : ''
-      }`}
-    >
-      {/* 지역 이미지 Placeholder */}
-      <div className="from-primary-400 to-primary-600 relative flex h-32 items-center justify-center bg-gradient-to-r">
-        <span className="text-5xl">{getRegionEmoji(region.id)}</span>
-        {!region.isUnlocked && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-            <span className="text-3xl">🔒</span>
-            <span className="mt-1 text-sm text-white">Lv.{region.unlockLevel} 필요</span>
-          </div>
         )}
-      </div>
-
-      {/* 지역 정보 */}
-      <div className="p-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <h3 className="font-bold text-gray-800">{region.name}</h3>
-            <p className="text-sm text-gray-500">{region.description}</p>
-          </div>
-          <div className="text-right">
-            <div className="flex items-center gap-1 text-yellow-600">
-              <span>⚡</span>
-              <span className="font-bold">{region.energyCost}</span>
+        {hatchReceived && (
+          <>
+            <nav className="hybrid-tabs" aria-label="원정과 합성">
+              <Link
+                to="/exploration"
+                aria-current={!showSynthesis && !showRepeat ? 'page' : undefined}
+              >
+                주행 탐험
+              </Link>
+              <Link
+                to="/exploration?tab=synthesis"
+                aria-current={showSynthesis ? 'page' : undefined}
+              >
+                첫 합성·전시
+              </Link>
+              {canRepeat && (
+                <Link to="/exploration?tab=repeat" aria-current={showRepeat ? 'page' : undefined}>
+                  반복 합성
+                </Link>
+              )}
+            </nav>
+            {showRepeat ? (
+              <RepeatSynthesisPanel />
+            ) : showSynthesis ? (
+              <FirstSynthesisPanel />
+            ) : (
+              <DriveMissionPanel
+                focusGrowth={params.get('mission') === PARK_LEVEL_SIX_CATALYST_MISSION_ID}
+              />
+            )}
+          </>
+        )}
+        <details className="first-expedition__history" open={pendingLegacy}>
+          <summary>이전 탐험과 부화 기록{pendingLegacy ? ' · 확인할 기록이 있어요' : ''}</summary>
+          <p className="first-expedition__small">
+            이전에 시작한 탐험과 얻은 알은 그대로 남아 있어요. 진행 중인 탐험이나 부화를 먼저 마치면
+            새 자리를 사용할 수 있어요.
+          </p>
+          {(history.error || hatching.error) && (
+            <div role="alert">
+              <p>이전 기록을 불러오지 못했어요.</p>
+              <Button
+                variant="outline"
+                disabled={history.isFetching || hatching.isFetching}
+                onClick={() => {
+                  void history.refetch();
+                  void hatching.refetch();
+                }}
+              >
+                이전 기록 다시 보기
+              </Button>
             </div>
-            <p className="text-xs text-gray-400">{region.duration}분</p>
-          </div>
-        </div>
-
-        {/* 보상 미리보기 */}
-        <div className="mt-3 flex flex-wrap gap-2">
-          {region.possibleRewards.map((reward, idx) => (
-            <span key={idx} className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">
-              {reward}
-            </span>
-          ))}
-        </div>
-
-        {/* 탐험 버튼 */}
-        <button
-          disabled={!canExplore || isStarting}
-          onClick={() => canExplore && onStartExploration(region.id)}
-          className={`mt-4 w-full rounded-lg py-3 font-bold transition-colors ${
-            canExplore
-              ? 'bg-primary-500 hover:bg-primary-600 text-white'
-              : 'cursor-not-allowed bg-gray-200 text-gray-400'
-          }`}
-        >
-          {!region.isUnlocked
-            ? '잠김'
-            : isExploring
-              ? '탐험 진행 중'
-              : currentEnergy < region.energyCost
-                ? '에너지 부족'
-                : isStarting
-                  ? '시작 중...'
-                  : '탐험 시작'}
-        </button>
+          )}
+          {!legacyTrips.length &&
+            !legacyEggs.length &&
+            !history.isPending &&
+            !hatching.isPending && <p className="first-expedition__small">이전 기록이 없어요.</p>}
+          {!!legacyTrips.length && (
+            <ul aria-label="이전 탐험 기록">
+              {legacyTrips.slice(0, 8).map((item) => {
+                const status = item.status.toUpperCase();
+                const ready = (item.remainingSeconds ?? 0) <= 0;
+                return (
+                  <li key={item.id}>
+                    <div>
+                      <strong>{item.regionId === 'grassland' ? '초원 지대' : '이전 탐험'}</strong>
+                      <p>
+                        {statusName(item.status)}
+                        {status === 'IN_PROGRESS' && !ready
+                          ? ` · 약 ${Math.ceil((item.remainingSeconds ?? 0) / 60)}분 남음`
+                          : ''}
+                      </p>
+                    </div>
+                    {status === 'IN_PROGRESS' && (
+                      <Button
+                        variant="outline"
+                        disabled={!ready || busy}
+                        onClick={() => void run(() => checkLegacy.mutateAsync(item.id))}
+                      >
+                        탐험 완료 확인
+                      </Button>
+                    )}
+                    {status === 'COMPLETED' && (
+                      <Button
+                        variant="outline"
+                        disabled={busy}
+                        onClick={() =>
+                          void run(
+                            () => claimLegacy.mutateAsync(item.id),
+                            '이전 탐험의 보상을 받았어요.',
+                          )
+                        }
+                      >
+                        이전 보상 수령
+                      </Button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          {!!legacyEggs.length && (
+            <ul aria-label="이전 부화 기록">
+              {legacyEggs.map((egg) => (
+                <li key={egg.id}>
+                  <div>
+                    <strong>
+                      {(egg.speciesId ? getDinosaurById(egg.speciesId)?.nameKo : null) ??
+                        `${eggName(egg.eggType)} 공룡`}{' '}
+                      알
+                    </strong>
+                    <p>
+                      {egg.readyToStart
+                        ? '부화 시작 대기'
+                        : (egg.remainingSeconds ?? 0) > 0
+                          ? `부화 중 · 약 ${Math.ceil((egg.remainingSeconds ?? 0) / 60)}분 남음`
+                          : '부화 완료 · 수령 대기'}
+                    </p>
+                  </div>
+                  {egg.readyToStart ? (
+                    <Button
+                      variant="outline"
+                      disabled={busy || state.hatchingSlots.used >= state.hatchingSlots.total}
+                      onClick={() => void run(() => startHatch.mutateAsync(egg.id))}
+                    >
+                      이전 알 부화 시작
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      disabled={busy || (egg.remainingSeconds ?? 0) > 0}
+                      onClick={() =>
+                        void run(() => claimHatch.mutateAsync(egg.id), '공룡이 태어났어요.')
+                      }
+                    >
+                      부화한 공룡 받기
+                    </Button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </details>
       </div>
     </div>
   );
-}
-
-/**
- * 보상 표시
- */
-function RewardDisplay({ rewards }: { rewards: ClaimExplorationResponse['rewards'] | null }) {
-  if (!rewards) return null;
-
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-center">
-        <span className="text-6xl">🎉</span>
-      </div>
-
-      <div className="space-y-2">
-        {rewards.gold && rewards.gold > 0 && (
-          <div className="flex items-center justify-between rounded-lg bg-yellow-50 p-3">
-            <span className="flex items-center gap-2">
-              <span className="text-xl">🪙</span>
-              <span>골드</span>
-            </span>
-            <span className="font-bold text-yellow-600">+{rewards.gold.toLocaleString()}</span>
-          </div>
-        )}
-
-        {rewards.dna && rewards.dna > 0 && (
-          <div className="flex items-center justify-between rounded-lg bg-purple-50 p-3">
-            <span className="flex items-center gap-2">
-              <span className="text-xl">🧬</span>
-              <span>DNA</span>
-            </span>
-            <span className="font-bold text-purple-600">+{rewards.dna}</span>
-          </div>
-        )}
-
-        {rewards.egg && (
-          <div className="flex items-center justify-between rounded-lg bg-green-50 p-3">
-            <span className="flex items-center gap-2">
-              <span className="text-xl">🥚</span>
-              <span>{rewards.egg.type} 알</span>
-            </span>
-            <span className="font-bold text-green-600">획득!</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function getRegionEmoji(regionId: string): string {
-  const emojis: Record<string, string> = {
-    'emerald-island': '🏝️',
-    'white-rock': '🏜️',
-    'sunset-coast': '🌅',
-    'deep-blue': '🌊',
-    'storm-island': '⛈️',
-    fossil_plains: '🏜️',
-    volcanic_valley: '🌋',
-    frozen_tundra: '🏔️',
-    ancient_ruins: '🏛️',
-  };
-  return emojis[regionId] || '🗺️';
 }

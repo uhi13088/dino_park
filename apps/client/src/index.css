@@ -10,9 +10,9 @@
 
 /* 기본 스타일 */
 :root {
-  --color-primary: #4CAF50;
-  --color-secondary: #FFC107;
-  --color-accent: #00BCD4;
+  --color-primary: #4caf50;
+  --color-secondary: #ffc107;
+  --color-accent: #00bcd4;
 }
 
 * {
@@ -21,7 +21,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   font-family: 'Pretendard', sans-serif;
   background-color: #1a1a2e;
   color: #ffffff;
@@ -52,20 +53,49 @@ html, body {
 /* 커스텀 유틸리티 클래스 */
 @layer components {
   .btn-primary {
-    @apply bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-lg transition-colors;
+    @apply bg-primary-500 hover:bg-primary-600 rounded-lg px-4 py-2 font-bold text-white transition-colors;
   }
 
   .btn-secondary {
-    @apply bg-secondary-500 hover:bg-secondary-600 text-black font-bold py-2 px-4 rounded-lg transition-colors;
+    @apply bg-secondary-500 hover:bg-secondary-600 rounded-lg px-4 py-2 font-bold text-black transition-colors;
   }
 
   .card {
-    @apply bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20;
+    @apply rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-sm;
   }
 
-  .rarity-common { @apply text-rarity-common; }
-  .rarity-uncommon { @apply text-rarity-uncommon; }
-  .rarity-rare { @apply text-rarity-rare; }
-  .rarity-epic { @apply text-rarity-epic; }
-  .rarity-legendary { @apply text-rarity-legendary; }
+  .rarity-common {
+    @apply text-rarity-common;
+  }
+  .rarity-uncommon {
+    @apply text-rarity-uncommon;
+  }
+  .rarity-rare {
+    @apply text-rarity-rare;
+  }
+  .rarity-epic {
+    @apply text-rarity-epic;
+  }
+  .rarity-legendary {
+    @apply text-rarity-legendary;
+  }
+}
+
+/* Park care controls use the same green palette as the map and primary actions. */
+.park-meter {
+  height: 12px;
+  accent-color: #4a8145;
+}
+.park-meter::-webkit-meter-bar {
+  background: #e6eddf;
+  border: none;
+  border-radius: 6px;
+}
+.park-meter::-webkit-meter-optimum-value {
+  background: #4a8145;
+  border-radius: 6px;
+}
+.park-meter::-moz-meter-bar {
+  background: #4a8145;
+  border-radius: 6px;
 }

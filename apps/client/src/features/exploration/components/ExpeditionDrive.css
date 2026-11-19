@@ -1,0 +1,158 @@
+.expedition-drive {
+  background: #fff;
+  border: 1px solid #cfddc8;
+  border-radius: 14px;
+  padding: clamp(12px, 3vw, 22px);
+}
+
+.expedition-drive__header,
+.expedition-drive__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.expedition-drive__header p,
+.expedition-drive__footer p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4e6854;
+}
+
+.expedition-drive__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.expedition-drive__actions > button {
+  flex: 0 0 auto;
+  padding: 0 10px;
+  font-size: 13px;
+  color: #275f37;
+}
+
+.expedition-drive__actions > .border-2 {
+  border-color: #70a371;
+}
+
+.expedition-drive__hud {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 12px 0;
+  padding: 8px 0;
+  background: #eef4e9;
+  border-radius: 9px;
+  font-variant-numeric: tabular-nums;
+}
+
+.expedition-drive__hud > div {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+.expedition-drive__hud > div + div {
+  border-left: 1px solid #c9d8c6;
+}
+
+.expedition-drive__hud dt {
+  font-size: 12px;
+  color: #4c6652;
+}
+
+.expedition-drive__hud dd {
+  font-size: clamp(17px, 3.1vw, 23px);
+  line-height: 1.2;
+  font-weight: 800;
+  color: #203e2a;
+}
+
+.expedition-drive__hud dd span {
+  font-size: 0.68em;
+  font-weight: 650;
+}
+
+.expedition-drive__viewport {
+  position: relative;
+  height: clamp(210px, 44svh, 420px);
+  border-radius: 9px;
+  overflow: hidden;
+  background: #a87854;
+}
+
+.expedition-drive canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.expedition-drive canvas:active {
+  cursor: grabbing;
+}
+
+.expedition-drive canvas:focus-visible {
+  outline: 3px solid #fff0bb;
+  outline-offset: -4px;
+}
+
+.expedition-drive__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  background: #233d2a56;
+}
+
+.expedition-drive__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  border-radius: 9px;
+  padding: 18px 20px;
+  max-width: 30ch;
+  background: #f6f9f3;
+  color: #193c2b;
+  font-size: 15px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.expedition-drive__card > button {
+  background: #326c3d;
+  color: white;
+  box-shadow: none;
+}
+
+.expedition-drive__card > button:hover {
+  background: #285832;
+}
+
+.expedition-drive__footer {
+  margin-top: 8px;
+}
+
+.expedition-drive__feedback {
+  min-height: 1.45em;
+  color: #285832;
+  font-weight: 650;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+@media (max-width: 420px) {
+  .expedition-drive__header {
+    gap: 8px;
+  }
+
+  .expedition-drive__actions {
+    max-width: 42%;
+  }
+}

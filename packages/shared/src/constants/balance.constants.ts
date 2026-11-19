@@ -27,6 +27,8 @@ export const HAPPINESS_DECAY_PER_HOUR = 2;
 export const HUNGER_INCREASE_PER_HOUR = 5;
 export const FEEDING_HAPPINESS_GAIN = 20;
 export const FEEDING_HUNGER_REDUCE = 100;
+export const FEEDING_GOLD_COST = 100;
+export const FEEDING_INTIMACY_GAIN = 5;
 
 // === 오프라인 수익 ===
 export const MAX_OFFLINE_HOURS = 8;

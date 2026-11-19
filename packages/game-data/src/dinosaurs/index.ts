@@ -1,9 +1,16 @@
 /**
- * 공룡 데이터 - 82종 전체 스펙
- * 참조: docs/dino_park_dinosaur_codex.md
+ * 실제 공룡 카탈로그. 수록 수는 DINOSAUR_STATS에서 계산한다.
+ * 최신 규칙: docs/current/dna-and-collection.md, 종 특징: 구버전 공룡 도감
  */
 import type { DinosaurSpecies } from '@dino-park/shared';
-import { DinosaurCategory, DinosaurSize, Rarity, MINUTE, HOUR } from '@dino-park/shared';
+import {
+  DinosaurCategory,
+  DinosaurOrigin,
+  DinosaurSize,
+  Rarity,
+  MINUTE,
+  HOUR,
+} from '@dino-park/shared';
 
 // 부화 시간 (희귀도별)
 const HATCH_TIME = {
@@ -55,6 +62,36 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     },
     description:
       '특징적인 머리 볏으로 아름다운 소리를 낸다. 관람객들에게 인기 있는 온순한 초식공룡.',
+  },
+  {
+    id: 'parasaurolophus-lux',
+    name: 'Parasaurolophus Lux',
+    nameKo: '파라사우롤로푸스 룩스',
+    category: DinosaurCategory.HERBIVORE,
+    origin: DinosaurOrigin.VARIANT,
+    rarity: Rarity.EPIC,
+    size: DinosaurSize.LARGE,
+    stats: {
+      baseRevenue: 320,
+      popularity: 42,
+      maintenanceCost: 78,
+      space: SPACE_REQUIRED[DinosaurSize.LARGE],
+    },
+    habitat: ['hybrid-zone'],
+    hatchTime: HATCH_TIME[Rarity.EPIC],
+    unlockCondition: {
+      type: 'dna',
+      value: 'parasaurolophus-lux',
+      description: '파라 보유 · 유전자 센터 · 발광 특성 연구',
+    },
+    passive: {
+      id: 'luminous-crest',
+      name: '야광 볏',
+      description: '볏과 무늬가 빛나는 변종. 야간 관람 효과는 연구 개방 시 적용됩니다.',
+      effect: {},
+    },
+    description:
+      '유전자 연구로 볏과 몸의 무늬가 빛나는 파라사우롤로푸스 변종. 야간 파크를 밝힐 새로운 친구입니다.',
   },
   {
     id: 'iguanodon',
@@ -1174,7 +1211,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     name: 'Indominus Rex',
     nameKo: '인도미누스 렉스',
     category: DinosaurCategory.HYBRID,
-    rarity: Rarity.EPIC,
+    rarity: Rarity.LEGENDARY,
     size: DinosaurSize.GIANT,
     stats: {
       baseRevenue: 400,
@@ -1258,6 +1295,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     name: 'Allosaurus Maximus',
     nameKo: '알로사우루스 막시무스',
     category: DinosaurCategory.CARNIVORE,
+    origin: DinosaurOrigin.VARIANT,
     rarity: Rarity.EPIC,
     size: DinosaurSize.GIANT,
     stats: {
@@ -1577,6 +1615,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     name: 'Nyctosaurus Rex',
     nameKo: '니크토사우루스 제왕종',
     category: DinosaurCategory.PTEROSAUR,
+    origin: DinosaurOrigin.VARIANT,
     rarity: Rarity.EPIC,
     size: DinosaurSize.LARGE,
     stats: {
@@ -1601,6 +1640,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     name: 'Azhdarcho Magnus',
     nameKo: '아즈다르코 제왕종',
     category: DinosaurCategory.PTEROSAUR,
+    origin: DinosaurOrigin.HYBRID,
     rarity: Rarity.EPIC,
     size: DinosaurSize.GIANT,
     stats: {
@@ -1895,13 +1935,13 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
   // 하이브리드 (10종 - 인도미누스/인도랩터/스코르피오스는 위에 포함)
   // ============================================
 
-  // === 레어 하이브리드 (3종) ===
+  // === 에픽 하이브리드: 첫 연구 및 초반 연구 대상 (3종) ===
   {
     id: 'ankylodocus',
     name: 'Ankylodocus',
     nameKo: '안키로덕터',
     category: DinosaurCategory.HYBRID,
-    rarity: Rarity.RARE,
+    rarity: Rarity.EPIC,
     size: DinosaurSize.GIANT,
     stats: {
       baseRevenue: 200,
@@ -1910,7 +1950,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       space: SPACE_REQUIRED[DinosaurSize.GIANT],
     },
     habitat: ['hybrid-zone'],
-    hatchTime: HATCH_TIME[Rarity.RARE],
+    hatchTime: HATCH_TIME[Rarity.EPIC],
     unlockCondition: {
       type: 'dna',
       value: 'ankylosaurus+diplodocus',
@@ -1929,7 +1969,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     name: 'Stegoceratops',
     nameKo: '스테고케라톱스',
     category: DinosaurCategory.HYBRID,
-    rarity: Rarity.RARE,
+    rarity: Rarity.EPIC,
     size: DinosaurSize.LARGE,
     stats: {
       baseRevenue: 185,
@@ -1938,7 +1978,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       space: SPACE_REQUIRED[DinosaurSize.LARGE],
     },
     habitat: ['hybrid-zone'],
-    hatchTime: HATCH_TIME[Rarity.RARE],
+    hatchTime: HATCH_TIME[Rarity.EPIC],
     unlockCondition: {
       type: 'dna',
       value: 'stegosaurus+triceratops',
@@ -1957,7 +1997,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     name: 'Carnoraptor',
     nameKo: '카르노랩터',
     category: DinosaurCategory.HYBRID,
-    rarity: Rarity.RARE,
+    rarity: Rarity.EPIC,
     size: DinosaurSize.MEDIUM,
     stats: {
       baseRevenue: 175,
@@ -1966,7 +2006,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       space: SPACE_REQUIRED[DinosaurSize.MEDIUM],
     },
     habitat: ['hybrid-zone-isolation'],
-    hatchTime: HATCH_TIME[Rarity.RARE],
+    hatchTime: HATCH_TIME[Rarity.EPIC],
     unlockCondition: {
       type: 'dna',
       value: 'carnotaurus+velociraptor',

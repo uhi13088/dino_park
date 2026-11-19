@@ -2,8 +2,11 @@
  * TanStack Query 쿼리/뮤테이션 정의
  * 타입은 @dino-park/shared에서 import
  */
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { api, tokenManager } from '../client';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { cancelResourceReads, resourcesQueryKey } from './resources';
 
 // ========================================
 // Shared Types Import
@@ -20,11 +23,16 @@ import type {
   ParkResponse,
   ParkSummaryResponse,
   ParkRevenueResponse,
+  ParkOperationsResponse,
+  StarterParkResponse,
   // Dinosaur
   DinosaurResponse,
   DinosaurListResponse,
+  DinosaurCodexResponse,
   CreateDinosaurRequest,
   UpdateDinosaurRequest,
+  PlaceDinosaurRequest,
+  FeedDinosaurResponse,
   InteractDinosaurResponse,
   // Building
   BuildingResponse,
@@ -40,6 +48,7 @@ import type {
   ExplorationResponse,
   ExplorationListResponse,
   ClaimExplorationResponse,
+  FirstExpeditionStateResponse,
   // Hatching
   HatchingQueueResponse,
   // Great Figures
@@ -73,10 +82,12 @@ export const queryKeys = {
   parkMe: () => [...queryKeys.park, 'me'] as const,
   parkSummary: () => [...queryKeys.park, 'summary'] as const,
   parkRevenue: () => [...queryKeys.park, 'revenue'] as const,
+  parkOperations: () => [...queryKeys.park, 'operations'] as const,
 
   // Dinosaurs
   dinosaurs: ['dinosaurs'] as const,
   dinosaurList: () => [...queryKeys.dinosaurs, 'list'] as const,
+  dinosaurCodex: () => [...queryKeys.dinosaurs, 'codex'] as const,
   dinosaurDetail: (id: string) => [...queryKeys.dinosaurs, id] as const,
 
   // Buildings
@@ -98,6 +109,9 @@ export const queryKeys = {
   explorationRegions: () => [...queryKeys.explorations, 'regions'] as const,
   explorationList: () => [...queryKeys.explorations, 'list'] as const,
   explorationInProgress: () => [...queryKeys.explorations, 'in-progress'] as const,
+  firstExpedition: () => [...queryKeys.explorations, 'first'] as const,
+  firstSynthesis: () => ['milestoneSynthesis'] as const,
+  repeatSynthesis: () => [...queryKeys.firstSynthesis(), 'repeat'] as const,
 
   // Hatching
   hatching: ['hatching'] as const,
@@ -144,6 +158,7 @@ export function useLogin() {
       return response;
     },
     onSuccess: () => {
+      queryClient.removeQueries({ queryKey: queryKeys.dinosaurs });
       queryClient.invalidateQueries({ queryKey: queryKeys.auth });
       queryClient.invalidateQueries({ queryKey: queryKeys.user });
       queryClient.invalidateQueries({ queryKey: queryKeys.park });
@@ -245,6 +260,82 @@ export function useParkRevenue() {
   });
 }
 
+/** Server settlement is the only source of admission income and the gold balance. */
+function syncParkOperations(queryClient: QueryClient, operations: ParkOperationsResponse) {
+  const previous = queryClient.getQueryData<ParkOperationsResponse>(queryKeys.parkOperations());
+  queryClient.setQueryData<CurrencyResponse>(queryKeys.currency(), (currency) =>
+    currency ? { ...currency, gold: operations.gold } : currency,
+  );
+  const park = queryClient.getQueryData<ParkResponse>(queryKeys.parkMe());
+  if (park && park.level !== operations.parkLevel) {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.parkMe() });
+  }
+  if (
+    previous?.viewingPlatform?.status !== operations.viewingPlatform?.status ||
+    previous?.viewingPlatform?.level !== operations.viewingPlatform?.level
+  ) {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
+  }
+  return operations;
+}
+
+function useDocumentVisible() {
+  const [visible, setVisible] = useState(() => document.visibilityState !== 'hidden');
+  useEffect(() => {
+    const update = () => setVisible(document.visibilityState !== 'hidden');
+    document.addEventListener('visibilitychange', update);
+    return () => document.removeEventListener('visibilitychange', update);
+  }, []);
+  return visible;
+}
+
+export function useParkOperations() {
+  const queryClient = useQueryClient();
+  const visible = useDocumentVisible();
+  return useQuery({
+    queryKey: queryKeys.parkOperations(),
+    queryFn: async ({ signal }) =>
+      syncParkOperations(
+        queryClient,
+        await api.get<ParkOperationsResponse>('/parks/me/operations', { signal }),
+      ),
+    enabled: tokenManager.isAuthenticated() && visible,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
+    staleTime: 1000,
+  });
+}
+
+export function useSetParkOpen() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    // A delayed pre-mutation heartbeat must not replace the confirmed new state.
+    onMutate: () => queryClient.cancelQueries({ queryKey: queryKeys.parkOperations() }),
+    mutationFn: (isOpen: boolean) =>
+      api.patch<ParkOperationsResponse>('/parks/me/open', { isOpen }),
+    onSuccess: (operations) => {
+      syncParkOperations(queryClient, operations);
+      queryClient.setQueryData(queryKeys.parkOperations(), operations);
+      void queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    },
+  });
+}
+
+export function useMoveParkEntrance() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    // A delayed pre-mutation heartbeat must not replace the confirmed new state.
+    onMutate: () => queryClient.cancelQueries({ queryKey: queryKeys.parkOperations() }),
+    mutationFn: (position: { positionX: number; positionY: number }) =>
+      api.patch<ParkOperationsResponse>('/parks/me/entrance', position),
+    onSuccess: (operations) => {
+      syncParkOperations(queryClient, operations);
+      queryClient.setQueryData(queryKeys.parkOperations(), operations);
+      void queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
+    },
+  });
+}
+
 export function useUpdateParkName() {
   const queryClient = useQueryClient();
 
@@ -265,6 +356,59 @@ export function useDinosaurs() {
     queryKey: queryKeys.dinosaurList(),
     queryFn: () => api.get<DinosaurListResponse>('/dinosaurs'),
     enabled: tokenManager.isAuthenticated(),
+  });
+}
+
+export function useDinosaurCodex() {
+  const userId = useAuthStore((state) => state.user?.id);
+  return useQuery({
+    queryKey: [...queryKeys.dinosaurCodex(), userId],
+    queryFn: () => api.get<DinosaurCodexResponse>('/dinosaurs/codex'),
+    enabled: tokenManager.isAuthenticated() && !!userId,
+  });
+}
+
+export function useClaimStarterPark() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.post<StarterParkResponse>('/parks/me/starter'),
+    onSuccess: async () => {
+      // An initial list read may still be in flight with an empty park snapshot.
+      // Cancel it before refetching, including idempotent StrictMode claims.
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: queryKeys.dinosaurs }),
+        queryClient.cancelQueries({ queryKey: queryKeys.buildings }),
+      ]);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurs }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.buildings }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.park }),
+      ]);
+    },
+  });
+}
+
+export function usePlaceDinosaur() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...position }: PlaceDinosaurRequest & { id: string }) =>
+      api.post<DinosaurResponse>(`/dinosaurs/${id}/place`, position),
+    onSuccess: (dinosaur) => {
+      queryClient.setQueryData(queryKeys.dinosaurDetail(dinosaur.id), dinosaur);
+      queryClient.setQueryData<DinosaurListResponse>(queryKeys.dinosaurList(), (current) =>
+        current
+          ? {
+              ...current,
+              dinosaurs: current.dinosaurs.map((item) =>
+                item.id === dinosaur.id ? dinosaur : item,
+              ),
+            }
+          : current,
+      );
+      queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurList() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.park });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.firstSynthesis() });
+    },
   });
 }
 
@@ -305,11 +449,20 @@ export function useFeedDinosaur() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => api.post<DinosaurResponse>(`/dinosaurs/${id}/feed`),
-    onSuccess: (_, id) => {
+    mutationFn: (id: string) => api.post<FeedDinosaurResponse>(`/dinosaurs/${id}/feed`),
+    onSuccess: (dinosaur, id) => {
+      queryClient.setQueryData<DinosaurListResponse>(queryKeys.dinosaurList(), (current) =>
+        current
+          ? {
+              ...current,
+              dinosaurs: current.dinosaurs.map((item) => (item.id === id ? dinosaur : item)),
+            }
+          : current,
+      );
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurDetail(id) });
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurList() });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.parkOperations() });
     },
   });
 }
@@ -365,8 +518,21 @@ export function useCreateBuilding() {
     mutationFn: (data: CreateBuildingRequest) => api.post<BuildingResponse>('/buildings', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
-      queryClient.invalidateQueries({ queryKey: queryKeys.parkSummary() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.park });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    },
+  });
+}
+
+export function useCompleteBuilding() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post<{ completed: boolean; building: BuildingResponse }>(`/buildings/${id}/complete`),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.park });
+      void queryClient.invalidateQueries({ queryKey: resourcesQueryKey });
     },
   });
 }
@@ -375,11 +541,21 @@ export function useUpgradeBuilding() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => api.post<BuildingResponse>(`/buildings/${id}/upgrade`),
-    onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(id) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.buildingList() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+    mutationFn: (upgrade: string | { id: string; targetLevel: number }) =>
+      typeof upgrade === 'string'
+        ? api.post<BuildingResponse>(`/buildings/${upgrade}/upgrade`)
+        : api.post<BuildingResponse>(`/buildings/${upgrade.id}/upgrade`, {
+            targetLevel: upgrade.targetLevel,
+          }),
+    onMutate: () => cancelResourceReads(queryClient),
+    onSuccess: async (building) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.buildingDetail(building.id) }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.buildingList() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.park }),
+        queryClient.invalidateQueries({ queryKey: resourcesQueryKey }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.currency() }),
+      ]);
     },
   });
 }
@@ -482,10 +658,18 @@ export function useExplorationRegions() {
 }
 
 export function useExplorations() {
+  const visible = useDocumentVisible();
   return useQuery({
     queryKey: queryKeys.explorationList(),
-    queryFn: () => api.get<ExplorationListResponse>('/explorations'),
-    enabled: tokenManager.isAuthenticated(),
+    queryFn: async () => {
+      const result = await api.get<ExplorationListResponse | ExplorationResponse[]>(
+        '/explorations',
+      );
+      return Array.isArray(result) ? { explorations: result } : result;
+    },
+    enabled: tokenManager.isAuthenticated() && visible,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -547,6 +731,92 @@ export function useClaimExploration() {
   });
 }
 
+// The first expedition owns its mission, egg and tutorial state on the server.
+function syncFirstExpedition(queryClient: QueryClient, state: FirstExpeditionStateResponse) {
+  queryClient.setQueryData<CurrencyResponse>(queryKeys.currency(), (currency) =>
+    currency ? { ...currency, gold: state.gold, explorationEnergy: state.energy } : currency,
+  );
+  return state;
+}
+
+export function useFirstExpedition() {
+  const queryClient = useQueryClient();
+  const visible = useDocumentVisible();
+  return useQuery({
+    queryKey: queryKeys.firstExpedition(),
+    queryFn: async ({ signal }) =>
+      syncFirstExpedition(
+        queryClient,
+        await api.get<FirstExpeditionStateResponse>('/explorations/first', { signal }),
+      ),
+    enabled: tokenManager.isAuthenticated() && visible,
+    refetchInterval: (query) => (query.state.data?.stage === 'hatching' ? 1000 : 5000),
+    refetchIntervalInBackground: false,
+    staleTime: 1000,
+  });
+}
+
+function useFirstExpeditionMutation<T>(
+  request: (variables: T) => Promise<FirstExpeditionStateResponse>,
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: request,
+    onMutate: async () => {
+      // A pre-action read must not overwrite a new mission step or paid balance.
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: queryKeys.firstExpedition() }),
+        queryClient.cancelQueries({ queryKey: resourcesQueryKey }),
+        queryClient.cancelQueries({ queryKey: queryKeys.parkOperations() }),
+        queryClient.cancelQueries({ queryKey: queryKeys.currency() }),
+      ]);
+    },
+    onSuccess: (state) => {
+      queryClient.setQueryData(
+        queryKeys.firstExpedition(),
+        syncFirstExpedition(queryClient, state),
+      );
+      void queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hatching });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.userMe() });
+      if (state.dinosaur) {
+        void queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurs });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.park });
+      }
+    },
+  });
+}
+
+export function useStartFirstExpedition() {
+  return useFirstExpeditionMutation((regionId: string) =>
+    api.post<FirstExpeditionStateResponse>('/explorations/first/start', { regionId }),
+  );
+}
+export function useChooseFirstExpedition() {
+  return useFirstExpeditionMutation(
+    ({ id, step, choiceId }: { id: string; step: number; choiceId: string }) =>
+      api.post<FirstExpeditionStateResponse>(`/explorations/first/${id}/choice`, {
+        step,
+        choiceId,
+      }),
+  );
+}
+export function useClaimFirstExpedition() {
+  return useFirstExpeditionMutation((id: string) =>
+    api.post<FirstExpeditionStateResponse>(`/explorations/first/${id}/claim`),
+  );
+}
+export function useStartHatchingEgg() {
+  return useFirstExpeditionMutation((id: string) =>
+    api.post<FirstExpeditionStateResponse>(`/explorations/hatching/${id}/start`),
+  );
+}
+export function useClaimHatchingEgg() {
+  return useFirstExpeditionMutation((id: string) =>
+    api.post<FirstExpeditionStateResponse>(`/explorations/hatching/${id}/claim`),
+  );
+}
+
 // ========================================
 // Great Figure Queries & Mutations
 // ========================================
@@ -606,11 +876,18 @@ export function useLevelUpGreatFigure() {
 // ========================================
 
 export function useHatchingQueue() {
+  const visible = useDocumentVisible();
   return useQuery({
     queryKey: queryKeys.hatchingQueue(),
-    queryFn: () => api.get<HatchingQueueResponse>('/explorations/hatching'),
-    enabled: tokenManager.isAuthenticated(),
-    refetchInterval: 10000, // 10초마다 갱신
+    queryFn: async () => {
+      const result = await api.get<HatchingQueueResponse | HatchingQueueResponse['queue']>(
+        '/explorations/hatching',
+      );
+      return Array.isArray(result) ? { queue: result } : result;
+    },
+    enabled: tokenManager.isAuthenticated() && visible,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
   });
 }
 

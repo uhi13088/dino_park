@@ -1,10 +1,17 @@
 # 🎬 다이노 파크 타이쿤 - 에셋 프롬프트 (컷신 & 스토리 UI편)
 
+<!-- legacy-reference: 2026-11-15 -->
+> **구버전 자료 · 2026-11-15 분리**
+> 구버전 기획·설계 자료입니다. 최신 구현 기준으로 사용하지 말고, 필요한 내용은 최신 기획에 승계한 뒤 사용합니다. 문서 내 버전 번호는 이 자료 자체의 과거 버전입니다.
+> 최신 기준과 실제 구현 상태는 [기획 문서 안내](README.md)에서 확인합니다.
+
 ## 컷신 10종 + 스토리 UI + 특수 연출
 
 ---
 
 # 📖 사용 가이드
+
+> 인물 관계와 이야기의 정본은 [스토리 시나리오](dino_park_story_scenario.md)다. 아서는 주인공에게 편지를 보낸 파크 창립자다. 정본에 주인공의 조부로 명시되어 있지 않으므로 에셋에서도 ‘창립자’로 표기한다. 아래 컷신 번호는 기존 에셋 식별자이므로 실제 스토리 챕터·씬과의 대응은 정본 기준으로 확인한다.
 
 ## 파일명 규칙
 
@@ -167,7 +174,7 @@ apps/client/src/assets/
 ### 아서 홀로그램 (Arthur Hologram)
 
 ```
-2.5D isometric game character, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, transparent PNG background, high quality mobile game artwork, Arthur grandfather hologram projection, elderly kind man figure, translucent cyan hologram effect #00BCD4, gentle smile, lab coat silhouette, digital glitch distortion, ghostly presence, emotional connection, character size 256x384 pixels, --ar 2:3 --v 6 --s 250 --q 2
+2.5D isometric game character, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, transparent PNG background, high quality mobile game artwork, Arthur Hammond park founder hologram projection, elderly kind man figure, translucent cyan hologram effect #00BCD4, gentle smile, lab coat silhouette, digital glitch distortion, ghostly presence, emotional connection, character size 256x384 pixels, --ar 2:3 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -206,14 +213,14 @@ apps/client/src/assets/
 
 ---
 
-## 컷신\_01_01 할아버지의 편지 (The Letter)
+## 컷신\_01_01 창립자의 편지 (The Letter)
 
 ### 장면 설명
 
-주인공이 할아버지 아서의 편지를 읽는 장면. 감정적 시작점.
+주인공이 파크 창립자 아서 해먼드의 편지를 읽는 장면. 감정적 시작점.
 
 ```
-2D game cutscene illustration, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting, high quality mobile game artwork, emotional scene of protagonist reading grandfather's letter, warm golden afternoon light through window, old wooden desk with scattered papers, vintage envelope and handwritten letter in hands, nostalgic family photograph visible, dust particles in sunlight, bittersweet hopeful atmosphere, widescreen cinematic composition, cutscene size 1920x1080 pixels, --ar 16:9 --v 6 --s 250 --q 2
+2D game cutscene illustration, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, soft lighting, high quality mobile game artwork, emotional scene of protagonist reading park founder Arthur Hammond's letter, warm golden afternoon light through window, old wooden desk with scattered papers, vintage envelope and handwritten letter in hands, photograph of the old dinosaur park visible, dust particles in sunlight, bittersweet hopeful atmosphere, widescreen cinematic composition, cutscene size 1920x1080 pixels, --ar 16:9 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -330,10 +337,10 @@ apps/client/src/assets/
 
 ### 장면 설명
 
-할아버지의 비밀 연구실을 발견하는 장면.
+파크 창립자 아서의 비밀 연구실을 발견하는 장면.
 
 ```
-2D game cutscene illustration, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, mysterious lighting, high quality mobile game artwork, discovery of secret laboratory scene, protagonist finding hidden underground lab, dusty equipment and old research notes, hologram of grandfather activating, DNA samples and dinosaur data, revelation moment, family legacy uncovered, wonder and emotion mixed, widescreen cinematic composition, cutscene size 1920x1080 pixels, --ar 16:9 --v 6 --s 250 --q 2
+2D game cutscene illustration, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, mysterious lighting, high quality mobile game artwork, discovery of secret laboratory scene, protagonist finding hidden underground lab, dusty equipment and old research notes, hologram of park founder Arthur Hammond activating, DNA samples and dinosaur data, revelation moment, the park founder's legacy uncovered, wonder and emotion mixed, widescreen cinematic composition, cutscene size 1920x1080 pixels, --ar 16:9 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -357,7 +364,7 @@ apps/client/src/assets/
 파크가 번영하는 해피 엔딩.
 
 ```
-2D game cutscene illustration, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, golden hour lighting, high quality mobile game artwork, prosperous park ending scene, thriving dinosaur park overview, happy visitors everywhere, protagonist overlooking from hill, all dinosaur species living harmoniously, grandfather statue in park, dream fulfilled aesthetic, emotional happy ending, widescreen cinematic composition, cutscene size 1920x1080 pixels, --ar 16:9 --v 6 --s 250 --q 2
+2D game cutscene illustration, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, golden hour lighting, high quality mobile game artwork, prosperous park ending scene, thriving dinosaur park overview, happy visitors everywhere, protagonist overlooking from hill, all dinosaur species living harmoniously, park founder Arthur Hammond statue in park, dream fulfilled aesthetic, emotional happy ending, widescreen cinematic composition, cutscene size 1920x1080 pixels, --ar 16:9 --v 6 --s 250 --q 2
 ```
 
 ---
@@ -381,7 +388,7 @@ apps/client/src/assets/
 새로운 탐험을 떠나는 엔딩.
 
 ```
-2D game cutscene illustration, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, adventurous lighting, high quality mobile game artwork, new adventure ending scene, protagonist and team departing for new expedition, ship sailing toward mysterious island on horizon, dinosaur companions following, spirit of exploration, grandfather's journal in hand, journey continues aesthetic, hopeful open ending, widescreen cinematic composition, cutscene size 1920x1080 pixels, --ar 16:9 --v 6 --s 250 --q 2
+2D game cutscene illustration, soft cel-shaded cartoon style, warm and friendly color palette, vibrant saturated colors, clean outlines, adventurous lighting, high quality mobile game artwork, new adventure ending scene, protagonist and team departing for new expedition, ship sailing toward mysterious island on horizon, dinosaur companions following, spirit of exploration, park founder Arthur Hammond's journal in hand, journey continues aesthetic, hopeful open ending, widescreen cinematic composition, cutscene size 1920x1080 pixels, --ar 16:9 --v 6 --s 250 --q 2
 ```
 
 ---

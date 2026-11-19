@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DinosaurService } from './dinosaur.service';
+import { ParkOperationsService } from '../park/park-operations.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 
@@ -9,9 +10,16 @@ describe('DinosaurService', () => {
   const mockPrismaService = {
     park: {
       findUnique: jest.fn(),
+      update: jest.fn(),
     },
+    building: { findMany: jest.fn() },
+    transaction: { create: jest.fn() },
+    dinosaurCollection: { upsert: jest.fn() },
     dinosaur: {
       findUnique: jest.fn(),
+      findUniqueOrThrow: jest.fn(),
+      findFirst: jest.fn(),
+      updateMany: jest.fn(),
       findMany: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
@@ -19,6 +27,8 @@ describe('DinosaurService', () => {
     },
     currency: {
       findUnique: jest.fn(),
+      findUniqueOrThrow: jest.fn(),
+      updateMany: jest.fn(),
       update: jest.fn(),
     },
     $transaction: jest.fn(),
@@ -63,6 +73,7 @@ describe('DinosaurService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DinosaurService,
+        { provide: ParkOperationsService, useValue: { settleInTransaction: jest.fn() } },
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -73,7 +84,22 @@ describe('DinosaurService', () => {
     service = module.get<DinosaurService>(DinosaurService);
 
     // Reset all mocks
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    mockPrismaService.$transaction.mockImplementation(async (operation: unknown) => {
+      if (typeof operation === 'function') return operation(mockPrismaService);
+      return Promise.all(operation as Promise<unknown>[]);
+    });
+    mockPrismaService.park.findUnique.mockResolvedValue(mockPark);
+    mockPrismaService.park.update.mockResolvedValue(mockPark);
+    mockPrismaService.building.findMany.mockResolvedValue([]);
+    mockPrismaService.dinosaur.findFirst.mockResolvedValue(null);
+    mockPrismaService.dinosaur.updateMany.mockResolvedValue({ count: 1 });
+    mockPrismaService.currency.updateMany.mockResolvedValue({ count: 1 });
+    mockPrismaService.currency.findUniqueOrThrow.mockResolvedValue(mockCurrency);
+    mockPrismaService.dinosaur.update.mockImplementation(({ data }) => ({
+      ...mockDinosaur,
+      ...data,
+    }));
   });
 
   describe('getByUserId', () => {
@@ -137,6 +163,12 @@ describe('DinosaurService', () => {
       const result = await service.create('user-1', 'trex', 5, 5, 'Baby Rex');
 
       expect(result.id).toBe('new-dino');
+      expect(mockPrismaService.dinosaurCollection.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { parkId_speciesId: { parkId: 'park-1', speciesId: 'trex' } },
+          update: {},
+        }),
+      );
       expect(mockPrismaService.dinosaur.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           parkId: 'park-1',
@@ -227,35 +259,34 @@ describe('DinosaurService', () => {
         park: { userId: 'user-1' },
       };
 
-      mockPrismaService.dinosaur.findUnique.mockResolvedValue(hungryDinosaur);
+      mockPrismaService.dinosaur.findUniqueOrThrow.mockResolvedValue(hungryDinosaur);
       mockPrismaService.currency.findUnique.mockResolvedValue(mockCurrency);
-      mockPrismaService.$transaction.mockResolvedValue([
-        { ...mockCurrency, gold: mockCurrency.gold - 100 },
-        { ...hungryDinosaur, happiness: 80, hunger: 0 },
-      ]);
 
       const result = await service.feed('dino-1', 'user-1');
 
       expect(result.goldSpent).toBe(100);
+      expect(result.hunger).toBe(0);
+      expect(mockPrismaService.currency.updateMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1', gold: { gte: 100 } },
+        data: { gold: { decrement: 100 } },
+      });
+      expect(mockPrismaService.transaction.create).toHaveBeenCalled();
       expect(mockPrismaService.$transaction).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException when not enough gold', async () => {
-      mockPrismaService.dinosaur.findUnique.mockResolvedValue({
+      mockPrismaService.dinosaur.findUniqueOrThrow.mockResolvedValue({
         ...mockDinosaur,
         hunger: 50,
         park: { userId: 'user-1' },
       });
-      mockPrismaService.currency.findUnique.mockResolvedValue({
-        ...mockCurrency,
-        gold: 50,
-      });
+      mockPrismaService.currency.updateMany.mockResolvedValue({ count: 0 });
 
       await expect(service.feed('dino-1', 'user-1')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException when dinosaur is not hungry', async () => {
-      mockPrismaService.dinosaur.findUnique.mockResolvedValue({
+      mockPrismaService.dinosaur.findUniqueOrThrow.mockResolvedValue({
         ...mockDinosaur,
         hunger: 0,
         park: { userId: 'user-1' },
@@ -263,6 +294,7 @@ describe('DinosaurService', () => {
       mockPrismaService.currency.findUnique.mockResolvedValue(mockCurrency);
 
       await expect(service.feed('dino-1', 'user-1')).rejects.toThrow(BadRequestException);
+      expect(mockPrismaService.currency.updateMany).not.toHaveBeenCalled();
     });
   });
 
@@ -305,29 +337,83 @@ describe('DinosaurService', () => {
     });
   });
 
+  describe('placement validation', () => {
+    beforeEach(() => {
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue(mockDinosaur);
+    });
+    it.each([
+      [-1, 3],
+      [1.5, 3],
+      [3, 30],
+    ])('rejects invalid tile (%s, %s)', async (x, y) => {
+      await expect(service.placeInPark('dino-1', 'user-1', x, y)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(mockPrismaService.dinosaur.update).not.toHaveBeenCalled();
+    });
+    it('rejects another dinosaur on the tile', async () => {
+      mockPrismaService.dinosaur.findFirst.mockResolvedValue({ id: 'other-dinosaur' });
+      await expect(service.placeInPark('dino-1', 'user-1', 10, 10)).rejects.toThrow('다른 공룡');
+    });
+    it('blocks the full building footprint, not just its origin', async () => {
+      mockPrismaService.building.findMany.mockResolvedValue([
+        { typeId: 'operation-entrance-gate', positionX: 10, positionY: 10 },
+      ]);
+      await expect(service.placeInPark('dino-1', 'user-1', 13, 13)).rejects.toThrow('건물이 있는');
+    });
+    it('allows placement inside a dinosaur habitat', async () => {
+      mockPrismaService.building.findMany.mockResolvedValue([
+        { typeId: 'habitat-grassland', positionX: 10, positionY: 10 },
+      ]);
+      await expect(service.placeInPark('dino-1', 'user-1', 11, 11)).resolves.toMatchObject({
+        positionX: 11,
+        positionY: 11,
+        isInPark: true,
+      });
+    });
+    it('rejects another owner before updating a dinosaur', async () => {
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue({
+        ...mockDinosaur,
+        parkId: 'other-park',
+      });
+      await expect(service.placeInPark('dino-1', 'user-1', 10, 10)).rejects.toThrow(
+        ForbiddenException,
+      );
+      expect(mockPrismaService.dinosaur.update).not.toHaveBeenCalled();
+    });
+  });
+
   describe('release', () => {
     it('should release dinosaur and reward DNA', async () => {
       mockPrismaService.dinosaur.findUnique.mockResolvedValue({
         ...mockDinosaur,
         park: { userId: 'user-1' },
       });
-      mockPrismaService.$transaction.mockResolvedValue([]);
 
       const result = await service.release('dino-1', 'user-1');
 
       expect(result.released).toBe(true);
       expect(result.dnaReward).toBeGreaterThan(0);
       expect(mockPrismaService.$transaction).toHaveBeenCalled();
+      expect(mockPrismaService.dinosaurCollection.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          create: { parkId: 'park-1', speciesId: 'trex', firstCollectedAt: mockDinosaur.createdAt },
+        }),
+      );
     });
   });
 
   describe('calculateRevenue', () => {
-    it('should calculate hourly revenue', async () => {
-      mockPrismaService.dinosaur.findUnique.mockResolvedValue(mockDinosaur);
+    it('reports visitor attraction without direct gold generation', async () => {
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue({
+        ...mockDinosaur,
+        speciesId: 'parasaurolophus',
+      });
 
       const result = await service.calculateRevenue('dino-1');
 
-      expect(result.hourlyRevenue).toBeGreaterThan(0);
+      expect(result.hourlyRevenue).toBe(0);
+      expect(result.popularity).toBe(3);
       expect(result.minuteRevenue).toBeDefined();
       expect(result.level).toBe(3);
     });
@@ -351,6 +437,7 @@ describe('DinosaurService', () => {
       mockPrismaService.$transaction.mockImplementation(async (callback) => {
         const tx = {
           dinosaur: {
+            findUnique: mockPrismaService.dinosaur.findUnique,
             update: jest.fn().mockResolvedValue({
               ...readyForInteraction,
               happiness: 85,
@@ -396,6 +483,7 @@ describe('DinosaurService', () => {
       mockPrismaService.$transaction.mockImplementation(async (callback) => {
         const tx = {
           dinosaur: {
+            findUnique: mockPrismaService.dinosaur.findUnique,
             update: jest.fn().mockImplementation(() => {
               updateCallCount++;
               if (updateCallCount === 1) {

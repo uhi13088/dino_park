@@ -109,7 +109,6 @@ interface DinosaurState {
   dinosaurs: Dinosaur[];
   hatchingEggs: HatchingEgg[];
   selectedDinosaur: Dinosaur | null;
-  codexUnlocked: Set<string>;
 
   // Filters
   categoryFilter: DinosaurCategory | 'all';
@@ -123,7 +122,6 @@ interface DinosaurState {
   setDinosaurs: (dinosaurs: Dinosaur[]) => void;
   setHatchingEggs: (eggs: HatchingEgg[]) => void;
   setSelectedDinosaur: (dinosaur: Dinosaur | null) => void;
-  setCodexUnlocked: (speciesIds: string[]) => void;
   setCategoryFilter: (category: DinosaurCategory | 'all') => void;
   setRarityFilter: (rarity: DinosaurRarity | 'all') => void;
   setSortBy: (sortBy: 'level' | 'happiness' | 'revenue' | 'recent') => void;
@@ -153,7 +151,6 @@ export const useDinosaurStore = create<DinosaurState>()(
       dinosaurs: [],
       hatchingEggs: [],
       selectedDinosaur: null,
-      codexUnlocked: new Set(),
       categoryFilter: 'all',
       rarityFilter: 'all',
       sortBy: 'recent',
@@ -163,7 +160,6 @@ export const useDinosaurStore = create<DinosaurState>()(
       setDinosaurs: (dinosaurs) => set({ dinosaurs }),
       setHatchingEggs: (hatchingEggs) => set({ hatchingEggs }),
       setSelectedDinosaur: (selectedDinosaur) => set({ selectedDinosaur }),
-      setCodexUnlocked: (speciesIds) => set({ codexUnlocked: new Set(speciesIds) }),
       setCategoryFilter: (categoryFilter) => set({ categoryFilter }),
       setRarityFilter: (rarityFilter) => set({ rarityFilter }),
       setSortBy: (sortBy) => set({ sortBy }),

@@ -25,3 +25,30 @@ export interface ParkStats {
   popularity: number;
   satisfaction: number;
 }
+
+export type ParkGrowthGoalId = 'facility' | 'research' | 'field' | 'operation';
+
+export interface ParkGrowthGoal {
+  id: ParkGrowthGoalId;
+  status: 'locked' | 'incomplete' | 'claimable' | 'claimed';
+  xp: number;
+  progress: number;
+  target: number;
+}
+
+export interface ParkGrowthResponse {
+  unlocked: boolean;
+  level: number;
+  exp: number;
+  expForNextLevel: number;
+  targetLevel: 6;
+  goals: ParkGrowthGoal[];
+  research: {
+    status: 'locked' | 'available' | 'running' | 'completed';
+    completesAt: string | null;
+    costs: { gold: number; wood: number; stone: number };
+    durationSeconds: number;
+    entranceBonusPercent: number;
+    unavailableReason: string | null;
+  };
+}
