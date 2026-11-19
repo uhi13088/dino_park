@@ -1,21 +1,13 @@
-import { test, expect, type Page } from '@playwright/test';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
-import { PrismaClient } from '../apps/server/node_modules/@prisma/client';
+import { expect, type Page } from '@playwright/test';
 import type {
   FirstExpeditionStateResponse,
   LoginResponse,
   ResourcesResponse,
 } from '@dino-park/shared';
+import { isIsolatedParkConfigured, isolatedParkSetup, test } from './isolated-park';
 
-// Local isolated fixtures only. The original admission/30-second construction has its own E2E.
-const env = readFileSync(path.resolve('apps/server/.env.local'), 'utf8');
-const databaseUrl = process.env.DATABASE_URL || /^DATABASE_URL=["']?(.+?)["']?\s*$/m.exec(env)?.[1];
-if (!databaseUrl || !['localhost', '127.0.0.1'].includes(new URL(databaseUrl).hostname))
-  throw new Error('This fixture requires the local game database');
-const prisma = new PrismaClient({ datasources: { db: { url: databaseUrl } } });
+test.skip(!isIsolatedParkConfigured, isolatedParkSetup);
 test.use({ actionTimeout: 15_000 });
-test.afterAll(async () => prisma.$disconnect());
 
 async function state<T>(page: Page, endpoint: string): Promise<T> {
   return page.evaluate(async (url) => {
@@ -58,6 +50,7 @@ async function clickSaved(page: Page, name: string, endpoint: string) {
 test('first investigation, real hatch, two dinosaurs and early production form one saved loop', async ({
   page,
   request,
+  database: prisma,
 }) => {
   test.setTimeout(300_000);
   const errors: string[] = [];
@@ -306,6 +299,7 @@ test('first investigation, real hatch, two dinosaurs and early production form o
 test('resource wheel scrolls the panel without moving the map camera', async ({
   page,
   request,
+  database: prisma,
 }) => {
   test.setTimeout(60_000);
   const login = await request.post('/api/auth/toss/login', {

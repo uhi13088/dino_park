@@ -53,7 +53,12 @@ export default function ParkPage() {
   const { sidePanel, openSidePanel, closeSidePanel, openModal, closeModal, showToast } =
     useUIStore();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const { mutate: claimStarter, isPending, error: starterError } = useClaimStarterPark();
+  const {
+    mutate: claimStarter,
+    isPending,
+    isSuccess: starterReady,
+    error: starterError,
+  } = useClaimStarterPark();
   const setParkOpen = useSetParkOpen();
   const completeBuilding = useCompleteBuilding();
   const openGrowth = useCallback(() => {
@@ -272,6 +277,11 @@ export default function ParkPage() {
             preparePlacement();
             startPlacement({ type: 'entrance', id: operations.entrance.id });
           }}
+          onRecoverEntrance={
+            starterReady && !operationsQuery.isFetching && !operations.entrance
+              ? () => claimStarter()
+              : undefined
+          }
           onBuildPlatform={() => {
             preparePlacement();
             startPlacement({ type: 'building', typeId: PARK_ADMISSION.platformTypeId });

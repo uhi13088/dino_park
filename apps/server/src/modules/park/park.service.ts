@@ -1,7 +1,15 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import type { Building } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { STARTER_PARK } from '@dino-park/game-data';
 import { ParkOperationsService } from './park-operations.service';
+import {
+  admissionSnapshot,
+  buildingSize,
+  entranceExit,
+  type AdmissionWorld,
+  type Tile,
+} from './park-admission.logic';
 import type { StarterParkResponse } from '@dino-park/shared';
 import {
   MAX_PARK_LEVEL,
@@ -9,6 +17,7 @@ import {
   INITIAL_GRID_SIZE,
   GRID_SIZE_PER_LEVEL,
   MAX_GRID_SIZE,
+  PARK_ADMISSION,
 } from '@dino-park/shared';
 
 /**
@@ -28,9 +37,11 @@ export class ParkService {
 
   async claimStarter(userId: string): Promise<StarterParkResponse> {
     return this.prisma.$transaction(async (tx) => {
+      // Use the same park lock as construction so two loads cannot restore two gates.
+      await tx.$queryRaw`SELECT id FROM parks WHERE "userId" = ${userId} FOR UPDATE`;
       const park = await tx.park.findUnique({
         where: { userId },
-        include: { _count: { select: { dinosaurs: true, buildings: true } } },
+        include: { dinosaurs: true, buildings: true },
       });
       if (!park) throw new NotFoundException('파크를 찾을 수 없습니다.');
 
@@ -39,9 +50,21 @@ export class ParkService {
         data: { userId, flagId: STARTER_PARK.receiptFlag, value: true },
         skipDuplicates: true,
       });
-      if (!receipt.count || park._count.dinosaurs || park._count.buildings) {
+      if (park.dinosaurs.length || park.buildings.length) {
+        const entrance = this.legacyEntrance(park);
+        if (entrance) {
+          await tx.building.create({
+            data: {
+              parkId: park.id,
+              typeId: entrance.typeId,
+              positionX: entrance.positionX,
+              positionY: entrance.positionY,
+            },
+          });
+        }
         return { granted: false };
       }
+      if (!receipt.count) return { granted: false };
 
       const dinosaur = await tx.dinosaur.create({
         data: { parkId: park.id, ...STARTER_PARK.dinosaur },
@@ -60,6 +83,48 @@ export class ParkService {
       });
       return { granted: true };
     });
+  }
+
+  private legacyEntrance(park: AdmissionWorld & { id: string }): Building | undefined {
+    const entranceType = PARK_ADMISSION.entranceTypeId;
+    if (park.buildings.some(({ typeId }) => typeId === entranceType)) return;
+    const { width, height } = buildingSize({ typeId: entranceType });
+    const right = park.gridSizeX - width;
+    const bottom = park.gridSizeY - height;
+    if (right < 0 || bottom < 0) return;
+
+    const candidates: Tile[] = [];
+    for (let x = 0; x <= right; x++) candidates.push({ x, y: bottom }, { x, y: 0 });
+    for (let y = 1; y < bottom; y++) candidates.push({ x: right, y }, { x: 0, y });
+    const now = new Date();
+    const hasExhibit = park.dinosaurs.some(({ isInPark }) => isInPark);
+    let fallback: Building | undefined;
+    for (const { x, y } of candidates) {
+      if (!this.operations.positionFree(park, null, x, y, entranceType)) continue;
+      const entrance: Building = {
+        id: 'legacy-entrance-preview',
+        parkId: park.id,
+        typeId: entranceType,
+        level: 1,
+        positionX: x,
+        positionY: y,
+        status: 'ACTIVE',
+        assignedGreatFigureId: null,
+        completesAt: null,
+        createdAt: now,
+        updatedAt: now,
+      };
+      const exit = entranceExit(entrance, park);
+      if (!this.operations.positionFree(park, null, exit.x, exit.y)) continue;
+      if (
+        !hasExhibit ||
+        admissionSnapshot({ ...park, buildings: [...park.buildings, entrance] }, now.getTime())
+          .demand > 0
+      )
+        return entrance;
+      fallback ??= entrance;
+    }
+    return fallback;
   }
 
   /**

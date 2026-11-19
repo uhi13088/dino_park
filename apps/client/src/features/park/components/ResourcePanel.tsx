@@ -11,6 +11,7 @@ import {
   useResources,
   useStartResourceProduction,
 } from '@/api/queries/resources';
+import { createRequestId } from '@/utils/requestId';
 import './ResourcePanel.css';
 
 interface Props {
@@ -75,7 +76,7 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
   const buyMaterial = async (material: EarlyResourceMaterial, quantity: number) => {
     let request = pendingPurchase.current;
     if (request?.material !== material || request.quantity !== quantity) {
-      request = { material, quantity, id: crypto.randomUUID() };
+      request = { material, quantity, id: createRequestId() };
       pendingPurchase.current = request;
     }
     await purchase.mutateAsync({ material, quantity, requestId: request.id });

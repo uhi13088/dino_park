@@ -1,16 +1,10 @@
 import { randomUUID } from 'node:crypto';
-import { expect, test, type APIResponse } from '@playwright/test';
+import { expect, type APIResponse } from '@playwright/test';
 import type { DinosaurCodexResponse, FirstSynthesisState, LoginResponse } from '@dino-park/shared';
-import { PrismaClient } from '../apps/server/node_modules/@prisma/client';
+import { isIsolatedParkConfigured, isolatedParkSetup, test } from './isolated-park';
 
-const databaseUrl = process.env.DINO_FIRST_HYBRID_E2E_DATABASE_URL;
-const parkDatabase = databaseUrl ? new URL(databaseUrl) : null;
-const isolatedDatabase =
-  parkDatabase &&
-  ['localhost', '127.0.0.1'].includes(parkDatabase.hostname) &&
-  /^\/dino_park_\w+_qa$/.test(parkDatabase.pathname);
-const apiPort = Number(process.env.DINO_FIRST_HYBRID_E2E_API_PORT ?? 4400);
-const api = `http://127.0.0.1:${apiPort}/api`;
+test.skip(!isIsolatedParkConfigured, isolatedParkSetup);
+const api = '/api';
 
 async function data<T>(response: APIResponse): Promise<T> {
   const payload = await response.json();
@@ -20,9 +14,8 @@ async function data<T>(response: APIResponse): Promise<T> {
 
 test('first synthesis debits once, keeps parents, and completes story at a valid exhibit', async ({
   request,
+  database: prisma,
 }) => {
-  test.skip(!isolatedDatabase, 'Use the isolated first hybrid PostgreSQL database.');
-  const prisma = new PrismaClient({ datasources: { db: { url: databaseUrl } } });
   const tossId = `first-synthesis-test-${randomUUID()}`;
   const visitorId = `${tossId}-other-park`;
   try {
@@ -251,6 +244,5 @@ test('first synthesis debits once, keeps parents, and completes story at a valid
         where: { tossId: { in: [tossId, visitorId] } },
       })
       .catch(() => undefined);
-    await prisma.$disconnect();
   }
 });

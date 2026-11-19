@@ -77,6 +77,16 @@ describe('first park operation goals', () => {
     expect(callbacks.onOpenChange).not.toHaveBeenCalled();
   });
 
+  it('explains how to retry when an older park has no space for its entrance', () => {
+    const callbacks = props({ canOpen: false, entrance: null });
+    const onRecoverEntrance = vi.fn();
+    render(<ParkOperationsPanel {...callbacks} onRecoverEntrance={onRecoverEntrance} />);
+    expect(screen.getByText(/입구를 복구하려면 파크 테두리에 4×4칸/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '입구 다시 찾기 · 무료' }));
+    expect(onRecoverEntrance).toHaveBeenCalledOnce();
+    expect(callbacks.onMoveEntrance).not.toHaveBeenCalled();
+  });
+
   it('prioritizes the interior entrance when a previously cared-for dinosaur is already full', () => {
     const callbacks = props({
       canOpen: false,

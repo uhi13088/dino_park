@@ -15,6 +15,7 @@ import './ParkOperations.css';
 
 const platformType = getBuildingById(PARK_ADMISSION.platformTypeId)!;
 const platformCost = platformType.baseCost ?? platformType.unlockCondition.cost.gold;
+const entranceSize = getBuildingById(PARK_ADMISSION.entranceTypeId)!.size;
 
 interface Props {
   operations: ParkOperationsResponse;
@@ -24,6 +25,7 @@ interface Props {
   onPlaceDinosaur: (dinosaur: DinosaurResponse) => void;
   onCareDinosaur: (dinosaur: DinosaurResponse) => void;
   onMoveEntrance: () => void;
+  onRecoverEntrance?: () => void;
   onBuildPlatform: () => void;
   onCompletePlatform: (id: string) => void;
   onShowBuildings: () => void;
@@ -45,6 +47,7 @@ export default function ParkOperationsPanel({
   onPlaceDinosaur,
   onCareDinosaur,
   onMoveEntrance,
+  onRecoverEntrance,
   onBuildPlatform,
   onCompletePlatform,
   onShowBuildings,
@@ -81,7 +84,15 @@ export default function ParkOperationsPanel({
   let detail = '입구와 관람길이 준비되면 파크를 개장할 수 있어요.';
   let action: React.ReactNode = null;
 
-  if (waiting) {
+  if (!operations.entrance && onRecoverEntrance) {
+    title = '입구를 놓을 자리를 비워주세요';
+    detail = `입구를 복구하려면 파크 테두리에 ${entranceSize.width}×${entranceSize.height}칸의 빈 공간이 필요해요.`;
+    action = (
+      <Button className="park-operations__primary" disabled={busy} onClick={onRecoverEntrance}>
+        입구 다시 찾기 · 무료
+      </Button>
+    );
+  } else if (waiting) {
     title = '첫 공룡의 집을 정해주세요';
     detail = `${waiting.nickname || '공룡'}를 배치하고 먹이를 주세요.`;
     action = (

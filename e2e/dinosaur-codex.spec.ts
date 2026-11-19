@@ -1,14 +1,10 @@
-import { test, expect, type APIRequestContext } from '@playwright/test';
-import { PrismaClient } from '../apps/server/node_modules/@prisma/client';
+import { expect, type APIRequestContext } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import type { DinosaurCodexResponse, LoginResponse } from '@dino-park/shared';
+import { isIsolatedParkConfigured, isolatedParkSetup, test } from './isolated-park';
 
+test.skip(!isIsolatedParkConfigured, isolatedParkSetup);
 test.setTimeout(90_000);
-const database = new PrismaClient({
-  datasources: {
-    db: { url: 'postgresql://postgres:postgres@localhost:5432/dino_park?schema=public' },
-  },
-});
 const testUsers: string[] = [];
 
 async function account(request: APIRequestContext) {
@@ -29,9 +25,8 @@ async function readCodex(request: APIRequestContext, headers: Record<string, str
   return (await response.json()).data as DinosaurCodexResponse;
 }
 
-test.afterAll(async () => {
+test.afterAll(async ({ database }) => {
   if (testUsers.length) await database.user.deleteMany({ where: { id: { in: testUsers } } });
-  await database.$disconnect();
 });
 
 test('codex shows real collection, rarity/origin filters, Lux detail and current recipes', async ({
@@ -161,6 +156,7 @@ test('codex shows real collection, rarity/origin filters, Lux detail and current
 
 test('collection persists after release, backfills old ownership once, and stays private', async ({
   request,
+  database,
 }) => {
   const { login, headers } = await account(request);
   const park = await database.park.findUniqueOrThrow({ where: { userId: login.user.id } });

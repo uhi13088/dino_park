@@ -11,6 +11,7 @@ import {
 } from '@dino-park/shared';
 import { useRepeatSynthesis, useRepeatSynthesisAction } from '@/api/queries/repeatSynthesis';
 import { Button } from '@/components/ui';
+import { createRequestId } from '@/utils/requestId';
 
 const traits = Object.entries(DINOSAUR_COMPETITIVE_STAT_LABELS) as [
   keyof DinosaurCompetitiveStats,
@@ -64,7 +65,7 @@ export default function RepeatSynthesisPanel() {
   const requestSynthesis = () => {
     const signature = JSON.stringify([focus, parentIds]);
     if (signature !== pendingRequest.current?.signature)
-      pendingRequest.current = { signature, id: crypto.randomUUID() };
+      pendingRequest.current = { signature, id: createRequestId() };
     synthesis.mutate(
       { kind: 'start', request: { focus, parentIds, requestId: pendingRequest.current.id } },
       {
