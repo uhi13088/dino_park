@@ -1,0 +1,2 @@
+ALTER TABLE "dinosaurs"
+ADD COLUMN IF NOT EXISTS "careProgress" JSONB;

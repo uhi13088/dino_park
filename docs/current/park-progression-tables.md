@@ -1,12 +1,12 @@
 # Park5~50 성장 목표·경험치 공급표 0.6
 
-**[성장 정본](park-progression.md)에서 생성한 기획 표다. 실제 게임 적용·완주기간 검증을 뜻하지 않는다.**
+**[성장 정본](park-progression.md)에서 생성한 전체 기획 표다. 현재 이용할 수 있는 목표는 [첫 전시 뒤 파크 Lv.15까지](park-progression.md#첫-전시-뒤-파크-lv15까지)에서 확인한다.**
 
-초반 4,800XP → Park5 잔여35XP. 추가 180개 목표 3,964,614XP → 누적3,969,414XP, Park50 잔여0.
+초반 4,800XP → Park5 잔여35XP. 이후 레벨 전환 보상 3,964,614XP → 누적3,969,414XP, Park50 잔여0.
 
-목표는 파크 소유·첫 영웅 개체 수령 후·해당 Park 이상에서 수동 한 번 수령한다. 시설·연구와 일반 현장은 두 대안 중 하나로 완료한다. Park25·30·35 현장은 본편 장 완료 단일조건이다. 정상 선완료 이력을 인정한다. 네 트랙 수령 순서는 자유다. 기존 비용·시간·연구원·부모·허가는 그대로이며 탐험 직접XP는0이다. 입장마다XP를 지급하지 않고 유한한45개 실적 구간만 한 번 보상한다.
+Lv.6→7과 Lv.7→8은 현재 운영·탐험 경로를 완료하고 보상을 수령한다. 아래 네 분야 표는 장기 기획에 해당한다. 첫 영웅 개체 수령 후 해당 Park 이상에서 목표별로 한 번 수령한다. 시설·연구와 일반 현장은 두 대안 중 하나로 완료한다. Park25·30·35 현장은 본편 장 완료 단일조건이다. 정상 선완료 이력을 인정한다. 네 트랙 수령 순서는 자유다. 기존 비용·시간·연구원·부모·허가는 그대로이며 탐험 직접XP는0이다. 누적 입장 경험치 보상은 해당 실적 목표를 달성했을 때 한 번 받는다.
 
-권장 연구소 준비는 새 Park 해금이 아니다. 장면 링크(story_refs)는 안내이며 Park25·30·35에 명시한 장 완료 외에 추가 스토리 조건을 붙이지 않는다. 72기술 전체최대·83종 전수집·15합성·전결말·추가 유료연구원·다이아구매는 필수가 아니다. 수급·실제기간·실플레이 완주는 미검증이며 Park50 이후에도 운영·확장·수집을 이어 간다.
+권장 연구소 준비는 새 Park 해금이 아니다. 장면 링크(story_refs)는 안내이며 Park25·30·35에 명시한 장 완료 외에 추가 스토리 조건을 붙이지 않는다. 69기술 전체최대·83종 전수집·15합성·전결말·추가 유료연구원·다이아구매는 필수가 아니다. 수급·실제기간·실플레이 완주는 미검증이며 Park50 이후에도 운영·확장·수집을 이어 간다.
 
 ## 성장 단계
 
@@ -85,25 +85,11 @@
 
 ## Park6 → 7
 
-권장 연구소 Lv.2; 기존 선행기술·시설고도화·공사를 거친다. 네 목표 합계 5,031XP, 수령 후 전체 누적 13,419XP.
-
-| 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
-| --- | --- | --- | --- |
-| park-growth-06-facility / 시설 준비 | DNA 연구소 Lv.2 완공 [lab] (Park5 이상 · 연구소 Lv.2 준비) 또는 관람대 Lv.2 완공 [platform] (Park5 이상 · 연구소 Lv.1 준비) | 1,257 | 4,845 / 9,645 |
-| park-growth-06-research / 연구 적용 | 환경 적응 Lv.1 완료 [care-adaptation] (Park5 이상 · 연구소 Lv.1 준비) 또는 연료 저장 Lv.1 완료 [exp-tank] (Park5 이상 · 연구소 Lv.1 준비) | 1,257 | 6,102 / 10,902 |
-| park-growth-06-field / 현장 발견 | 딜로포사우루스 지정 알 목표 성공·알 보상 1회 수령 [gene-target-dilophosaurus] (Park5 이상 · 연구소 Lv.1 준비 · 일반 육식 원종 조사 Lv.1) 또는 현장 조사 성공·품질1 DNA 보상 1회 수령 [mission.fossil-valley.basic-dna.v1] (Park5 이상 · 연구소 Lv.1 준비) | 1,257 | 7,359 / 12,159 |
-| park-growth-06-operation / 운영 실적 | 실제 유료 입장 누적 400명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 1,260 | 8,619 / 13,419 |
+전환 보상 5,031XP, 수령 후 전체 누적 13,419XP. [운영·탐험 경로](park-progression.md#파크-레벨-6에서-7까지)에서 현재 조건을 확인한다.
 
 ## Park7 → 8
 
-권장 연구소 Lv.3; 기존 선행기술·시설고도화·공사를 거친다. 네 목표 합계 6,640XP, 수령 후 전체 누적 20,059XP.
-
-| 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
-| --- | --- | --- | --- |
-| park-growth-07-facility / 시설 준비 | DNA 연구소 Lv.3 완공 [lab] (Park5 이상 · 연구소 Lv.3 준비) 또는 보안센터 Lv.2 완공 [security] (Park5 이상 · 연구소 Lv.1 준비) | 1,660 | 10,279 / 15,079 |
-| park-growth-07-research / 연구 적용 | 현장 지도화 Lv.1 완료 [exp-field-mapping] (Park5 이상 · 연구소 Lv.1 준비) 또는 일반 육식 원종 조사 Lv.1 완료 [gene-common-carnivore] (Park5 이상 · 연구소 Lv.1 준비) | 1,660 | 11,939 / 16,739 |
-| park-growth-07-field / 현장 발견 | 에드몬토사우루스 지정 알 목표 성공·알 보상 1회 수령 [gene-target-edmontosaurus] (Park5 이상 · 연구소 Lv.1 준비 · 일반 초식 원종 조사 Lv.1) 또는 현장 조사 성공·품질1 DNA 보상 1회 수령 [mission.fossil-valley.repeat-rim-survey.v1] (Park5 이상 · 연구소 Lv.1 준비 · 현장 지도화 Lv.1) | 1,660 | 13,599 / 18,399 |
-| park-growth-07-operation / 운영 실적 | 실제 유료 입장 누적 900명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 1,660 | 15,259 / 20,059 |
+전환 보상 6,640XP, 수령 후 전체 누적 20,059XP. [운영·탐험 경로](park-progression.md#파크-레벨-7에서-8까지)에서 현재 조건을 확인한다.
 
 ## Park8 → 9
 
@@ -122,7 +108,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-09-facility / 시설 준비 | DNA 연구소 Lv.5 완공 [lab] (Park5 이상 · 연구소 Lv.5 준비) 또는 탐험 연료 보급소 Lv.2 완공 [fueldepot] (Park5 이상 · 연구소 Lv.1 준비) | 2,609 | 26,312 / 31,112 |
+| park-growth-09-facility / 시설 준비 | DNA 연구소 Lv.5 완공 [lab] (Park5 이상 · 연구소 Lv.5 준비) | 2,609 | 26,312 / 31,112 |
 | park-growth-09-research / 연구 적용 | 토지 개발 Lv.1 완료 [ops-land] (Park5 이상 · 연구소 Lv.5 준비) 또는 일반 초식 원종 조사 Lv.1 완료 [gene-common-herbivore] (Park5 이상 · 연구소 Lv.1 준비) | 2,609 | 28,921 / 33,721 |
 | park-growth-09-field / 현장 발견 | 딤로포돈 지정 알 목표 성공·알 보상 1회 수령 [natural-target-dimorphodon] (Park5 이상 · 연구소 Lv.1 준비 · 일반 육식 원종 조사 Lv.1) 또는 현장 조사 성공·품질1 배양액 보상 1회 수령 [mission.primal-swamp.basic-culture.v1] (Park5 이상 · 연구소 Lv.1 준비) | 2,609 | 31,530 / 36,330 |
 | park-growth-09-operation / 운영 실적 | 실제 유료 입장 누적 2,500명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 2,612 | 34,142 / 38,942 |
@@ -145,7 +131,7 @@
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
 | park-growth-11-facility / 시설 준비 | DNA 연구소 Lv.7 완공 [lab] (Park5 이상 · 연구소 Lv.7 준비) 또는 관람대 Lv.3 완공 [platform] (Park5 이상 · 연구소 Lv.1 준비) | 3,745 | 50,506 / 55,306 |
-| park-growth-11-research / 연구 적용 | 일반 초식 원종 조사 Lv.2 완료 [gene-common-herbivore] (Park5 이상 · 연구소 Lv.5 준비) 또는 연료 저장 Lv.2 완료 [exp-tank] (Park5 이상 · 연구소 Lv.2 준비) | 3,745 | 54,251 / 59,051 |
+| park-growth-11-research / 연구 적용 | 일반 초식 원종 조사 Lv.2 완료 [gene-common-herbivore] (Park5 이상 · 연구소 Lv.5 준비) | 3,745 | 54,251 / 59,051 |
 | park-growth-11-field / 현장 발견 | 안킬로사우루스 지정 알 목표 성공·알 보상 1회 수령 [gene-target-ankylosaurus] (Park5 이상 · 연구소 Lv.5 준비 · 고급 초식 원종 조사 Lv.1) 또는 현장 조사 성공·품질1 배양액 보상 1회 수령 [mission.primal-swamp.repeat-reedbank-survey.v1] (Park5 이상 · 연구소 Lv.5 준비 · 현장 지도화 Lv.2) | 3,745 | 57,996 / 62,796 |
 | park-growth-11-operation / 운영 실적 | 실제 유료 입장 누적 4,900명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 3,745 | 61,741 / 66,541 |
 
@@ -177,8 +163,8 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-14-facility / 시설 준비 | DNA 연구소 Lv.10 완공 [lab] (Park5 이상 · 연구소 Lv.10 준비) 또는 탐험 연료 보급소 Lv.3 완공 [fueldepot] (Park5 이상 · 연구소 Lv.1 준비) | 5,780 | 105,277 / 110,077 |
-| park-growth-14-research / 연구 적용 | 일반 육식 원종 조사 Lv.2 완료 [gene-common-carnivore] (Park5 이상 · 연구소 Lv.5 준비) 또는 연료 저장 Lv.3 완료 [exp-tank] (Park5 이상 · 연구소 Lv.3 준비) | 5,780 | 111,057 / 115,857 |
+| park-growth-14-facility / 시설 준비 | DNA 연구소 Lv.10 완공 [lab] (Park5 이상 · 연구소 Lv.10 준비) | 5,780 | 105,277 / 110,077 |
+| park-growth-14-research / 연구 적용 | 일반 육식 원종 조사 Lv.2 완료 [gene-common-carnivore] (Park5 이상 · 연구소 Lv.5 준비) | 5,780 | 111,057 / 115,857 |
 | park-growth-14-field / 현장 발견 | 파키케팔로사우루스 지정 알 목표 성공·알 보상 1회 수령 [gene-target-pachycephalosaurus] (Park5 이상 · 연구소 Lv.5 준비 · 고급 초식 원종 조사 Lv.1) 또는 현장 조사 성공·품질1 촉매 보상 1회 수령 [mission.abandoned-lab.repeat-wall-store-survey.v1] (Park5 이상 · 연구소 Lv.10 준비 · 현장 지도화 Lv.3) | 5,780 | 116,837 / 121,637 |
 | park-growth-14-operation / 운영 실적 | 실제 유료 입장 누적 10,000명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 5,783 | 122,620 / 127,420 |
 
@@ -232,7 +218,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-19-facility / 시설 준비 | DNA 연구소 Lv.15 완공 [lab] (Park5 이상 · 연구소 Lv.15 준비) 또는 탐험 연료 보급소 Lv.4 완공 [fueldepot] (Park5 이상 · 연구소 Lv.1 준비) | 10,016 | 257,371 / 262,171 |
+| park-growth-19-facility / 시설 준비 | DNA 연구소 Lv.15 완공 [lab] (Park5 이상 · 연구소 Lv.15 준비) | 10,016 | 257,371 / 262,171 |
 | park-growth-19-research / 연구 적용 | 시설 고도화 Lv.2 완료 [ops-engineering] (Park5 이상 · 연구소 Lv.10 준비) 또는 영양 관리 Lv.1 완료 [care-nutrition] (Park5 이상 · 연구소 Lv.5 준비) | 10,016 | 267,387 / 272,187 |
 | park-growth-19-field / 현장 발견 | 람포린쿠스 지정 알 목표 성공·알 보상 1회 수령 [natural-target-rhamphorhynchus] (Park5 이상 · 연구소 Lv.5 준비 · 일반 육식 원종 조사 Lv.2) 또는 현장 조사 성공·품질2 배양액 보상 1회 수령 [mission.primal-swamp.middle-repeat.v1] (Park5 이상 · 연구소 Lv.10 준비 · 중급 시료 조사 Lv.1) | 10,016 | 277,403 / 282,203 |
 | park-growth-19-operation / 운영 실적 | 실제 유료 입장 누적 22,500명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 10,018 | 287,421 / 292,221 |
@@ -244,7 +230,7 @@
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
 | park-growth-20-facility / 시설 준비 | DNA 연구소 Lv.16 완공 [lab] (Park5 이상 · 연구소 Lv.16 준비) 또는 창고 Lv.5 완공 [warehouse] (Park5 이상 · 연구소 Lv.1 준비) | 10,985 | 298,406 / 303,206 |
-| park-growth-20-research / 연구 적용 | 익룡 사육 Lv.1 완료 [care-aerial] (Park5 이상 · 연구소 Lv.15 준비) 또는 연료 회복 Lv.1 완료 [exp-recovery] (Park5 이상 · 연구소 Lv.5 준비) | 10,985 | 309,391 / 314,191 |
+| park-growth-20-research / 연구 적용 | 익룡 사육 Lv.1 완료 [care-aerial] (Park5 이상 · 연구소 Lv.15 준비) | 10,985 | 309,391 / 314,191 |
 | park-growth-20-field / 현장 발견 | 프테라노돈 실제 전시·관람 확인 이력(호환·위험·수용·동선 검증) [pteranodon] (Park5 이상 · 연구소 Lv.15 준비) 또는 타페자라 실제 전시·관람 확인 이력(호환·위험·수용·동선 검증) [tapejara] (Park5 이상 · 연구소 Lv.15 준비) | 10,985 | 320,376 / 325,176 |
 | park-growth-20-operation / 운영 실적 | 실제 유료 입장 누적 25,600명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 10,987 | 331,363 / 336,163 |
 
@@ -295,7 +281,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-24-facility / 시설 준비 | DNA 연구소 Lv.20 완공 [lab] (Park5 이상 · 연구소 Lv.20 준비) 또는 탐험 연료 보급소 Lv.5 완공 [fueldepot] (Park5 이상 · 연구소 Lv.1 준비) | 15,252 | 503,268 / 508,068 |
+| park-growth-24-facility / 시설 준비 | DNA 연구소 Lv.20 완공 [lab] (Park5 이상 · 연구소 Lv.20 준비) | 15,252 | 503,268 / 508,068 |
 | park-growth-24-research / 연구 적용 | 해양 생물 사육 Lv.1 완료 [care-marine] (Park5 이상 · 연구소 Lv.20 준비) 또는 고급 초식 원종 조사 Lv.1 완료 [gene-uncommon-herbivore] (Park5 이상 · 연구소 Lv.5 준비) | 15,252 | 518,520 / 523,320 |
 | park-growth-24-field / 현장 발견 | 켄트로사우루스 지정 알 목표 성공·알 보상 1회 수령 [gene-target-kentrosaurus] (Park5 이상 · 연구소 Lv.10 준비 · 고급 초식 원종 조사 Lv.2) 또는 현장 조사 성공·품질1 촉매 보상 1회 수령 [mission.abandoned-lab.outer-yard-survey.v1] (Park5 이상 · 연구소 Lv.15 준비 · 외곽 탐사로 Lv.3) | 15,252 | 533,772 / 538,572 |
 | park-growth-24-operation / 운영 실적 | 실제 유료 입장 누적 40,000명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 15,255 | 549,027 / 553,827 |
@@ -354,7 +340,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-29-facility / 시설 준비 | DNA 연구소 Lv.21 완공 [lab] (Park5 이상 · 연구소 Lv.21 준비) 또는 탐험 연료 보급소 Lv.6 완공 [fueldepot] (Park5 이상 · 연구소 Lv.5 준비) | 21,443 | 862,539 / 867,339 |
+| park-growth-29-facility / 시설 준비 | DNA 연구소 Lv.21 완공 [lab] (Park5 이상 · 연구소 Lv.21 준비) | 21,443 | 862,539 / 867,339 |
 | park-growth-29-research / 연구 적용 | 분화구 환경 분석 Lv.2 완료 [exp-crater-reading] (Park5 이상 · 연구소 Lv.20 준비) 또는 물자 조달 Lv.1 완료 [ops-procurement] (Park5 이상 · 연구소 Lv.5 준비) | 21,443 | 883,982 / 888,782 |
 | park-growth-29-field / 현장 발견 | 스피노사우루스 지정 알 목표 성공·알 보상 1회 수령 [gene-target-spinosaurus] (Park5 이상 · 연구소 Lv.10 준비 · 희귀 육식 원종 조사 Lv.1) 또는 현장 조사 성공·품질1 안정제 보상 1회 수령 [mission.mineral-cave.outer-vein-survey.v1] (Park5 이상 · 연구소 Lv.18 준비 · 외곽 탐사로 Lv.4) | 21,443 | 905,425 / 910,225 |
 | park-growth-29-operation / 운영 실적 | 실제 유료 입장 누적 62,500명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 21,443 | 926,868 / 931,668 |
@@ -417,7 +403,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-34-facility / 시설 준비 | 빙하 서식지 Lv.1 완공 [glacier] (Park5 이상 · 연구소 Lv.25 준비 · 극지 환경 사육 Lv.1) 또는 탐험 연료 보급소 Lv.7 완공 [fueldepot] (Park5 이상 · 연구소 Lv.5 준비) | 28,551 | 1,353,931 / 1,358,731 |
+| park-growth-34-facility / 시설 준비 | 빙하 서식지 Lv.1 완공 [glacier] (Park5 이상 · 연구소 Lv.25 준비 · 극지 환경 사육 Lv.1) | 28,551 | 1,353,931 / 1,358,731 |
 | park-growth-34-research / 연구 적용 | 상급 시료 채취 Lv.3 완료 [exp-highgrade-sampling] (Park5 이상 · 연구소 Lv.25 준비) 또는 입장 수속 Lv.5 완료 [ops-entry] (Park5 이상 · 연구소 Lv.5 준비) | 28,551 | 1,382,482 / 1,387,282 |
 | park-growth-34-field / 현장 발견 | 모사사우루스 지정 알 목표 성공·알 보상 1회 수령 [natural-target-mosasaurus] (Park5 이상 · 연구소 Lv.10 준비 · 희귀 육식 원종 조사 Lv.1) 또는 현장 조사 성공·품질3 DNA 보상 1회 수령 [mission.fossil-valley.high-repeat.v1] (Park5 이상 · 연구소 Lv.20 준비 · 상급 시료 채취 Lv.1) | 28,551 | 1,411,033 / 1,415,833 |
 | park-growth-34-operation / 운영 실적 | 실제 유료 입장 누적 90,000명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 28,553 | 1,439,586 / 1,444,386 |
@@ -455,7 +441,7 @@
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
 | park-growth-37-facility / 시설 준비 | 부화장 Lv.10 완공 [hatchery] (Park5 이상 · 연구소 Lv.5 준비) 또는 보안센터 Lv.8 완공 [security] (Park5 이상 · 연구소 Lv.5 준비) | 33,245 | 1,719,737 / 1,724,537 |
-| park-growth-37-research / 연구 적용 | 극지 환경 사육 Lv.1 완료 [care-glacier] (Park5 이상 · 연구소 Lv.25 준비) 또는 연료 회복 Lv.2 완료 [exp-recovery] (Park5 이상 · 연구소 Lv.6 준비) | 33,245 | 1,752,982 / 1,757,782 |
+| park-growth-37-research / 연구 적용 | 극지 환경 사육 Lv.1 완료 [care-glacier] (Park5 이상 · 연구소 Lv.25 준비) | 33,245 | 1,752,982 / 1,757,782 |
 | park-growth-37-field / 현장 발견 | 투판닥틸루스 지정 알 목표 성공·알 보상 1회 수령 [natural-target-tupandactylus] (Park5 이상 · 연구소 Lv.10 준비 · 고급 육식 원종 조사 Lv.2) 또는 현장 조사 성공·품질1 배양액 보상 1회 수령 [mission.primal-swamp.channel-link.v1] (Park5 이상 · 연구소 Lv.20 준비 · 습지 수로 탐사 Lv.3) | 33,245 | 1,786,227 / 1,791,027 |
 | park-growth-37-operation / 운영 실적 | 실제 유료 입장 누적 108,900명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 33,247 | 1,819,474 / 1,824,274 |
 
@@ -476,7 +462,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-39-facility / 시설 준비 | 초식 하이브리드 서식지 Lv.15 완공 [hybrid_herb] (Park5 이상 · 연구소 Lv.10 준비) 또는 탐험 연료 보급소 Lv.8 완공 [fueldepot] (Park5 이상 · 연구소 Lv.5 준비) | 36,549 | 1,995,544 / 2,000,344 |
+| park-growth-39-facility / 시설 준비 | 초식 하이브리드 서식지 Lv.15 완공 [hybrid_herb] (Park5 이상 · 연구소 Lv.10 준비) | 36,549 | 1,995,544 / 2,000,344 |
 | park-growth-39-research / 연구 적용 | 테마 전시 기획 Lv.3 완료 [ops-exhibitions] (Park5 이상 · 연구소 Lv.25 준비) 또는 사육 관리 Lv.2 완료 [care-upkeep] (Park5 이상 · 연구소 Lv.6 준비) | 36,549 | 2,032,093 / 2,036,893 |
 | park-growth-39-field / 현장 발견 | 아파토사우루스 지정 알 목표 성공·알 보상 1회 수령 [gene-target-apatosaurus] (Park5 이상 · 연구소 Lv.15 준비 · 희귀 초식 원종 조사 Lv.2) 또는 현장 조사 성공·품질3 배양액 보상 1회 수령 [mission.primal-swamp.high-repeat.v1] (Park5 이상 · 연구소 Lv.20 준비 · 상급 시료 채취 Lv.1) | 36,549 | 2,068,642 / 2,073,442 |
 | park-growth-39-operation / 운영 실적 | 실제 유료 입장 누적 122,500명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 36,552 | 2,105,194 / 2,109,994 |
@@ -487,7 +473,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-40-facility / 시설 준비 | 탐험 연료 보급소 Lv.15 완공 [fueldepot] (Park5 이상 · 연구소 Lv.10 준비) 또는 창고 Lv.9 완공 [warehouse] (Park5 이상 · 연구소 Lv.5 준비) | 38,254 | 2,143,448 / 2,148,248 |
+| park-growth-40-facility / 시설 준비 | 창고 Lv.9 완공 [warehouse] (Park5 이상 · 연구소 Lv.5 준비) | 38,254 | 2,143,448 / 2,148,248 |
 | park-growth-40-research / 연구 적용 | 집단 이동 관리 Lv.1 완료 [care-transfer] (Park5 이상 · 연구소 Lv.20 준비) 또는 배양 공정 Lv.2 완료 [gene-culture] (Park5 이상 · 연구소 Lv.6 준비) | 38,254 | 2,181,702 / 2,186,502 |
 | park-growth-40-field / 현장 발견 | 인도미누스 렉스 실제 부화·합성 개체 1마리 수령 이력 [indominus-rex] (Park5 이상 · 연구소 Lv.20 준비 · 6장 선택분기 완료) 또는 리바이어던 실제 부화·합성 개체 1마리 수령 이력 [livyatan] (Park5 이상 · 연구소 Lv.25 준비) | 38,254 | 2,219,956 / 2,224,756 |
 | park-growth-40-operation / 운영 실적 | 실제 유료 입장 누적 129,600명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 38,254 | 2,258,210 / 2,263,010 |
@@ -531,7 +517,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-44-facility / 시설 준비 | 벌목장 Lv.20 완공 [lumber] (Park5 이상 · 연구소 Lv.10 준비) 또는 탐험 연료 보급소 Lv.9 완공 [fueldepot] (Park5 이상 · 연구소 Lv.5 준비) | 45,413 | 2,804,945 / 2,809,745 |
+| park-growth-44-facility / 시설 준비 | 벌목장 Lv.20 완공 [lumber] (Park5 이상 · 연구소 Lv.10 준비) | 45,413 | 2,804,945 / 2,809,745 |
 | park-growth-44-research / 연구 적용 | 시료 보존 Lv.4 완료 [gene-preservation] (Park5 이상 · 연구소 Lv.18 준비) 또는 생산 공정 Lv.2 완료 [ops-processing] (Park5 이상 · 연구소 Lv.6 준비) | 45,413 | 2,850,358 / 2,855,158 |
 | park-growth-44-field / 현장 발견 | 메갈로사우루스 지정 알 목표 성공·알 보상 1회 수령 [gene-target-megalosaurus] (Park5 이상 · 연구소 Lv.15 준비 · 고급 육식 원종 조사 Lv.3) 또는 현장 조사 성공·품질1 배양액 보상 1회 수령 [mission.primal-swamp.sample-point-crosscheck.v1] (Park5 이상 · 연구소 Lv.23 준비 · 복합 단서 검증 Lv.2) | 45,413 | 2,895,771 / 2,900,571 |
 | park-growth-44-operation / 운영 실적 | 실제 유료 입장 누적 160,000명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 45,414 | 2,941,185 / 2,945,985 |
@@ -554,7 +540,7 @@
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
 | park-growth-46-facility / 시설 준비 | 금속 공방 Lv.20 완공 [metalshop] (Park5 이상 · 연구소 Lv.10 준비) 또는 관람대 Lv.10 완공 [platform] (Park5 이상 · 연구소 Lv.5 준비) | 49,196 | 3,179,533 / 3,184,333 |
-| park-growth-46-research / 연구 적용 | 부화 설비 확장 Lv.2 완료 [care-hatch-capacity] (Park5 이상 · 연구소 Lv.20 준비) 또는 연료 회복 Lv.3 완료 [exp-recovery] (Park5 이상 · 연구소 Lv.7 준비) | 49,196 | 3,228,729 / 3,233,529 |
+| park-growth-46-research / 연구 적용 | 부화 설비 확장 Lv.2 완료 [care-hatch-capacity] (Park5 이상 · 연구소 Lv.20 준비) | 49,196 | 3,228,729 / 3,233,529 |
 | park-growth-46-field / 현장 발견 | 유타랩터 지정 알 목표 성공·알 보상 1회 수령 [gene-target-utahraptor] (Park5 이상 · 연구소 Lv.15 준비 · 고급 육식 원종 조사 Lv.3) 또는 현장 조사 성공·품질1 촉매 보상 1회 수령 [mission.abandoned-lab.record-crosscheck.v1] (Park5 이상 · 연구소 Lv.25 준비 · 복합 단서 검증 Lv.3) | 49,196 | 3,277,925 / 3,282,725 |
 | park-growth-46-operation / 운영 실적 | 실제 유료 입장 누적 176,400명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 49,197 | 3,327,122 / 3,331,922 |
 
@@ -576,7 +562,7 @@
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
 | park-growth-48-facility / 시설 준비 | 입구 게이트 Lv.20 완공 [gate] (Park5 이상 · 연구소 Lv.10 준비) 또는 사료 공장 Lv.10 완공 [feedmill] (Park5 이상 · 연구소 Lv.5 준비) | 53,113 | 3,584,788 / 3,589,588 |
-| park-growth-48-research / 연구 적용 | 원정 보급 계획 Lv.4 완료 [exp-expedition-supply] (Park5 이상 · 연구소 Lv.23 준비) 또는 영양 관리 Lv.3 완료 [care-nutrition] (Park5 이상 · 연구소 Lv.7 준비) | 53,113 | 3,637,901 / 3,642,701 |
+| park-growth-48-research / 연구 적용 | 영양 관리 Lv.3 완료 [care-nutrition] (Park5 이상 · 연구소 Lv.7 준비) | 53,113 | 3,637,901 / 3,642,701 |
 | park-growth-48-field / 현장 발견 | 엘라스모사우루스 지정 알 목표 성공·알 보상 1회 수령 [natural-target-elasmosaurus] (Park5 이상 · 연구소 Lv.15 준비 · 고급 육식 원종 조사 Lv.3) 또는 현장 조사 성공·품질1 DNA 보상 1회 수령 [mission.fossil-valley.giant-herbivore-track.v1] (Park5 이상 · 연구소 Lv.25 준비 · 최상위 개체 추적 Lv.1) | 53,113 | 3,691,014 / 3,695,814 |
 | park-growth-48-operation / 운영 실적 | 실제 유료 입장 누적 193,600명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 53,114 | 3,744,128 / 3,748,928 |
 
@@ -586,7 +572,7 @@
 
 | 목표 ID / 트랙 | 완료조건: 대안 중 하나 | 목표XP | 추가XP 누적 / 초반 포함 누적 |
 | --- | --- | --- | --- |
-| park-growth-49-facility / 시설 준비 | 정보센터 Lv.20 완공 [info] (Park5 이상 · 연구소 Lv.10 준비) 또는 탐험 연료 보급소 Lv.10 완공 [fueldepot] (Park5 이상 · 연구소 Lv.5 준비) | 55,121 | 3,799,249 / 3,804,049 |
+| park-growth-49-facility / 시설 준비 | 정보센터 Lv.20 완공 [info] (Park5 이상 · 연구소 Lv.10 준비) | 55,121 | 3,799,249 / 3,804,049 |
 | park-growth-49-research / 연구 적용 | 편의시설 개선 Lv.3 완료 [ops-comfort] (Park5 이상 · 연구소 Lv.20 준비) 또는 사육 관리 Lv.3 완료 [care-upkeep] (Park5 이상 · 연구소 Lv.7 준비) | 55,121 | 3,854,370 / 3,859,170 |
 | park-growth-49-field / 현장 발견 | 리오플레우로돈 지정 알 목표 성공·알 보상 1회 수령 [natural-target-liopleurodon] (Park5 이상 · 연구소 Lv.15 준비 · 희귀 육식 원종 조사 Lv.2) 또는 현장 조사 성공·품질1 DNA 보상 1회 수령 [mission.fossil-valley.titanosaur-track.v1] (Park5 이상 · 연구소 Lv.25 준비 · 최상위 개체 추적 Lv.2) | 55,121 | 3,909,491 / 3,914,291 |
 | park-growth-49-operation / 운영 실적 | 실제 유료 입장 누적 202,500명 이상 (기존 totalVisitors) (Park5 이상 · 연구소 Lv.1 준비) | 55,123 | 3,964,614 / 3,969,414 |
@@ -595,19 +581,19 @@
 
 ```json
 {
-  "docs/current/park-progression.md": "d4f89f794e6042836509fcd8abe26bb0a8e1fc211fd3f01543612fd3482791c8",
-  "docs/current/balance.md": "009db7aef939f55251a377f25bebd53bdfcbf18b7c23f3a01c5bd7f143f41d47",
-  "docs/current/research-trees.md": "7d1389bcc51bef08e06cf80131afd8d4e8aa7abd5035713e3b4984d3926f868f",
-  "docs/current/research-effects.md": "b0da4b8f14b7bff84cfcbaaff6f7a998a4eac2269a1e379bd138928d911ade2b",
-  "docs/current/buildings.md": "ab4d80c7eeabf358da86d02b6f09b01c1892e1f5cafea764c3a9e118792c5245",
-  "docs/current/dinosaur-acquisition.md": "1a76d557763a5e91265f56cb76054a6e1eb8f281c8886b2695bb658d137c82cb",
-  "docs/current/dna-and-collection.md": "35388face7504be37ee89f307bcb65ea4f44f1eff7ff7db6bc212fdae2f1eae2",
-  "docs/current/story-progression.md": "3dc9475940e9e76f18f7b17b67332585d8062ccd981efccfa70b2b464cfc98a5",
-  "docs/current/story-and-characters.md": "89a1fc78400c618b05f8c32312922a9d1ba90152cde8298977d2ea93a073e105",
-  "packages/shared/src/constants/park.constants.ts": "552e4429c38a9d28e1b451d27fdbd7f9364a55914f16dff559e343eb55174a10",
-  "packages/shared/src/constants/balance.constants.ts": "e806127400f329cc6703ded3c1692083aaa74a8afc1e052a1f69c8d40d96d47f",
-  "docs/models/park_progression_model_v06.py": "6fcfc7ee52ac9139c8a283045e7a004daf28a72bc5ccd324277896dfd56ade05",
+  "docs/current/park-progression.md": "e682d84e9f7941d3b913a486501c1240d461c0b361e7e10d1f13e033379a6f80",
+  "docs/current/balance.md": "6db9d936645d7da2834ad4ee7497cd4076dc7fa77cc8e7b5e1ec763b314748bf",
+  "docs/current/research-trees.md": "c882185dc1555a64a78ec7cff4bc8b96b767915bb161b2b307db5016db8f3218",
+  "docs/current/research-effects.md": "6ccefe4ed9ed382db81032f6d1b58064fce5e526ceebf721525af3e95fc6ba5b",
+  "docs/current/buildings.md": "cf74efa5702f14864d4367b15ae0ec6452e9eee6c040d8b2e34130fe9d946d7b",
+  "docs/current/dinosaur-acquisition.md": "c7e62f23c01893a3515d9aba62e9756491c224a48a44230b96ac7d9487977efe",
+  "docs/current/dna-and-collection.md": "52eae44d31af9290ce96d998b276e2c5f5679152dd5e6023afe4737958e69324",
+  "docs/current/story-progression.md": "7d40ce5bf2906d95cf490ce73923221eac43b7570320616b7070d7dedb195a9a",
+  "docs/current/story-and-characters.md": "5495cdce429b534a0dc5c3a9b47cba448650ebd7da0b878cd16887eab79712f9",
+  "packages/shared/src/constants/park.constants.ts": "4649ad396e89145fc66ef03f2f7f1be4018932f7add7ef8c1d71e7d9895e00d3",
+  "packages/shared/src/constants/balance.constants.ts": "5d07b139bdd6b71951af70268e90f093d108a9bb621885f1d5ed126289da18d9",
+  "docs/models/park_progression_model_v06.py": "c7263438ee4d61096112ac679a68c9e9e26b2c74a7110ae564be6a25c229e9b5",
   "docs/models/research_cost_model_v06.py": "f16010b9a3fbd34995a4e3f32555b34cbcc00308cf6c4da1a79576eaa146fa34",
-  "docs/models/dinosaur_acquisition_model_v06.py": "922132d4dd254f5105fe420336f200d705766e33d655f72e206772dcf06f324d"
+  "docs/models/dinosaur_acquisition_model_v06.py": "aa5c24a78f0af20713bfc5470a7c73b3ac7c1b9a69ca09375a6caecfe4f5234a"
 }
 ```

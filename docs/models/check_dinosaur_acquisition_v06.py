@@ -15,9 +15,11 @@ sys.dont_write_bytecode = True
 import dinosaur_acquisition_model_v06 as model
 import render_dinosaur_acquisition_v06 as renderer
 
-EGG_51_SHA = '314db5d80d0917308c5d743fc974c0eda9a2de640b397f6149b7f29ee85a87e4'
-COST_252_SHA = 'c7a7d19e208556cbcd3d9adccf9811e1c8ad726b7c655d3cd42fb187e81bc7c9'
-EFFECT_VALUES_SHA = '621b5f3ce2a1f0a951b0c8f524b65d65d83b2ba930e94ff50a239b50ab70fe1c'
+EGG_51_SHA = '57cfa8be172b08eb68a61dbc176fea61f3b6f6d7c85d599443521b91cdb330ca'
+COST_239_SHA = '7cc87501a8d1c36dbe8d35e46f7638eb34f755d360aaaf73f7d973f938bd6491'
+# Baseline fingerprint excludes the two approved visitor-operation changes
+# verified individually below.
+PRESERVED_EFFECT_VALUES_SHA = '9d11bf407dbd5acca09c9175dd9b21d7607dc02df8de79562ea33aeecd3cbbb6'
 RECIPES_13_SHA = 'b6de44e4c292dbf2f3d75b4afc285ec76c43179fc575c7643ad1f86aa4f00652'
 EXTRA_NATURAL = {
     'dimorphodon', 'rhamphorhynchus', 'anurognathus', 'pteranodon',
@@ -38,30 +40,39 @@ def preserved_inputs():
     old = model.followup.egg_targets()
     assert len(old) == 51 and digest(old) == EGG_51_SHA, 'Existing 51 egg goals changed'
     costs = model.followup.effect.cost.all_costs()
-    assert len(costs) == 252 and digest(costs) == COST_252_SHA, 'Research cost/time regression'
+    assert len(costs) == 239 and digest(costs) == COST_239_SHA, 'Research cost/time regression'
     effects = model.followup.effect.all_effects()
-    assert len(effects) == 72
+    assert len(effects) == 69
     values = {key: [{field: row[field] for field in ['level', 'value', 'unit']}
                     for row in value['levels']] for key, value in effects.items()}
-    assert digest(values) == EFFECT_VALUES_SHA, 'Research numeric effects changed'
+    visitor_effects = {
+        'ops-flow': ((110, 100, 90), '평균 관람 초'),
+        'ops-comfort': ((10, 20, 30), '화장실 이용 인원 증가 %'),
+    }
+    for identifier, (levels, unit) in visitor_effects.items():
+        expected = [{'level': rank, 'value': value, 'unit': unit}
+                    for rank, value in enumerate(levels, 1)]
+        assert values.pop(identifier) == expected, (identifier, 'Visitor research effect changed')
+    assert len(values) == 67 and digest(values) == PRESERVED_EFFECT_VALUES_SHA, 'Preserved research effects changed'
     recipes = {key: {field: row[field] for field in RECIPE_FIELDS}
                for key, row in model.all_recipe_data().items() if key not in model.followup.VARIANTS}
     assert len(recipes) == 13 and digest(recipes) == RECIPES_13_SHA, 'Existing 13 recipe inputs changed'
     repeated = model.repeat_egg_targets()
     assert all(repeated[key] == row for key, row in old.items()), 'Legacy goal was replaced'
-    return {'egg_targets_51': EGG_51_SHA, 'research_costs_252': COST_252_SHA,
-            'research_effect_values_72': EFFECT_VALUES_SHA, 'recipes_13': RECIPES_13_SHA}
+    return {'egg_targets_51': EGG_51_SHA, 'research_costs_239': COST_239_SHA,
+            'preserved_research_effect_values_67': PRESERVED_EFFECT_VALUES_SHA, 'recipes_13': RECIPES_13_SHA}
 
 
 def check_coverage():
     species, actual, _ = model.catalogue()
     rows = model.acquisition_rows()
     assert len(rows) == len(species) == len(model.followup.HOUSES) == 83
-    assert len(actual) == 81
+    assert len(actual) == 83
     ids = [row['species_id'] for row in rows]
     assert len(set(ids)) == 83 and set(ids) == set(species) == set(model.followup.HOUSES)
     assert Counter(row['origin'] for row in rows) == {'natural': 68, 'hybrid': 12, 'variant': 3}
-    assert {row['species_id'] for row in rows if row['planned_only']} == {'sinoceratops', 'megalodon'}
+    assert not any(row['planned_only'] for row in rows)
+    assert set(model.followup.ADDED_SPECIES) <= set(actual)
     repeats = model.repeat_egg_targets()
     indexed = model.egg_targets()
     natural = {row['species_id'] for row in rows if row['origin'] == 'natural'}
@@ -90,8 +101,8 @@ def check_egg_contracts(rows):
         band = model.followup.BANDS[goal['rarity']]
         assert goal['rarity'] == species[goal['species']]['rarity']
         assert goal['reward_eggs'] == 1
-        assert all(goal[key] == int(band[key]) for key in ['gold', 'fuel', 'checks', 'hatch_seconds', 'hatch_gold'])
-        assert goal['hatch_gold'] == 0 and goal['fuel'] == 5
+        assert all(goal[key] == int(band[key]) for key in ['gold', 'checks', 'hatch_seconds', 'hatch_gold'])
+        assert goal['hatch_gold'] == 0
         if goal.get('supplemental_natural'):
             assert goal['area'] in {'fossil-valley', 'primal-swamp'}
             requirement = goal['research']
@@ -109,13 +120,13 @@ def check_egg_contracts(rows):
     assert starters['parasaurolophus']['first']['gold'] == 0
     for sid, fee, seconds in [('iguanodon', 100, 60), ('triceratops', 250, 3600), ('stegosaurus', 400, 3600)]:
         initial = starters[sid]['first']
-        assert (initial['gold'], initial['hatch_seconds'], initial['fuel']) == (fee, seconds, 5)
+        assert (initial['gold'], initial['hatch_seconds']) == (fee, seconds)
         assert initial['reward_eggs'] == 1 and initial['first_only'] is True
         assert starters[sid]['repeat']['gold'] == int(model.followup.BANDS[species[sid]['rarity']]['gold'])
     raptor = starters['velociraptor']
     assert raptor['first']['gate'] == 'safety_goal_completed'
     assert raptor['first']['first_only'] and not raptor['first']['repeatable']
-    assert (raptor['first']['gold'], raptor['first']['fuel'], raptor['first']['checks'], raptor['first']['hatch_seconds']) == (1000, 5, 3, 3600)
+    assert (raptor['first']['gold'], raptor['first']['checks'], raptor['first']['hatch_seconds']) == (1000, 3, 3600)
     assert raptor['first']['extra_park_xp'] == 0 and raptor['repeat']['gate'] == 'previous_registration'
     assert raptor['repeat']['ref'] == 'return-target-velociraptor'
     return {'repeat_goals': 68, 'indexed_goals': 69, 'starter_paths': 5, 'new_first_raptor': 1}
@@ -152,7 +163,7 @@ def check_parents_and_protection(rows):
         assert all(parent in by_id for parent in recipe['parents'])
         assert recipe['quality'] == (3 if recipe['rarity'] == 'legendary' else 2)
         assert recipe['gold'] > 0 and recipe['seconds'] > 0
-        assert recipe['success_rate'] == (0.3 if recipe['rarity'] == 'legendary' else 0.5)
+        assert recipe['success_rate'] == (0.1 if recipe['rarity'] == 'legendary' else 0.5)
         assert recipe['guaranteed_attempt'] == (8 if recipe['rarity'] == 'legendary' else 5)
         if sid in model.followup.VARIANTS:
             assert recipe['required_research'] == 'gene-analysis:2'

@@ -4,6 +4,7 @@
 > **구버전 자료 · 2026-11-15 분리**
 > 구버전 기획·설계 자료입니다. 최신 구현 기준으로 사용하지 말고, 필요한 내용은 최신 기획에 승계한 뒤 사용합니다. 문서 내 버전 번호는 이 자료 자체의 과거 버전입니다.
 > 최신 기준과 실제 구현 상태는 [기획 문서 안내](../README.md)에서 확인합니다.
+> 새 공룡의 조형·시점·조명은 [현행 화면과 아트 방향](../current/production-and-services.md#1-화면과-아트-방향)과 [파라·스테고케라톱스 시안](reference/character-direction.webp)을 사용합니다. 아래 프롬프트는 종별 특징과 필요한 동작을 찾는 참고 자료입니다.
 
 > **제작 대상은 [최신 83종 획득표](../current/dinosaur-acquisition-tables.md)에서 고릅니다.** 이 문서의 82종 목록과 프롬프트는 당시의 외형 참고 자료입니다. 종 ID·등급·획득 방법은 최신 표와 [획득 기획](../current/dinosaur-acquisition.md), 합성 부모는 [DNA 기획](../current/dna-and-collection.md)을 따릅니다. 제작 순서는 [에셋 제작과 파일 기준](../current/production-and-services.md#3-에셋-제작과-파일-기준)에서 확인합니다.
 

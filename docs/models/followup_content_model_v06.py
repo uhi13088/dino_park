@@ -28,12 +28,14 @@ def keyed(path, namespace, name, key='id'):
 LAND = keyed(BALANCE, 'plan', 'land-expansions', 'stage')
 SPECIAL = keyed(BALANCE, 'plan', 'special-construction')
 SPECIAL_CAPACITY = keyed(BALANCE, 'plan', 'special-capacity')
+AVIARY_SIZE_COSTS = {row['size']: int(row['points']) for row in rows(BALANCE, 'plan', 'aviary-size-cost')}
+AVIARY_SPACE_TIERS = rows(BALANCE, 'plan', 'aviary-space-tiers')
 FEES = keyed(BALANCE, 'plan', 'expedition-fees', 'mission')
 BASIC = keyed(BALANCE, 'plan', 'basic-repeat-missions', 'mission')
 PLAY = keyed(ROOT / 'docs/current/exploration-play.md', 'play', 'profiles')
 BANDS = keyed(BALANCE, 'plan', 'natural-expedition-bands', 'rarity')
 AREAS = keyed(BALANCE, 'plan', 'natural-target-areas', 'mission')
-PLANNED = keyed(DNA, 'dna', 'planned-species')
+ADDED_SPECIES = keyed(DNA, 'dna', 'planned-species')
 RECIPES = keyed(DNA, 'dna', 'followup-recipes')
 VARIANTS = keyed(DNA, 'dna', 'variant-recipes')
 PUBLIC_COMPLETION = keyed(DNA, 'dna', 'public-recipe-completion')
@@ -45,17 +47,46 @@ HOUSES = keyed(HOUSING, 'housing', 'species')
 def catalogue():
     raw, provenance = effect.catalog_data()
     actual = {d['id']: dict(d) for d in raw['species']}
-    planned = {k: {**r, 'nameKo': r['name'], 'habitats': json.loads(r['habitats']),
-                   'origin': 'natural', 'planned_only': True,
-                   **{key: int(r[key]) for key in ['popularity', 'upkeep', 'hatch_seconds']}}
-               for k, r in PLANNED.items()}
-    assert set(actual).isdisjoint(planned)
-    return {**actual, **planned}, actual, provenance
+    for identifier, approved in ADDED_SPECIES.items():
+        species = actual[identifier]
+        assert species.get('origin', 'natural') == 'natural', identifier
+        assert species['nameKo'] == approved['name'], identifier
+        assert all(species[key] == approved[key] for key in ['rarity', 'category', 'size']), identifier
+        assert ['habitat-' + tag for tag in species['habitat']] == json.loads(approved['habitats']), identifier
+        assert species['stats']['popularity'] == int(approved['popularity']), identifier
+        assert species['stats']['maintenanceCost'] == int(approved['upkeep']), identifier
+        assert species['stats']['baseRevenue'] == 0 and species['stats']['space'] == 1, identifier
+        assert species['hatchTime'] == int(approved['hatch_seconds']) * 1000, identifier
+    return actual, actual, provenance
 
 
 def required_lab(requirement):
     node, rank = requirement.rsplit(':', 1)
     return effect.cost.base_cost(node, int(rank))['required_lab']
+
+
+def scout_dispatches():
+    return effect.catalog_data()[0]['scoutDispatches']
+
+
+def scout_locations(mission_id, default_area):
+    routes = [r for r in scout_dispatches() if r['id'] == mission_id]
+    if any(row['regionId'] in {'coast', 'deep-sea'} for row in routes):
+        return ' 또는 '.join(dict.fromkeys(row['region'] for row in routes))
+    return default_area
+
+
+def scout_fuel_label(mission_id):
+    """An alternate departure can require fuel even when the chosen goal is the same."""
+    routes = [r for r in scout_dispatches() if r['id'] == mission_id]
+    costs = {row['fuel'] for row in routes}
+    if not costs or costs == {0}:
+        return ''
+    cost = max(costs)
+    if len(costs) == 1:
+        return f' · 연료 {cost}'
+    regions = '·'.join(dict.fromkeys(row['region'] for row in routes if row['fuel']))
+    return f' · {regions}에서 연료 {cost}'
 
 
 def special_capacity(identifier, level):
@@ -65,6 +96,19 @@ def special_capacity(identifier, level):
     low = max(n for n in anchors if n < level)
     high = min(n for n in anchors if n > level)
     return int(anchors[low] + (anchors[high] - anchors[low]) * F(level-low, high-low))
+
+
+def aviary_space_tiers():
+    """Read physical tier limits without changing the current facility stats."""
+    tiers = []
+    for row in AVIARY_SPACE_TIERS:
+        tier = {key: int(value) for key, value in row.items()}
+        by_size = {}
+        for size, points in AVIARY_SIZE_COSTS.items():
+            cap = min(tier['max_animals'], tier['flight_points'] // points)
+            by_size[size] = min(cap, tier['max_giants']) if size == 'giant' else cap
+        tiers.append({**tier, 'by_size': by_size})
+    return tiers
 
 
 def special_upgrade(identifier, level):
@@ -116,17 +160,16 @@ def material_missions():
             continue
         fee = FEES[p['id']]
         result[p['id']] = {**p, 'gold': int(fee['gold']), 'play': fee['play'],
-                           'checks': p['manual_successful_checks'], 'fuel': p['base_fuel'],
+                           'checks': p['manual_successful_checks'],
                            'research': f'{node}:{rank}', 'source_type': 'research_effect'}
     for identifier, row in BASIC.items():
         if row['reward_ref'] != '-':
             base = effect.REGISTRY[row['reward_ref']]['availability']['preserved_base_access']
-            reward, fuel = base['reward'], base['fuel']
+            reward = base['reward']
         else:
             reward = {k: int(row[k]) if k != 'material' else row[k] for k in ['material', 'quality', 'quantity']}
-            fuel = int(row['fuel'])
         result[identifier] = {'id': identifier, 'area_id': row['area'], 'gold': int(row['gold']),
-                              'reward': reward, 'fuel': fuel, 'checks': int(row['checks']),
+                              'reward': reward, 'checks': int(row['checks']),
                               'play': row['play'], 'research': row['gate'], 'source_type': 'basic'}
     return result
 
@@ -152,7 +195,7 @@ def egg_targets():
                               'additional_parent': False, 'starter_return': True}
     for row in result.values():
         band = BANDS[row['rarity']]
-        row.update({k: int(band[k]) for k in ['gold', 'fuel', 'checks', 'hatch_seconds', 'hatch_gold']})
+        row.update({k: int(band[k]) for k in ['gold', 'checks', 'hatch_seconds', 'hatch_gold']})
         row['reward_eggs'] = 1
     return result
 
@@ -185,5 +228,6 @@ def synthesis_actual(identifier, budget_rank=0, dna_rank=0, legendary_rank=0, la
 
 
 def expected_attempts(rarity):
-    p, limit = (F(1, 2), 5) if rarity == 'epic' else (F(3, 10), 8)
-    return sum((1-p)**n for n in range(limit))
+    rule = effect.catalog_data()[0]['rules'][rarity]
+    probability = F(str(rule['successRate']))
+    return sum((1 - probability) ** n for n in range(rule['guaranteedAttempt']))

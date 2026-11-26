@@ -5,8 +5,17 @@
  */
 
 import { BuildingType, BuildingCategory, FIRST_HYBRID_HABITAT_ID } from '@dino-park/shared';
+import { FUEL_DEPOT_TYPE_ID } from '../production';
+import {
+  GOLD_VAULT_ID,
+  RESEARCH_FACILITY_UPGRADES,
+  RESEARCH_LAB_ID,
+  RESEARCH_STORAGE_ID,
+} from '../research/progression';
+import { SECURITY_CENTER_LEVEL_ONE_STATS, SECURITY_CENTER_TYPE_ID } from './security-center';
 import { MAX_VIEWING_PLATFORM_LEVEL, VIEWING_PLATFORM_BASE_STATS } from './viewing-platform';
 
+export * from './security-center';
 export * from './viewing-platform';
 
 // === 크기별 사이즈 ===
@@ -17,6 +26,10 @@ const SIZE = {
   L: { width: 3, height: 3 },
   XL: { width: 4, height: 4 },
 } as const;
+
+const warehouseLevels = RESEARCH_FACILITY_UPGRADES[RESEARCH_STORAGE_ID];
+const vaultLevels = RESEARCH_FACILITY_UPGRADES[GOLD_VAULT_ID];
+const labLevels = RESEARCH_FACILITY_UPGRADES[RESEARCH_LAB_ID];
 
 // === 공룡 서식지 ===
 const DINOSAUR_HABITATS: BuildingType[] = [
@@ -77,7 +90,8 @@ const DINOSAUR_HABITATS: BuildingType[] = [
       parkLevel: 4,
       cost: { gold: 15000, materials: { wood: 30, stone: 30 } },
     },
-    description: '강화된 철제 울타리로 둘러싸인 육식 공룡 전용 서식지. 경고 표지판이 있습니다.',
+    description:
+      '기본 전기 안전망을 갖춘 육식 공룡 전용 서식지입니다. Lv.5부터 기둥과 안전망 외형이 두꺼워집니다.',
   },
   {
     id: FIRST_HYBRID_HABITAT_ID,
@@ -214,22 +228,25 @@ const RESEARCH_FACILITIES: BuildingType[] = [
     description: '공룡 알을 부화시키는 시설. 유리 패널이 있는 돔 구조로 내부가 보입니다.',
   },
   {
-    id: 'research-dna-lab',
+    id: RESEARCH_LAB_ID,
     name: 'DNA Lab',
     nameKo: 'DNA 연구소',
     category: BuildingCategory.RESEARCH,
-    maxLevel: 25,
+    maxLevel: labLevels.length,
     baseStats: {
       capacity: 1,
       revenue: 0,
-      maintenanceCost: 50,
+      maintenanceCost: labLevels[0].upkeep,
       space: 4,
     },
     size: SIZE.M,
-    constructionTime: 300,
+    constructionTime: labLevels[0].durationSeconds,
     unlockCondition: {
-      parkLevel: 3,
-      cost: { gold: 8000, materials: { wood: 40, stone: 30 } },
+      parkLevel: labLevels[0].parkLevel,
+      cost: {
+        gold: labLevels[0].costs.gold,
+        materials: { wood: labLevels[0].costs.wood, stone: labLevels[0].costs.stone },
+      },
     },
     description: 'DNA 조합과 유전자 연구를 수행하는 현대적인 연구소. DNA 나선 로고가 있습니다.',
   },
@@ -693,6 +710,19 @@ const PRODUCTION_FACILITIES: BuildingType[] = [
       '골드와 시간을 들여 기반 공사용 석재를 생산합니다. 생산 작업이 끝나면 직접 수령하세요.',
   },
   {
+    id: FUEL_DEPOT_TYPE_ID,
+    name: 'Expedition Fuel Depot',
+    nameKo: '탐험 연료 보급소',
+    category: BuildingCategory.PRODUCTION,
+    maxLevel: 1,
+    baseCost: 1000,
+    constructionTime: 60,
+    baseStats: { capacity: 0, revenue: 0, maintenanceCost: 0, space: 4 },
+    size: SIZE.M,
+    unlockCondition: { parkLevel: 2, cost: { gold: 1000 } },
+    description: '깊은 바다와 장거리 특수 원정에 쓸 연료를 생산합니다.',
+  },
+  {
     id: 'production-feed-factory',
     name: 'Feed Factory',
     nameKo: '사료 공장',
@@ -788,28 +818,52 @@ const PRODUCTION_FACILITIES: BuildingType[] = [
     description: '대형 물탱크와 펌프장, 배관 네트워크가 있는 시설입니다.',
   },
   {
-    id: 'production-warehouse',
+    id: RESEARCH_STORAGE_ID,
     name: 'Warehouse',
     nameKo: '창고',
     category: BuildingCategory.PRODUCTION,
-    maxLevel: 15,
+    maxLevel: warehouseLevels.length,
     baseStats: {
       capacity: 0,
       revenue: 0,
-      maintenanceCost: 50,
+      maintenanceCost: warehouseLevels[0].upkeep,
       space: 4,
     },
     size: SIZE.M,
+    constructionTime: warehouseLevels[0].durationSeconds,
     unlockCondition: {
-      parkLevel: 6,
-      cost: { gold: 12000 },
+      parkLevel: warehouseLevels[0].parkLevel,
+      cost: {
+        gold: warehouseLevels[0].costs.gold,
+        materials: { wood: warehouseLevels[0].costs.wood, stone: warehouseLevels[0].costs.stone },
+      },
     },
     description: '적재대와 상자가 있는 대형 저장 건물입니다.',
   },
 ];
 
-// === 운영 시설 (6종) ===
+// === 운영 시설 ===
 const OPERATION_FACILITIES: BuildingType[] = [
+  {
+    id: GOLD_VAULT_ID,
+    name: 'Park Vault',
+    nameKo: '파크 금고',
+    category: BuildingCategory.OPERATION,
+    maxLevel: vaultLevels.length,
+    baseStats: {
+      capacity: 0,
+      revenue: 0,
+      maintenanceCost: vaultLevels[0].upkeep,
+      space: 1,
+    },
+    size: SIZE.S,
+    constructionTime: vaultLevels[0].durationSeconds,
+    unlockCondition: {
+      parkLevel: vaultLevels[0].parkLevel,
+      cost: { gold: vaultLevels[0].costs.gold },
+    },
+    description: '입장료로 번 골드를 보관합니다. 강화하면 보유 골드 한도가 늘어납니다.',
+  },
   {
     id: 'operation-admin-office',
     name: 'Admin Office',
@@ -830,7 +884,7 @@ const OPERATION_FACILITIES: BuildingType[] = [
     description: '전문적인 디자인의 사무실 건물. STAFF 표지판이 있습니다.',
   },
   {
-    id: 'operation-security-center',
+    id: SECURITY_CENTER_TYPE_ID,
     name: 'Security Center',
     nameKo: '보안센터',
     category: BuildingCategory.OPERATION,
@@ -838,7 +892,7 @@ const OPERATION_FACILITIES: BuildingType[] = [
     baseStats: {
       capacity: 0,
       revenue: 0,
-      maintenanceCost: 80,
+      maintenanceCost: SECURITY_CENTER_LEVEL_ONE_STATS.maintenanceCost,
       space: 4,
     },
     size: SIZE.M,
@@ -1059,6 +1113,16 @@ export const BUILDING_DATA: BuildingType[] = [
 // === 헬퍼 함수 ===
 export function getBuildingById(id: string): BuildingType | undefined {
   return BUILDING_DATA.find((b) => b.id === id);
+}
+
+export function getGenericBuildingUpgradeQuote(typeId: string, targetLevel: number) {
+  const type = getBuildingById(typeId);
+  const baseCost = type?.baseCost ?? type?.unlockCondition.cost.gold ?? 1000;
+  const baseTime = type?.constructionTime ?? 60;
+  return {
+    gold: Math.floor(baseCost * Math.pow(1.5, targetLevel - 1)),
+    seconds: baseTime * targetLevel,
+  };
 }
 
 export function getBuildingsByCategory(category: BuildingCategory): BuildingType[] {

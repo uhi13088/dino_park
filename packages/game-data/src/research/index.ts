@@ -3,13 +3,14 @@ import type { SynthesisRecipe, SynthesisRule } from '@dino-park/shared';
 import { HOUR, MINUTE, MaterialQuality, Rarity, ResearchMaterial } from '@dino-park/shared';
 
 export * from './park-growth';
+export * from './progression';
 
 export const SYNTHESIS_RULES: Record<Rarity, SynthesisRule> = {
   [Rarity.COMMON]: { successRate: 0.95, guaranteedAttempt: 2 },
   [Rarity.UNCOMMON]: { successRate: 0.85, guaranteedAttempt: 3 },
   [Rarity.RARE]: { successRate: 0.7, guaranteedAttempt: 3 },
   [Rarity.EPIC]: { successRate: 0.5, guaranteedAttempt: 5 },
-  [Rarity.LEGENDARY]: { successRate: 0.3, guaranteedAttempt: 8 },
+  [Rarity.LEGENDARY]: { successRate: 0.1, guaranteedAttempt: 8 },
 };
 
 export const SYNTHESIS_RECIPES: SynthesisRecipe[] = [

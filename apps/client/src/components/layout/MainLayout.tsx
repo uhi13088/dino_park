@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useMatch } from 'react-router-dom';
 import { useEffect } from 'react';
 import BottomNav from './BottomNav';
 import TopBar from './TopBar';
@@ -17,6 +17,12 @@ export default function MainLayout() {
   const { setAuth, isAuthenticated } = useAuthStore();
   const { data: profileData } = useProfile();
   const { mutate: collectOfflineRevenue } = useCollectOfflineRevenue();
+  const parkOwnsChrome = useMatch('/park/*') !== null;
+  const explorationOwnsChrome = useMatch('/exploration') !== null;
+  const researchOwnsChrome = useMatch('/research/*') !== null;
+  const storyOwnsChrome = useMatch('/story') !== null;
+  const usesSharedChrome =
+    !parkOwnsChrome && !explorationOwnsChrome && !researchOwnsChrome && !storyOwnsChrome;
 
   // 프로필 데이터 동기화
   useEffect(() => {
@@ -46,7 +52,7 @@ export default function MainLayout() {
   return (
     <div className="flex h-full flex-col bg-gradient-to-b from-sky-400 to-sky-200">
       {/* 상단 바 */}
-      <TopBar />
+      {usesSharedChrome && <TopBar />}
 
       {/* 메인 콘텐츠 */}
       <main className="relative flex-1 overflow-hidden">
@@ -54,7 +60,7 @@ export default function MainLayout() {
       </main>
 
       {/* 하단 네비게이션 */}
-      <BottomNav />
+      {usesSharedChrome && <BottomNav />}
 
       {/* 토스트 컨테이너 */}
       <ToastContainer />

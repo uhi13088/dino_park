@@ -1,19 +1,25 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { IsIn, IsInt, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
-import { EARLY_RESOURCES, EARLY_RESOURCE_CAPACITY } from '@dino-park/game-data';
-import type { PurchaseResourceRequest } from '@dino-park/shared';
+import { EARLY_RESOURCES } from '@dino-park/game-data';
+import {
+  MaterialQuality,
+  ResearchMaterial,
+  type PurchaseResourceRequest,
+  type UpgradeResearchMaterialRequest,
+} from '@dino-park/shared';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { MAX_MATERIAL_STORAGE } from '../economy/park-storage-limits';
 import { ResourcesService } from './resources.service';
 
 class PurchaseResourceDto implements PurchaseResourceRequest {
-  @IsIn(EARLY_RESOURCES.map(({ id }) => id))
+  @IsIn([...EARLY_RESOURCES.map(({ id }) => id), 'fuel'])
   material!: PurchaseResourceRequest['material'];
 
   @IsInt()
   @Min(1)
-  @Max(EARLY_RESOURCE_CAPACITY)
+  @Max(MAX_MATERIAL_STORAGE)
   quantity!: number;
 
   @IsOptional()
@@ -31,6 +37,22 @@ class StartProductionDto {
   lots!: number;
 }
 
+class UpgradeResearchMaterialDto implements UpgradeResearchMaterialRequest {
+  @IsIn(Object.values(ResearchMaterial))
+  material!: ResearchMaterial;
+
+  @IsIn([MaterialQuality.LOW, MaterialQuality.MIDDLE])
+  fromQuality!: UpgradeResearchMaterialRequest['fromQuality'];
+
+  @IsInt()
+  @Min(1)
+  @Max(MAX_MATERIAL_STORAGE)
+  quantity!: number;
+
+  @IsUUID('4')
+  requestId!: string;
+}
+
 @ApiTags('resources')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -46,6 +68,11 @@ export class ResourcesController {
   @Post('purchase')
   purchase(@CurrentUser('id') userId: string, @Body() dto: PurchaseResourceDto) {
     return this.resources.purchase(userId, dto.material, dto.quantity, dto.requestId);
+  }
+
+  @Post('upgrade-quality')
+  upgradeQuality(@CurrentUser('id') userId: string, @Body() dto: UpgradeResearchMaterialDto) {
+    return this.resources.upgradeQuality(userId, dto);
   }
 
   @Post('production')

@@ -62,11 +62,12 @@ def organize(book):
   chapters.append({'id':cid,'number':number,'title':title,'parts':parts,'topics':topics,'directory':directory})
 
  add(1,'게임의 시작과 운영',('게임의 시작과 운영',),
-     '시작 리더를 골라 파크를 열고 첫 영웅을 전시합니다. 이어 성장 목표에서 경험치를 받아 파크 Lv.6에 도달하는 방법을 안내합니다.',
-     [('게임 개요와 첫 플레이','game-design'),('시작 리더와 재건 목표','production-direction'),('첫 전시 뒤 파크 Lv.6까지','park-growth-walkthrough')],
+     '파크를 열고 첫 영웅을 전시합니다. 성장 목표에서 경험치를 받아 파크 Lv.15에 도달한 뒤 기초 변이세포 조사와 4장 해양관 준비에 나섭니다.',
+     [('게임 개요와 첫 플레이','game-design'),('시작 리더와 재건 목표','production-direction'),('첫 전시 뒤 파크 Lv.15까지','park-growth-walkthrough')],
      [row('게임 개요와 핵심 루프','game-design'),row('첫 10분의 조작과 목표',firstplay),row('첫 합성까지 공룡과 시설의 성장',firstsynth),
+      grid([('관람객 동선과 전시 확장','park-exhibit-flow'),('셔틀버스 운영','park-visitor-transport')],2),
       grid([('첫 개장과 첫 전시','first-exhibition-scope'),('시작 리더','starting-leaders'),('재건 목표','reconstruction-goals')],3),
-      row('첫 전시 뒤 파크 Lv.6까지','park-growth-walkthrough'),row('첫 합성 이후 성장과 경험치 공급','park-progression-overview'),row('성장목표 완료·수령과 경험치 기준','park-progression-rules'),c.h('레벨 구간별 성장목표'),grid([(f'Park{start}부터{min(start+4,49)}','park-level-'+str(start)) for start in range(5,50,5)],3),
+      row('첫 전시 뒤 파크 Lv.15까지','park-growth-walkthrough'),row('첫 합성 이후 성장과 경험치 공급','park-progression-overview'),row('성장목표 완료·수령과 경험치 기준','park-progression-rules'),c.h('레벨 구간별 성장목표'),grid([(f'Park{start}부터{min(start+4,49)}','park-level-'+str(start)) for start in range(5,50,5)],3),
       c.h('함께 읽을 장'),row('실제 대사와 장면별 목표','chapter-02'),row('첫 합성의 재료와 성공 규칙','chapter-09')])
 
  story_items=[('세계관과 과거 사건','story-story-world'),('최신 초반 대본의 기준','story-current-section-0'),('프롤로그','story-current-section-3'),('1장 새로운 시작','story-current-section-4'),('원종 확보와 시설 준비','story-current-section-5'),('2장 포식자의 귀환','story-current-section-6'),('연구 재료와 지하 연구소 준비','story-current-section-7'),('3장 금지된 실험','story-current-section-8'),('4장부터 에필로그의 실제 플레이 조건','story-current-section-11'),('4장 심연의 비밀','story-story-chapter-4'),('5장 폭풍 전야','story-story-chapter-5'),('6장 인도미누스','story-story-chapter-6'),('에필로그와 세 결말','story-story-epilogue'),('사이드 스토리','story-story-side-overview'),('선택과 인물 관계','story-story-choice-systems'),('4시즌 확장 이야기','story-story-season-legacy'),('시즌1 창립자의 귀환','story-story-season-runtime'),('스토리 진행 조건과 남은 결정','story-story-conflicts')]
@@ -89,20 +90,22 @@ def organize(book):
  add(4,'자원과 재료',('자원과 재료',),
      '무엇을 어디에서 얻고 어디에 쓰는지 확인합니다. 일반 운영 자원과 연구 재료를 나누고, 품질과 승급 규칙으로 바로 이동할 수 있습니다.',
      [('자원별 획득과 사용처','resources'),('연구 재료와 품질',resource_quality),('생산과 저장 및 돌봄',H('resources','생산 시설과 생산 규칙'))],
-     [row('전체 자원 목록과 사용처',H('resources','기본 자원 목록과 사용처')),row('골드와 다이아 및 탐험 연료',H('resources','골드 다이아 GP 탐험 연료')),row('연구 재료의 품질',resource_quality),row('재료 승급의 규칙',quality),row('재료 승급의 골드 비용',H('economy','연구 재료 승급 비용')),row('시설 생산과 수령',H('resources','생산 시설과 생산 규칙')),row('공룡 돌봄과 운영 비용',H('resources','공룡 돌봄과 운영 비용')),row('저장 한도와 재료함',H('resources','저장과 사용자에게 보여줄 정보'))])
+     [row('전체 자원 목록과 사용처',H('resources','기본 자원 목록과 사용처')),row('골드와 다이아 및 위인 포인트',H('resources','골드 다이아 GP')),row('연구 재료의 품질',resource_quality),row('재료 승급의 규칙',quality),row('재료 승급의 골드 비용',H('economy','연구 재료 승급 비용')),row('시설 생산과 수령',H('resources','생산 시설과 생산 규칙')),row('특수 원정 연료와 보급소','special-expedition-fuel'),row('공룡 돌봄과 운영 비용',H('resources','공룡 돌봄과 운영 비용')),row('저장 한도와 재료함',H('resources','저장과 사용자에게 보여줄 정보'))])
 
  add(5,'경제와 인력',('경제와 정산',),
      '입장료·금고·유지비를 확인하고 첫 7일과 성장 시점별 수급을 비교합니다. 직원의 고용 조건은 이 장에서, 연구 배정 방식은 연구트리 장에서 확인합니다.',
      [('입장료와 금고 및 오프라인',admission),('건설자와 연구원 고용',staff),('첫 주와 장기 운영 예시','operation-balance')],
-     [row('입장료 정산과 전체 금고 한도',admission),row('첫 주와 장기 운영 예시','operation-balance'),row('공통 운영 수치와 오프라인 기준','numeric-policies'),row('건설자와 연구원의 고용 조건 및 가격',staff),row('초반 목표와 경험치',H('economy','초반 목표 앵커')),row('건설과 강화의 비용 및 시간',H('economy','강화 비용과 시간 계산')),row('생산 단가와 탐험 연료',H('economy','생산 단가와 연료')),row('기술 연구의 비용과 시간',H('economy','기술 연구 비용과 시간'))])
+     [row('입장료 정산과 전체 금고 한도',admission),row('셔틀버스 구매·배차 수치와 운행비','shuttle-economy'),row('첫 주와 장기 운영 예시','operation-balance'),row('공통 운영 수치와 오프라인 기준','numeric-policies'),row('건설자와 연구원의 고용 조건 및 가격',staff),row('초반 목표와 경험치',H('economy','초반 목표 앵커')),row('건설과 강화의 비용 및 시간',H('economy','강화 비용과 시간 계산')),row('생산 단가',H('economy','생산 단가')),row('기술 연구의 비용과 시간',H('economy','기술 연구 비용과 시간'))])
 
  facilities=[(p['title'],p['id']) for p in body if p['id'].startswith('building-') and p['id']!='building-rules' and '-cont-' not in p['id']]
  habitats=[x for x in facilities if any(v in x[0] for v in ['서식지','익룡 돔','해양관'])]
  others=[x for x in facilities if x not in habitats]
  add(6,'건물과 부지',('건물과 부지',),
-     '역할과 배치 규칙을 읽거나 건물 이름을 골라 1~25레벨 비용·시간·효과 표로 이동합니다. 부지 확장과 종별 호환 조건도 아래에서 찾을 수 있습니다.',
-     [('건물별 강화표 찾기','nav-facilities'),('건물 역할과 배치 규칙',rules),('부지 확장과 서식지 호환',land)],
-     [row('건물 역할과 배치 및 강화 조작',rules),row('부지 확장과 입구 전환',land),row('공룡별 서식지 호환과 격리 조건',housing),{**c.h('건물별 1부터25레벨 강화표'),'anchor':'nav-facilities'},
+     '건물 강화, 부지 확장, 셔틀버스와 사파리, 종별 서식지 호환 조건을 찾습니다.',
+     [('건물별 강화표 찾기','nav-facilities'),('건물 역할과 배치 규칙',rules),('부지 확장과 필지 매입',land),('사파리 지프 투어','park-safari-jeep')],
+     [row('파크 배치 크기와 시설 이동','park-placement-scale'),row('시설별 기본 외형','park-safety-buildings'),row('건물 역할과 배치 및 강화 조작',rules),row('실외 서식지 울타리 강화','habitat-fence-upgrade'),
+      grid([('초반 부지 확장',land),('필지 매입','park-plot-purchase'),('셔틀버스 운영','park-visitor-transport'),('서식지 블록과 익룡 돔 공간','habitat-space-design'),('사파리 우리와 지프 관람','park-safari-jeep'),('사파리 시범 관람','park-safari-preview'),('스테고사우루스 3D 관람','park-stegosaurus-3d')],2),
+      row('공룡별 서식지 호환과 격리 조건',housing),{**c.h('건물별 1부터25레벨 강화표'),'anchor':'nav-facilities'},
       *section('서식지와 특수 환경',habitats,3),*section('관람과 생산 및 운영 시설',others,3)])
 
  research_groups=[]
@@ -116,17 +119,21 @@ def organize(book):
      [('계열별 연구트리와 상세표 찾기','nav-research-items'),('연구소와 선행 조건','research-rules')],
      [row('연구소와 선행 조건 및 연구원 배정','research-rules'),{**c.h('계열별 연구 찾기'),'anchor':'nav-research-items'},*research_groups])
 
- places=[(p['title'],p['id']) for p in body if p['id'].startswith('expedition-') and p['id']!='expedition-play' and '-cont-' not in p['id']]
+ places=[(p['title'],p['id']) for p in body if p['id'].startswith('expedition-') and '-cont-' not in p['id']]
+ scout_places=[(name,'scout-'+region) for region,name in c.SCOUT_REGIONS]
  add(8,'탐험',('탐험',),
-     '첫 초원 정찰 뒤 육상 주행에서 원종 알과 중급 재료를 모읍니다. 육상 차량과 해상 보트로 재료를 회수하고, 익숙한 장소에서 더 먼 구간에도 도전할 수 있습니다.',
-     [('장소별 재료 목표 찾기','nav-expedition-places'),('육상 차량과 해상 보트 주행','expedition-play'),('원종 알과 재입수','egg-targets')],
-     [row('주행 조작과 회수 및 귀환','expedition-play'),row('반복 원정과 심층 주행','deep-expedition'),{**c.h('장소별 재료 목표'),'anchor':'nav-expedition-places'},grid(places,2),row('공룡별 알 목표와 재입수 조건','egg-targets'),row('83종의 최초와 반복 획득 비용 비교','acquisition-table')])
+     '탐험가를 고용하고 지역 미니맵에서 파견합니다. 스팟별 난도와 보상, 필요한 연구와 원종 알의 비용을 확인하세요.',
+     [('지역별 파견 스팟','nav-scout-spots'),('탐험가 파견과 보상','scout-expedition'),('원종 알과 재입수','egg-targets')],
+     [row('파크 뒤 초원 첫 조사','first-meadow-dispatch'),row('탐험가 고용과 파견 조건','scout-expedition'),row('연료가 드는 장거리 목표','scout-long-range-fuel'),row('연료 구매와 보급소','special-expedition-fuel'),{**c.h('지역별 파견 스팟'),'anchor':'nav-scout-spots'},
+      *section('공룡 발견 지역',scout_places[:5]),*section('재료 채집 지역',scout_places[5:]),
+      {**c.h('재료 임무 준비비'),'anchor':'nav-expedition-places'},grid(places,2),
+      row('공룡별 알 목표와 재입수 조건','egg-targets'),row('83종의 최초와 반복 획득 비용 비교','acquisition-table')])
 
  recipes=[(p['title'].removesuffix(' 합성 레시피'),p['id']) for p in body if p['id'].startswith('recipe-') and '-cont-' not in p['id']]
  add(9,'DNA 합성',('합성',),
-     '첫 지정 스테고케라톱스를 합성·전시하면 같은 종의 반복 합성이 열립니다. 성향별 확률과 개체별 매력도, 실제 전시 교체 조건을 확인합니다.',
-     [('결과 공룡별 레시피 찾기','nav-recipes'),('원종 보유와 합성 조건',parents),('성공률과 첫 합성 보장',protection)],
-     [row('실제 보유 부모와 작업 조건',parents),row('성공률과 실패 보호 및 반환',protection),row('스테고케라톱스 레시피','recipe-stegoceratops'),row('반복 합성과 개체 능력치','repeat-synthesis-traits'),row('새로운 변종과 하이브리드 찾기','collect-new-hybrids'),row('첫 합성의 이야기와 전시 목표','story-current-ch3-scene-6'),{**c.h('결과 공룡별 레시피'),'anchor':'nav-recipes'},grid(recipes,2)])
+     '첫 스테고케라톱스를 전시한 뒤 반복 합성으로 능력치를 비교합니다. 파크 Lv.15부터는 보유 원종으로 새 조합을 실험하고, 연구자료를 등록해 같은 계통을 재현할 수 있습니다.',
+     [('결과 공룡별 레시피 찾기','nav-recipes'),('성공률과 첫 합성 보장',protection),('새 하이브리드 실험','experimental-hybrids')],
+     [row('실제 보유 부모와 작업 조건',parents),row('성공률과 실패 보호 및 반환',protection),row('스테고케라톱스 레시피','recipe-stegoceratops'),row('반복 합성과 개체 능력치','repeat-synthesis-traits'),row('새 하이브리드 실험과 재료 견적','experimental-hybrids'),row('연구자료 획득과 재현','hybrid-research-notes'),row('첫 합성의 이야기와 전시 목표','story-current-ch3-scene-6'),{**c.h('결과 공룡별 레시피'),'anchor':'nav-recipes'},grid(recipes,2)])
 
  dino_groups=[]
  for grade in ['일반','고급','희귀','영웅','전설']:
@@ -142,9 +149,9 @@ def organize(book):
      [{**c.h('등급과 수집 기준'),'anchor':'nav-dino-rules'},c.p('공룡 희귀도는 일반·고급·희귀·영웅·전설이며, 자연종·변종·하이브리드는 계보 구분입니다. 영구 수집과 현재 보유는 구별합니다. 자세한 규칙은 아래 연결 본문에서 확인합니다.'),row('등급과 계보 및 도감 등록 규칙',grades),row('전체83종 최초·반복 획득표','acquisition-table'),row('획득 해금과 전시 조건의 구분','acquisition-rules'),*dino_groups])
 
  add(11,'시즌과 파크 교류',('시즌과 파크 교류',),
-     '시즌에서 새 이야기를 만나고 다른 파크에 방문합니다. 내 공룡의 경기 기록을 비교하고, 경매장과 야시장에서 새로운 전시와 원정을 찾을 수 있습니다.',
-     [('시즌과 이벤트','season-events'),('공룡 경기와 기록 경쟁','dinosaur-competition'),('플레이어 거래','player-market')],
-     [row('시즌 이야기와 이벤트','season-events'),row('친구 방문과 선물','park-visits'),row('공룡 경기와 기록 경쟁','dinosaur-competition'),grid([('경매장과 야시장','auction-night-market'),('플레이어 거래','player-market')],2)])
+     '부두 야시장에서는 다른 파크의 하이브리드 연구자료를 사고팝니다. 내 공룡의 경기 기록을 비교하고 시즌 이야기를 찾아볼 수 있습니다.',
+     [('시즌과 이벤트','season-events'),('공룡 경기와 기록 경쟁','dinosaur-competition'),('야시장 연구자료 거래','hybrid-research-market')],
+     [row('시즌 이야기와 이벤트','season-events'),row('친구 방문과 선물','park-visits'),row('공룡 경기와 기록 경쟁','dinosaur-competition'),grid([('경매장과 야시장','auction-night-market'),('야시장 연구자료 거래','hybrid-research-market')],2)])
 
  add(12,'도움말과 찾아보기',('도움말',),
      '입장객이 오지 않거나 자원이 부족할 때 먼저 확인할 항목이 있습니다. 공사가 끝났는데 보상을 받지 못했거나 막힌 원정의 해결 방법도 확인할 수 있습니다.',

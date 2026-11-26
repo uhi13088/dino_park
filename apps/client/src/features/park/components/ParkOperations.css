@@ -62,6 +62,20 @@
   font-size: 14px;
   font-weight: 700;
 }
+.park-operations__vault {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+  margin-top: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #fff1da;
+  color: #68421e;
+  font-size: 12px;
+  line-height: 1.5;
+}
 .park-operations__goal {
   display: flex;
   align-items: center;
@@ -83,11 +97,126 @@
   line-height: 1.6;
   color: #526951;
 }
-.park-operations__goal .park-operations__requirements {
+.park-operations .park-operations__requirements {
   color: #7b491c;
 }
 .park-operations__action {
   flex-shrink: 0;
+}
+.park-operations__admission {
+  margin-top: 8px;
+  padding-block: 8px;
+  border-top: 1px solid #dbe9d8;
+}
+.park-operations__admission-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+.park-operations__admission-heading h2 {
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+.park-operations__admission-heading p,
+.park-operations__visit-duration,
+.park-operations__platform-limit {
+  color: #526951;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.park-operations__admission-rates {
+  text-align: end;
+}
+.park-operations__admission-heading .park-operations__admission-rate {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.park-operations__admission-rate strong {
+  color: #234c32;
+  font-size: 14px;
+}
+.park-operations__admission-detail {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    'factors platform'
+    'actions platform';
+  align-items: center;
+  gap: 6px 16px;
+  margin-top: 6px;
+}
+.park-operations__admission-factors {
+  grid-area: factors;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid #dbe9d8;
+  border-radius: 8px;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+.park-operations__admission-actions {
+  grid-area: actions;
+  display: grid;
+  gap: 4px;
+  color: #475d48;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.park-operations__admission-actions > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+}
+.park-operations__admission-actions > div > p {
+  flex: 1 1 120px;
+}
+.park-operations__admission-factors div {
+  min-width: 0;
+  padding: 4px 8px;
+  background: #fff;
+}
+.park-operations__admission-factors div + div {
+  border-left: 1px solid #dbe9d8;
+}
+.park-operations__admission-factors div[data-limiting='true'] {
+  background: #fff1da;
+  color: #68421e;
+}
+.park-operations__admission-factors dt,
+.park-operations__admission-factors dd {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.park-operations__admission-factors dd {
+  font-weight: 700;
+}
+.park-operations__admission-factors dd span {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+}
+.park-operations__platform-impact {
+  grid-area: platform;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 10px;
+  flex-wrap: wrap;
+}
+.park-operations__platform-impact h3 {
+  font-size: 12px;
+  font-weight: 750;
+}
+.park-operations__platform-limit {
+  grid-area: platform;
+}
+.park-operations__platform-impact p {
+  font-size: 12px;
+  line-height: 1.45;
 }
 .park-operations__capacity {
   margin-top: 6px;
@@ -125,6 +254,55 @@
   .park-operations__capacity {
     font-size: 11px;
   }
+  .park-operations__admission-detail {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'factors' 'actions' 'platform';
+  }
+  .park-operations__admission-factors div {
+    padding-inline: 6px;
+  }
+}
+.park-page--admission > :is(.park-operations, .park-page__placement) {
+  max-block-size: 52%;
+  overflow-y: auto;
+}
+
+@media (orientation: landscape) and (min-width: 600px) and (max-height: 760px) {
+  .park-page--admission {
+    display: grid;
+    grid-template-columns: clamp(268px, 38%, 350px) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .park-page--admission > :is(.park-operations, .park-page__placement) {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    min-height: 0;
+    max-block-size: none;
+    padding: 8px 12px;
+    border-inline-end: 1px solid #cfe3ce;
+  }
+  .park-page--admission .park-operations__numbers {
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .park-page--admission .park-operations__admission-detail {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'factors' 'actions' 'platform';
+  }
+  .park-page--admission .park-operations__platform-impact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .park-page--admission .park-page__map {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .park-page--admission .park-page__map-tools {
+    grid-column: 2;
+    grid-row: 2;
+    padding: 2px 4px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .park-operations button {
@@ -154,4 +332,193 @@
 .park-operations .park-operations__growth {
   border: 1px solid #2e6a3a;
   color: #234c32;
+}
+
+.park-world .park-world__drawer--operations.park-panel-surface {
+  inline-size: min(392px, calc(100% - var(--park-hud-left) - var(--park-hud-right)));
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations {
+  display: flex;
+  min-block-size: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding: 0;
+  color: var(--park-panel-ink);
+  border: 0;
+  background: transparent;
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations__heading {
+  padding-inline: 13px 3px;
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations__name h1 {
+  font-size: 17px;
+}
+
+.park-operations__header-controls {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.park-world__drawer--operations .park-panel-close svg {
+  inline-size: 18px;
+  block-size: 18px;
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations__name > span {
+  display: inline-block;
+  overflow: hidden;
+  inline-size: 8px;
+  block-size: 8px;
+  flex: 0 0 8px;
+  padding: 0;
+  border-radius: 50%;
+  background: #9d6c33;
+  color: transparent;
+  white-space: nowrap;
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations__name > .park-operations__open {
+  background: #528438;
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations__numbers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-block-start: 0;
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations__numbers > div {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  min-inline-size: 0;
+  padding: 4px 5px 4px 6px;
+  border-inline-start: 1px solid var(--park-panel-line);
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations__numbers > div:first-child {
+  padding-inline-start: 0;
+  border-inline-start: 0;
+}
+
+.park-world__drawer--operations .park-operations__numbers dt,
+.park-world__drawer--operations .park-operations__admission-factors dt,
+.park-world__drawer--operations .park-operations__admission-factors dd span {
+  color: var(--park-panel-muted);
+  font-size: 11px;
+}
+
+.park-world__drawer--operations .park-operations__numbers dd {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.park-world__drawer--operations .park-operations__goal,
+.park-world__drawer--operations .park-operations__admission,
+.park-world__drawer--operations .park-operations__admission-factors,
+.park-world__drawer--operations .park-operations__admission-factors div + div {
+  border-color: var(--park-panel-line);
+}
+
+.park-world__drawer--operations
+  .park-operations
+  :is(.park-operations__goal, .park-operations__admission, .park-operations__admission-actions)
+  :is(p, dt) {
+  color: var(--park-panel-muted);
+}
+
+.park-world__drawer--operations .park-operations .park-operations__requirements {
+  color: #804c1b;
+}
+
+.park-world__drawer--operations .park-operations__admission-rate strong {
+  color: var(--park-panel-ink);
+}
+
+.park-world__drawer--operations .park-operations__admission-heading h2 {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.park-world__drawer--operations.park-panel-surface .park-operations__admission-detail {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'actions' 'factors' 'platform';
+  gap: 8px;
+}
+
+.park-world__drawer--operations .park-operations__admission-factors div {
+  background: #fff9ee;
+}
+
+.park-world__drawer--operations .park-operations__admission-factors div[data-limiting='true'] {
+  background: #f6e2ba;
+}
+
+.park-world__drawer--operations .park-operations__admission-actions > div,
+.park-world__drawer--operations .park-operations__platform-impact {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+}
+
+.park-world__drawer--operations .park-operations__admission-actions {
+  padding: 4px 5px 4px 8px;
+  border-inline-start: 2px solid #bb873f;
+  border-radius: 5px;
+  background: #fff4df;
+}
+
+.park-world__drawer--operations .park-operations__admission-actions:empty {
+  display: none;
+}
+
+.park-world__drawer--operations .park-operations__platform-impact {
+  padding: 6px 0 2px;
+}
+
+.park-world__drawer--operations .park-operations__platform-impact h3 {
+  margin-block-end: 2px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.park-world__drawer--operations .park-operations__shortcuts {
+  gap: 6px;
+}
+
+.park-world__drawer--operations .park-operations__capacity {
+  color: var(--park-panel-muted);
+}
+
+.park-world__drawer--operations.park-panel-surface button {
+  white-space: normal;
+}
+
+@media (orientation: landscape) and (max-height: 335px) {
+  .park-world__drawer--operations .park-panel-body:has(.park-operations__admission-actions) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .park-world__drawer--operations
+    .park-panel-body:has(.park-operations__admission-actions)
+    > :is(.park-operations__numbers, .park-operations__shortcuts, .park-operations__capacity) {
+    order: 1;
+  }
+
+  .park-world__drawer--operations
+    .park-panel-body:has(.park-operations__admission-actions)
+    .park-operations__admission {
+    margin-block-start: 0;
+    padding-block-start: 0;
+    border-block-start: 0;
+  }
 }

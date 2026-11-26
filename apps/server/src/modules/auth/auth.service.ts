@@ -3,12 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TossLoginDto } from './dto/toss-login.dto';
-import {
-  INITIAL_GOLD,
-  INITIAL_DIAMOND,
-  INITIAL_GRID_SIZE,
-  MAX_EXPLORATION_ENERGY,
-} from '@dino-park/shared';
+import { INITIAL_GOLD, INITIAL_DIAMOND, INITIAL_GRID_SIZE } from '@dino-park/shared';
 
 @Injectable()
 export class AuthService {
@@ -41,7 +36,6 @@ export class AuthService {
             create: {
               gold: INITIAL_GOLD,
               diamond: INITIAL_DIAMOND,
-              explorationEnergy: MAX_EXPLORATION_ENERGY,
             },
           },
           park: {
@@ -81,7 +75,6 @@ export class AuthService {
             gold: user.currency.gold,
             diamond: user.currency.diamond,
             dna: user.currency.dna,
-            explorationEnergy: user.currency.explorationEnergy,
           }
         : null,
       park: user.park
@@ -126,7 +119,9 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
-        currency: true,
+        currency: {
+          select: { id: true, userId: true, gold: true, diamond: true, dna: true, updatedAt: true },
+        },
         park: {
           include: {
             _count: {

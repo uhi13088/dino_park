@@ -1,8 +1,11 @@
-/** Admission economy implemented from docs/current/balance.md (0.4). */
+/** Admission economy from docs/current/balance.md. */
 export const PARK_ADMISSION = {
   ticketPrice: 20,
-  baseCapacity: 12,
-  visitSeconds: 60,
+  baseGoldCapacity: 25000,
+  baseCapacity: 24,
+  additionalExhibitCapacity: 20,
+  baseExhibitViewingCapacity: 12,
+  visitSeconds: 120,
   onlineGraceSeconds: 15,
   firstVisitorsTarget: 10,
   firstVisitorsXp: 200,

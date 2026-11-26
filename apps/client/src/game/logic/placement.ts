@@ -1,9 +1,9 @@
-import { getBuildingById, getDinosaurById } from '@dino-park/game-data';
+import { getBuildingById, resolveDinosaurSpecies } from '@dino-park/game-data';
 import type { BuildingResponse, DinosaurResponse } from '@dino-park/shared';
 
 type PendingDinosaur = Pick<
   DinosaurResponse,
-  'id' | 'speciesId' | 'positionX' | 'positionY' | 'isInPark'
+  'id' | 'speciesId' | 'positionX' | 'positionY' | 'isInPark' | 'hybrid'
 >;
 
 /** Suggest a free compatible habitat cell, without changing saved placement or server validation. */
@@ -16,7 +16,7 @@ export function suggestDinosaurPlacement(
 ) {
   const fallback = { x: dinosaur.positionX, y: dinosaur.positionY };
   if (dinosaur.isInPark) return fallback;
-  const species = getDinosaurById(dinosaur.speciesId);
+  const species = resolveDinosaurSpecies(dinosaur);
   const occupied = dinosaurs.filter((item) => item.isInPark && item.id !== dinosaur.id);
   const candidates: Array<{ x: number; y: number }> = [];
   for (const building of buildings) {

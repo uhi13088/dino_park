@@ -13,19 +13,26 @@ describe('resource mutation read ownership', () => {
   it('aborts every older balance read before purchase and keeps the confirmed stock and balance', async () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     const state: ResourcesResponse = {
-      gold: 9600,
+      gold: 9800,
       parkLevel: 2,
       capacityPerMaterial: 100,
+      fuel: { amount: 22, capacity: 30, nextRechargeAt: '2026-11-23T09:04:00.000Z' },
       inventory: [{ material: 'wood', name: '목재', amount: 20, buyPrice: 20 }],
       facilities: [],
       platformUpgrade: null,
     };
-    client.setQueryData(queryKeys.currency(), { gold: 10000 });
+    client.setQueryData(queryKeys.currency(), {
+      gold: 10000,
+      diamond: 7,
+      explorationEnergy: 20,
+    });
+    client.setQueryData(queryKeys.scoutExpedition(), { gold: 10000, fuel: 20, fuelMax: 30 });
     const keys = [
       resourcesQueryKey,
       queryKeys.firstExpedition(),
       queryKeys.parkOperations(),
       queryKeys.currency(),
+      queryKeys.scoutExpedition(),
     ];
     const aborted = new Set<number>();
     const pending = keys.map((queryKey, index) =>
@@ -48,12 +55,21 @@ describe('resource mutation read ownership', () => {
       ),
     });
     await act(async () => {
-      await result.current.mutateAsync({ material: 'wood', quantity: 20 });
+      await result.current.mutateAsync({ material: 'fuel', quantity: 2 });
     });
-    expect(aborted.size).toBe(4);
-    expect(post).toHaveBeenCalledWith('/resources/purchase', { material: 'wood', quantity: 20 });
+    expect(aborted.size).toBe(5);
+    expect(post).toHaveBeenCalledWith('/resources/purchase', { material: 'fuel', quantity: 2 });
     expect(client.getQueryData<ResourcesResponse>(resourcesQueryKey)?.inventory[0].amount).toBe(20);
-    expect(client.getQueryData<{ gold: number }>(queryKeys.currency())?.gold).toBe(9600);
+    expect(client.getQueryData(queryKeys.currency())).toMatchObject({
+      gold: 9800,
+      diamond: 7,
+      explorationEnergy: 22,
+    });
+    expect(client.getQueryData(queryKeys.scoutExpedition())).toMatchObject({
+      gold: 9800,
+      fuel: 22,
+      fuelMax: 30,
+    });
     client.clear();
   });
 });

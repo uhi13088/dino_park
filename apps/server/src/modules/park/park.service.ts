@@ -11,6 +11,7 @@ import {
   type Tile,
 } from './park-admission.logic';
 import type { StarterParkResponse } from '@dino-park/shared';
+import { safariReservedTiles } from './park-safari-state';
 import {
   MAX_PARK_LEVEL,
   getParkLevelExperience,
@@ -108,6 +109,8 @@ export class ParkService {
         level: 1,
         positionX: x,
         positionY: y,
+        entranceSide: null,
+        isMirrored: false,
         status: 'ACTIVE',
         assignedGreatFigureId: null,
         completesAt: null,
@@ -115,7 +118,7 @@ export class ParkService {
         updatedAt: now,
       };
       const exit = entranceExit(entrance, park);
-      if (!this.operations.positionFree(park, null, exit.x, exit.y)) continue;
+      if (!exit || !this.operations.positionFree(park, null, exit.x, exit.y)) continue;
       if (
         !hasExhibit ||
         admissionSnapshot({ ...park, buildings: [...park.buildings, entrance] }, now.getTime())
@@ -344,6 +347,9 @@ export class ParkService {
     // 다른 오브젝트와 겹치는지 체크 (단순화된 버전)
     // TODO: 오브젝트 크기를 고려한 충돌 체크 구현
     const occupiedPositions = new Set<string>();
+    safariReservedTiles(park.safariLayout).forEach(({ x, y }) =>
+      occupiedPositions.add(`${x},${y}`),
+    );
 
     for (const dino of park.dinosaurs) {
       occupiedPositions.add(`${dino.positionX},${dino.positionY}`);

@@ -12,6 +12,115 @@ import build_guidebook as gb
 
 ROOT=gb.ROOT;TMP=gb.TMP
 
+def verify_scout_guide(plan, document):
+ """Verify the published dispatch rules and navigation after a gameplay replacement."""
+ pages=plan['pages'];numbers=plan['numbers']
+ spot_targets={'scout-'+region for region,_ in gb.content.SCOUT_REGIONS}
+ assert spot_targets<=numbers.keys() and 'scout-expedition' in numbers
+ spots=[block for page in pages if page['id'] in spot_targets
+        for block in page['blocks'] if block.get('headers')==['스팟','난도','획득','바로 파견할 조건']]
+ assert len(spots)==10 and all(len(block['rows'])==8 for block in spots)
+ assert {'expedition-play','deep-expedition'}.isdisjoint(numbers)
+ headings=''.join(document.xpath('//w:t/text()',namespaces=document.nsmap))
+ retired=('주행','미니게임','육상원정조작','좌우조향','좌우로끌','세단서를직접','오답','탐험에너지')
+ plain=re.sub(r'\s+','',headings)
+ assert not any(term in plain for term in retired),'Retired exploration instructions in Word'
+ deep_survey=gb.content.model.material_missions()['mission.fossil-valley.high-repeat.v1']
+ amount=deep_survey['reward']['quantity']
+ cells=document.xpath('//w:tr[count(w:tc)=4 and w:tc[1]//w:t="심층 보존층"]/w:tc',namespaces=document.nsmap)
+ assert len(cells)==4,'Deep preserved bed row missing from Word'
+ reward,conditions=[''.join(cell.xpath('.//w:t/text()',namespaces=document.nsmap)) for cell in cells[2:]]
+ assert reward==f'상급 DNA 샘플 {amount}개','Deep preserved bed reward differs from source'
+ assert f"{deep_survey['gold']:,}골드" in conditions,'Deep preserved bed dispatch cost differs from source'
+ assert '연료' not in conditions,'Deep preserved bed must remain a regular dispatch'
+ fuel_topics=('scout-long-range-fuel','special-expedition-fuel','scout-deep-sea')
+ links=document.xpath('//w:hyperlink/@w:anchor',namespaces=document.nsmap)
+ assert all(target in numbers and gb.anchor(target) in links for target in fuel_topics)
+ meadow_topic='first-meadow-dispatch'
+ meadow_anchor=gb.anchor(meadow_topic)
+ assert meadow_topic in numbers and links.count(meadow_anchor)>=4
+ meadow_intro=''.join(document.xpath(
+     '//w:p[w:bookmarkStart/@w:name=$anchor]/following-sibling::w:p[.//w:t][1]//w:t/text()',
+     namespaces=document.nsmap,anchor=meadow_anchor))
+ assert all(phrase in meadow_intro for phrase in ('운영 안내를 닫고','파크 뒤 초원',
+     '첫 관람대를 완공','첫 탐험가 파견','이구아노돈 알을 받으면'))
+ paid=[r for r in gb.content.model.scout_dispatches() if r['fuel']==10]
+ long_range_rows=[['지역','조사 목표','필요 연료'],*[[r['region'],r['title'],str(r['fuel'])] for r in paid]]
+ tables=document.xpath('//w:tbl[w:tr[1]/w:tc[3]//w:t="필요 연료"]',namespaces=document.nsmap)
+ assert len(tables)==1,'Long-range fuel table missing from Word'
+ actual=[[''.join(cell.xpath('.//w:t/text()',namespaces=document.nsmap))
+          for cell in row.xpath('./w:tc',namespaces=document.nsmap)]
+         for row in tables[0].xpath('./w:tr',namespaces=document.nsmap)]
+ assert actual==long_range_rows,'Long-range dispatch fuel quantities differ from source'
+ assert len(paid)==7 and all(phrase in plain for phrase in ('모든스팟에서준비비와연료5','10분마다1이자동으로','개당100골드','연료5를만드는한회분은300골드'))
+ return {'regions':len(spots),'spots':sum(len(block['rows']) for block in spots),'deep_preserved_bed_dna':amount,
+         'long_range_fuel_goals':len(paid),'fuel_topics':{target:numbers[target] for target in fuel_topics},
+         'first_meadow_page':numbers[meadow_topic]}
+
+def verify_habitat_space_guide(plan, document):
+ """Match the space proposal and its links against the generated Word content."""
+ heads, rows, _costs = gb.content.aviary_space_display()
+ namespaces = document.nsmap
+ tables = document.xpath('//w:tbl[w:tr[1]/w:tc[1]//w:t="공간 단계"]', namespaces=namespaces)
+ assert len(tables) == 1, 'Aviary physical space table missing or duplicated'
+ actual = [[''.join(cell.xpath('.//w:t/text()', namespaces=namespaces))
+            for cell in row.xpath('./w:tc', namespaces=namespaces)]
+           for row in tables[0].xpath('./w:tr', namespaces=namespaces)]
+ assert actual == [heads, *[list(map(str, row)) for row in rows]], 'Wrong aviary space limits in Word'
+ links = document.xpath('//w:hyperlink/@w:anchor', namespaces=namespaces)
+ assert links.count(gb.anchor('habitat-space-design')) >= 8
+ text = ''.join(document.xpath('//w:t/text()', namespaces=namespaces))
+ assert '아래는 서식지 편집 설계다.' in text
+ assert '거대 익룡은 5단계에서 돔당 한 마리까지 전시' in text
+ return {'aviary_space_rows': len(rows), 'habitat_design_page': plan['numbers']['habitat-space-design']}
+
+def verify_habitat_fence_guide(plan, document):
+ """Verify that the current fence instructions, comparison and links reached Word."""
+ target='habitat-fence-upgrade'
+ bookmark=gb.anchor(target)
+ ns=document.nsmap
+ heading=document.xpath('//w:p[w:bookmarkStart/@w:name=$bookmark]',namespaces=ns,bookmark=bookmark)
+ assert len(heading)==1
+ paragraphs=heading[0].xpath('following-sibling::w:p[.//w:t or .//w:drawing][position() <= 4]',namespaces=ns)
+ text=lambda para:''.join(para.xpath('.//w:t/text()',namespaces=ns))
+ assert all(habitat in text(paragraphs[0]) for habitat in ('초원','숲','육식','초식 하이브리드','사막','화산','빙하'))
+ assert 'Lv.5 강화' in text(paragraphs[0]) and '이전 울타리' in text(paragraphs[0])
+ assert 'Lv.1부터 전기 울타리' in text(paragraphs[1]) and '허용 점수' in text(paragraphs[1])
+ assert len(paragraphs[2].xpath('.//w:drawing',namespaces=ns))==2
+ assert text(paragraphs[3])=='육식 서식지 · Lv.1(왼쪽)과 Lv.5(오른쪽)'
+ assert document.xpath('//w:hyperlink/@w:anchor',namespaces=ns).count(bookmark)>=4
+ return {'fence_upgrades':len(gb.content.park_artwork_preview()['habitatFences']),
+         'fence_guide_page':plan['numbers'][target]}
+
+
+def verify_experimental_hybrid_guide(plan, document):
+ """Confirm the new experiment cost table and its player navigation reach Word."""
+ ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+ targets=('experimental-hybrids','hybrid-research-notes','hybrid-research-market','research-material-upgrades',
+          'dangerous-dinosaur-exhibit')
+ assert all(target in plan['numbers'] for target in targets)
+ links=document.xpath('//w:hyperlink/@w:anchor',namespaces=ns)
+ assert all(gb.anchor(target) in links for target in targets)
+ source=next(block for block in gb.content.narrative('docs/current/dna-and-collection.md')
+             if block.get('headers',[])[0:1]==['결과와 방식'])
+ expected=[source['headers'],*source['rows']]
+ assert len(expected)==5
+ for table in document.xpath('//w:tbl',namespaces=ns):
+  cells=[[''.join(cell.xpath('.//w:t/text()',namespaces=ns))
+          for cell in row.findall('w:tc',ns)] for row in table.findall('w:tr',ns)]
+  if cells[:1]==[expected[0]]:
+   assert cells==expected, 'Experimental hybrid costs differ between source and Word'
+   break
+ else:raise AssertionError('Experimental hybrid cost table missing from Word')
+ payout_copy='금고에 공간을 만든 뒤 판매 대금 수령을 누른다.'
+ body=[''.join(p.xpath('.//w:t/text()',namespaces=ns))
+       for p in document.xpath('//w:body/w:p',namespaces=ns)]
+ assert any(payout_copy in paragraph for paragraph in body),'Market payout guidance missing from Word'
+ safety_copy='완공된 호환 서식지에 들어간 위험 공룡은 관람길을 잇기 전에도 점수를 쓴다.'
+ assert any(safety_copy in paragraph for paragraph in body),'Shared security guidance missing from Word'
+ return {'cost_rows':len(expected)-1,'topics':{target:plan['numbers'][target] for target in targets},
+         'market_payout_copy':True,'shared_security_copy':True}
+
 def verify_dinosaur_acquisition(plan, document):
  """Check source coverage, parent paths, and the plan's actual Word content."""
  import dinosaur_acquisition_model_v06 as acq
@@ -134,6 +243,8 @@ def verify_park_progression(plan, document):
   assert all(r['next_park_level']==level['park_level']+1 and type(r['xp']) is int and r['xp']>0 for r in own),('Invalid Park source goal',level['park_level'])
   assert sum(r['xp'] for r in own)==level['new_xp'],('Park source per-level XP',level['park_level'])
  pages=plan['pages'];numbers=plan['numbers'];headers=['성장 목표','완료 조건','Park XP']
+ strategy_levels=set(progression.CURRENT_STRATEGY_LEVELS)
+ published_goals={gid for gid,goal in source.items() if goal['park_level'] not in strategy_levels}
  def normalized(value):return re.sub(r'\s+','',gb.content.clean(value))
  def xp_value(value):
   raw=normalized(value).replace(',','')
@@ -153,6 +264,8 @@ def verify_park_progression(plan, document):
    park=page_level(page);planned_levels.add(park);selected.add(pid)
    if growth_page:assert int(growth_page[1])==park,('Park page/metadata mismatch',pid,park)
   else:park=None
+  if pid=='park-growth-walkthrough' or pid.startswith('park-growth-walkthrough-cont-'):
+   selected.add(pid)
   for block in page.get('blocks',[]):
    is_table=block['type']=='table' and block['headers']==headers
    if 'progression_goal_ids' not in block:
@@ -162,7 +275,7 @@ def verify_park_progression(plan, document):
    goal_ids=block['progression_goal_ids'];rows=block['rows']
    assert len(goal_ids)==len(rows) and rows,('Growth table chunk goal metadata not sliced',pid)
    for gid,row in zip(goal_ids,rows):
-    assert gid in source and gid not in planned,('Unknown/duplicate Park goal',pid,gid)
+    assert gid in published_goals and gid not in planned,('Unknown or unpublished Park goal',pid,gid)
     own=source[gid]
     assert own['park_level']==park and len(row)==3,('Park goal table owner/columns',pid,gid)
     expected_condition=' 또는 '.join(progression.condition_label(c) for c in own['conditions']['any_of'])
@@ -172,7 +285,11 @@ def verify_park_progression(plan, document):
     assert xp_value(row[2])==own['xp'],('Park goal XP changed',gid)
     planned[gid]=pid
  assert planned_levels==set(expected_levels),'Guide Park transition coverage'
- assert set(planned)==set(source) and len(planned)==180,'Guide Park goals missing/duplicated'
+ assert set(planned)==published_goals,'Guide Park goals missing/duplicated'
+ for level in strategy_levels:
+  page=next(p for p in pages if p['id']==f'park-level-{level}')
+  target=gb.content.STRATEGY_TOPICS[level]
+  assert target in numbers and any(b.get('target')==target for b in page['blocks']),('Current strategy link missing',level)
  assert all(f'park-level-{n}' in numbers for n in expected_levels),'Guide Park level anchors missing'
  assert not [p['id'] for p in pages if re.match(r'park-level-(?:[0-4]|50)(?:$|-cont-)',p['id'])],'Guide goal outside Park 5 through 49'
  assert {'park-progression-rules','park-progression-overview'}<=set(numbers),'Guide progression overview/rules missing'
@@ -212,11 +329,12 @@ def verify_park_progression(plan, document):
   if pid not in selected:continue
   expected_tables=[[[normalized(v) for v in row] for row in [b['headers'],*b['rows']]] for b in page.get('blocks',[]) if b['type']=='table']
   assert written_tables[pid]==expected_tables,('Park progression/story Word table values changed',pid)
-  metadata_text=Counter(normalized(b['text']) for b in page.get('blocks',[]) if b['type']=='p' and 'progression_level' in b)
+  walkthrough=pid=='park-growth-walkthrough' or pid.startswith('park-growth-walkthrough-cont-')
+  metadata_text=Counter(normalized(b['text']) for b in page.get('blocks',[]) if b['type']=='p' and (walkthrough or 'progression_level' in b))
   assert not metadata_text-Counter(written_text[pid]),('Park progression paragraph missing in Word',pid)
  written_story=''.join(v for p in story_pages for v in written_text[p['id']])
  assert all(normalized(ref) in written_story for ref in expected_scenes|mission_refs),'Later story scene/goal ID omitted from Word'
- return {'transitions':45,'goal_rows':180,'new_goal_xp':3964614,'early_goal_xp':4800,'park5_carry_xp':35,'max_park_level':50,'remaining_at_park50':0,'later_story_scenes':17,'later_story_goal_refs':len(mission_refs),'source_plan_word_values_preserved':True,'missing_goals':0}
+ return {'transitions':45,'model_goal_rows':180,'published_goal_rows':len(planned),'current_strategy_levels':sorted(strategy_levels),'new_goal_xp':3964614,'early_goal_xp':4800,'park5_carry_xp':35,'max_park_level':50,'remaining_at_park50':0,'later_story_scenes':17,'later_story_goal_refs':len(mission_refs),'source_plan_word_values_preserved':True,'missing_goals':0}
 
 def verify_figure_levels(plan, document, figures):
  """Preserve every source level value through the plan and actual Word tables."""
@@ -290,7 +408,7 @@ def verify_word_outline(plan, document, styles, reader):
  topics={target for ch in chapters for _,target in ch['topics']}
  profiles={block['anchor'] for page in pages if page['id'].startswith(('people-','figures-','dinosaurs-')) for block in page.get('blocks',[]) if block.get('anchor','').startswith(('dino-','figure-','character-'))}
  h2=(topics-profiles)|{'read-first','park-progression-rules'}
- assert len(h1)==15 and len(h2)==35 and not h1&h2,'Word semantic outline contract changed'
+ assert len(h1)==15 and len(h2)==36 and not h1&h2,'Word semantic outline contract changed'
  assert not [target for target in h2 if target.startswith('park-level-') or '-cont-' in target],'Physical continuation/level title in semantic outline'
  assert {page['id']:page['title'] for page in pages if page['id'] in {'toc','toc-1'}}=={'toc':'목차','toc-1':'빠른 찾기'},'Contents/quick-find page titles'
  expected=[]
@@ -304,7 +422,7 @@ def verify_word_outline(plan, document, styles, reader):
    assert block['type']=='h' and not block.get('title_anchor'),('Unsupported core outline anchor',target)
    scene=re.match(r'^(prologue scene \d+|ch[123] scene \d+)\s+(.+)',block['text'])
    expected.append({'target':target,'page_id':pid,'level':1,'text':scene[2] if scene else block['text']})
- assert len(expected)==50 and {entry['target'] for entry in expected}==h1|h2,'Missing/duplicate semantic outline target'
+ assert len(expected)==len(h1|h2) and {entry['target'] for entry in expected}==h1|h2,'Missing/duplicate semantic outline target'
  assert all(entry['target'] in numbers for entry in expected),'Outline destination missing from physical page map'
  by_style={style.get(tag('styleId')):style for style in styles.findall('w:style',ns)}
  defaults=styles.xpath('./w:style[@w:type="paragraph" and @w:default="1"]/@w:styleId',namespaces=ns)
@@ -360,7 +478,7 @@ def verify_word_outline(plan, document, styles, reader):
  walk(reader.outline)
  expected_pdf=[(entry['level'],normalize(entry['text']),numbers[entry['target']]) for entry in expected]
  assert pdf_outline==expected_pdf,('PDF semantic outline differs from Word/source',pdf_outline,expected_pdf)
- return {'h1_chapters':12,'h1_front_and_back_matter':3,'h1_total':15,'h2_core_headings':35,'total':50,
+ return {'h1_chapters':12,'h1_front_and_back_matter':3,'h1_total':len(h1),'h2_core_headings':len(h2),'total':len(expected),
          'park_level_titles_hidden':45,'logical_block_bookmarks':len(logical_titles),
          'style_inheritance_and_direct_outline_levels_checked':True,'word_pdf_outline_and_destinations_preserved':True,
          'targets':[entry['target'] for entry in expected]}
@@ -376,7 +494,7 @@ def verify_word_front_links(plan, document, footer):
  contents,quick=front
  assert len(contents['chapters'])==12 and not quick['chapters']
  groups=quick['quick_groups']
- assert len(groups)==4 and all(len(items)==4 for _,items in groups)
+ assert [len(items) for _,items in groups]==[4,5,4,4]
  expected={
   'toc':[(f'{ch["number"]:02}  {ch["title"]}',ch['id']) for ch in contents['chapters']]+[('빠른 찾기','toc-1')],
   'toc-1':[tuple(item) for _,items in groups for item in items]+[('전체 장 목차','toc')],
@@ -405,7 +523,8 @@ def verify_word_front_links(plan, document, footer):
   assert actual[pid]==[[(label,gb.anchor(target)),(str(numbers[target]),gb.anchor(target))] for label,target in rows],('Word link labels/targets do not match',pid)
  back_links=footer.xpath('//w:hyperlink',namespaces=ns)
  assert [(x.get(tag('anchor')),''.join(x.xpath('.//w:t/text()',namespaces=ns))) for x in back_links]==[(gb.anchor('toc'),'목차'),(gb.anchor('index'),'색인')]
- return {'chapter_links':12,'quick_find_links':16,'front_bookmark_links':60,'footer_return_links':2}
+ return {'chapter_links':12,'quick_find_links':sum(len(items) for _,items in groups),
+         'front_bookmark_links':2*sum(map(len,expected.values())),'footer_return_links':2}
 
 
 def verify_operation_balance(plan, document):
@@ -561,7 +680,7 @@ def main():
  for page in pages:
   if page['id'].startswith('building-') and not page['id'].startswith('building-rules'):
    building_groups.setdefault(page['id'].split('-cont-')[0],[]).append(page)
- assert len(building_groups)==26,'Building logical profile coverage'
+ assert len(building_groups)==25,'Building logical profile coverage'
  for bid,chunks in building_groups.items():
   levels=[str(row[0]) for page in chunks for block in page['blocks'] if block['type']=='table' for row in block['rows']]
   assert levels==[str(i) for i in range(1,26)],('Building logical level row coverage',bid)
@@ -570,7 +689,7 @@ def main():
  assert [ch['number'] for ch in chapters]==list(range(1,13))
  mark_order={name:i for i,name in enumerate(marks)}
  for ch in chapters:
-  assert 2<=len(ch['topics'])<=3
+  assert 2<=len(ch['topics'])<=(4 if ch['id']=='chapter-06' else 3)
   cp=[p for p in pages if p.get('chapter')==ch['id']]
   assert cp and cp[0]['id']==ch['id'] and cp[0]['chapter_open']
   targets=[t for label,t in ch['topics']]
@@ -579,7 +698,7 @@ def main():
   owned={p['id'] for p in cp}|{b['anchor'] for p in cp for b in p.get('blocks',[]) if b.get('anchor')}
   assert set(targets)<=owned,('TOC topic belongs to another chapter',ch['title'])
  directory_counts={}
- for cid,prefix,total in [('chapter-03','figure-GF-',50),('chapter-06','building-',26),('chapter-07','research-',72),('chapter-09','recipe-',15),('chapter-10','dino-',83)]:
+ for cid,prefix,total in [('chapter-03','figure-GF-',50),('chapter-06','building-',25),('chapter-07','research-',69),('chapter-09','recipe-',15),('chapter-10','dino-',83)]:
   targets=[t for page in pages if page['part']=='장 안내' and page['chapter']==cid for b in page['blocks'] if b['type']=='nav-grid' for label,t in b['items'] if t.startswith(prefix)]
   assert len(targets)==len(set(targets))==total,(cid,len(targets),total)
   directory_counts[cid]=total
@@ -592,11 +711,15 @@ def main():
  word_outline=verify_word_outline(plan,root,styles,reader)
  figure_coverage=verify_figure_levels(plan,root,gb.content.editorial('figures'))
  acquisition_coverage=verify_dinosaur_acquisition(plan,root)
+ scout_coverage=verify_scout_guide(plan,root)
+ habitat_space_coverage=verify_habitat_space_guide(plan,root)
+ habitat_fence_coverage=verify_habitat_fence_guide(plan,root)
+ hybrid_coverage=verify_experimental_hybrid_guide(plan,root)
  progression_coverage=verify_park_progression(plan,root)
  operation_coverage=verify_operation_balance(plan,root)
  current_plan=verify_single_current_plan(chapters,pages,root_outline)
- assert sum(i.startswith('research-') and '-cont-' not in i and i!='research-rules' for i in ids)==72
- assert sum(i.startswith('building-') and '-cont-' not in i and i!='building-rules' for i in ids)==26
+ assert sum(i.startswith('research-') and '-cont-' not in i and i!='research-rules' for i in ids)==69
+ assert sum(i.startswith('building-') and '-cont-' not in i and i!='building-rules' for i in ids)==25
  assert sum(i.startswith('recipe-') and '-cont-' not in i for i in ids)==15
  assert len([i for i in numbers if i.startswith('dino-')])==83
  assert len([i for i in numbers if re.fullmatch(r'figure-[Gg][Ff]-\d+',i)])==50
@@ -609,7 +732,7 @@ def main():
   target=('story-current-' if scene['id'] in expected_story else 'story-entry-story-')+scene['id']
   assert target in numbers,('Story scene missing from the book',scene['id'])
  index_links=verify_index_links(plan,root)
- assert counts['building_levels']==650 and counts['research_levels']==252
+ assert counts['building_levels']==625 and counts['research_levels']==239
  # Both important failure paths are tested without editing a real source file.
  original=gb.inputs
  try:
@@ -646,7 +769,9 @@ def main():
          'hangul_characters':hangul,'stale_source_rejected':stale_source_rejected,'stale_editorial_rejected':stale_editorial_rejected,
          'toc_pages':2,'toc_chapters':12,'classified_directory_counts':directory_counts,
          'figure_level_coverage':figure_coverage,'dinosaur_acquisition_coverage':acquisition_coverage,'park_progression_coverage':progression_coverage,'current_plan_structure':current_plan,'word_outline':word_outline,
-         'operation_balance_coverage':operation_coverage,
+         'operation_balance_coverage':operation_coverage,'scout_coverage':scout_coverage,
+         'habitat_space_coverage':habitat_space_coverage,'habitat_fence_coverage':habitat_fence_coverage,
+         'experimental_hybrid_coverage':hybrid_coverage,
          'word_front_links':word_front_links,'flow_pagination':flow_pagination,'index_links':index_links,
          'page_png_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted((TMP/'render').glob('page-*.png'))}}
  (TMP/'document-check.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')

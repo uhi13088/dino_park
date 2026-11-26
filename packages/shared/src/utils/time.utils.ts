@@ -35,18 +35,3 @@ export function calculateOfflineTime(lastLoginAt: Date, maxHours: number): numbe
   const maxMs = maxHours * HOUR;
   return Math.min(elapsed, maxMs);
 }
-
-/**
- * 에너지 충전량 계산
- */
-export function calculateEnergyRecharge(
-  lastRechargeAt: Date,
-  rechargeMinutes: number,
-  maxEnergy: number,
-  currentEnergy: number,
-): number {
-  const elapsed = Date.now() - lastRechargeAt.getTime();
-  const rechargeMs = rechargeMinutes * MINUTE;
-  const rechargedUnits = Math.floor(elapsed / rechargeMs);
-  return Math.min(currentEnergy + rechargedUnits, maxEnergy);
-}

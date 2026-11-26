@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import {
   EARLY_PRODUCTION_RECIPES,
   EARLY_RESOURCES,
-  EARLY_RESOURCE_CAPACITY,
+  FUEL_BUY_PRICE,
   getBuildingById,
   getEarlyProductionRecipe,
   getViewingPlatformCompletedLevel,
@@ -11,11 +11,24 @@ import {
   getViewingPlatformUpgrade,
 } from '@dino-park/game-data';
 import {
+  MATERIAL_QUALITY_LABELS,
+  MAX_EXPLORATION_ENERGY,
+  MaterialQuality,
   PARK_ADMISSION,
+  RESEARCH_MATERIAL_LABELS,
+  RESEARCH_MATERIAL_UPGRADE,
+  ResearchMaterial,
   type EarlyResourceMaterial,
   type ResourcesResponse,
+  type UpgradeResearchMaterialRequest,
 } from '@dino-park/shared';
 import { PrismaService } from '../../prisma/prisma.service';
+import {
+  getParkStorageLimits,
+  getStorageLimits,
+  MAX_MATERIAL_STORAGE,
+} from '../economy/park-storage-limits';
+import { getExpeditionEnergy } from '../exploration/expedition-state';
 import { ParkOperationsService } from '../park/park-operations.service';
 import {
   getViewingPlatformProgressBlock,
@@ -41,6 +54,24 @@ export class ResourcesService {
       (await tx.resourceInventory.findUnique({ where: this.stockKey(parkId, material) }))?.amount ??
       0
     );
+  }
+
+  private async addFuel(
+    tx: Tx,
+    userId: string,
+    fuel: ReturnType<typeof getExpeditionEnergy>,
+    quantity: number,
+    now: Date,
+  ) {
+    const balance = fuel.value + quantity;
+    await tx.currency.update({
+      where: { userId },
+      data: {
+        explorationEnergy: balance,
+        energyLastRechargedAt: balance >= fuel.capacity ? now : fuel.last,
+      },
+    });
+    return balance;
   }
 
   async getResources(userId: string): Promise<ResourcesResponse> {
@@ -97,13 +128,11 @@ export class ResourcesService {
     quantity: number,
     requestId?: string,
   ): Promise<ResourcesResponse> {
-    const resource = EARLY_RESOURCES.find((item) => item.id === material);
-    if (
-      !resource ||
-      !Number.isInteger(quantity) ||
-      quantity < 1 ||
-      quantity > EARLY_RESOURCE_CAPACITY
-    )
+    const resource =
+      material === 'fuel'
+        ? { id: 'fuel', name: '연료', buyPrice: FUEL_BUY_PRICE }
+        : EARLY_RESOURCES.find((item) => item.id === material);
+    if (!resource || !Number.isInteger(quantity) || quantity < 1 || quantity > MAX_MATERIAL_STORAGE)
       throw new BadRequestException('구매할 자재와 수량을 확인해주세요.');
     return this.prisma.$transaction(async (tx) => {
       await this.operations.settleInTransaction(tx, userId, true);
@@ -122,15 +151,76 @@ export class ResourcesService {
           return this.state(tx, userId);
         }
       }
+      if (resource.id === 'fuel') {
+        const now = new Date();
+        const currency = await tx.currency.findUniqueOrThrow({ where: { userId } });
+        const fuel = getExpeditionEnergy(currency, now);
+        if (fuel.value + quantity > fuel.capacity)
+          throw new BadRequestException('탐험 연료 탱크의 남은 공간만큼만 구매할 수 있어요.');
+        await this.spendGold(tx, userId, resource.buyPrice * quantity, reason, receiptId);
+        await this.addFuel(tx, userId, fuel, quantity, now);
+        return this.state(tx, userId);
+      }
+      const { capacityPerMaterial } = await getParkStorageLimits(tx, park.id, new Date());
       const current = await this.amount(tx, park.id, material);
-      if (current + quantity > EARLY_RESOURCE_CAPACITY)
+      if (current + quantity > capacityPerMaterial)
         throw new BadRequestException(
-          `종류별 보관 한도 ${EARLY_RESOURCE_CAPACITY}개를 넘어요. 필요한 수량만 구매해주세요.`,
+          `종류별 보관 한도 ${capacityPerMaterial}개를 넘어요. 필요한 수량만 구매해주세요.`,
         );
       await this.spendGold(tx, userId, resource.buyPrice * quantity, reason, receiptId);
       await tx.resourceInventory.upsert({
         where: this.stockKey(park.id, material),
         create: { parkId: park.id, material, quality: 0, amount: quantity },
+        update: { amount: { increment: quantity } },
+      });
+      return this.state(tx, userId);
+    });
+  }
+
+  async upgradeQuality(
+    userId: string,
+    { material, fromQuality, quantity, requestId }: UpgradeResearchMaterialRequest,
+  ): Promise<ResourcesResponse> {
+    if (
+      !Object.values(ResearchMaterial).includes(material) ||
+      ![MaterialQuality.LOW, MaterialQuality.MIDDLE].includes(fromQuality) ||
+      !Number.isInteger(quantity) ||
+      quantity < 1 ||
+      quantity > MAX_MATERIAL_STORAGE
+    )
+      throw new BadRequestException('승급할 재료·품질·수량을 확인해주세요.');
+    const toQuality =
+      fromQuality === MaterialQuality.LOW ? MaterialQuality.MIDDLE : MaterialQuality.HIGH;
+    const unitCost = RESEARCH_MATERIAL_UPGRADE.gold[fromQuality];
+
+    return this.prisma.$transaction(async (tx) => {
+      await this.operations.settleInTransaction(tx, userId, true);
+      const park = await tx.park.findUniqueOrThrow({ where: { userId }, select: { id: true } });
+      if (!(await hasClaimedFirstHero(tx, park.id)))
+        throw new BadRequestException('첫 스테고케라톱스를 수령하면 연구 재료를 승급할 수 있어요.');
+      const receiptId = `resource-quality:${userId}:${requestId}`;
+      const label = RESEARCH_MATERIAL_LABELS[material];
+      const reason = `연구 재료 승급: ${MATERIAL_QUALITY_LABELS[toQuality]} ${label} ${quantity}개`;
+      const receipt = await tx.transaction.findUnique({ where: { id: receiptId } });
+      if (receipt) {
+        if (receipt.reason !== reason)
+          throw new BadRequestException('이 요청의 승급 재료와 수량을 다시 확인해주세요.');
+        return this.state(tx, userId);
+      }
+      const needed = RESEARCH_MATERIAL_UPGRADE.ratio * quantity;
+      const spent = await tx.resourceInventory.updateMany({
+        where: { parkId: park.id, material, quality: fromQuality, amount: { gte: needed } },
+        data: { amount: { decrement: needed } },
+      });
+      if (!spent.count)
+        throw new BadRequestException(
+          `${MATERIAL_QUALITY_LABELS[fromQuality]} ${label} ${needed}개가 필요해요.`,
+        );
+      await this.spendGold(tx, userId, unitCost * quantity, reason, receiptId);
+      const key = { parkId: park.id, material, quality: toQuality };
+      await tx.resourceInventory.upsert({
+        where: { parkId_material_quality: key },
+        create: { ...key, amount: quantity },
         update: { amount: { increment: quantity } },
       });
       return this.state(tx, userId);
@@ -151,14 +241,23 @@ export class ResourcesService {
       if (!building) throw new NotFoundException('내 생산 시설을 찾을 수 없습니다.');
       const recipe = getEarlyProductionRecipe(building.typeId);
       if (!recipe || building.status !== 'ACTIVE')
-        throw new BadRequestException('완공된 벌목장이나 채석장에서 생산을 시작해주세요.');
+        throw new BadRequestException('완공된 생산 시설에서 작업을 시작해주세요.');
       if (await tx.productionJob.findUnique({ where: { activeSlot: building.id } }))
         throw new BadRequestException('이 시설의 생산품을 먼저 수령해주세요.');
       const quantity = recipe.batchQuantity * lots;
-      if ((await this.amount(tx, park.id, recipe.material)) + quantity > EARLY_RESOURCE_CAPACITY)
-        throw new BadRequestException(
-          '완료 물량을 보관할 공간이 부족해요. 생산량을 줄이거나 자재를 먼저 사용해주세요.',
-        );
+      const now = new Date();
+      if (recipe.material === 'fuel') {
+        if (quantity > MAX_EXPLORATION_ENERGY)
+          throw new BadRequestException(
+            '탐험 연료 탱크의 최대 용량을 넘어요. 생산량을 줄여주세요.',
+          );
+      } else {
+        const { capacityPerMaterial } = await getParkStorageLimits(tx, park.id, now);
+        if ((await this.amount(tx, park.id, recipe.material)) + quantity > capacityPerMaterial)
+          throw new BadRequestException(
+            '완료 물량을 보관할 공간이 부족해요. 생산량을 줄이거나 자재를 먼저 사용해주세요.',
+          );
+      }
       const costGold = recipe.batchCost * lots;
       await this.spendGold(
         tx,
@@ -175,7 +274,7 @@ export class ResourcesService {
           lots,
           quantity,
           costGold,
-          readyAt: new Date(Date.now() + recipe.batchSeconds * lots * 1000),
+          readyAt: new Date(now.getTime() + recipe.batchSeconds * lots * 1000),
         },
       });
       return this.state(tx, userId);
@@ -189,23 +288,41 @@ export class ResourcesService {
       const job = await tx.productionJob.findFirst({ where: { id: jobId, parkId: park.id } });
       if (!job) throw new NotFoundException('내 생산 작업을 찾을 수 없습니다.');
       if (job.claimedAt) return this.state(tx, userId);
-      if (job.readyAt.getTime() > Date.now())
+      const now = new Date();
+      if (job.readyAt > now)
         throw new BadRequestException('아직 생산 중이에요. 완료 시각을 기다려주세요.');
-      const current = await this.amount(tx, park.id, job.material);
-      if (current + job.quantity > EARLY_RESOURCE_CAPACITY)
-        throw new BadRequestException(
-          '재고 공간이 부족해요. 완료된 생산품은 시설에 보관되니 자재를 사용한 뒤 수령해주세요.',
-        );
+      const fuel =
+        job.material === 'fuel'
+          ? getExpeditionEnergy(await tx.currency.findUniqueOrThrow({ where: { userId } }), now)
+          : null;
+      if (fuel) {
+        if (fuel.value + job.quantity > fuel.capacity)
+          throw new BadRequestException(
+            '탐험 연료 탱크에 여유가 부족해요. 완료된 연료는 보급소에 보관되니 연료를 사용한 뒤 수령해주세요.',
+          );
+      } else {
+        const { capacityPerMaterial } = await getParkStorageLimits(tx, park.id, now);
+        if ((await this.amount(tx, park.id, job.material)) + job.quantity > capacityPerMaterial)
+          throw new BadRequestException(
+            '재고 공간이 부족해요. 완료된 생산품은 시설에 보관되니 자재를 사용한 뒤 수령해주세요.',
+          );
+      }
       const receipt = await tx.productionJob.updateMany({
         where: { id: job.id, claimedAt: null, activeSlot: job.buildingId },
-        data: { claimedAt: new Date(), activeSlot: null },
+        data: { claimedAt: now, activeSlot: null },
       });
       if (!receipt.count) return this.state(tx, userId);
-      const stock = await tx.resourceInventory.upsert({
-        where: this.stockKey(park.id, job.material),
-        create: { parkId: park.id, material: job.material, quality: 0, amount: job.quantity },
-        update: { amount: { increment: job.quantity } },
-      });
+      let balanceAfter: number;
+      if (fuel) {
+        balanceAfter = await this.addFuel(tx, userId, fuel, job.quantity, now);
+      } else {
+        const stock = await tx.resourceInventory.upsert({
+          where: this.stockKey(park.id, job.material),
+          create: { parkId: park.id, material: job.material, quality: 0, amount: job.quantity },
+          update: { amount: { increment: job.quantity } },
+        });
+        balanceAfter = stock.amount;
+      }
       await tx.transaction.create({
         data: {
           userId,
@@ -213,7 +330,7 @@ export class ResourcesService {
           currencyType: job.material,
           amount: job.quantity,
           reason: '생산품 수령',
-          balanceAfter: stock.amount,
+          balanceAfter,
         },
       });
       return this.state(tx, userId);
@@ -230,6 +347,9 @@ export class ResourcesService {
       },
     });
     const currency = await tx.currency.findUniqueOrThrow({ where: { userId } });
+    const at = new Date();
+    const fuel = getExpeditionEnergy(currency, at);
+    const { capacityPerMaterial } = getStorageLimits(park.buildings, at.getTime());
     const stock = (material: string) =>
       park.resourceInventory.find((item) => item.material === material && item.quality === 0)
         ?.amount ?? 0;
@@ -251,7 +371,12 @@ export class ResourcesService {
     return {
       gold: currency.gold,
       parkLevel: park.level,
-      capacityPerMaterial: EARLY_RESOURCE_CAPACITY,
+      capacityPerMaterial,
+      fuel: {
+        amount: fuel.value,
+        capacity: fuel.capacity,
+        nextRechargeAt: fuel.nextRechargeAt?.toISOString() ?? null,
+      },
       inventory: EARLY_RESOURCES.filter(
         (resource) => resource.id !== 'metal' || claimedFirstHero,
       ).map((resource) => ({
@@ -260,6 +385,18 @@ export class ResourcesService {
         amount: stock(resource.id),
         buyPrice: resource.buyPrice,
       })),
+      researchMaterials: park.resourceInventory
+        .filter(
+          (item) =>
+            item.quality >= MaterialQuality.LOW &&
+            item.quality <= MaterialQuality.HIGH &&
+            Object.values(ResearchMaterial).includes(item.material as ResearchMaterial),
+        )
+        .map(({ material, quality, amount }) => ({
+          material: material as ResearchMaterial,
+          quality: quality as MaterialQuality,
+          amount,
+        })),
       facilities: EARLY_PRODUCTION_RECIPES.map((recipe) => {
         const type = getBuildingById(recipe.buildingTypeId)!;
         const building = park.buildings.find((item) => item.typeId === recipe.buildingTypeId);
@@ -292,8 +429,11 @@ export class ResourcesService {
                 lots: job.lots,
                 quantity: job.quantity,
                 readyAt: job.readyAt.toISOString(),
-                ready: job.readyAt.getTime() <= Date.now(),
-                claimBlocked: stock(job.material) + job.quantity > EARLY_RESOURCE_CAPACITY,
+                ready: job.readyAt <= at,
+                claimBlocked:
+                  job.material === 'fuel'
+                    ? fuel.value + job.quantity > fuel.capacity
+                    : stock(job.material) + job.quantity > capacityPerMaterial,
               }
             : null,
         };

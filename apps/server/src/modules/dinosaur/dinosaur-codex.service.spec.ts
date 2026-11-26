@@ -1,6 +1,11 @@
 import { NotFoundException } from '@nestjs/common';
 import { DinosaurOrigin, MaterialQuality, Rarity, ResearchMaterial } from '@dino-park/shared';
-import { DINOSAUR_DATA, SYNTHESIS_RECIPES, getDinosaurById } from '@dino-park/game-data';
+import {
+  DINOSAUR_DATA,
+  SYNTHESIS_RECIPES,
+  getDinosaurById,
+  getExperimentalHybridDesign,
+} from '@dino-park/game-data';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DinosaurCodexService } from './dinosaur-codex.service';
 
@@ -10,6 +15,7 @@ function setup() {
   const registered = new Map([['iguanodon', firstDate]]);
   const tx = {
     park: { findUnique: jest.fn().mockResolvedValue({ id: 'park-1' }) },
+    experimentalHybridLineage: { findMany: jest.fn().mockResolvedValue([]) },
     dinosaur: {
       findMany: jest.fn().mockResolvedValue([
         { speciesId: 'parasaurolophus', createdAt: firstDate },
@@ -42,11 +48,41 @@ function setup() {
 }
 
 describe('dinosaur codex', () => {
+  it('retains a collected experimental lineage and its recipe after release', async () => {
+    const { service, tx, registered, firstDate } = setup();
+    const design = getExperimentalHybridDesign(
+      getDinosaurById('iguanodon')!,
+      getDinosaurById('triceratops')!,
+      'sprint',
+      Rarity.EPIC,
+      true,
+    )!;
+    const id = 'hybrid-test-lineage';
+    registered.set(id, firstDate);
+    tx.experimentalHybridLineage.findMany.mockResolvedValue([
+      {
+        id,
+        species: { ...design.species, id },
+        focus: design.focus,
+        parentSpeciesIds: design.parentSpeciesIds,
+        artworkWidth: design.artworkWidth,
+        artworkState: 'ready',
+      },
+    ]);
+    const result = await service.getByUserId('user-1');
+    expect(result.entries.find((entry) => entry.speciesId === id)).toMatchObject({
+      experimental: true,
+      imageUrl: '/api/experimental-hybrids/art/' + id,
+      recipe: { goldCost: 4000, ingredients: design.cost.ingredients },
+      collection: { collected: true, ownedCount: 0, firstCollectedAt: firstDate.toISOString() },
+    });
+    expect(result.summary.totalSpecies).toBe(84);
+  });
   it('counts unique collected species independently of current owned dinosaurs', async () => {
     const { service, tx, firstDate } = setup();
     const result = await service.getByUserId('user-1');
     expect(result.summary).toEqual({
-      totalSpecies: 81,
+      totalSpecies: 83,
       collectedSpecies: 2,
       ownedSpecies: 1,
       ownedDinosaurs: 2,
@@ -141,7 +177,13 @@ describe('dinosaur codex', () => {
     expect(indominus).toMatchObject({
       rarity: Rarity.LEGENDARY,
       origin: DinosaurOrigin.HYBRID,
-      recipe: { successRate: 0.3, goldCost: null, durationMs: null, status: 'draft' },
+      recipe: {
+        successRate: 0.1,
+        guaranteedAttempt: 8,
+        goldCost: null,
+        durationMs: null,
+        status: 'draft',
+      },
     });
     expect(
       indominus?.recipe?.ingredients.every((item) => item.quality === MaterialQuality.HIGH),

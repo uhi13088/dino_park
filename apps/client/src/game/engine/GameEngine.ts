@@ -1,24 +1,79 @@
 import * as PIXI from 'pixi.js';
 import { IsometricGrid, ISO_CONFIG, gridToScreen, screenToGrid } from './IsometricGrid';
-import { ParkScenery } from './ParkScenery';
-import { buildingArtwork, dinosaurArtwork, parkTexturePaths } from '../parkArtwork';
+import { PARK_MEADOW_COLOR, parkEnvironmentTexturePaths, ParkScenery } from './ParkScenery';
+import { shuttleTexturePaths } from './ParkShuttles';
+import { ParkSafariScenery } from './ParkSafariScenery';
+import { createDinosaurShadow } from './DinosaurShadow';
+import { getParkEntranceFrame } from './ParkExterior';
+import { getIslandScreenBounds } from './IslandWorld';
+import { entranceGateTexturePaths, placeEntranceGateArtwork } from './EntranceGateArtwork';
+import { createHabitatScenery, isHabitatWithScenery } from './HabitatScenery';
 import {
-  getBuildingById,
-  getDinosaurById,
-  getViewingPlatformCompletedLevel,
-} from '@dino-park/game-data';
+  buildingArtwork,
+  buildingRasterArtwork,
+  dinosaurRasterArtwork,
+  entranceGateId,
+  fallbackBuildingArtwork,
+  fallbackDinosaurArtwork,
+  getBuildingRasterArtwork,
+  getCompletedBuildingArtworkLevel,
+  hasHabitatFenceUpgrade,
+  hybridArtworkUrl,
+  parkTexturePaths,
+  parasaurolophusArtwork,
+  safariGatePylonArtwork,
+  starterHabitatTexturePaths,
+  type BuildingRaster,
+} from '../parkArtwork';
+import {
+  findParasaurolophusWalk,
+  sampleParasaurolophusWalk,
+  type ParasaurolophusWalkRoute,
+} from '../logic/parasaurolophusWalk';
+import { getBuildingById, getDinosaurById } from '@dino-park/game-data';
 import { PARK_ADMISSION } from '@dino-park/shared';
-import type { BuildingResponse, DinosaurResponse, ParkOperationsResponse } from '@dino-park/shared';
+import type {
+  BuildingResponse,
+  DinosaurResponse,
+  ParkEntranceSide,
+  ParkOperationsResponse,
+  ParkSafariResponse,
+} from '@dino-park/shared';
+import { formatFacilityCountdown } from '@/utils/facilityCountdown';
 
 // 이벤트 타입
 export interface GameEngineEvents {
   'tile:click': { gridX: number; gridY: number };
+  'placement:move': { gridX: number; gridY: number };
   'entity:click': { type: 'dinosaur' | 'building'; id: string };
   'camera:move': { x: number; y: number };
   'camera:zoom': { zoom: number };
 }
 
 type EventCallback<T> = (data: T) => void;
+
+type ParasaurolophusMotion = {
+  id: string;
+  entity: PIXI.Container;
+  sprite: PIXI.Sprite;
+  route: ParasaurolophusWalkRoute;
+  elapsedMs: number;
+};
+
+type BuildingCountdown = {
+  completesAt: number;
+  badge: PIXI.Container;
+  plate: PIXI.Graphics;
+  text: PIXI.Text;
+  width: number;
+};
+
+function setBuildingArtworkMirrored(artwork: PIXI.Container, isMirrored: boolean): void {
+  artwork.scale.x = Math.abs(artwork.scale.x) * (isMirrored ? -1 : 1);
+}
+
+const PARK_MIN_ZOOM = 0.2;
+const MAX_ZOOM = 2;
 
 /**
  * PixiJS 게임 엔진 코어
@@ -37,7 +92,11 @@ export class GameEngine {
   private grid: IsometricGrid | null = null;
   private uiContainer: PIXI.Container | null = null;
   private scenery: ParkScenery | null = null;
-  private placementPreview: PIXI.Sprite | null = null;
+  private safariScenery: ParkSafariScenery | null = null;
+  private placementPreview: PIXI.Container | null = null;
+  private placementTile: { x: number; y: number } | null = null;
+  private movingBuildingId: string | null = null;
+  private placementDragOffset: { x: number; y: number } | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private hasPresentedPark = false;
   private parkIsOpen = false;
@@ -46,16 +105,25 @@ export class GameEngine {
   private cameraX = 0;
   private cameraY = 0;
   private cameraZoom = 1;
-  private isDragging = false;
+  private cameraFit: 'park' | 'island' | null = 'park';
+  private activePointerId: number | null = null;
   private didDrag = false;
   private pointerStart = { x: 0, y: 0 };
+  private tappedBuildingId: string | null = null;
   private isPlacing = false;
   private parkTextures: Record<string, PIXI.Texture> = {};
+  private buildingTextureRequests = new Map<string, Promise<PIXI.Texture | null>>();
   private lastPointerPosition = { x: 0, y: 0 };
 
   // 엔티티 맵
   private dinosaurs: Map<string, PIXI.Container> = new Map();
   private buildings: Map<string, PIXI.Container> = new Map();
+  private habitatFences = new Map<string, PIXI.Graphics>();
+  private buildingTimers = new Map<string, BuildingCountdown>();
+  private lastTimerSecond = 0;
+  private visibleDinosaurs: DinosaurResponse[] = [];
+  private parkBuildings: BuildingResponse[] = [];
+  private parasaurolophusMotion: ParasaurolophusMotion | null = null;
 
   // 이벤트 리스너
   private eventListeners: Map<string, Set<EventCallback<unknown>>> = new Map();
@@ -82,12 +150,23 @@ export class GameEngine {
       await app.init({
         width: container.clientWidth,
         height: container.clientHeight,
-        backgroundColor: 0x87ceeb,
+        backgroundColor: PARK_MEADOW_COLOR,
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
         antialias: true,
       });
-      textures = await PIXI.Assets.load(parkTexturePaths);
+      const [baseTextures, paraWalkTextures, ...rasterTextures] = await Promise.all([
+        PIXI.Assets.load([...parkTexturePaths, ...entranceGateTexturePaths]),
+        PIXI.Assets.load(parasaurolophusArtwork.walk).catch(() => ({})),
+        ...[...dinosaurRasterArtwork.values()].map((artwork) =>
+          PIXI.Assets.load([artwork.path]).catch(() => ({})),
+        ),
+        ...starterHabitatTexturePaths.map((path) => PIXI.Assets.load([path]).catch(() => ({}))),
+        ...parkEnvironmentTexturePaths.map((path) => PIXI.Assets.load([path]).catch(() => ({}))),
+        ...shuttleTexturePaths.map((path) => PIXI.Assets.load([path]).catch(() => ({}))),
+        PIXI.Assets.load([safariGatePylonArtwork.path]).catch(() => ({})),
+      ]);
+      textures = Object.assign({}, baseTextures, paraWalkTextures, ...rasterTextures);
     } catch (error) {
       if (app.renderer) {
         app.destroy(true, { children: true });
@@ -120,11 +199,12 @@ export class GameEngine {
     // 아이소메트릭 그리드 생성
     this.grid = new IsometricGrid(gridSize, gridSize);
     this.worldContainer.addChild(this.grid);
-    this.scenery = new ParkScenery();
+    this.scenery = new ParkScenery(this.parkTextures);
     this.grid.attachScenery(this.scenery);
 
     // 초기 카메라 위치 (그리드 중앙)
     this.centerCamera();
+    this.cameraFit = 'park';
 
     // 입력 핸들러 설정
     this.setupInputHandlers();
@@ -153,10 +233,18 @@ export class GameEngine {
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
     this.app?.canvas.removeEventListener('wheel', this.onWheel);
+    this.app?.canvas.removeEventListener('click', this.onCanvasClick);
 
     // 엔티티 정리
     this.dinosaurs.clear();
     this.buildings.clear();
+    this.buildingTextureRequests.clear();
+    this.habitatFences.clear();
+    this.buildingTimers.clear();
+    this.lastTimerSecond = 0;
+    this.visibleDinosaurs = [];
+    this.parkBuildings = [];
+    this.parasaurolophusMotion = null;
 
     // 이벤트 리스너 정리
     this.eventListeners.clear();
@@ -170,13 +258,19 @@ export class GameEngine {
     this.grid = null;
     this.uiContainer = null;
     this.scenery = null;
+    this.safariScenery = null;
     this.placementPreview = null;
+    this.placementTile = null;
+    this.movingBuildingId = null;
     this.hasPresentedPark = false;
     this.parkIsOpen = false;
     this.container = null;
 
     this.isInitialized = false;
-    this.isDragging = false;
+    this.activePointerId = null;
+    this.placementDragOffset = null;
+    this.tappedBuildingId = null;
+    this.isPlacing = false;
   }
 
   /**
@@ -192,44 +286,71 @@ export class GameEngine {
     // 포인터 이벤트
     this.app.stage.on('pointerdown', this.onPointerDown);
     this.app.stage.on('pointerup', this.onPointerUp);
-    this.app.stage.on('pointerupoutside', this.onPointerUp);
+    this.app.stage.on('pointerupoutside', this.onPointerCancel);
+    this.app.stage.on('pointercancel', this.onPointerCancel);
     this.app.stage.on('pointermove', this.onPointerMove);
 
     // 휠 이벤트 (줌)
     this.app.canvas.addEventListener('wheel', this.onWheel, { passive: false });
+    this.app.canvas.addEventListener('click', this.onCanvasClick);
   }
 
   /**
    * 포인터 다운
    */
   private onPointerDown = (event: PIXI.FederatedPointerEvent): void => {
-    this.isDragging = true;
+    if (this.activePointerId !== null || event.button !== 0) return;
+    this.activePointerId = event.pointerId;
+    this.tappedBuildingId = null;
     this.didDrag = false;
     this.pointerStart = { x: event.globalX, y: event.globalY };
     this.lastPointerPosition = { x: event.globalX, y: event.globalY };
+    if (
+      this.movingBuildingId &&
+      this.placementTile &&
+      this.placementPreview?.getBounds().containsPoint(event.globalX, event.globalY)
+    ) {
+      const pointer = this.toWorldPoint(event.globalX, event.globalY);
+      const origin = gridToScreen(this.placementTile.x, this.placementTile.y);
+      if (pointer) {
+        this.placementDragOffset = { x: origin.x - pointer.x, y: origin.y - pointer.y };
+      }
+    }
   };
 
   /**
    * 포인터 업
    */
   private onPointerUp = (event: PIXI.FederatedPointerEvent): void => {
-    if (this.isDragging && !this.didDrag) {
+    if (event.pointerId !== this.activePointerId) return;
+    if (this.didDrag && this.placementDragOffset) {
+      this.dragPlacement(event.globalX, event.globalY);
+    } else if (!this.didDrag && !this.movingBuildingId) {
       this.handleClick(event.globalX, event.globalY);
     }
+    this.onPointerCancel(event);
+  };
 
-    this.isDragging = false;
+  private onPointerCancel = (event: PIXI.FederatedPointerEvent): void => {
+    if (event.pointerId !== this.activePointerId) return;
+    this.activePointerId = null;
+    this.placementDragOffset = null;
   };
 
   /**
    * 포인터 이동
    */
   private onPointerMove = (event: PIXI.FederatedPointerEvent): void => {
-    if (!this.isDragging) return;
+    if (event.pointerId !== this.activePointerId) return;
 
     if (Math.hypot(event.globalX - this.pointerStart.x, event.globalY - this.pointerStart.y) > 5) {
       this.didDrag = true;
     }
     if (!this.didDrag) return;
+    if (this.placementDragOffset) {
+      this.dragPlacement(event.globalX, event.globalY);
+      return;
+    }
     const dx = event.globalX - this.lastPointerPosition.x;
     const dy = event.globalY - this.lastPointerPosition.y;
 
@@ -237,6 +358,25 @@ export class GameEngine {
 
     this.lastPointerPosition = { x: event.globalX, y: event.globalY };
   };
+
+  private onCanvasClick = (): void => {
+    // Let the browser finish the canvas tap before mounting controls under the pointer.
+    const id = this.tappedBuildingId;
+    this.tappedBuildingId = null;
+    if (!this.isPlacing && id && this.buildings.has(id)) {
+      this.emit('entity:click', { type: 'building', id });
+    }
+  };
+
+  private dragPlacement(screenX: number, screenY: number): void {
+    const point = this.toWorldPoint(screenX, screenY);
+    const offset = this.placementDragOffset;
+    if (!point || !offset) return;
+    const tile = screenToGrid(point.x + offset.x, point.y + offset.y);
+    if (tile.x === this.placementTile?.x && tile.y === this.placementTile.y) return;
+    this.placementTile = tile;
+    this.emit('placement:move', { gridX: tile.x, gridY: tile.y });
+  }
 
   /**
    * 휠 (줌)
@@ -252,16 +392,18 @@ export class GameEngine {
    * 클릭 핸들링
    */
   private handleClick(screenX: number, screenY: number): void {
-    if (!this.worldContainer) return;
-
-    // 화면 좌표를 월드 좌표로 변환
-    const worldX = (screenX - this.worldContainer.x) / this.cameraZoom;
-    const worldY = (screenY - this.worldContainer.y) / this.cameraZoom;
-
-    // 그리드 좌표로 변환
-    const { x: gridX, y: gridY } = screenToGrid(worldX, worldY);
-
+    const point = this.toWorldPoint(screenX, screenY);
+    if (!point) return;
+    const { x: gridX, y: gridY } = screenToGrid(point.x, point.y);
     this.emit('tile:click', { gridX, gridY });
+  }
+
+  private toWorldPoint(screenX: number, screenY: number): { x: number; y: number } | null {
+    if (!this.worldContainer) return null;
+    return {
+      x: (screenX - this.worldContainer.x) / this.cameraZoom,
+      y: (screenY - this.worldContainer.y) / this.cameraZoom,
+    };
   }
 
   /**
@@ -271,8 +413,11 @@ export class GameEngine {
     if (!this.app || !this.container) return;
 
     const { clientWidth, clientHeight } = this.container;
+    if (clientWidth === 0 || clientHeight === 0) return;
     this.app.renderer.resize(clientWidth, clientHeight);
-    this.updateCamera();
+    if (this.cameraFit === 'island') this.fitIsland();
+    else if (this.hasPresentedPark && this.cameraFit === 'park') this.fitPark();
+    else this.updateCamera();
   };
 
   /**
@@ -280,8 +425,10 @@ export class GameEngine {
    */
   private update = (ticker: PIXI.Ticker): void => {
     if (this.isPaused) return;
+    this.syncBuildingCountdowns();
 
     // 엔티티 정렬 (z-index)
+    this.animateParasaurolophus(ticker.deltaMS);
     this.grid?.sortEntities();
     this.scenery?.update(ticker.deltaMS);
   };
@@ -290,10 +437,12 @@ export class GameEngine {
    * 카메라 이동
    */
   moveCamera(x: number, y: number): void {
-    this.cameraX = x;
-    this.cameraY = y;
+    this.cameraFit = null;
+    const { left, top, right, bottom } = getIslandScreenBounds();
+    this.cameraX = Math.max(left, Math.min(right, x));
+    this.cameraY = Math.max(top, Math.min(bottom, y));
     this.updateCamera();
-    this.emit('camera:move', { x, y });
+    this.emit('camera:move', { x: this.cameraX, y: this.cameraY });
   }
 
   /**
@@ -312,7 +461,11 @@ export class GameEngine {
    * 줌 설정
    */
   setZoom(zoom: number): void {
-    this.cameraZoom = Math.max(0.2, Math.min(2, zoom));
+    this.cameraFit = null;
+    const minZoom = this.isPlacing
+      ? PARK_MIN_ZOOM
+      : Math.min(PARK_MIN_ZOOM, this.getIslandFitZoom());
+    this.cameraZoom = Math.max(minZoom, Math.min(MAX_ZOOM, zoom));
     this.updateCamera();
     this.emit('camera:zoom', { zoom: this.cameraZoom });
   }
@@ -331,12 +484,30 @@ export class GameEngine {
     this.worldContainer.scale.set(this.cameraZoom);
   }
 
-  setPlacementMode(active: boolean): void {
+  setPlacementMode(active: boolean, movingBuildingId: string | null = null): void {
+    if (active && !this.isPlacing && this.parasaurolophusMotion)
+      this.resetParasaurolophus(this.parasaurolophusMotion);
+    if (active && !this.isPlacing && this.grid) {
+      const { width, height } = this.grid.getGridSize();
+      const { x, y } = screenToGrid(this.cameraX, this.cameraY);
+      if (this.cameraZoom < PARK_MIN_ZOOM || x < 0 || x > width || y < 0 || y > height)
+        this.fitPark();
+      this.cameraFit = null;
+    }
     this.isPlacing = active;
+    if (this.movingBuildingId !== movingBuildingId) {
+      if (this.movingBuildingId) this.setBuildingVisibility(this.movingBuildingId, true);
+      if (movingBuildingId) this.setBuildingVisibility(movingBuildingId, false);
+      this.movingBuildingId = movingBuildingId;
+      this.placementDragOffset = null;
+      this.activePointerId = null;
+    }
     if (!active) {
       this.grid?.highlightTile(null);
-      this.placementPreview?.destroy();
+      this.clearEntrancePreview();
+      this.placementPreview?.destroy({ children: true });
       this.placementPreview = null;
+      this.placementTile = null;
     }
   }
 
@@ -348,22 +519,43 @@ export class GameEngine {
     this.grid?.setShowGrid(show);
   }
 
+  setShuttleFocus(exhibitId: string | null): void {
+    this.scenery?.setShuttleFocus(exhibitId);
+  }
+
+  syncSafari(safari: ParkSafariResponse): void {
+    if (!this.grid) return;
+    if (!this.safariScenery) {
+      this.safariScenery = new ParkSafariScenery(this.parkTextures);
+      this.grid.attachSafariGround(this.safariScenery.ground);
+    }
+    this.safariScenery.sync(this.grid, safari);
+  }
+
   syncPark(width: number, height: number, operations: ParkOperationsResponse): void {
     if (!this.isInitialized || !this.grid) return;
+    const previousSize = this.grid.getGridSize();
     this.grid.setGridSize(width, height);
+    const parkResized = previousSize.width !== width || previousSize.height !== height;
+    if (parkResized) this.refreshParasaurolophusWalk();
     this.parkIsOpen = operations.isOpen;
-    for (const building of this.buildings.values()) this.updateGateAppearance(building);
+    if (operations.entrance) {
+      const { id, x, y, side } = operations.entrance;
+      const gate = this.buildings.get(id);
+      if (gate) this.placeGate(gate, x, y, side);
+    }
     this.scenery?.sync(width, height, operations);
-    if (!this.hasPresentedPark) {
+    if (!this.hasPresentedPark || parkResized) {
       this.hasPresentedPark = true;
-      this.fitPark();
+      if (this.cameraFit === 'park') this.fitPark();
     }
   }
 
   fitPark(): void {
     if (!this.grid || !this.container) return;
     const { width, height } = this.grid.getGridSize();
-    this.setZoom(
+    this.cameraZoom = Math.max(
+      PARK_MIN_ZOOM,
       Math.min(
         1,
         (this.container.clientWidth - 32) / ((width + height) * 32),
@@ -371,6 +563,29 @@ export class GameEngine {
       ),
     );
     this.centerCamera();
+    this.cameraFit = 'park';
+    this.emit('camera:zoom', { zoom: this.cameraZoom });
+  }
+
+  private getIslandFitZoom(): number {
+    if (!this.container) return PARK_MIN_ZOOM;
+    const { left, top, right, bottom } = getIslandScreenBounds();
+    const { clientWidth, clientHeight } = this.container;
+    if (clientWidth === 0 || clientHeight === 0) return PARK_MIN_ZOOM;
+    return Math.min(
+      MAX_ZOOM,
+      (clientWidth - Math.min(32, clientWidth / 4)) / (right - left),
+      (clientHeight - Math.min(32, clientHeight / 4)) / (bottom - top),
+    );
+  }
+
+  fitIsland(): void {
+    if (!this.container || this.isPlacing) return;
+    const { left, top, right, bottom } = getIslandScreenBounds();
+    this.cameraZoom = this.getIslandFitZoom();
+    this.moveCamera((left + right) / 2, (top + bottom) / 2);
+    this.cameraFit = 'island';
+    this.emit('camera:zoom', { zoom: this.cameraZoom });
   }
 
   focusTile(x: number, y: number): void {
@@ -379,20 +594,66 @@ export class GameEngine {
     this.moveCamera(point.x, point.y);
   }
 
-  previewBuilding(typeId: string, position: { x: number; y: number }, valid: boolean): void {
+  previewBuilding(
+    typeId: string,
+    position: { x: number; y: number },
+    valid: boolean,
+    side?: ParkEntranceSide | null,
+    isMirrored = false,
+  ): void {
     if (!this.grid || !this.isInitialized) return;
     const type = getBuildingById(typeId);
     const width = type?.size.width ?? 1,
       height = type?.size.height ?? 1;
     this.grid.highlightArea(position, width, height, valid);
-    if (!this.placementPreview) {
-      this.placementPreview = new PIXI.Sprite();
-      this.placementPreview.alpha = 0.55;
+    this.placementTile = position;
+    if (this.placementPreview?.label !== typeId) {
+      this.clearEntrancePreview();
+      this.placementPreview?.destroy({ children: true });
+      this.placementPreview = new PIXI.Container();
+      this.placementPreview.label = typeId;
       this.placementPreview.eventMode = 'none';
+      const habitat = this.fallbackHabitatScenery(typeId, width, height);
+      if (habitat) {
+        this.placementPreview.addChild(habitat.ground, habitat.front);
+      } else {
+        this.placementPreview.addChild(new PIXI.Sprite());
+      }
       this.grid.addEntity(this.placementPreview, position.x, position.y);
     }
-    this.setBuildingArtwork(this.placementPreview, typeId, width * ISO_CONFIG.TILE_WIDTH);
-    const point = gridToScreen(position.x + (width - 1) / 2, position.y + (height - 1) / 2);
+    const artwork = this.placementPreview.children[0];
+    const gateFrame =
+      typeId === entranceGateId
+        ? this.gateFrame(position.x, position.y, width, height, side)
+        : null;
+    if (artwork instanceof PIXI.Sprite) {
+      if (typeId === entranceGateId) {
+        const grid = this.grid.getGridSize();
+        this.scenery?.previewEntrance(grid.width, grid.height, valid ? gateFrame : null);
+        placeEntranceGateArtwork(
+          artwork,
+          gateFrame,
+          (width * ISO_CONFIG.TILE_WIDTH) / 2,
+          this.parkTextures,
+          this.parkIsOpen,
+        );
+      } else {
+        const movingBuilding = this.movingBuildingId
+          ? this.parkBuildings.find(({ id }) => id === this.movingBuildingId)
+          : undefined;
+        const level = movingBuilding ? getCompletedBuildingArtworkLevel(movingBuilding) : 1;
+        this.setBuildingArtwork(artwork, typeId, width * ISO_CONFIG.TILE_WIDTH, level);
+      }
+    }
+    if (typeId !== entranceGateId) {
+      for (const piece of this.placementPreview.children) {
+        setBuildingArtworkMirrored(piece, isMirrored);
+      }
+    }
+    this.placementPreview.alpha = this.movingBuildingId ? 0.85 : 0.55;
+    const point =
+      gateFrame?.center ??
+      gridToScreen(position.x + (width - 1) / 2, position.y + (height - 1) / 2);
     this.placementPreview.position.set(point.x, point.y);
     this.placementPreview.tint = valid ? 0xffffff : 0xff7777;
   }
@@ -400,24 +661,32 @@ export class GameEngine {
   syncDinosaurs(dinosaurs: DinosaurResponse[]): void {
     if (!this.isInitialized || !this.grid) return;
     const visible = dinosaurs.filter((dinosaur) => dinosaur.isInPark);
+    this.visibleDinosaurs = visible;
     const ids = new Set(visible.map((dinosaur) => dinosaur.id));
     for (const id of this.dinosaurs.keys()) {
       if (!ids.has(id)) this.removeDinosaur(id);
     }
     for (const dinosaur of visible) {
-      this.addDinosaur(
+      const entity = this.addDinosaur(
         dinosaur.id,
         dinosaur.positionX,
         dinosaur.positionY,
         0x4caf50,
-        dinosaur.nickname || getDinosaurById(dinosaur.speciesId)?.nameKo || dinosaur.speciesId,
+        dinosaur.nickname ||
+          dinosaur.hybrid?.species.nameKo ||
+          getDinosaurById(dinosaur.speciesId)?.nameKo ||
+          dinosaur.speciesId,
         dinosaur.speciesId,
       );
+      const art = dinosaur.hybrid?.artwork;
+      if (art) this.loadExperimentalDinosaurArtwork(dinosaur.id, entity, art);
     }
+    this.refreshParasaurolophusWalk();
   }
 
   syncBuildings(buildings: BuildingResponse[]): void {
     if (!this.isInitialized || !this.grid) return;
+    this.parkBuildings = buildings;
     const ids = new Set(buildings.map((building) => building.id));
     for (const id of this.buildings.keys()) {
       if (!ids.has(id)) this.removeBuilding(id);
@@ -428,21 +697,87 @@ export class GameEngine {
         building.positionX,
         building.positionY,
         building.typeId,
+        building.entranceSide,
       );
-      sprite.alpha = building.status.toLowerCase() === 'constructing' ? 0.5 : 1;
-      if (building.typeId === PARK_ADMISSION.platformTypeId) {
-        const upgrading = building.status.toLowerCase() === 'upgrading';
-        const level = getViewingPlatformCompletedLevel(building.level, upgrading);
-        this.setBuildingArtwork(
-          sprite.children[0] as PIXI.Sprite,
-          building.typeId,
-          ISO_CONFIG.TILE_WIDTH,
-          level,
-        );
-        const label = sprite.children[1] as PIXI.Text;
-        label.y = ISO_CONFIG.TILE_HEIGHT / 2 + 3;
-        label.text = `${getBuildingById(building.typeId)?.nameKo ?? '관람대'}${level > 1 ? ` Lv.${level}` : ''}${upgrading ? ' · 확장 중' : ''}`;
+      const status = building.status.toLowerCase();
+      const constructing = status === 'constructing';
+      const upgrading = status === 'upgrading';
+      const isPlatform = building.typeId === PARK_ADMISSION.platformTypeId;
+      const artwork = sprite.children[0];
+      const label = sprite.children[1] as PIXI.Text;
+      artwork.alpha = constructing ? 0.5 : 1;
+      label.alpha = artwork.alpha;
+      const habitatFence = this.habitatFences.get(building.id);
+      if (habitatFence) habitatFence.alpha = artwork.alpha;
+      const level = getCompletedBuildingArtworkLevel(building);
+      if (
+        (isPlatform || hasHabitatFenceUpgrade(building.typeId)) &&
+        artwork instanceof PIXI.Sprite
+      ) {
+        const width = isPlatform ? 1 : (getBuildingById(building.typeId)?.size.width ?? 1);
+        this.setBuildingArtwork(artwork, building.typeId, width * ISO_CONFIG.TILE_WIDTH, level);
       }
+      if (building.typeId !== entranceGateId) {
+        const isMirrored = building.isMirrored ?? false;
+        setBuildingArtworkMirrored(artwork, isMirrored);
+        if (habitatFence) setBuildingArtworkMirrored(habitatFence, isMirrored);
+      }
+      const completesAt = building.completesAt ? Date.parse(building.completesAt) : NaN;
+      const showCountdown = (constructing || upgrading) && Number.isFinite(completesAt);
+      label.visible = !showCountdown;
+      if (showCountdown) {
+        const countdown = this.buildingTimers.get(building.id) ?? this.addBuildingCountdown(sprite);
+        countdown.completesAt = completesAt;
+        countdown.badge.y = Math.min(-25, -artwork.height * 0.65);
+        this.buildingTimers.set(building.id, countdown);
+      } else {
+        this.buildingTimers.get(building.id)?.badge.destroy({ children: true });
+        this.buildingTimers.delete(building.id);
+        label.y = this.buildingLabelY(building.typeId, artwork);
+        const name = getBuildingById(building.typeId)?.nameKo ?? building.typeId;
+        label.text = level > 1 ? `${name} Lv.${level}` : name;
+      }
+    }
+    this.lastTimerSecond = 0;
+    this.syncBuildingCountdowns();
+    this.refreshParasaurolophusWalk();
+  }
+
+  private addBuildingCountdown(building: PIXI.Container): BuildingCountdown {
+    const badge = new PIXI.Container({ eventMode: 'none' });
+    const plate = new PIXI.Graphics();
+    const text = new PIXI.Text({
+      text: '',
+      style: {
+        fontFamily: 'sans-serif',
+        fontSize: 25,
+        fontWeight: '800',
+        fill: 0xfff4dc,
+      },
+    });
+    text.anchor.set(0.5);
+    badge.addChild(plate, text);
+    building.addChild(badge);
+    return { completesAt: 0, badge, plate, text, width: 0 };
+  }
+
+  private syncBuildingCountdowns(): void {
+    if (!this.buildingTimers.size) return;
+    const now = Date.now();
+    const second = Math.floor(now / 1000);
+    if (this.lastTimerSecond === second) return;
+    this.lastTimerSecond = second;
+    for (const countdown of this.buildingTimers.values()) {
+      countdown.text.text = formatFacilityCountdown(
+        Math.max(0, Math.ceil((countdown.completesAt - now) / 1000)),
+      );
+      const width = Math.ceil(countdown.text.width) + 20;
+      if (width === countdown.width) continue;
+      countdown.width = width;
+      countdown.plate
+        .clear()
+        .roundRect(-width / 2, -18, width, 36, 10)
+        .fill({ color: 0x37361e, alpha: 0.83 });
     }
   }
 
@@ -457,15 +792,27 @@ export class GameEngine {
     const existing = this.dinosaurs.get(id);
     if (existing) {
       const { x, y } = gridToScreen(gridX, gridY);
-      existing.position.set(x, y);
+      const motion = this.parasaurolophusMotion;
+      if (motion?.id !== id || motion.route.home.x !== x || motion.route.home.y !== y)
+        existing.position.set(x, y);
       return existing;
     }
     const dinosaur = new PIXI.Container();
-    const shadow = new PIXI.Graphics().ellipse(0, 1, 25, 10).fill({ color: 0x33542a, alpha: 0.2 });
-    const sprite = new PIXI.Sprite(this.parkTextures[dinosaurArtwork(speciesId)]);
-    sprite.anchor.set(0.5, 0.94);
-    sprite.width = 86;
-    sprite.height = 78;
+    const artwork = dinosaurRasterArtwork.get(speciesId);
+    const shadow = createDinosaurShadow(artwork?.width ?? 86);
+    const texture = artwork && this.parkTextures[artwork.path];
+    const sprite = new PIXI.Sprite(
+      texture ?? this.parkTextures[fallbackDinosaurArtwork(speciesId)],
+    );
+    if (artwork && texture) {
+      sprite.anchor.set(0.5, 228 / 256);
+      sprite.width = artwork.width;
+      sprite.height = (artwork.width * texture.height) / texture.width;
+    } else {
+      sprite.anchor.set(0.5, 0.94);
+      sprite.width = 86;
+      sprite.height = 78;
+    }
     sprite.tint = color === 0x4caf50 ? 0xffffff : color;
     dinosaur.addChild(shadow, sprite, this.makeLabel(name, 18));
     dinosaur.eventMode = 'static';
@@ -480,9 +827,100 @@ export class GameEngine {
     return dinosaur;
   }
 
+  private loadExperimentalDinosaurArtwork(
+    id: string,
+    entity: PIXI.Container,
+    artwork: { idleUrl: string; width: number },
+  ) {
+    const sprite = entity.children[1] as PIXI.Sprite;
+    const src = hybridArtworkUrl(artwork.idleUrl);
+    if (sprite.label === src) return;
+    sprite.label = src;
+    void PIXI.Assets.load<PIXI.Texture>({ src, parser: 'texture' })
+      .then((texture) => {
+        if (!texture || this.dinosaurs.get(id) !== entity || sprite.label !== src) return;
+        sprite.texture = texture;
+        sprite.anchor.set(0.5, 228 / 256);
+        sprite.width = artwork.width;
+        sprite.height = (artwork.width * texture.height) / texture.width;
+      })
+      .catch(() => {
+        if (this.dinosaurs.get(id) === entity && sprite.label === src) sprite.label = '';
+      });
+  }
+
   removeDinosaur(id: string): void {
+    if (this.parasaurolophusMotion?.id === id) this.parasaurolophusMotion = null;
     this.dinosaurs.get(id)?.destroy({ children: true });
     this.dinosaurs.delete(id);
+  }
+
+  private refreshParasaurolophusWalk(): void {
+    const current = this.parasaurolophusMotion;
+    const grid = this.grid?.getGridSize();
+    const candidate =
+      this.visibleDinosaurs.find(({ id }) => id === current?.id) ??
+      this.visibleDinosaurs.find(({ speciesId }) => speciesId === parasaurolophusArtwork.speciesId);
+    const entity = candidate && this.dinosaurs.get(candidate.id);
+    const canAnimate =
+      !!this.parkTextures[parasaurolophusArtwork.idle] &&
+      parasaurolophusArtwork.walk.every((path) => !!this.parkTextures[path]) &&
+      !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const route =
+      entity && candidate && grid && canAnimate
+        ? findParasaurolophusWalk(candidate, this.parkBuildings, this.visibleDinosaurs, grid)
+        : null;
+
+    if (
+      current?.id === candidate?.id &&
+      current &&
+      route &&
+      current.route.home.x === route.home.x &&
+      current.route.home.y === route.home.y &&
+      current.route.destination.x === route.destination.x
+    )
+      return;
+
+    if (current) {
+      const saved = this.visibleDinosaurs.find(({ id }) => id === current.id);
+      const home = saved && gridToScreen(saved.positionX, saved.positionY);
+      this.resetParasaurolophus(current, home);
+    }
+
+    this.parasaurolophusMotion =
+      candidate && entity && route
+        ? {
+            id: candidate.id,
+            entity,
+            sprite: entity.children[1] as PIXI.Sprite,
+            route,
+            elapsedMs: 0,
+          }
+        : null;
+  }
+
+  private resetParasaurolophus(motion: ParasaurolophusMotion, home = motion.route.home): void {
+    motion.elapsedMs = 0;
+    motion.entity.position.set(home.x, home.y);
+    motion.sprite.texture = this.parkTextures[parasaurolophusArtwork.idle];
+    motion.sprite.scale.x = Math.abs(motion.sprite.scale.x);
+  }
+
+  private animateParasaurolophus(deltaMs: number): void {
+    const motion = this.parasaurolophusMotion;
+    if (!motion || this.isPlacing || !Number.isFinite(deltaMs)) return;
+    motion.elapsedMs += Math.max(0, deltaMs);
+    const pose = sampleParasaurolophusWalk(
+      motion.route,
+      motion.elapsedMs,
+      parasaurolophusArtwork.walk.length,
+    );
+    motion.entity.position.set(pose.position.x, pose.position.y);
+    const path =
+      pose.frame === null ? parasaurolophusArtwork.idle : parasaurolophusArtwork.walk[pose.frame];
+    const texture = this.parkTextures[path];
+    if (motion.sprite.texture !== texture) motion.sprite.texture = texture;
+    motion.sprite.scale.x = Math.abs(motion.sprite.scale.x) * (pose.facingRight ? 1 : -1);
   }
 
   addBuilding(
@@ -490,36 +928,76 @@ export class GameEngine {
     gridX: number,
     gridY: number,
     typeId = 'habitat-grassland',
+    entranceSide?: ParkEntranceSide | null,
   ): PIXI.Container {
     const type = getBuildingById(typeId);
-    const centerX = gridX + ((type?.size.width ?? 1) - 1) / 2;
-    const centerY = gridY + ((type?.size.height ?? 1) - 1) / 2;
+    const width = type?.size.width ?? 1;
+    const height = type?.size.height ?? 1;
+    const centerX = gridX + (width - 1) / 2;
+    const centerY = gridY + (height - 1) / 2;
     const existing = this.buildings.get(id);
     if (existing) {
+      if (typeId === entranceGateId) {
+        this.placeGate(existing, gridX, gridY, entranceSide);
+        return existing;
+      }
       const point = gridToScreen(centerX, centerY);
       existing.position.set(point.x, point.y);
-      if (typeId === 'operation-entrance-gate') this.updateGateAppearance(existing);
+      const habitatFence = this.habitatFences.get(id);
+      if (habitatFence) habitatFence.position.set(point.x, point.y + habitatFence.pivot.y);
       return existing;
     }
     const building = new PIXI.Container();
+    building.visible = id !== this.movingBuildingId;
     building.zIndex = type?.category === 'dinosaur' ? -1 : 0;
-    const sprite = new PIXI.Sprite();
-    this.setBuildingArtwork(sprite, typeId, (type?.size.width ?? 3) * ISO_CONFIG.TILE_WIDTH);
-    building.addChild(sprite, this.makeLabel(type?.nameKo ?? typeId, sprite.height * 0.45));
-    if (typeId === 'operation-entrance-gate') {
-      building.label = 'entrance-gate';
-      this.updateGateAppearance(building);
+    const habitat = this.fallbackHabitatScenery(typeId, width, height);
+    const artwork = habitat?.ground ?? new PIXI.Sprite();
+    const label = this.makeLabel(type?.nameKo ?? typeId, 0);
+    if (artwork instanceof PIXI.Sprite && typeId !== entranceGateId) {
+      this.setBuildingArtwork(
+        artwork,
+        typeId,
+        (type?.size.width ?? 3) * ISO_CONFIG.TILE_WIDTH,
+        1,
+        () => {
+          const countdown = this.buildingTimers.get(id);
+          if (countdown) countdown.badge.y = Math.min(-25, -artwork.height * 0.65);
+          else label.y = this.buildingLabelY(typeId, artwork);
+        },
+      );
     }
+    label.y = this.buildingLabelY(typeId, artwork);
+    building.addChild(artwork, label);
     building.eventMode = 'static';
     building.cursor = 'pointer';
-    building.on('pointerdown', (event: PIXI.FederatedPointerEvent) => {
-      if (this.isPlacing) return;
+    building.on('pointertap', (event: PIXI.FederatedPointerEvent) => {
+      if (this.isPlacing || this.didDrag) return;
       event.stopPropagation();
-      this.emit('entity:click', { type: 'building', id });
+      this.tappedBuildingId = id;
     });
     this.grid?.addEntity(building, centerX, centerY);
+    if (typeId === entranceGateId) this.placeGate(building, gridX, gridY, entranceSide);
+    if (habitat) {
+      // Sort the low front fence at its near edge, while the ground stays behind animals.
+      const frontDepth = ((width + height) * ISO_CONFIG.TILE_HEIGHT) / 4;
+      habitat.front.pivot.y = frontDepth;
+      habitat.front.visible = building.visible;
+      this.grid?.addEntity(
+        habitat.front,
+        centerX + (width + height) / 4,
+        centerY + (width + height) / 4,
+      );
+      this.habitatFences.set(id, habitat.front);
+    }
     this.buildings.set(id, building);
     return building;
+  }
+
+  private setBuildingVisibility(id: string, visible: boolean): void {
+    const building = this.buildings.get(id);
+    if (building) building.visible = visible;
+    const fence = this.habitatFences.get(id);
+    if (fence) fence.visible = visible;
   }
 
   private setBuildingArtwork(
@@ -527,30 +1005,132 @@ export class GameEngine {
     typeId: string,
     width: number,
     completedLevel = 1,
+    onReady?: () => void,
   ): void {
-    const texture = this.parkTextures[buildingArtwork(typeId, completedLevel)];
-    if (sprite.texture !== texture) sprite.texture = texture;
-    sprite.width = width;
-    if (typeId === PARK_ADMISSION.platformTypeId) {
-      sprite.height = width * (texture.height / texture.width);
-      // Align the cropped sprite's near corner with the front point of its ground tile.
-      sprite.anchor.set(0.5, 1 - ISO_CONFIG.TILE_HEIGHT / 2 / sprite.height);
+    const path = buildingArtwork(typeId, completedLevel, this.parkIsOpen);
+    const texture = this.parkTextures[path];
+    const alignPlatform = typeId === PARK_ADMISSION.platformTypeId;
+    const raster = getBuildingRasterArtwork(typeId, completedLevel);
+    if (texture) {
+      sprite.label = path;
+      this.applyBuildingTexture(sprite, texture, width, raster, alignPlatform);
       return;
     }
-    const isGate = typeId === 'operation-entrance-gate';
-    sprite.height = width * (isGate ? 152 / 192 : 128 / 192);
-    sprite.anchor.set(0.5, isGate ? 106 / 152 : 63 / 128);
+    if (sprite.label === path) return;
+    if (!sprite.label) {
+      this.applyBuildingTexture(sprite, this.parkTextures[fallbackBuildingArtwork(typeId)], width);
+    }
+    sprite.label = path;
+
+    const initializationId = this.initializationId;
+    let request = this.buildingTextureRequests.get(path);
+    if (!request) {
+      request = PIXI.Assets.load([path])
+        .then((textures) => textures[path] ?? null)
+        .catch(() => null);
+      this.buildingTextureRequests.set(path, request);
+    }
+    void request.then((loaded) => {
+      if (!loaded || this.initializationId !== initializationId) return;
+      this.parkTextures[path] = loaded;
+      if (sprite.destroyed || sprite.label !== path) return;
+      this.applyBuildingTexture(sprite, loaded, width, raster, alignPlatform);
+      onReady?.();
+    });
   }
 
-  private updateGateAppearance(building: PIXI.Container): void {
-    if (building.label !== 'entrance-gate') return;
+  private applyBuildingTexture(
+    sprite: PIXI.Sprite,
+    texture: PIXI.Texture,
+    width: number,
+    raster?: BuildingRaster,
+    alignPlatform = false,
+  ): void {
+    const mirrored = sprite.scale.x < 0;
+    if (sprite.texture !== texture) sprite.texture = texture;
+    sprite.width = width;
+    if (alignPlatform) {
+      sprite.height = width * (texture.height / texture.width);
+      // The existing platform is aligned by the near point of its tile.
+      sprite.anchor.set(0.5, 1 - ISO_CONFIG.TILE_HEIGHT / 2 / sprite.height);
+    } else if (raster) {
+      sprite.height = width * (texture.height / texture.width);
+      const groundAnchor =
+        raster.groundAnchorY ?? Math.max(0.5, 1 - texture.width / (4 * texture.height));
+      sprite.anchor.set(0.5, groundAnchor);
+    } else {
+      sprite.height = width * (128 / 192);
+      sprite.anchor.set(0.5, 63 / 128);
+    }
+    setBuildingArtworkMirrored(sprite, mirrored);
+  }
+
+  private fallbackHabitatScenery(typeId: string, width: number, height: number) {
+    if (!isHabitatWithScenery(typeId)) return null;
+    const artwork = buildingRasterArtwork.get(typeId);
+    return artwork && this.parkTextures[artwork.path]
+      ? null
+      : createHabitatScenery(typeId, width, height);
+  }
+
+  private buildingLabelY(typeId: string, artwork: PIXI.Container): number {
+    if (isHabitatWithScenery(typeId)) {
+      const size = getBuildingById(typeId)?.size;
+      return size ? ((size.width + size.height) * ISO_CONFIG.TILE_HEIGHT) / 4 + 3 : 0;
+    }
+    if (typeId === entranceGateId) return 10;
+    return artwork instanceof PIXI.Sprite &&
+      (typeId === PARK_ADMISSION.platformTypeId || buildingRasterArtwork.has(typeId))
+      ? artwork.height * (1 - artwork.anchor.y) + 3
+      : artwork.height * 0.45;
+  }
+
+  private clearEntrancePreview(): void {
+    if (this.placementPreview?.label !== entranceGateId || !this.grid) return;
+    const { width, height } = this.grid.getGridSize();
+    this.scenery?.previewEntrance(width, height, null);
+  }
+
+  private gateFrame(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    side?: ParkEntranceSide | null,
+  ) {
+    const grid = this.grid?.getGridSize();
+    return grid
+      ? getParkEntranceFrame(grid.width, grid.height, {
+          x,
+          y,
+          width,
+          height,
+          onBoundary: true,
+          side,
+        })
+      : null;
+  }
+
+  private placeGate(
+    building: PIXI.Container,
+    x: number,
+    y: number,
+    side?: ParkEntranceSide | null,
+  ): void {
+    const gate = getBuildingById(entranceGateId);
+    if (!gate) return;
+    const { width, height } = gate.size;
+    const frame = this.gateFrame(x, y, width, height, side);
+    const point = frame?.center ?? gridToScreen(x + (width - 1) / 2, y + (height - 1) / 2);
+    building.position.set(point.x, point.y);
     const sprite = building.children[0] as PIXI.Sprite;
-    const label = building.children[1] as PIXI.Text;
-    sprite.texture =
-      this.parkTextures[
-        `/assets/placeholders/operation-entrance-gate${this.parkIsOpen ? '-open' : ''}.svg`
-      ];
-    label.text = `입구 게이트 · ${this.parkIsOpen ? '개장' : '휴장'}`;
+    placeEntranceGateArtwork(
+      sprite,
+      frame,
+      (width * ISO_CONFIG.TILE_WIDTH) / 2,
+      this.parkTextures,
+      this.parkIsOpen,
+    );
   }
 
   private makeLabel(text: string, y: number): PIXI.Text {
@@ -572,6 +1152,9 @@ export class GameEngine {
   removeBuilding(id: string): void {
     this.buildings.get(id)?.destroy({ children: true });
     this.buildings.delete(id);
+    this.buildingTimers.delete(id);
+    this.habitatFences.get(id)?.destroy();
+    this.habitatFences.delete(id);
   }
 
   /**

@@ -34,7 +34,7 @@ export interface PackageProduct {
 }
 
 export interface PackageContent {
-  type: 'diamond' | 'gold' | 'energy' | 'egg' | 'item' | 'dinosaur' | 'booster';
+  type: 'diamond' | 'gold' | 'egg' | 'item' | 'dinosaur' | 'booster';
   amount: number;
   name: string;
   icon: string;
@@ -45,7 +45,7 @@ export interface DailyShopItem {
   id: string;
   name: string;
   icon: string;
-  type: 'gold' | 'diamond' | 'energy' | 'egg' | 'item';
+  type: 'gold' | 'diamond' | 'egg' | 'item';
   amount: number;
   price: number;
   currency: CurrencyType;
@@ -93,7 +93,6 @@ export const CURRENCY_CONFIG = {
 export const PRODUCT_TYPE_ICONS = {
   diamond: '💎',
   gold: '🪙',
-  energy: '⚡',
   egg: '🥚',
   item: '📦',
   dinosaur: '🦕',

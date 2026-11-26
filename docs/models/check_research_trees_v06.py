@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Validate v0.6 costs/times for 252 research actions and 72 defined effects.
+"""Validate v0.6 costs/times for 239 research actions and 69 defined effects.
 
 Reads canonical Markdown through research_cost_model_v06 and the building model.
-All 72 nodes have costs/times and rank effects. Content readiness is separate. This is design arithmetic and
+All 69 nodes have costs/times and rank effects. Content readiness is separate. This is design arithmetic and
 structural reachability, not runtime, gameplay, mission or database testing.
 Run: python3 docs/models/check_research_trees_v06.py
 """
@@ -23,6 +23,7 @@ TECH = ROOT / "docs/current/research-trees.md"
 BASELINE = ROOT / "docs/archive/0.5/research-trees.md"
 OUTPUT = ROOT / "tmp/preview/research-trees-v06-check.json"
 FAMILIES = {"ops": "운영", "care": "사육", "exp": "탐험", "gene": "유전"}
+RETIRED_TECHNOLOGIES = {"exp-tank", "exp-recovery", "exp-expedition-supply"}
 DAY = 86400
 
 
@@ -74,29 +75,31 @@ def validate():
     subfields = {}
     for suffix, family in FAMILIES.items():
         rows = marked_table(text, f"nodes-{suffix}")
-        assert len(rows) == 18 and all(row["계열"] == family for row in rows), family
+        assert len(rows) == (15 if suffix == "exp" else 18) and all(row["계열"] == family for row in rows), family
         counts = Counter(row["분야"] for row in rows)
-        assert len(counts) == 6 and set(counts.values()) == {3}, (family, counts)
+        assert len(counts) == (5 if suffix == "exp" else 6) and set(counts.values()) == {3}, (family, counts)
         subfields[family] = dict(counts)
         node_rows.extend(rows)
     nodes = {row["id"]: row for row in node_rows}
-    assert len(nodes) == len(node_rows) == 72
+    assert len(nodes) == len(node_rows) == 69
+    assert not RETIRED_TECHNOLOGIES.intersection(nodes)
+    assert nodes["exp-collection"]["선행"] == "exp-field-mapping:2"
     required_columns = {"id", "계열", "분야", "항목", "max", "비용군", "선행",
                         "연구소단계", "첫영웅후", "구분", "목적", "준비"}
     assert all(required_columns <= row.keys() for row in node_rows)
     assert all(re.fullmatch(r"[a-z][a-z0-9-]*", node_id) for node_id in nodes)
     effects_list = marked_table(text, "effects")
     effects = {row["id"]: row for row in effects_list}
-    legacy_ids = set(baseline_nodes)
+    legacy_ids = set(baseline_nodes) - RETIRED_TECHNOLOGIES
     formula_ids = set(nodes) - legacy_ids
     effect_ids = set(effects)
     structured_effect_ids = set(nodes) - effect_ids
-    assert len(legacy_ids) == 12 and len(formula_ids) == 60
-    assert len(effects_list) == len(effect_ids) == 14 and len(structured_effect_ids) == 58
+    assert len(legacy_ids) == 10 and len(formula_ids) == 59
+    assert len(effects_list) == len(effect_ids) == 12 and len(structured_effect_ids) == 57
     import research_effect_model_v06 as effect_model
     assert set(effect_model.STRUCTURED) == structured_effect_ids
     assert set(effect_model.all_effects()) == set(nodes)
-    assert sum(len(v["levels"]) for v in effect_model.STRUCTURED.values()) == 194
+    assert sum(len(v["levels"]) for v in effect_model.STRUCTURED.values()) == 189
     assert effect_ids == legacy_ids | {"gene-study-budget", "gene-study-protocol"}
     assert all(effects[node_id] == baseline_effects[node_id] for node_id in legacy_ids), "Preserved effects changed"
     for node_id in ["gene-study-budget", "gene-study-protocol"]:
@@ -228,8 +231,6 @@ def validate():
     def value(node_id, rank):
         if rank:
             return F(effects[node_id][f"Lv.{rank}"])
-        if node_id == "exp-recovery":
-            return building.P["fuel_recharge_seconds"]
         if node_id == "gene-preservation":
             match = re.search(r"반환율\s*(\d+)", nodes[node_id]["목적"])
             assert match, "Missing basic failure-return contract"
@@ -244,7 +245,7 @@ def validate():
     assert set(cost_model.FAMILIES) == set(FAMILIES)
     assert set(cost_model.ASSIGN) == formula_ids
     source_table_sizes = {"research-bands": 25, "research-roles": 5, "research-ranks": 5,
-                          "research-families": 4, "research-assignment": 60,
+                          "research-families": 4, "research-assignment": 59,
                           "research-policy": 8, "research-rounding": 4}
     for table_name, count in source_table_sizes.items():
         source_rows = building.table(table_name)
@@ -280,7 +281,7 @@ def validate():
     buy = {row["material"]: int(row["buy"]) for row in building.PROD.values()}
     stages = cost_model.all_costs()
     stage_map = {(row["id"], row["level"]): row for row in stages}
-    assert len(stages) == len(stage_map) == sum(int(row["max"]) for row in nodes.values()) == 252
+    assert len(stages) == len(stage_map) == sum(int(row["max"]) for row in nodes.values()) == 239
     role_changes = []
     for node_id in order:
         node = nodes[node_id]
@@ -483,7 +484,7 @@ def validate():
     assert all(learned[node_id] == int(node["max"]) for node_id, node in nodes.items()), (
         "Research capacity closure stuck", {node_id: level for node_id, level in learned.items()
                                            if level < int(nodes[node_id]["max"])})
-    assert len(certificate) == 252 + 74 and len(engineering_guards) == 3
+    assert len(certificate) == 239 + 74 and len(engineering_guards) == 3
 
     staff = building.table("staff")
     assert {row["role"] for row in staff} == {"builder", "researcher"}
@@ -511,28 +512,12 @@ def validate():
         "risk_upkeep_factor": (1 - building.P["security_upkeep_reduction_max"]) * (1 - maxima["care-upkeep"] / 100) * (1 - maxima["care-isolation"] / 100),
         "facility_upkeep_factor": 1 - maxima["ops-maintenance"] / 100,
         "normal_synthesis_time_factor": (1 - building.primary("lab", 25) / 100) * (1 - maxima["gene-culture"] / 100),
-        "fuel_capacity": building.primary("fueldepot", 25) + maxima["exp-tank"],
-        "recovery_seconds": maxima["exp-recovery"],
         "base_failure_return_percent": value("gene-preservation", 0),
         "max_failure_return_percent": maxima["gene-preservation"],
     }
     assert all(0 < number <= 1 for key, number in bounds.items() if key.endswith("factor"))
     assert bounds["demand_multiplier"] >= 1 and bounds["gate_multiplier"] >= 1
-    assert 0 < bounds["recovery_seconds"] <= value("exp-recovery", 0)
     assert bounds["base_failure_return_percent"] < bounds["max_failure_return_percent"] < 100
-    transitions = 0
-    intervals = [value("exp-recovery", rank) for rank in range(int(nodes["exp-recovery"]["max"]) + 1)]
-    for old, new in zip(intervals, intervals[1:]):
-        for elapsed in [F(0), old / 3, old - F(1, 2), old + F(1, 2), 2 * old + old / 7]:
-            units = elapsed // old
-            fraction = (elapsed - units * old) / old
-            translated = fraction * new
-            assert units >= 0 and 0 <= fraction < 1
-            assert translated / new == fraction and translated < new
-            transitions += 1
-    for depot in range(1, 26):
-        assert building.production("fueldepot", depot, int(building.P["max_lots"]))["quantity"] <= building.primary("fueldepot", depot)
-
     catalog, provenance = building.source_catalog()
     first = catalog["first"]
     assert first["firstSynthesisRule"]["successRate"] == 1
@@ -565,7 +550,7 @@ def validate():
             "initial_research_actions": initial_actions, "subsequent_rank_research_actions": subsequent_actions,
             "legacy_technology_levels_field": "Alias of total_research_actions, not prerequisite depth.",
             "parallelism": "Researchers allow different technologies in parallel; one technology's ranks remain sequential.",
-            "planning_scope": "All costs/times and all 72 rank effects are specified; follow-up content and runtime remain separate.",
+            "planning_scope": "All costs/times and all 69 rank effects are specified; follow-up content and runtime remain separate.",
         },
         "depth_metrics": depths,
         "costed_nodes": len(nodes), "costed_research_actions": len(stages),
@@ -575,11 +560,11 @@ def validate():
         "structured_effect_nodes": len(structured_effect_ids), "structured_effect_research_actions": total_actions - effect_actions,
         "defined_effect_nodes": len(nodes), "defined_effect_research_actions": total_actions, "pending_effect_nodes": 0,
         "legacy_cost_rows": len(costs), "coefficient_table_rows": source_table_sizes,
-        "checks": {"four_families_18_nodes_each": True, "six_subfields_3_nodes_each": True,
+        "checks": {"four_families_with_15_expedition_and_18_each_other": True, "three_nodes_per_active_subfield": True,
                    "dag_and_valid_prerequisites": True, "maximum_3_or_5": True,
-                   "monotonic_lab_ranks_1_to_25": True, "preserved_12_numeric_effects": True,
+                   "monotonic_lab_ranks_1_to_25": True, "preserved_10_numeric_effects": True,
                    "two_research_discount_effects_2_to_10_percent": True,
-                   "all_252_cost_rows_match_canonical_coefficients": True,
+                   "all_239_cost_rows_match_canonical_coefficients": True,
                    "same_role_base_and_common_snapshot_monotonicity": True,
                    "unlock_to_efficiency_role_changes_reported": True,
                    "all_completed_discount_snapshots_match_independent_closure": True,
@@ -593,8 +578,8 @@ def validate():
                    "initial_researcher_free_without_lab": True,
                    "researcher_diamond_builder_gold_separated": True,
                    "first_hero_technology_exemption_documented": True,
-                   "existing_effect_bounds_and_recovery_transition": True,
-                   "all_72_effects_defined_in_canonical_sources": True},
+                   "existing_effect_bounds": True,
+                   "all_69_effects_defined_in_canonical_sources": True},
         "engineering_caps": [{"rank": rank, "lab": lab, "cap": cap} for rank, lab, cap in cap_steps],
         "reachability_scope": "Conditional resource-capacity closure with baseline buy/income routes able to replenish between actions and first-hero/story, park-level/building-unlock and available-building-site prerequisites supplied externally. No storage/gold efficiency or research discount is needed. This is not cash-flow, elapsed play time or implemented content verification.",
         "capacity_closure": {"building_levels": level_state, "research_actions": sum(learned.values()),
@@ -609,12 +594,12 @@ def validate():
         "preparation_count_note": "Literal source preparation labels, not implemented-content counts.",
         "role_changes": role_changes,
         "base_cost_totals": totals,
-        "totals_scope": "Undiscounted research investment and base researcher-occupancy seconds summed over all 252 actions; excludes building work, resource waits, story and staffing schedules.",
+        "totals_scope": "Undiscounted research investment and base researcher-occupancy seconds summed over all 239 actions; excludes building work, resource waits, story and staffing schedules.",
         "max_gold_per_research": max(row["gold"] for row in stages),
         "max_material_per_research": max(row[m] for row in stages for m in ["wood", "stone", "metal"]),
         "minimum_days_distribution": dict(sorted(Counter(row["min_seconds"] // DAY for row in stages).items())),
         "existing_effect_bounds": {key: float(number) for key, number in bounds.items()},
-        "recovery_transition_cases": transitions, "first_hero_fixed_seconds": float(F(first["durationMs"], 1000)),
+        "first_hero_fixed_seconds": float(F(first["durationMs"], 1000)),
         "research_costs": stages, "structured_effects": defined_rows, "catalog_provenance": provenance,
         "unverified": ["follow-up content implementation and measured effect balance",
                        "follow-up facilities, regions, mission controls, species and recipes",

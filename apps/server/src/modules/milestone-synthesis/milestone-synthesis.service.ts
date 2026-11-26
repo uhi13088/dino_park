@@ -15,6 +15,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import {
   activeAt,
   admissionSnapshot,
+  careResearch,
   contains,
   currentDinosaurState,
   type AdmissionWorld,
@@ -143,6 +144,7 @@ export class MilestoneSynthesisService {
       include: {
         buildings: true,
         dinosaurs: true,
+        technologyResearch: careResearch,
         firstSynthesis: true,
         dinosaurCollections: {
           where: { speciesId: 'iguanodon' },
@@ -179,7 +181,7 @@ export class MilestoneSynthesisService {
         id: dinosaur.id,
         speciesId: dinosaur.speciesId,
         nickname: dinosaur.nickname,
-        ...currentDinosaurState(dinosaur, now),
+        ...currentDinosaurState(dinosaur, now, park),
       }));
     const available =
       park.dinosaurCollections.length > 0 ||
@@ -270,7 +272,7 @@ export class MilestoneSynthesisService {
       if (!state.available || !state.safetyComplete)
         throw new BadRequestException('2장 안전 점검을 먼저 완료해주세요.');
       if (state.ingredients.some((ingredient) => ingredient.available < ingredient.amount))
-        throw new BadRequestException('주행 탐험으로 합성 재료를 먼저 모아주세요.');
+        throw new BadRequestException('탐험가를 파견해 합성 재료를 먼저 모아주세요.');
 
       await tx.storyFlag.create({ data: { userId, flagId: PREPARATION_FLAG, value: true } });
       const where = { userId_chapterId: { userId, chapterId: CHAPTER_THREE } };

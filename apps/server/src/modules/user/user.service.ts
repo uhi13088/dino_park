@@ -21,7 +21,9 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
-        currency: true,
+        currency: {
+          select: { id: true, userId: true, gold: true, diamond: true, dna: true, updatedAt: true },
+        },
         park: {
           include: {
             _count: { select: { dinosaurs: true, buildings: true } },

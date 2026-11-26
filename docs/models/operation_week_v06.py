@@ -25,7 +25,7 @@ PRICES = {row['material']: int(row['buy']) for row in building.PROD.values()}
 PRODUCERS = {row['material']: bid for bid, row in building.PROD.items()}
 CARE = (ROOT / 'packages/shared/src/constants/balance.constants.ts').read_text()
 START = (ROOT / 'packages/game-data/src/starter/index.ts').read_text()
-FIRST_EXPEDITION = (ROOT / 'packages/game-data/src/expedition/index.ts').read_text()
+FIRST_EXPEDITION = (ROOT / 'packages/game-data/src/expedition/first-expedition.ts').read_text()
 GROWTH = {int(row['park_level']): row for row in progression.marked('levels')}
 PARENTS = ('triceratops', 'stegosaurus')
 HERO = 'stegoceratops'
@@ -34,8 +34,14 @@ GROWTH_PATH = {
     6: ('building:platform:2', 'research:care-adaptation:1', 'material:mission.fossil-valley.basic-dna.v1'),
     7: ('building:security:2', 'research:exp-field-mapping:1', 'material:mission.fossil-valley.repeat-rim-survey.v1'),
     8: ('building:feedmill:2', 'research:gene-analysis:1', 'material:mission.mineral-cave.basic-stabilizer.v1'),
-    9: ('building:fueldepot:2', 'research:gene-common-herbivore:1', 'material:mission.primal-swamp.basic-culture.v1'),
+    9: ('building:lab:5', 'research:gene-common-herbivore:1', 'material:mission.primal-swamp.basic-culture.v1'),
     10: ('building:warehouse:3', 'research:care-adaptation:2', 'owned:gallimimus'),
+}
+SCOUT_MISSION_IDS = {
+    'igua': 'first-iguanodon-v1',
+    'mission.abandoned-lab.basic-catalyst.v1': 'basic-catalyst',
+    'mission.fossil-valley.basic-dna.v1': 'basic-dna',
+    'mission.fossil-valley.repeat-rim-survey.v1': 'repeat-rim-survey',
 }
 SESSION_WINDOWS = ((0, 60), (240, 330), (720, 740))
 RETURN_WINDOWS = ((0, 20), (720, 740))
@@ -45,9 +51,10 @@ ASSUMPTIONS = [
     '입장과 유지비를 15초 단위로 상태를 갱신하고, 구간 안에서는 사건 발생 순서대로 정산한다. 유료 입장 하나마다 금고 여유를 확인한다.',
     '기본 자재·사료 재고는 0이다. 시작 전시·호환 서식지·안전시설·방문객 길은 적법하게 배치됐다고 가정한다. 초원에는 파라와 이구아노돈을 전시하고 두 부모는 보유만 한다. 첫 영웅은 하이브리드 서식지에 전시한다.',
     '원종과 합성 결과의 수령 시 건강 상태는 행복100·배고픔0 가정이다. 현행 급식 회복과 상태 악화 수치를 사용한다. 접속 중 허기50 이상 또는 출발과 합성에 조건이 필요한 때 급식한다.',
-    '초반 탐험과 반복 미션은 실제 단서를 모두 해결한다는 가정으로 조작 산술 시간을 적용한다. 프롤로그·개장 6분, 안전 대화·동선 점검 6분, 촉매 전후 대화 각각 1분과 3분을 예시 시간으로 둔다.',
-    '공사·부화·기술·합성·생산은 각자 타이머를 쓴다. 생산·탐험·부화·합성의 보상은 접속 시 수동 수령한다. 건설과 기술 결과는 오프라인에서도 완료된다.',
-    '금속과 부족한 자재는 구매한다. Lv.1 생산시설 1~3회분은 수동 착수·수령하고 한 번에 들어갈 공간을 확인한다. 연료는 자연 회복만 사용한다.',
+    '기본 탐험가 1명을 사용한다. 파견 시간은 게임에 설정된 목표별 시간을 적용하며, 비접속 중에 귀환하면 다음 접속에서 보고서를 받는다.',
+    '프롤로그·개장은 6분, 안전 대화·동선 점검은 6분, 촉매 전후 대화는 각각 1분과 3분으로 가정한다.',
+    '공사·부화·기술·합성·생산은 각자 타이머를 쓴다. 생산·부화·합성의 보상은 접속 시 수동 수령한다. 건설과 기술 결과는 비접속 중에도 완료된다.',
+    '금속과 부족한 자재는 구매한다. Lv.1 생산시설 1~3회분은 수동 착수·수령하고 한 번에 들어갈 공간을 확인한다.',
     '역할별 기본 1명과 첫 영웅으로 해금하는 무료 건설자 2번째를 쓴다. 유료 가속·다이아·위인·시즌 보상은 사용하지 않는다.',
     '정산의 유지비 부족분은 추적하고 현행처럼 잔액을 넘겨 걷지 않는다. 미납에 따른 새 벌칙이나 무료 구제는 이 계산에 넣지 않는다.',
     '첫 영웅 이후 표에 명시한 Park5→11 목표만 선택한다. Park11 이후는 정해진 금고·생산 투자를 마치고 돌봄 위주로 운영하는 사례다. 상황에 따른 클리어 보장, 필수 접속 시간, 실제 지도 배치나 경제 운영의 검증 결과로 쓰지 않는다.',
@@ -74,7 +81,7 @@ FIRST_VISITORS = integer(
 @lru_cache(maxsize=1)
 def catalog_inputs():
     catalog, _ = building.source_catalog()
-    return {row['id']: row for row in catalog['species']}, catalog['first']
+    return {row['id']: row for row in catalog['species']}, catalog['first'], catalog['scoutSeconds']
 
 
 @lru_cache(maxsize=1)
@@ -98,10 +105,8 @@ def settle(carry, per_second, seconds):
 class Week:
     def __init__(self, first_windows):
         self.first_windows = first_windows
-        self.species, self.recipe = catalog_inputs()
+        self.species, self.recipe, self.scout_seconds = catalog_inputs()
         self.gold = int(P['initial_gold'])
-        self.fuel = int(P['fuel_base_capacity'])
-        self.next_fuel = int(P['fuel_recharge_seconds'])
         self.stock, self.ingredients = Counter(), Counter()
         self.facilities = {'gate': 1, 'grassland': 1, 'vault': 1}
         self.tech = Counter()
@@ -127,18 +132,13 @@ class Week:
     def gold_capacity(self):
         return int(facility_stat('vault', self.facilities['vault']))
 
-    @property
-    def fuel_capacity(self):
-        depot = self.facilities.get('fueldepot', 0)
-        return int(facility_stat('fueldepot', depot) if depot else P['fuel_base_capacity'])
-
     def event(self, kind, name):
         self.events.append({'second': self.t, 'kind': kind, 'name': name})
 
     def checkpoint(self, name):
         self.checkpoints[name] = {
-            'seconds': self.t, 'gold': self.gold, 'fuel': self.fuel, 'paid_visitors': self.visitors,
-            'park': self.level, 'fuel_used': sum(row['fuel_used'] for row in self.records),
+            'seconds': self.t, 'gold': self.gold, 'paid_visitors': self.visitors,
+            'park': self.level,
             'admission': sum(row['admission'] for row in self.records),
             'upkeep': sum(row['upkeep'] for row in self.records),
             'spending': sum(sum(row['spending_by_type'].values()) for row in self.records),
@@ -250,7 +250,7 @@ class Week:
 
     def produce(self):
         for material, bid in PRODUCERS.items():
-            if material == 'fuel' or bid not in self.facilities or self.pending('produce', material):
+            if bid not in self.facilities or self.pending('produce', material):
                 continue
             if self.stock[material] >= (10 if material == 'feed' else 25):
                 continue
@@ -291,10 +291,10 @@ class Week:
         stats = [(self.species[name]['stats']['popularity'], self.state(name)) for name in sorted(self.exhibits)]
         popularity = sum(p for p, _ in stats)
         quality = sum(p * (0.5 + h / 200) * (0.5 if hunger > 80 else 1) for p, (h, hunger) in stats) / popularity
-        capacity = int(P['base_capacity'])
-        for facility in ('platform', 'restroom'):
-            if facility in self.facilities:
-                capacity += facility_stat(facility, self.facilities[facility])
+        # In this scenario Para and Iguanodon share a grassland. The hero is
+        # exhibited in the second, compatible hybrid zone.
+        occupied_zones = len({('hybrid_herb' if name == HERO else 'grassland') for name in self.exhibits})
+        capacity = building.exhibit_capacity(occupied_zones)
         gate = facility_stat('gate', self.facilities['gate']) * (1 + research.effect('ops-entry', self.tech['ops-entry']))
         visitors = min((8 + 4 * popularity + 4 * (len(stats) - 1)) * quality,
                        float(gate), capacity * 60 / float(P['visit_seconds']))
@@ -331,8 +331,7 @@ class Week:
             payload = ({'species': row['species']} if row['species'] != '-' else
                        {'reward': {'material': row['material'], 'quality': int(row['quality']),
                                    'quantity': int(row['quantity'])}})
-            profile = 'guided' if name == 'igua' else 'routine'
-            gold, fuel = int(row['gold']), int(P['fuel_per_mission'])
+            gold = int(row['gold'])
         else:
             row = material_missions().get(name) or egg_missions()[name]
             gate = row['research']
@@ -345,19 +344,10 @@ class Week:
             else:
                 raise ValueError(gate)
             payload = row
-            profile = row.get('play', 'routine')
-            gold, fuel = row['gold'], row['fuel']
-        seconds = int(followup.PLAY[profile]['arithmetic_seconds'])
-        if self.t + seconds >= self.session_end():
-            return
-        if self.fuel < fuel:
-            self.waits.add('fuel')
-            return
+            gold = row['gold']
+        dispatch_id = SCOUT_MISSION_IDS.get(name, name)
+        seconds = self.scout_seconds[dispatch_id]
         if self.spend(gold, 'expedition'):
-            if self.fuel >= self.fuel_capacity:
-                self.next_fuel = self.t + int(P['fuel_recharge_seconds'])
-            self.fuel -= fuel
-            self.day['fuel_used'] += fuel
             self.schedule('mission', name, seconds, payload)
 
     def hatch(self, name, seconds, gold=0):
@@ -473,7 +463,7 @@ class Week:
         if self.facilities['vault'] < target_vault:
             if not self.pending('build', 'vault'):
                 self.build('vault', self.facilities['vault'] + 1)
-        for name, day in (('feedmill', 2), ('warehouse', 2), ('fueldepot', 3), ('metalshop', 4)):
+        for name, day in (('feedmill', 2), ('warehouse', 2), ('metalshop', 4)):
             if self.day['day'] >= day and name not in self.facilities:
                 self.build(name, 1)
         if self.level not in GROWTH_PATH:
@@ -519,7 +509,7 @@ class Week:
                             'admission': 0, 'paid_visitors': 0, 'upkeep': 0, 'upkeep_unpaid': 0,
                             'cap_minutes': 0.0, 'rejected_visitors': 0, 'online_minutes': 0.0,
                             'settled_minutes': 0.0, 'builder_busy_minutes': 0.0, 'researcher_busy_minutes': 0.0,
-                            'fuel_used': 0, 'fuel_recovered': 0, 'feeds': 0, 'purchased': Counter(),
+                            'feeds': 0, 'purchased': Counter(),
                             'spending_by_type': Counter(), 'produced': Counter(), 'wait_minutes': Counter()}
                 self.records.append(self.day)
             online = bool(self.session_end())
@@ -531,11 +521,6 @@ class Week:
             elif self.last_online is not None and self.t - self.last_online < P['offline_cap_seconds']:
                 factor = float(P['offline_rate'])
             self.complete_jobs(online)
-            if self.t >= self.next_fuel:
-                self.next_fuel += int(P['fuel_recharge_seconds'])
-                if self.fuel < self.fuel_capacity:
-                    self.fuel += 1
-                    self.day['fuel_recovered'] += 1
             if online:
                 for name in sorted(self.dinos):
                     if self.state(name)[1] >= 50:
@@ -556,12 +541,12 @@ class Week:
             if (self.t + STEP) % DAY == 0:
                 spent = sum(self.day['spending_by_type'].values())
                 assert self.gold == self.day['opening_gold'] + self.day['admission'] - self.day['upkeep'] - spent
-                assert 0 <= self.gold <= self.gold_capacity and 0 <= self.fuel <= self.fuel_capacity
+                assert 0 <= self.gold <= self.gold_capacity
                 assert all(value >= 0 for value in self.stock.values())
                 self.day.update({
                     'closing_gold': self.gold, 'gold_capacity': self.gold_capacity,
                     'closing_park': self.level, 'paid_visitors_total': self.visitors,
-                    'fuel': self.fuel, 'spending': spent, **{name: self.stock[name] for name in MATERIALS},
+                    'spending': spent, **{name: self.stock[name] for name in MATERIALS},
                     'activity': sorted({e['name'] for e in self.events if self.t + STEP - DAY <= e['second']
                                         and e['kind'] == 'complete'}),
                 })
@@ -573,8 +558,12 @@ def simulate_week():
     continuous = Week(((0, 330), (720, 740))).run()
 
     def summary(scenario):
-        return {'hero_minutes': scenario.checkpoints['hero_received']['seconds'] / 60,
-                'chapter3_minutes': scenario.checkpoints['chapter3_completed']['seconds'] / 60,
+        def elapsed_minutes(checkpoint):
+            result = scenario.checkpoints.get(checkpoint)
+            return result['seconds'] / 60 if result else None
+
+        return {'hero_minutes': elapsed_minutes('hero_received'),
+                'chapter3_minutes': elapsed_minutes('chapter3_completed'),
                 'checkpoints': scenario.checkpoints, 'days': scenario.records}
 
     return {**summary(primary), 'continuous': summary(continuous), 'assumptions': ASSUMPTIONS}

@@ -21,7 +21,6 @@ describe('useAuthStore', () => {
     gold: 50000,
     diamond: 500,
     dna: 100,
-    explorationEnergy: 25,
   };
 
   const mockPark = {

@@ -128,7 +128,7 @@ function PackageShop() {
       description: '빠른 성장을 위한 패키지',
       originalPrice: 35000,
       price: 11000,
-      contents: ['💎 다이아 x1,200', '⚡ 에너지 x100', '📜 경험치 부스터 x3'],
+      contents: ['💎 다이아 x1,200', '📜 경험치 부스터 x3'],
     },
   ];
 
@@ -170,7 +170,6 @@ function PackageShop() {
 function DailyShop() {
   const dailyItems = [
     { id: 1, name: '골드 x10,000', icon: '🪙', price: 50, currency: 'diamond' },
-    { id: 2, name: '에너지 x10', icon: '⚡', price: 30, currency: 'diamond' },
     { id: 3, name: '경험치 부스터', icon: '📜', price: 100, currency: 'diamond' },
     { id: 4, name: '커먼 공룡 알', icon: '🥚', price: 5000, currency: 'gold' },
   ];

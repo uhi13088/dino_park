@@ -2,10 +2,11 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../../prisma/prisma.service';
 import { Exploration, ExplorationStatus } from '@prisma/client';
 import type { ExplorationResponse } from '@dino-park/shared';
-import { ENERGY_PER_EXPLORATION, RARITY_DROP_RATES } from '@dino-park/shared';
+import { RARITY_DROP_RATES } from '@dino-park/shared';
 import { FIRST_EXPEDITION } from '@dino-park/game-data';
 import { FirstExpeditionService } from './first-expedition.service';
 import { ParkOperationsService } from '../park/park-operations.service';
+import { assertNoScoutAssignment } from './scout-assignment-state';
 
 // 탐험 지역 정보 (나중에 game-data로 이동)
 const EXPLORATION_REGIONS = {
@@ -114,17 +115,12 @@ export class ExplorationService {
       const user = await tx.user.findUnique({ where: { id: userId }, select: { level: true } });
       if (!user || user.level < region.unlockLevel)
         throw new BadRequestException(`이 지역은 레벨 ${region.unlockLevel} 이상에서 해금됩니다.`);
-      if (await tx.exploration.count({ where: { userId, status: 'IN_PROGRESS' } }))
+      if (await tx.exploration.count({ where: { userId, missionId: null, status: 'IN_PROGRESS' } }))
         throw new BadRequestException('진행 중인 탐험을 먼저 완료해주세요.');
-      if (await tx.driveRun.findFirst({ where: { park: { userId }, activeSlot: { not: null } } }))
-        throw new BadRequestException('진행 중인 주행을 먼저 완료해주세요.');
-      const currency = await tx.currency.findUnique({ where: { userId } });
-      if (!currency || currency.explorationEnergy < ENERGY_PER_EXPLORATION)
-        throw new BadRequestException('탐험 에너지가 부족합니다.');
-      await tx.currency.update({
-        where: { userId },
-        data: { explorationEnergy: { decrement: ENERGY_PER_EXPLORATION } },
-      });
+      if (await tx.driveRun.findFirst({ where: { park: { userId }, status: 'REWARD' } }))
+        throw new BadRequestException('완료된 기존 탐험 보상을 먼저 수령해주세요.');
+      const park = await tx.park.findUniqueOrThrow({ where: { userId }, select: { id: true } });
+      await assertNoScoutAssignment(tx, park.id);
       const exploration = await tx.exploration.create({
         data: { userId, regionId, status: ExplorationStatus.IN_PROGRESS },
       });
@@ -133,7 +129,6 @@ export class ExplorationService {
         regionName: region.name,
         duration: region.duration,
         completesAt: new Date(Date.now() + region.duration * 1000),
-        energyUsed: ENERGY_PER_EXPLORATION,
       };
     });
   }
@@ -148,7 +143,7 @@ export class ExplorationService {
       if (!exploration || exploration.userId !== userId)
         throw new NotFoundException('탐험을 찾을 수 없습니다.');
       if (exploration.missionId === FIRST_EXPEDITION.id)
-        throw new BadRequestException('첫 조사는 단서를 직접 확인해 완료해주세요.');
+        throw new BadRequestException('첫 조사는 탐험가 화면에서 진행해주세요.');
       if (exploration.status === ExplorationStatus.CLAIMED)
         throw new BadRequestException('이미 보상을 수령했습니다.');
       if (exploration.status === ExplorationStatus.COMPLETED)
@@ -182,7 +177,7 @@ export class ExplorationService {
       if (!exploration || exploration.userId !== userId)
         throw new NotFoundException('탐험을 찾을 수 없습니다.');
       if (exploration.missionId === FIRST_EXPEDITION.id)
-        throw new BadRequestException('첫 조사는 단서를 직접 확인해 완료해주세요.');
+        throw new BadRequestException('첫 조사는 탐험가 화면에서 진행해주세요.');
       if (exploration.status !== ExplorationStatus.IN_PROGRESS)
         throw new BadRequestException('진행 중인 탐험이 아닙니다.');
       const region = EXPLORATION_REGIONS[exploration.regionId as keyof typeof EXPLORATION_REGIONS];
@@ -280,7 +275,6 @@ export class ExplorationService {
         userId,
         completed: false,
         sourceExplorationId: null,
-        sourceDriveId: null,
       },
       orderBy: { startedAt: 'asc' },
     });

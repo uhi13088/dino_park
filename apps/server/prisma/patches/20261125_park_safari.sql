@@ -1,0 +1,2 @@
+ALTER TABLE "parks"
+ADD COLUMN IF NOT EXISTS "safariLayout" JSONB;

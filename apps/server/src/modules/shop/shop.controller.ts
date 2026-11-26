@@ -8,13 +8,16 @@ import {
   ApiQuery,
   ApiProperty,
 } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ShopService } from './shop.service';
 
 // DTO 정의
 class PurchaseGoldShopDto {
-  @ApiProperty({ description: '구매할 아이템 ID', example: 'gold_energy_refill' })
+  @ApiProperty({ description: '구매할 아이템 ID', example: 'goldshop-speedup-1h' })
+  @IsString()
+  @IsNotEmpty()
   itemId!: string;
 }
 

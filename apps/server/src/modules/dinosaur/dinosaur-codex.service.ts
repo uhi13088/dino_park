@@ -6,10 +6,17 @@ import {
   getCodexHabitatName,
   getCodexImageUrl,
   getDinosaurOrigin,
+  getDinosaurById,
+  getExperimentalHybridDesign,
   getSynthesisRecipe,
   SYNTHESIS_RULES,
 } from '@dino-park/game-data';
 import { PrismaService } from '../../prisma/prisma.service';
+import {
+  HYBRID_LINEAGE_SELECT,
+  lineageIdentity,
+} from '../experimental-hybrid/experimental-hybrid-records';
+import type { ExperimentalHybridTier } from '@dino-park/shared';
 
 @Injectable()
 export class DinosaurCodexService {
@@ -72,6 +79,60 @@ export class DinosaurCodexService {
           },
         };
       });
+      const extraIds = registrations
+        .map(({ speciesId }) => speciesId)
+        .filter((id) => id.startsWith('hybrid-') && !getDinosaurById(id));
+      if (extraIds.length) {
+        const extra = await tx.experimentalHybridLineage.findMany({
+          where: { id: { in: extraIds }, artworkState: 'ready' },
+          select: HYBRID_LINEAGE_SELECT,
+          orderBy: { id: 'asc' },
+        });
+        for (const lineage of extra) {
+          const { species, artwork, focus, parentSpeciesIds } = lineageIdentity(lineage);
+          const [a, b] = parentSpeciesIds.map(getDinosaurById);
+          const tier = species.rarity as ExperimentalHybridTier;
+          const design = a && b ? getExperimentalHybridDesign(a, b, focus, tier, true) : null;
+          entries.push({
+            experimental: true,
+            speciesId: species.id,
+            name: species.name,
+            nameKo: species.nameKo,
+            rarity: species.rarity,
+            category: species.category,
+            origin: getDinosaurOrigin(species),
+            size: species.size,
+            description: species.description,
+            habitatNames: species.habitat.map(getCodexHabitatName),
+            popularity: species.stats.popularity,
+            maintenanceCost: species.stats.maintenanceCost,
+            hatchTimeMs: 0,
+            imageUrl: artwork?.idleUrl ?? null,
+            acquisition: {
+              title: '실험 합성',
+              description: 'DNA 연구소의 연구 노트에서 조합법을 열어 재현할 수 있어요.',
+            },
+            recipe: design
+              ? {
+                  id: species.id,
+                  resultSpeciesId: species.id,
+                  parentSpeciesIds,
+                  ingredients: design.cost.ingredients,
+                  goldCost: design.cost.gold,
+                  durationMs: design.cost.durationSeconds * 1000,
+                  unlockDescription: species.unlockCondition.description,
+                  status: 'first_available',
+                  ...SYNTHESIS_RULES[species.rarity],
+                }
+              : null,
+            collection: {
+              collected: true,
+              ownedCount: owned.get(species.id) ?? 0,
+              firstCollectedAt: registered.get(species.id)?.toISOString() ?? null,
+            },
+          });
+        }
+      }
       const listed = new Set(entries.map((entry) => entry.speciesId));
       return {
         entries,

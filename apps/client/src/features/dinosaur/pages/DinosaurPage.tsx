@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import {
   CODEX_ORIGIN_LABELS,
   CODEX_RARITY_LABELS,
@@ -7,6 +7,11 @@ import {
   Rarity,
 } from '@dino-park/shared';
 import { tokenManager, useDinosaurCodex } from '@/api';
+import {
+  growthOriginParams,
+  parkGrowthHref,
+  parseParkGrowthStage,
+} from '@/utils/parkGrowthNavigation';
 import { CodexArtwork } from '../components/CodexArtwork';
 import { CodexDetail } from '../components/CodexDetail';
 import './DinosaurCodex.css';
@@ -29,6 +34,8 @@ export default function DinosaurPage() {
   const origin = params.get('origin') ?? '';
   const collection = params.get('collection') ?? '';
   const requestedSpecies = params.get('species');
+  const originStage =
+    params.get('from') === 'growth' ? parseParkGrowthStage(params.get('stage')) : undefined;
   const selectedEntry = data?.entries.find((entry) => entry.speciesId === requestedSpecies);
   const selectedSpeciesId = selectedEntry?.speciesId ?? null;
 
@@ -79,7 +86,10 @@ export default function DinosaurPage() {
 
   function clearFilters() {
     returnCardFocus.current = false;
-    setParams({}, { replace: true, preventScrollReset: true });
+    setParams(originStage === undefined ? {} : growthOriginParams(originStage), {
+      replace: true,
+      preventScrollReset: true,
+    });
   }
 
   function closeDetail() {
@@ -126,6 +136,11 @@ export default function DinosaurPage() {
             value={summary.collectedSpecies}
           />
         </div>
+        {originStage !== undefined && !selectedEntry && (
+          <Link className="codex-growth-return" to={parkGrowthHref(originStage)}>
+            ← 성장 목표
+          </Link>
+        )}
         <button
           className="codex-refresh"
           aria-label="도감 새로고침"
@@ -304,6 +319,9 @@ export default function DinosaurPage() {
             onBack={closeDetail}
             headingRef={headingRef}
             paneRef={detailPaneRef}
+            growthReturnPath={
+              originStage === undefined || !selectedEntry ? undefined : parkGrowthHref(originStage)
+            }
           />
         )}
       </div>

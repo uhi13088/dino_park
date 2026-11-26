@@ -45,7 +45,7 @@ export function screenToGrid(screenX: number, screenY: number): { x: number; y: 
 export class IsometricGrid extends PIXI.Container {
   private gridWidth: number;
   private gridHeight: number;
-  private tiles: PIXI.Container;
+  private baseGround = new PIXI.Graphics();
   private entities: PIXI.Container;
   private gridLines = new PIXI.Graphics();
   private highlight = new PIXI.Graphics();
@@ -57,60 +57,41 @@ export class IsometricGrid extends PIXI.Container {
     this.gridHeight = height;
 
     // 레이어 구조
-    this.tiles = new PIXI.Container(); // 바닥 타일
     this.entities = new PIXI.Container(); // 공룡, 건물 등
 
-    this.addChild(this.tiles, this.gridLines, this.entities, this.highlight);
+    this.addChild(this.baseGround, this.gridLines, this.entities, this.highlight);
     this.gridLines.visible = false;
 
     // 기본 그리드 생성
-    this.createBaseTiles();
+    this.drawGridGround();
   }
 
-  /**
-   * 기본 바닥 타일 생성
-   */
-  private createBaseTiles(): void {
-    for (let y = 0; y < this.gridHeight; y++) {
-      for (let x = 0; x < this.gridWidth; x++) {
-        const tile = this.createTile(x, y);
-        this.tiles.addChild(tile);
-      }
+  private drawGridGround(): void {
+    const start = -0.5;
+    const right = this.gridWidth + start;
+    const bottom = this.gridHeight + start;
+    const corners = [
+      gridToScreen(start, start),
+      gridToScreen(right, start),
+      gridToScreen(right, bottom),
+      gridToScreen(start, bottom),
+    ];
+    this.baseGround
+      .clear()
+      .poly(corners.flatMap(({ x, y }) => [x, y]))
+      .fill(0x97ab61);
+    this.gridLines.clear();
+    for (let x = start; x <= right; x++) {
+      const from = gridToScreen(x, start);
+      const to = gridToScreen(x, bottom);
+      this.gridLines.moveTo(from.x, from.y).lineTo(to.x, to.y);
     }
-  }
-
-  /**
-   * 단일 타일 생성
-   */
-  private createTile(gridX: number, gridY: number): PIXI.Graphics {
-    const { x, y } = gridToScreen(gridX, gridY);
-
-    const tile = new PIXI.Graphics();
-
-    // 다이아몬드 형태 그리기
-    const hw = ISO_CONFIG.TILE_WIDTH / 2; // half width
-    const hh = ISO_CONFIG.TILE_HEIGHT / 2; // half height
-
-    // 잔디 색상 (약간의 변화)
-    const baseColor = 0x7cb342;
-    const variation = (gridX + gridY) % 2 === 0 ? 0x050505 : 0;
-    const color = baseColor - variation;
-
-    tile.poly([
-      x,
-      y - hh, // 상단
-      x + hw,
-      y, // 우측
-      x,
-      y + hh, // 하단
-      x - hw,
-      y, // 좌측
-    ]);
-    tile.fill(color);
-    this.gridLines.poly([x, y - hh, x + hw, y, x, y + hh, x - hw, y]);
-    this.gridLines.stroke({ width: 1, color: 0x466f2a, alpha: 0.5 });
-
-    return tile;
+    for (let y = start; y <= bottom; y++) {
+      const from = gridToScreen(start, y);
+      const to = gridToScreen(right, y);
+      this.gridLines.moveTo(from.x, from.y).lineTo(to.x, to.y);
+    }
+    this.gridLines.stroke({ width: 1, color: 0x33592c, alpha: 0.62 });
   }
 
   setShowGrid(show: boolean): void {
@@ -118,24 +99,35 @@ export class IsometricGrid extends PIXI.Container {
   }
 
   attachScenery(scenery: {
+    exterior: PIXI.Container;
     ground: PIXI.Container;
     backFence: PIXI.Container;
     frontFence: PIXI.Container;
     visitors: PIXI.Container;
+    crowdMarkers: PIXI.Container;
+    shuttlePath: PIXI.Container;
+    shuttleTraffic: PIXI.Container;
   }): void {
+    // Scenery supplies one continuous meadow on both sides of the fence.
+    this.baseGround.visible = false;
     this.addChildAt(scenery.ground, 1);
     this.addChildAt(scenery.backFence, 3);
     this.addChildAt(scenery.frontFence, this.children.length - 1);
-    this.entities.addChild(scenery.visitors);
+    this.entities.addChild(scenery.visitors, scenery.shuttleTraffic);
+    this.addChildAt(scenery.crowdMarkers, this.children.length - 1);
+    this.addChildAt(scenery.exterior, 0);
+    this.addChildAt(scenery.shuttlePath, this.children.indexOf(scenery.ground) + 1);
+  }
+
+  attachSafariGround(ground: PIXI.Container): void {
+    this.addChildAt(ground, this.getChildIndex(this.gridLines));
   }
 
   setGridSize(width: number, height: number): void {
     if (this.gridWidth === width && this.gridHeight === height) return;
     this.gridWidth = width;
     this.gridHeight = height;
-    for (const child of this.tiles.removeChildren()) child.destroy();
-    this.gridLines.clear();
-    this.createBaseTiles();
+    this.drawGridGround();
   }
 
   highlightArea(
@@ -145,15 +137,22 @@ export class IsometricGrid extends PIXI.Container {
     valid: boolean,
   ): void {
     this.highlight.clear();
-    for (let dx = 0; dx < width; dx++) {
-      for (let dy = 0; dy < height; dy++) {
-        const { x, y } = gridToScreen(position.x + dx, position.y + dy);
-        this.highlight
-          .poly([x, y - 16, x + 32, y, x, y + 16, x - 32, y])
-          .fill({ color: valid ? 0xffeb9a : 0xef7676, alpha: 0.55 })
-          .stroke({ color: valid ? 0xffffff : 0x9c2626, width: 2 });
-      }
-    }
+    const edgeColor = valid ? 0xffdda1 : 0xffb9aa;
+
+    const left = position.x - 0.5;
+    const top = position.y - 0.5;
+    const right = left + width;
+    const bottom = top + height;
+    const perimeter = [
+      gridToScreen(left, top),
+      gridToScreen(right, top),
+      gridToScreen(right, bottom),
+      gridToScreen(left, bottom),
+    ].flatMap(({ x, y }) => [x, y]);
+    this.highlight
+      .poly(perimeter)
+      .fill({ color: valid ? 0xffdf96 : 0xf06355, alpha: 0.12 })
+      .stroke({ color: edgeColor, width: 2.5 });
   }
 
   highlightTile(position: { x: number; y: number } | null): void {

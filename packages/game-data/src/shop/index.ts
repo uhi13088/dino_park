@@ -131,7 +131,6 @@ export const SUBSCRIPTIONS: SubscriptionProduct[] = [
     dailyRewards: [
       { type: 'diamond', quantity: 30 },
       { type: 'gold', quantity: 5000 },
-      { type: 'energy', quantity: 10 },
     ],
     immediateRewards: [
       { type: 'diamond', quantity: 300 },
@@ -447,7 +446,6 @@ export const SPECIAL_PACKAGES: SpecialPackage[] = [
     rewards: [
       { type: 'diamond', quantity: 700 },
       { type: 'gold', quantity: 150000 },
-      { type: 'energy', quantity: 50 },
       { type: 'dna', quantity: 300 },
     ],
     isLimited: true,
@@ -465,33 +463,6 @@ export const SPECIAL_PACKAGES: SpecialPackage[] = [
 // ============================================================
 
 export const GOLD_SHOP_ITEMS: GoldShopItem[] = [
-  // Energy
-  {
-    id: 'goldshop-energy-small',
-    name: 'Energy Refill',
-    nameKo: '에너지 충전',
-    category: 'energy',
-    description: 'Restore 10 exploration energy',
-    priceType: 'diamond',
-    price: 30,
-    rewards: [{ type: 'energy', quantity: 10 }],
-    dailyLimit: 5,
-    isActive: true,
-    sortOrder: 1,
-  },
-  {
-    id: 'goldshop-energy-full',
-    name: 'Full Energy Refill',
-    nameKo: '에너지 완전 충전',
-    category: 'energy',
-    description: 'Fully restore exploration energy',
-    priceType: 'diamond',
-    price: 50,
-    rewards: [{ type: 'energy', quantity: 30 }],
-    dailyLimit: 3,
-    isActive: true,
-    sortOrder: 2,
-  },
   // Speedups
   {
     id: 'goldshop-speedup-1h',
@@ -607,15 +578,6 @@ export const AD_REWARD_CONFIGS: AdRewardConfig[] = [
     placement: 'hatchery_speedup',
     rewards: [{ type: 'item', id: 'speedup-30m', quantity: 1 }],
     cooldownMinutes: 30,
-    dailyLimit: 5,
-    isActive: true,
-  },
-  {
-    id: 'ad-exploration-energy',
-    type: 'rewarded',
-    placement: 'exploration_energy',
-    rewards: [{ type: 'energy', quantity: 5 }],
-    cooldownMinutes: 60,
     dailyLimit: 5,
     isActive: true,
   },

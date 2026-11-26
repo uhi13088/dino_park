@@ -1,0 +1,507 @@
+.park-safari {
+  --safari-ink: #fff2d4;
+  --safari-muted: #ddc8a3;
+  --safari-line: rgb(255 220 163 / 23%);
+  --safari-plate: rgb(54 43 28 / 91%);
+  --safari-accent: #ffe3a4;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(191px, 27vw, 290px);
+  block-size: 100%;
+  overflow: hidden;
+  color: var(--safari-ink);
+  background: #5c8341;
+  isolation: isolate;
+}
+
+.park-safari :is(button, a, select, canvas):focus-visible {
+  outline: 2px solid #fff0c1;
+  outline-offset: -2px;
+}
+
+.park-safari button:disabled {
+  cursor: default;
+  opacity: 0.52;
+}
+
+.park-safari__world,
+.safari-map {
+  min-inline-size: 0;
+  min-block-size: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.safari-map,
+.safari-map canvas {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.safari-map canvas {
+  display: block;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.safari-map canvas[data-map-action='pan'],
+.safari-map canvas[data-map-action='watch'] {
+  cursor: grab;
+}
+
+.safari-map canvas[data-map-action='pan']:active,
+.safari-map canvas[data-map-action='watch']:active {
+  cursor: grabbing;
+}
+
+.park-safari__header,
+.park-safari__gold,
+.park-safari__tools,
+.safari-map__camera {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--safari-line);
+  border-radius: 10px;
+  background: var(--safari-plate);
+  box-shadow: 0 2px 8px rgb(37 28 17 / 25%);
+}
+
+.park-safari__header {
+  inset-block-start: max(8px, env(safe-area-inset-top));
+  inset-inline-start: max(8px, env(safe-area-inset-left));
+  padding-inline-end: 13px;
+}
+
+.park-safari__header h1 {
+  margin: 0;
+  font-size: clamp(15px, 2.35vw, 22px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+.park-safari__back {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  color: var(--safari-accent);
+}
+
+.park-safari :is(svg) {
+  inline-size: 21px;
+  block-size: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.park-safari__gold {
+  inset-block-start: max(8px, env(safe-area-inset-top));
+  inset-inline-end: 9px;
+  gap: 6px;
+  min-block-size: 36px;
+  padding-inline: 8px 12px;
+  font-size: clamp(13px, 1.9vw, 18px);
+  font-variant-numeric: tabular-nums;
+}
+
+.park-safari__gold img,
+.park-safari__cost img {
+  inline-size: 21px;
+  block-size: 21px;
+  object-fit: contain;
+}
+
+.park-safari__tools {
+  inset-inline-start: max(8px, env(safe-area-inset-left));
+  inset-block-end: max(8px, env(safe-area-inset-bottom));
+  align-items: stretch;
+  gap: 1px;
+  padding: 3px;
+}
+
+.park-safari__tools button {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  min-inline-size: 44px;
+  min-block-size: 48px;
+  padding: 3px 7px;
+  border-radius: 7px;
+  color: var(--safari-muted);
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+
+.park-safari__tools button[aria-pressed='true'] {
+  color: #4b341b;
+  background: linear-gradient(#ffe5a7, #e7ac57);
+  box-shadow:
+    inset 0 1px 0 #fff2ca,
+    0 2px 4px #301f16bd;
+}
+
+.park-safari__tools button:hover:enabled[aria-pressed='false'],
+.safari-map__camera button:hover:enabled {
+  color: white;
+  background: #ffffff14;
+}
+
+.safari-map__camera {
+  inset-inline-start: max(8px, env(safe-area-inset-left));
+  inset-block-start: calc(max(8px, env(safe-area-inset-top)) + 54px);
+  flex-direction: column;
+  padding: 2px;
+  color: var(--safari-accent);
+}
+
+.safari-map__camera button {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  min-block-size: 44px;
+  border-radius: 7px;
+  font-size: 23px;
+  line-height: 1;
+  touch-action: manipulation;
+}
+
+.park-safari__rail {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: 10px max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) 10px;
+  border-inline-start: 1px solid #986f46;
+  background: linear-gradient(155deg, #4b3b2a, #342b20);
+  box-shadow: -5px 0 18px #2d261435;
+}
+
+.park-safari__zones {
+  display: flex;
+  flex: none;
+  gap: 1px;
+  padding: 3px;
+  border: 1px solid var(--safari-line);
+  border-radius: 9px;
+  background: #211b143d;
+}
+
+.park-safari__zones button {
+  flex: 1 1 50%;
+  min-block-size: 44px;
+  min-inline-size: 0;
+  padding: 0 4px;
+  border-radius: 6px;
+  color: var(--safari-muted);
+  font-size: 13px;
+  font-weight: 750;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+
+.park-safari__zones button[aria-pressed='true'] {
+  color: var(--safari-accent);
+  background: #8e5b3680;
+  box-shadow: inset 0 1px 0 #eabc755e;
+}
+
+.park-safari__rail-body {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  padding: 9px 1px 5px;
+  overflow: auto;
+  scrollbar-color: #a88b66 #433324;
+  scrollbar-width: thin;
+}
+
+.park-safari__rail h2 {
+  margin: 0 0 6px;
+  font-size: clamp(14px, 1.9vw, 17px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.park-safari__rail p {
+  margin: 0;
+  color: var(--safari-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.park-safari__rail .park-safari__tool-help {
+  min-block-size: 30px;
+  margin-block-end: 9px;
+  color: #f2deb7;
+}
+
+.park-safari__rail .park-safari__pen-size {
+  margin-block: -3px 8px;
+}
+
+.park-safari__pen-size strong {
+  color: var(--safari-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.park-safari__rail .park-safari__hidden {
+  margin-block: 6px 8px;
+  color: #efc99c;
+}
+
+.park-safari__assign {
+  padding-block-start: 8px;
+  border-block-start: 1px solid var(--safari-line);
+}
+
+.park-safari__assign select {
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: 0 7px;
+  border: 1px solid var(--safari-line);
+  border-radius: 7px;
+  color: var(--safari-ink);
+  background: #5f4c37;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.park-safari__assign ul,
+.park-safari__observations {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.park-safari__assign li,
+.park-safari__route-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-block-size: 32px;
+  font-size: 12px;
+}
+
+.park-safari__route-steps {
+  margin-block: -6px 5px;
+  color: var(--safari-muted);
+}
+
+.park-safari__assign li button,
+.park-safari__route-steps button {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  color: var(--safari-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.park-safari__rail-footer {
+  display: grid;
+  gap: 5px;
+  flex: none;
+  padding-block-start: 7px;
+}
+
+.park-safari__primary,
+.park-safari__secondary,
+.park-safari__status button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-block-size: 44px;
+  min-inline-size: 0;
+  padding: 3px 8px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  touch-action: manipulation;
+}
+
+.park-safari__primary,
+.park-safari__status button {
+  border: 1px solid #b68049;
+  color: #3a2716;
+  background: linear-gradient(#ffdfa0, #ecb060);
+  box-shadow:
+    inset 0 1px 0 #fff2c7,
+    0 2px 3px #2b2019;
+}
+
+.park-safari__primary:hover:enabled,
+.park-safari__status button:hover:enabled {
+  background: linear-gradient(#ffedc7, #f5c880);
+}
+
+.park-safari__primary:focus-visible {
+  outline-color: #4b2c14;
+}
+
+.park-safari__secondary {
+  border: 1px solid var(--safari-line);
+  color: var(--safari-ink);
+  background: #ffffff0d;
+}
+
+.park-safari__rail-footer:has(.park-safari__save) > .park-safari__secondary:disabled {
+  display: none;
+}
+
+.park-safari__save {
+  display: flex;
+  gap: 5px;
+}
+
+.park-safari__save .park-safari__primary {
+  flex: 1;
+}
+
+.park-safari__cost {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-inline-start: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.park-safari__cost img {
+  inline-size: 16px;
+  block-size: 16px;
+}
+
+.park-safari__jeep {
+  inline-size: 34px;
+  block-size: 28px;
+  object-fit: contain;
+}
+
+.park-safari__rail .park-safari__message {
+  padding: 2px 1px;
+  color: #f0dfae;
+}
+
+.park-safari__rail .park-safari__message.is-issue {
+  color: #ffd3b3;
+}
+
+.park-safari__tour-stops {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-block-end: 12px;
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--safari-muted);
+}
+
+.park-safari__tour-stops i {
+  flex: 1;
+  border-block-start: 1px dashed #ae8d58;
+}
+
+.park-safari__tour-stops span {
+  padding: 5px 7px;
+  border-radius: 5px;
+}
+
+.park-safari__tour-stops span[aria-current] {
+  color: #402c15;
+  background: var(--safari-accent);
+  font-weight: 800;
+}
+
+.park-safari__observations li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-block-size: 42px;
+  padding-block: 3px;
+  border-block-end: 1px solid var(--safari-line);
+}
+
+.park-safari__observations li img {
+  inline-size: 47px;
+  block-size: 39px;
+  object-fit: contain;
+}
+
+.park-safari__observations li div {
+  display: grid;
+  gap: 2px;
+  font-size: 13px;
+  line-height: 1.15;
+}
+
+.park-safari__observations li span {
+  color: var(--safari-muted);
+  font-size: 11px;
+}
+
+.park-safari--status {
+  display: grid;
+  position: relative;
+  place-items: center;
+  background: #495e3f url('/assets/environment/park-meadow.webp') repeat;
+}
+
+.park-safari__status {
+  display: grid;
+  justify-items: center;
+  margin: 10px;
+  padding: 14px 16px;
+  border-radius: 9px;
+  color: var(--safari-ink);
+  background: var(--safari-plate);
+}
+
+.park-safari__status p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.park-safari__status button {
+  margin-block-start: 8px;
+}
+
+@media (max-width: 680px) and (min-aspect-ratio: 1/1) {
+  .park-safari {
+    grid-template-columns: minmax(0, 1fr) 182px;
+  }
+
+  .park-safari__rail {
+    padding-block-start: 7px;
+  }
+}
+
+@media (max-width: 620px) and (max-aspect-ratio: 1/1) {
+  .park-safari {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) min(38%, 287px);
+  }
+
+  .park-safari__rail {
+    border-inline-start: 0;
+    border-block-start: 1px solid #986f46;
+  }
+
+  .park-safari--status {
+    grid-template-rows: minmax(0, 1fr);
+  }
+}

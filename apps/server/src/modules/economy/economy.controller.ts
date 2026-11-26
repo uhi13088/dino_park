@@ -60,26 +60,6 @@ export class EconomyController {
   }
 
   /**
-   * 에너지 즉시 충전
-   */
-  @Post('energy/refill')
-  @ApiOperation({ summary: '에너지 즉시 충전 (다이아 30 소모)' })
-  @ApiResponse({
-    status: 200,
-    description: '에너지 충전 결과',
-    schema: {
-      example: {
-        explorationEnergy: 30,
-        diamondSpent: 30,
-        energyRefilled: 30,
-      },
-    },
-  })
-  async refillEnergy(@CurrentUser('id') userId: string) {
-    return this.economyService.refillEnergy(userId);
-  }
-
-  /**
    * 거래 내역 조회
    */
   @Get('transactions')

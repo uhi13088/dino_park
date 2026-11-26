@@ -1,56 +1,47 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { DriveExpeditionState, FirstSynthesisState } from '@dino-park/shared';
+import type { DriveMissionReward, FirstSynthesisState } from '@dino-park/shared';
 import { api, tokenManager } from '../client';
 import { queryKeys } from './index';
+import { parkGrowthKey } from './parkGrowth';
 import { cancelResourceReads, resourcesQueryKey } from './resources';
 
-export const driveKey = ['explorations', 'drive'] as const;
+const legacyDriveRewardKey = ['explorations', 'drive-reward'] as const;
 export const synthesisKey = queryKeys.firstSynthesis();
 
-type DriveAction =
-  | { kind: 'start'; missionId: string }
-  | { kind: 'checkpoint'; id: string; sector: number; positions: number[] }
-  | { kind: 'claim' | 'abandon'; id: string };
+type LegacyDriveRewardState = {
+  run: { id: string; title: string; reward: DriveMissionReward } | null;
+};
 
 type SynthesisAction =
   | { kind: 'safety' | 'prepare' | 'claim' }
   | { kind: 'start'; parentIds: string[] };
 
-export function useDriveExpedition(enabled: boolean) {
+export function useLegacyDriveReward() {
   return useQuery({
-    queryKey: driveKey,
-    enabled: enabled && tokenManager.isAuthenticated(),
-    queryFn: ({ signal }) => api.get<DriveExpeditionState>('/explorations/drive', { signal }),
-    refetchInterval: (query) => (query.state.data?.run?.status === 'running' ? false : 5000),
+    queryKey: legacyDriveRewardKey,
+    enabled: tokenManager.isAuthenticated(),
+    queryFn: ({ signal }) => api.get<LegacyDriveRewardState>('/explorations/drive', { signal }),
   });
 }
 
-export function useDriveAction() {
+export function useClaimLegacyDriveReward() {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: (action: DriveAction) => {
-      if (action.kind === 'start')
-        return api.post<DriveExpeditionState>('/explorations/drive/start', {
-          missionId: action.missionId,
-        });
-      return api.post<DriveExpeditionState>(
-        `/explorations/drive/${action.id}/${action.kind}`,
-        action.kind === 'checkpoint' ? { sector: action.sector, positions: action.positions } : {},
-      );
-    },
+    mutationFn: (id: string) => api.post<LegacyDriveRewardState>(`/explorations/drive/${id}/claim`),
     onMutate: async () => {
       await Promise.all([
-        client.cancelQueries({ queryKey: driveKey }),
+        client.cancelQueries({ queryKey: legacyDriveRewardKey }),
         cancelResourceReads(client),
       ]);
     },
-    onSuccess: (state, action) => {
-      client.setQueryData(driveKey, state);
-      if (action.kind === 'checkpoint') return;
+    onSuccess: (state) => {
+      client.setQueryData(legacyDriveRewardKey, state);
       void client.invalidateQueries({ queryKey: synthesisKey });
       void client.invalidateQueries({ queryKey: queryKeys.hatching });
       void client.invalidateQueries({ queryKey: queryKeys.currency() });
       void client.invalidateQueries({ queryKey: resourcesQueryKey });
+      void client.invalidateQueries({ queryKey: parkGrowthKey });
+      void client.invalidateQueries({ queryKey: queryKeys.scoutExpedition() });
     },
   });
 }
@@ -81,7 +72,7 @@ export function useFirstSynthesisAction() {
     onSuccess: (state) => {
       client.setQueryData(synthesisKey, state);
       for (const key of [
-        driveKey,
+        queryKeys.scoutExpedition(),
         queryKeys.dinosaurs,
         queryKeys.currency(),
         queryKeys.park,

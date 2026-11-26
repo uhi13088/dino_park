@@ -1,0 +1,195 @@
+.game-story {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  background: #efe8d7;
+  color: #382b1f;
+}
+
+.game-story__header {
+  display: flex;
+  min-height: 58px;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid #b49d7a;
+  padding-inline: 14px;
+  background: #302522;
+  color: #fff5df;
+}
+
+.game-story__header h1 {
+  font-size: 20px;
+  font-weight: 780;
+}
+
+.game-story__header p {
+  color: #eccea2;
+  font-size: 12px;
+}
+
+.game-story__header a,
+.game-story__header button,
+.game-story__requirement a,
+.game-story__requirement button {
+  display: inline-flex;
+  min-height: 44px;
+  flex-shrink: 0;
+  align-items: center;
+  border-radius: 6px;
+  padding-inline: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.game-story__header a,
+.game-story__header button {
+  color: #fff5df;
+}
+
+.game-story :is(a, button):focus-visible {
+  outline: 2px solid #93602a;
+  outline-offset: 2px;
+}
+
+.game-story__chapter-list,
+.game-story__scene {
+  width: min(100%, 820px);
+  min-height: 0;
+  flex: 1;
+  margin-inline: auto;
+  overflow-y: auto;
+  padding: 12px 18px;
+}
+
+.game-story__chapter {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid #c4ae89;
+  border-radius: 8px;
+  padding: 7px 12px;
+  background: #fff9ed;
+  text-align: start;
+}
+
+.game-story__chapter + .game-story__chapter {
+  margin-top: 6px;
+}
+
+.game-story__chapter[data-targeted='true'] {
+  border-color: #93602a;
+  background: #f9e8bf;
+}
+
+.game-story__chapter:disabled {
+  background: #e9e1d0;
+  color: #655441;
+}
+
+.game-story__chapter strong,
+.game-story__chapter span {
+  display: block;
+}
+
+.game-story__chapter span {
+  color: #674d35;
+  font-size: 13px;
+}
+
+.game-story__chapter > span {
+  flex-shrink: 0;
+  font-weight: 680;
+}
+
+.game-story--scene {
+  background: #362921;
+  color: #fff2df;
+}
+
+.game-story__scene {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.game-story__dialogue {
+  min-height: 70px;
+  flex: 1 0 auto;
+  padding-block-start: 6px;
+}
+
+.game-story__dialogue strong {
+  display: inline-block;
+  margin-bottom: 4px;
+  color: #edc88d;
+  font-size: 14px;
+}
+
+.game-story__dialogue p {
+  font-size: clamp(16px, 2.6vw, 19px);
+  line-height: 1.6;
+}
+
+.game-story__choices,
+.game-story__requirement > div,
+.game-story__steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.game-story__choices button {
+  min-height: 44px;
+  flex: 1 1 170px;
+}
+
+.game-story__requirement {
+  border-inline-start: 3px solid #e4b975;
+  padding-inline: 10px;
+  color: #fff2df;
+}
+
+.game-story__requirement a,
+.game-story__requirement button {
+  color: #edcf9d;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.game-story__steps {
+  min-height: 44px;
+  justify-content: space-between;
+  color: #edcf9d;
+  font-size: 13px;
+}
+
+.game-story__steps button {
+  min-height: 44px;
+}
+
+.game-story__error {
+  margin-block: 5px;
+  color: #9b2522;
+}
+
+.game-story--scene .game-story__error {
+  color: #ffd0bc;
+}
+
+@media (max-height: 360px) {
+  .game-story__header {
+    min-height: 48px;
+  }
+
+  .game-story__chapter-list,
+  .game-story__scene {
+    padding-block: 8px;
+  }
+}

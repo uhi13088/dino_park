@@ -24,6 +24,9 @@ import type {
   ParkSummaryResponse,
   ParkRevenueResponse,
   ParkOperationsResponse,
+  MoveParkEntranceRequest,
+  BuyShuttleBusRequest,
+  SetShuttleRouteRequest,
   StarterParkResponse,
   // Dinosaur
   DinosaurResponse,
@@ -41,10 +44,10 @@ import type {
   AssignGreatFigureRequest,
   // Economy
   CurrencyResponse,
+  ResourcesResponse,
   TransactionListResponse,
   OfflineRevenueResponse,
   // Exploration
-  ExplorationRegionsResponse,
   ExplorationResponse,
   ExplorationListResponse,
   ClaimExplorationResponse,
@@ -59,9 +62,9 @@ import type {
   RecruitGreatFigureResponse,
   GreatFigurePointsResponse,
   // Story
-  StoryChapterListResponse,
-  StartChapterResponse,
-  AdvanceSceneResponse,
+  StoryChapter,
+  StoryScene,
+  StoryReward,
 } from '@dino-park/shared';
 
 // ========================================
@@ -83,6 +86,7 @@ export const queryKeys = {
   parkSummary: () => [...queryKeys.park, 'summary'] as const,
   parkRevenue: () => [...queryKeys.park, 'revenue'] as const,
   parkOperations: () => [...queryKeys.park, 'operations'] as const,
+  exhibitPlacementPreviews: ['exhibit-placement-preview'] as const,
 
   // Dinosaurs
   dinosaurs: ['dinosaurs'] as const,
@@ -106,10 +110,10 @@ export const queryKeys = {
 
   // Exploration
   explorations: ['explorations'] as const,
-  explorationRegions: () => [...queryKeys.explorations, 'regions'] as const,
   explorationList: () => [...queryKeys.explorations, 'list'] as const,
-  explorationInProgress: () => [...queryKeys.explorations, 'in-progress'] as const,
   firstExpedition: () => [...queryKeys.explorations, 'first'] as const,
+  scoutExpedition: () => [...queryKeys.explorations, 'scouts'] as const,
+  research: ['research'] as const,
   firstSynthesis: () => ['milestoneSynthesis'] as const,
   repeatSynthesis: () => [...queryKeys.firstSynthesis(), 'repeat'] as const,
 
@@ -119,7 +123,6 @@ export const queryKeys = {
 
   // Story
   stories: ['stories'] as const,
-  storyProgress: () => [...queryKeys.stories, 'progress'] as const,
 
   // Shop
   shop: ['shop'] as const,
@@ -321,12 +324,40 @@ export function useSetParkOpen() {
   });
 }
 
+type ShuttleAction =
+  | { kind: 'buy'; request: BuyShuttleBusRequest }
+  | { kind: 'route'; exhibitId: string; request: SetShuttleRouteRequest };
+
+export function useParkShuttleAction() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    onMutate: () => cancelResourceReads(queryClient),
+    mutationFn: (action: ShuttleAction) =>
+      action.kind === 'buy'
+        ? api.post<ParkOperationsResponse>('/parks/me/shuttle/vehicles', action.request)
+        : api.put<ParkOperationsResponse>(
+            `/parks/me/shuttle/routes/${encodeURIComponent(action.exhibitId)}`,
+            action.request,
+          ),
+    onSuccess: async (operations, action) => {
+      await cancelResourceReads(queryClient);
+      syncParkOperations(queryClient, operations);
+      queryClient.setQueryData(queryKeys.parkOperations(), operations);
+      queryClient.setQueryData<ResourcesResponse>(resourcesQueryKey, (resources) =>
+        resources ? { ...resources, gold: operations.gold } : resources,
+      );
+      if (action.kind === 'buy')
+        void queryClient.invalidateQueries({ queryKey: queryKeys.economy });
+    },
+  });
+}
+
 export function useMoveParkEntrance() {
   const queryClient = useQueryClient();
   return useMutation({
     // A delayed pre-mutation heartbeat must not replace the confirmed new state.
     onMutate: () => queryClient.cancelQueries({ queryKey: queryKeys.parkOperations() }),
-    mutationFn: (position: { positionX: number; positionY: number }) =>
+    mutationFn: (position: MoveParkEntranceRequest) =>
       api.patch<ParkOperationsResponse>('/parks/me/entrance', position),
     onSuccess: (operations) => {
       syncParkOperations(queryClient, operations);
@@ -388,26 +419,49 @@ export function useClaimStarterPark() {
   });
 }
 
+function syncDinosaurPlacement(client: QueryClient, dinosaur: DinosaurResponse) {
+  client.setQueryData(queryKeys.dinosaurDetail(dinosaur.id), dinosaur);
+  client.setQueryData<DinosaurListResponse>(queryKeys.dinosaurList(), (current) =>
+    current
+      ? {
+          ...current,
+          dinosaurs: current.dinosaurs.map((item) => (item.id === dinosaur.id ? dinosaur : item)),
+        }
+      : current,
+  );
+}
+
 export function usePlaceDinosaur() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, ...position }: PlaceDinosaurRequest & { id: string }) =>
       api.post<DinosaurResponse>(`/dinosaurs/${id}/place`, position),
     onSuccess: (dinosaur) => {
-      queryClient.setQueryData(queryKeys.dinosaurDetail(dinosaur.id), dinosaur);
-      queryClient.setQueryData<DinosaurListResponse>(queryKeys.dinosaurList(), (current) =>
-        current
-          ? {
-              ...current,
-              dinosaurs: current.dinosaurs.map((item) =>
-                item.id === dinosaur.id ? dinosaur : item,
-              ),
-            }
-          : current,
-      );
+      syncDinosaurPlacement(queryClient, dinosaur);
       queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurList() });
       queryClient.invalidateQueries({ queryKey: queryKeys.park });
       void queryClient.invalidateQueries({ queryKey: queryKeys.firstSynthesis() });
+    },
+  });
+}
+
+export function useRemoveDinosaurFromPark() {
+  const queryClient = useQueryClient();
+  const affectedKeys = [
+    queryKeys.dinosaurs,
+    queryKeys.park,
+    queryKeys.firstSynthesis(),
+    queryKeys.exhibitPlacementPreviews,
+  ];
+  return useMutation({
+    mutationFn: (id: string) => api.post<DinosaurResponse>(`/dinosaurs/${id}/remove`),
+    onMutate: () =>
+      Promise.all(affectedKeys.map((queryKey) => queryClient.cancelQueries({ queryKey }))),
+    onSuccess: (dinosaur) => {
+      syncDinosaurPlacement(queryClient, dinosaur);
+      for (const queryKey of [...affectedKeys, queryKeys.currency()]) {
+        void queryClient.invalidateQueries({ queryKey });
+      }
     },
   });
 }
@@ -500,6 +554,12 @@ export function useBuildings() {
     queryKey: queryKeys.buildingList(),
     queryFn: () => api.get<BuildingListResponse>('/buildings'),
     enabled: tokenManager.isAuthenticated(),
+    refetchInterval: (query) =>
+      query.state.data?.buildings.some(({ status }) =>
+        ['CONSTRUCTING', 'UPGRADING'].includes(status.toUpperCase()),
+      )
+        ? 5000
+        : false,
   });
 }
 
@@ -520,6 +580,31 @@ export function useCreateBuilding() {
       queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
       queryClient.invalidateQueries({ queryKey: queryKeys.park });
       queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.research });
+    },
+  });
+}
+
+export function useMoveBuilding() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...position
+    }: {
+      id: string;
+      positionX: number;
+      positionY: number;
+      isMirrored?: boolean;
+    }) => api.patch<BuildingResponse>(`/buildings/${id}/position`, position),
+    onMutate: () => client.cancelQueries({ queryKey: queryKeys.parkOperations() }),
+    onSuccess: async (_, { id }) => {
+      await Promise.all([
+        client.invalidateQueries({ queryKey: queryKeys.buildingDetail(id) }),
+        client.invalidateQueries({ queryKey: queryKeys.buildings }),
+        client.invalidateQueries({ queryKey: queryKeys.park }),
+        client.invalidateQueries({ queryKey: resourcesQueryKey }),
+      ]);
     },
   });
 }
@@ -533,6 +618,7 @@ export function useCompleteBuilding() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.buildings });
       void queryClient.invalidateQueries({ queryKey: queryKeys.park });
       void queryClient.invalidateQueries({ queryKey: resourcesQueryKey });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.research });
     },
   });
 }
@@ -555,6 +641,7 @@ export function useUpgradeBuilding() {
         queryClient.invalidateQueries({ queryKey: queryKeys.park }),
         queryClient.invalidateQueries({ queryKey: resourcesQueryKey }),
         queryClient.invalidateQueries({ queryKey: queryKeys.currency() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.research }),
       ]);
     },
   });
@@ -609,7 +696,7 @@ export function useCurrency() {
     queryKey: queryKeys.currency(),
     queryFn: () => api.get<CurrencyResponse>('/economy/currency'),
     enabled: tokenManager.isAuthenticated(),
-    refetchInterval: 60000, // 1분마다 갱신 (에너지 회복 체크)
+    refetchInterval: 60000,
   });
 }
 
@@ -634,28 +721,9 @@ export function useCollectOfflineRevenue() {
   });
 }
 
-export function useRefillEnergy() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: () => api.post<CurrencyResponse>('/economy/energy/refill'),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
-    },
-  });
-}
-
 // ========================================
 // Exploration Queries & Mutations
 // ========================================
-
-export function useExplorationRegions() {
-  return useQuery({
-    queryKey: queryKeys.explorationRegions(),
-    queryFn: () => api.get<ExplorationRegionsResponse>('/explorations/regions'),
-    enabled: tokenManager.isAuthenticated(),
-  });
-}
 
 export function useExplorations() {
   const visible = useDocumentVisible();
@@ -670,51 +738,6 @@ export function useExplorations() {
     enabled: tokenManager.isAuthenticated() && visible,
     refetchInterval: 10000,
     refetchIntervalInBackground: false,
-  });
-}
-
-export function useExplorationInProgress() {
-  return useQuery({
-    queryKey: queryKeys.explorationInProgress(),
-    queryFn: () => api.get<ExplorationResponse | null>('/explorations/in-progress'),
-    enabled: tokenManager.isAuthenticated(),
-    refetchInterval: 10000, // 10초마다 갱신
-  });
-}
-
-export function useStartExploration() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (regionId: string) => api.post<ExplorationResponse>('/explorations', { regionId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
-      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
-    },
-  });
-}
-
-export function useCheckExploration() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (id: string) => api.post<ExplorationResponse>(`/explorations/${id}/check`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
-    },
-  });
-}
-
-export function useInstantCompleteExploration() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (id: string) =>
-      api.post<ExplorationResponse>(`/explorations/${id}/instant-complete`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.explorations });
-      queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
-    },
   });
 }
 
@@ -734,7 +757,7 @@ export function useClaimExploration() {
 // The first expedition owns its mission, egg and tutorial state on the server.
 function syncFirstExpedition(queryClient: QueryClient, state: FirstExpeditionStateResponse) {
   queryClient.setQueryData<CurrencyResponse>(queryKeys.currency(), (currency) =>
-    currency ? { ...currency, gold: state.gold, explorationEnergy: state.energy } : currency,
+    currency ? { ...currency, gold: state.gold } : currency,
   );
   return state;
 }
@@ -763,7 +786,7 @@ function useFirstExpeditionMutation<T>(
   return useMutation({
     mutationFn: request,
     onMutate: async () => {
-      // A pre-action read must not overwrite a new mission step or paid balance.
+      // A pre-action read must not overwrite a claimed egg or its balance.
       await Promise.all([
         queryClient.cancelQueries({ queryKey: queryKeys.firstExpedition() }),
         queryClient.cancelQueries({ queryKey: resourcesQueryKey }),
@@ -779,7 +802,8 @@ function useFirstExpeditionMutation<T>(
       void queryClient.invalidateQueries({ queryKey: queryKeys.currency() });
       void queryClient.invalidateQueries({ queryKey: queryKeys.hatching });
       void queryClient.invalidateQueries({ queryKey: queryKeys.userMe() });
-      if (state.dinosaur) {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.scoutExpedition() });
+      if (state.dinosaur || state.hatchedDinosaur) {
         void queryClient.invalidateQueries({ queryKey: queryKeys.dinosaurs });
         void queryClient.invalidateQueries({ queryKey: queryKeys.park });
       }
@@ -787,20 +811,6 @@ function useFirstExpeditionMutation<T>(
   });
 }
 
-export function useStartFirstExpedition() {
-  return useFirstExpeditionMutation((regionId: string) =>
-    api.post<FirstExpeditionStateResponse>('/explorations/first/start', { regionId }),
-  );
-}
-export function useChooseFirstExpedition() {
-  return useFirstExpeditionMutation(
-    ({ id, step, choiceId }: { id: string; step: number; choiceId: string }) =>
-      api.post<FirstExpeditionStateResponse>(`/explorations/first/${id}/choice`, {
-        step,
-        choiceId,
-      }),
-  );
-}
 export function useClaimFirstExpedition() {
   return useFirstExpeditionMutation((id: string) =>
     api.post<FirstExpeditionStateResponse>(`/explorations/first/${id}/claim`),
@@ -875,7 +885,7 @@ export function useLevelUpGreatFigure() {
 // Hatching Queries
 // ========================================
 
-export function useHatchingQueue() {
+export function useHatchingQueue(enabled = true) {
   const visible = useDocumentVisible();
   return useQuery({
     queryKey: queryKeys.hatchingQueue(),
@@ -885,7 +895,7 @@ export function useHatchingQueue() {
       );
       return Array.isArray(result) ? { queue: result } : result;
     },
-    enabled: tokenManager.isAuthenticated() && visible,
+    enabled: enabled && tokenManager.isAuthenticated() && visible,
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
   });
@@ -895,29 +905,47 @@ export function useHatchingQueue() {
 // Story Queries & Mutations
 // ========================================
 
+export interface StoryChapterEntry {
+  chapter: Pick<StoryChapter, 'id' | 'title' | 'titleKo' | 'order' | 'unlockCondition'> & {
+    totalScenes?: number;
+  };
+  isUnlocked: boolean;
+  isStarted: boolean;
+  isCompleted: boolean;
+  completedScenes?: number;
+  unlockRequirement?: string;
+}
+
+export interface StoryRequirement {
+  message: string;
+  kind: 'research' | 'facility' | 'exploration' | 'operations';
+  technologyId?: string;
+  facilityId?: string;
+  missionId?: string;
+  level?: number;
+}
+
+export interface StoryPlaybackState {
+  currentScene: StoryScene | null;
+  requirement?: StoryRequirement | null;
+  isChapterComplete?: boolean;
+  rewards?: StoryReward[];
+}
+
 export function useStoryChapters() {
   return useQuery({
     queryKey: queryKeys.stories,
-    queryFn: () => api.get<StoryChapterListResponse>('/stories/chapters'),
-    enabled: tokenManager.isAuthenticated(),
-  });
-}
-
-export function useStoryProgress() {
-  return useQuery({
-    queryKey: queryKeys.storyProgress(),
-    queryFn: () =>
-      api.get<{ progress: Record<string, { completedScenes: number; isCompleted: boolean }> }>(
-        '/stories/progress',
-      ),
+    queryFn: () => api.get<StoryChapterEntry[]>('/stories/chapters'),
     enabled: tokenManager.isAuthenticated(),
   });
 }
 
 export function useStartChapter() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (chapterId: string) =>
-      api.post<StartChapterResponse>(`/stories/chapters/${chapterId}/start`),
+      api.post<StoryPlaybackState>(`/stories/chapters/${chapterId}/start`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.stories }),
   });
 }
 
@@ -934,12 +962,12 @@ export function useAdvanceScene() {
       sceneId: string;
       choiceId?: string;
     }) =>
-      api.post<AdvanceSceneResponse>(`/stories/chapters/${chapterId}/advance`, {
+      api.post<StoryPlaybackState>(`/stories/chapters/${chapterId}/advance`, {
         sceneId,
         choiceId,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.storyProgress() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.stories });
     },
   });
 }

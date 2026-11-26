@@ -3,7 +3,7 @@ import { getBuildingById } from '@dino-park/game-data';
 import {
   FIRST_HYBRID_HABITAT_ID,
   FIRST_HYBRID_SPECIES_ID,
-  PARK_ADMISSION,
+  type ExperimentalHybridIdentity,
   type HybridExhibitPreview,
   type HybridExhibitRate,
   type HybridExhibitSelection,
@@ -12,9 +12,35 @@ import {
   activeAt,
   admissionSnapshot,
   contains,
+  dinosaurCareCheckpoint,
   type AdmissionWorld,
   type Tile,
 } from '../park/park-admission.logic';
+
+export function experimentalPlacementIssue(
+  world: AdmissionWorld,
+  dinosaurId: string,
+  hybrid: ExperimentalHybridIdentity,
+  tile: Tile,
+  at: number,
+): string | null {
+  const habitat = world.buildings.find(
+    (building) =>
+      contains(building, tile) &&
+      hybrid.species.habitat.includes(building.typeId.replace(/^habitat-/, '')),
+  );
+  if (!habitat || !activeAt(habitat, at)) return '공룡에 맞는 완공된 서식지 안에 배치해주세요.';
+  const placed = world.dinosaurs.filter(
+    (dinosaur) => dinosaur.isInPark && dinosaur.id !== dinosaurId,
+  );
+  const occupants = placed.filter((dinosaur) =>
+    contains(habitat, { x: dinosaur.positionX, y: dinosaur.positionY }),
+  );
+  if (occupants.length >= (getBuildingById(habitat.typeId)?.baseStats.capacity ?? 0))
+    return '이 서식지의 관람 공간이 가득 찼어요.';
+
+  return null;
+}
 
 export function hybridPlacementIssue(
   world: AdmissionWorld,
@@ -45,7 +71,7 @@ function rates(snapshot: ReturnType<typeof admissionSnapshot>): HybridExhibitRat
   return {
     demandPerMinute: snapshot.demand,
     visitorsPerMinute: snapshot.visitorsPerMinute,
-    capacityPerMinute: (snapshot.capacity * 60) / PARK_ADMISSION.visitSeconds,
+    capacityPerMinute: snapshot.capacity,
   };
 }
 
@@ -96,7 +122,13 @@ export function previewHybridExhibit(
 
   const dinosaurs = withdrawn.map((dinosaur) =>
     dinosaur.id === candidateId
-      ? { ...dinosaur, positionX: destination.x, positionY: destination.y, isInPark: true }
+      ? {
+          ...dinosaur,
+          careProgress: dinosaurCareCheckpoint(dinosaur, world, at) ?? dinosaur.careProgress,
+          positionX: destination.x,
+          positionY: destination.y,
+          isInPark: true,
+        }
       : dinosaur,
   );
   return {

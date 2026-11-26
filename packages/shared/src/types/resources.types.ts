@@ -1,5 +1,20 @@
+import { MaterialQuality, type ResearchMaterial } from './codex.types';
+
 /** Early ordinary resources. Quality is intentionally absent from this UI/API. */
 export type EarlyResourceMaterial = 'wood' | 'stone' | 'metal';
+export type SupplyMaterial = EarlyResourceMaterial | 'fuel';
+
+export const RESEARCH_MATERIAL_UPGRADE = {
+  ratio: 3,
+  gold: { [MaterialQuality.LOW]: 50, [MaterialQuality.MIDDLE]: 150 },
+} as const;
+
+export interface UpgradeResearchMaterialRequest {
+  material: ResearchMaterial;
+  fromQuality: MaterialQuality.LOW | MaterialQuality.MIDDLE;
+  quantity: number;
+  requestId: string;
+}
 
 export interface ResourceInventoryItem {
   material: EarlyResourceMaterial;
@@ -9,7 +24,7 @@ export interface ResourceInventoryItem {
 }
 
 export interface ResourceProductionRecipe {
-  material: EarlyResourceMaterial;
+  material: SupplyMaterial;
   batchQuantity: number;
   batchCost: number;
   batchSeconds: number;
@@ -29,7 +44,9 @@ export interface ResourcesResponse {
   gold: number;
   parkLevel: number;
   capacityPerMaterial: number;
+  fuel: { amount: number; capacity: number; nextRechargeAt: string | null };
   inventory: ResourceInventoryItem[];
+  researchMaterials?: { material: ResearchMaterial; quality: MaterialQuality; amount: number }[];
   facilities: Array<{
     typeId: string;
     name: string;
@@ -54,7 +71,7 @@ export interface ResourcesResponse {
 }
 
 export interface PurchaseResourceRequest {
-  material: EarlyResourceMaterial;
+  material: SupplyMaterial;
   quantity: number;
   requestId?: string;
 }

@@ -2,6 +2,8 @@ import type { EarlyResourceMaterial, ResourceProductionRecipe } from '@dino-park
 
 /** Runtime numeric owner for the first ordinary-resource flow. */
 export const EARLY_RESOURCE_CAPACITY = 100;
+export const FUEL_DEPOT_TYPE_ID = 'production-fuel-depot';
+export const FUEL_BUY_PRICE = 100;
 export const EARLY_RESOURCES: Array<{ id: EarlyResourceMaterial; name: string; buyPrice: number }> =
   [
     { id: 'wood', name: '목재', buyPrice: 20 },
@@ -26,6 +28,14 @@ export const EARLY_PRODUCTION_RECIPES: Array<
     batchQuantity: 20,
     batchCost: 300,
     batchSeconds: 360,
+    maxLots: 3,
+  },
+  {
+    buildingTypeId: FUEL_DEPOT_TYPE_ID,
+    material: 'fuel',
+    batchQuantity: 5,
+    batchCost: 300,
+    batchSeconds: 600,
     maxLots: 3,
   },
 ];

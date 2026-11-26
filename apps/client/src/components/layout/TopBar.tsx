@@ -14,8 +14,6 @@ export default function TopBar() {
   const level = parkData?.level ?? park?.level ?? 1;
   const gold = currencyData?.gold ?? 0;
   const diamond = currencyData?.diamond ?? 0;
-  const energy = currencyData?.explorationEnergy ?? 0;
-  const maxEnergy = currencyData?.maxEnergy ?? 30;
 
   return (
     <header className="safe-area-top flex items-center justify-between bg-black/30 px-4 py-2 backdrop-blur-sm">
@@ -39,7 +37,7 @@ export default function TopBar() {
       </div>
 
       {/* 재화 */}
-      <CurrencyBar gold={gold} diamond={diamond} energy={energy} maxEnergy={maxEnergy} />
+      <CurrencyBar gold={gold} diamond={diamond} />
     </header>
   );
 }

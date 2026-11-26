@@ -6,14 +6,47 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Building, BuildingStatus, Prisma } from '@prisma/client';
-import { FIRST_HYBRID_HABITAT_ID, MAX_BUILDING_LEVEL, PARK_ADMISSION } from '@dino-park/shared';
-import { ParkOperationsService } from '../park/park-operations.service';
-import { admissionSnapshot, contains, type AdmissionWorld } from '../park/park-admission.logic';
 import {
+  BuildingCategory,
+  FIRST_HYBRID_HABITAT_ID,
+  FIRST_HYBRID_SPECIES_ID,
+  MAX_BUILDING_LEVEL,
+  PARK_ADMISSION,
+} from '@dino-park/shared';
+import { ParkOperationsService } from '../park/park-operations.service';
+import { retainDemolishedGrowthFacility } from '../park/park-midgame-growth';
+import {
+  activeAt,
+  admissionResearch,
+  admissionSnapshot,
+  contains,
+  exhibitSafetyIssue,
+  parkExhibitRiskPoints,
+  type AdmissionWorld,
+  type Tile,
+} from '../park/park-admission.logic';
+import {
+  describeExhibitPlacement,
+  projectExhibitCrowd,
+  projectedExhibitDinosaur,
+} from '../park/exhibit-placement.logic';
+import {
+  GOLD_VAULT_ID,
+  PARK_LEVEL_EIGHT_GROWTH,
+  PARK_LEVEL_SEVEN_GROWTH,
+  SECURITY_CENTER_LEVEL_TWO_UPGRADE,
+  SECURITY_CENTER_TYPE_ID,
   getBuildingById,
   getEarlyProductionRecipe,
+  getGenericBuildingUpgradeQuote,
+  getResearchFacilityUpgrade,
   getViewingPlatformUpgrade,
+  growthFacilityHasCompletedLevel,
+  readExperimentalHybridIdentity,
+  resolveDinosaurSpecies,
 } from '@dino-park/game-data';
+import { researchFacilityBlock } from '../research/research-facilities';
+import { completedTechnologyLevels, RESEARCH_MATERIALS } from '../research/technology-progress';
 import { ResourcesService } from '../resources/resources.service';
 import {
   getViewingPlatformProgressBlock,
@@ -21,20 +54,28 @@ import {
   isBuilderBusy,
 } from './building-upgrade.logic';
 
-/**
- * 건물 레벨별 업그레이드 비용
- * 공식: baseCost * (1.5 ^ (level - 1))
- */
-function getUpgradeCost(baseCost: number, level: number): number {
-  return Math.floor(baseCost * Math.pow(1.5, level - 1));
+function getSecurityCenterUpgrade(typeId: string, targetLevel: number) {
+  if (
+    typeId === SECURITY_CENTER_TYPE_ID &&
+    targetLevel === SECURITY_CENTER_LEVEL_TWO_UPGRADE.targetLevel
+  )
+    return SECURITY_CENTER_LEVEL_TWO_UPGRADE;
 }
 
-/**
- * 건물 레벨별 업그레이드 시간 (초)
- * 공식: baseTime * level
- */
-function getUpgradeTime(baseTime: number, level: number): number {
-  return baseTime * level;
+const securityCenterUpgradeReceiptId = (buildingId: string) =>
+  `building-upgrade:security-center:2:${buildingId}`;
+const researchFacilityReceiptId = (buildingId: string, level: number) =>
+  `research-facility:${buildingId}:${level}`;
+
+function researchFacilityMaterials(
+  quote: NonNullable<ReturnType<typeof getResearchFacilityUpgrade>>,
+) {
+  return Object.fromEntries(
+    RESEARCH_MATERIALS.filter((material) => quote.costs[material] > 0).map((material) => [
+      material,
+      quote.costs[material],
+    ]),
+  );
 }
 
 /**
@@ -47,6 +88,12 @@ function calculateBuildingBonus(baseBonus: number, level: number): number {
 
 function requiresExhibitionRoute(typeId: string) {
   return typeId === FIRST_HYBRID_HABITAT_ID || typeId === 'habitat-carnivore';
+}
+
+function hasExhibitionRoute(snapshot: ReturnType<typeof admissionSnapshot>, buildingId: string) {
+  return (
+    snapshot.connectedPlatformIds.length > 0 && snapshot.connectedHabitatIds.includes(buildingId)
+  );
 }
 
 @Injectable()
@@ -71,11 +118,97 @@ export class BuildingService {
   }
 
   private assertExhibitionRoute(park: AdmissionWorld, buildingId: string, now: number) {
-    const snapshot = admissionSnapshot(park, now);
-    if (!snapshot.connectedPlatformIds.length || !snapshot.connectedHabitatIds.includes(buildingId))
+    if (!hasExhibitionRoute(admissionSnapshot(park, now), buildingId))
       throw new BadRequestException(
         '입구에서 관람대와 서식지까지 길이 이어지는 곳을 선택해주세요.',
       );
+  }
+
+  async getExhibitPlacementPreview(
+    userId: string,
+    typeId: string,
+    tile: Tile,
+    dinosaurId?: string,
+  ) {
+    const type = getBuildingById(typeId);
+    if (type?.category !== BuildingCategory.DINOSAUR)
+      throw new BadRequestException('미리 볼 서식지를 선택해주세요.');
+    const park = await this.prisma.park.findUniqueOrThrow({
+      where: { userId },
+      include: { buildings: true, dinosaurs: true, technologyResearch: admissionResearch },
+    });
+    const at = Date.now();
+    const before = admissionSnapshot(park, at);
+    if (park.level < type.unlockCondition.parkLevel)
+      return describeExhibitPlacement(
+        before,
+        null,
+        `파크 Lv.${type.unlockCondition.parkLevel}부터 지을 수 있어요.`,
+      );
+    if (!this.operations.positionFree(park, null, tile.x, tile.y, typeId))
+      return describeExhibitPlacement(before, null, '시설·공룡과 겹치지 않는 칸을 골라주세요.');
+
+    const building = {
+      id: 'exhibit-placement-preview',
+      parkId: park.id,
+      typeId,
+      level: 1,
+      positionX: tile.x,
+      positionY: tile.y,
+      entranceSide: null,
+      isMirrored: false,
+      status: BuildingStatus.ACTIVE,
+      assignedGreatFigureId: null,
+      completesAt: null,
+      createdAt: new Date(at),
+      updatedAt: new Date(at),
+    };
+    const buildings = [...park.buildings, building];
+    const empty = admissionSnapshot({ ...park, buildings }, at);
+    if (requiresExhibitionRoute(typeId) && !hasExhibitionRoute(empty, building.id))
+      return describeExhibitPlacement(
+        before,
+        null,
+        '입구에서 관람대와 서식지까지 길을 이어주세요.',
+      );
+    if (type.unlockCondition.cost.materials && before.canOpen && !empty.canOpen)
+      return describeExhibitPlacement(before, null, '기존 관람길을 막지 않는 위치에 놓아주세요.');
+
+    if (!empty.connectedHabitatIds.includes(building.id))
+      return describeExhibitPlacement(before, empty, '이 위치는 입구에서 관람길이 닿지 않아요.');
+    if (!dinosaurId)
+      return describeExhibitPlacement(
+        before,
+        empty,
+        empty.exhibits.size < before.exhibits.size
+          ? '관람길은 닿지만 기존 전시 일부가 연결을 잃어요.'
+          : '관람길이 닿아요. 완공한 곳에 공룡을 배치하면 전시가 열려요.',
+      );
+
+    const dinosaur = park.dinosaurs.find(({ id }) => id === dinosaurId);
+    const compatible =
+      dinosaur &&
+      resolveDinosaurSpecies(dinosaur)?.habitat.some((tag) => typeId === `habitat-${tag}`);
+    if (
+      !compatible ||
+      (typeId === FIRST_HYBRID_HABITAT_ID &&
+        dinosaur.speciesId !== FIRST_HYBRID_SPECIES_ID &&
+        !readExperimentalHybridIdentity(dinosaur.hybridSpecies))
+    )
+      return describeExhibitPlacement(before, null, '이 서식지에 맞는 보유 공룡을 선택해주세요.');
+    if (dinosaur.speciesId === FIRST_HYBRID_SPECIES_ID && !park.isOpen)
+      return describeExhibitPlacement(before, null, '파크를 개장한 뒤 이 공룡을 전시할 수 있어요.');
+    const safetyIssue = exhibitSafetyIssue({ ...park, buildings }, dinosaur, tile, at);
+    if (safetyIssue) return describeExhibitPlacement(before, null, safetyIssue);
+
+    const dinosaurs = park.dinosaurs.map((other) =>
+      other.id === dinosaurId ? projectedExhibitDinosaur(other, park, tile, at) : other,
+    );
+    const after = admissionSnapshot({ ...park, buildings, dinosaurs }, at);
+    return {
+      ...describeExhibitPlacement(before, after),
+      exhibit: projectExhibitCrowd(before, after, building.id, at),
+    };
   }
 
   /**
@@ -125,9 +258,19 @@ export class BuildingService {
   /**
    * 건물 건설
    */
-  async construct(userId: string, typeId: string, positionX: number, positionY: number) {
+  async construct(
+    userId: string,
+    typeId: string,
+    positionX: number,
+    positionY: number,
+    isMirrored?: boolean,
+  ) {
     const type = getBuildingById(typeId);
     if (!type) throw new BadRequestException('알 수 없는 시설입니다.');
+    const facility = getResearchFacilityUpgrade(typeId, 1);
+    const freeVault = typeId === GOLD_VAULT_ID && facility?.durationSeconds === 0;
+    if (typeId === PARK_ADMISSION.entranceTypeId && isMirrored !== undefined)
+      throw new BadRequestException('입구 방향은 파크 편집에서 변경해주세요.');
     return this.prisma.$transaction(async (tx) => {
       await this.operations.settleInTransaction(tx, userId);
       const park = await tx.park.findUnique({
@@ -139,7 +282,9 @@ export class BuildingService {
         throw new BadRequestException(
           `파크 Lv.${type.unlockCondition.parkLevel}부터 지을 수 있어요.`,
         );
-      await this.assertBuilderSlot(tx, park.id, park.buildings);
+      if (!freeVault) await this.assertBuilderSlot(tx, park.id, park.buildings);
+      if (facility && park.buildings.some((building) => building.typeId === typeId))
+        throw new BadRequestException('이 시설은 파크에 하나만 배치할 수 있어요.');
       if (
         typeId === PARK_ADMISSION.platformTypeId &&
         park.buildings.some((b) => b.typeId === typeId)
@@ -158,10 +303,14 @@ export class BuildingService {
         throw new BadRequestException(
           '파크 안에서 다른 시설·공룡과 겹치지 않는 칸을 선택해주세요.',
         );
-      const cost = type.baseCost ?? type.unlockCondition.cost.gold;
-      const seconds = type.constructionTime ?? 60;
-      const completesAt = new Date(Date.now() + seconds * 1000);
+      const cost = facility?.costs.gold ?? type.baseCost ?? type.unlockCondition.cost.gold;
+      const seconds = facility?.durationSeconds ?? type.constructionTime ?? 60;
+      const completesAt = freeVault ? null : new Date(Date.now() + seconds * 1000);
+      const materials = facility
+        ? researchFacilityMaterials(facility)
+        : type.unlockCondition.cost.materials;
       if (typeId === PARK_ADMISSION.platformTypeId) {
+        const now = Date.now();
         const preview = {
           id: 'preview',
           parkId: park.id,
@@ -169,21 +318,19 @@ export class BuildingService {
           level: 1,
           positionX,
           positionY,
+          entranceSide: null,
+          isMirrored: false,
           status: BuildingStatus.ACTIVE,
           assignedGreatFigureId: null,
           completesAt: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date(now),
+          updatedAt: new Date(now),
         };
-        const before = admissionSnapshot(park, Date.now());
-        const after = admissionSnapshot(
-          { ...park, buildings: [...park.buildings, preview] },
-          Date.now(),
-        );
-        if (!after.canOpen || after.capacity <= before.capacity)
+        const after = admissionSnapshot({ ...park, buildings: [...park.buildings, preview] }, now);
+        if (!after.canOpen || !after.connectedPlatformIds.includes(preview.id))
           throw new BadRequestException('입구와 서식지에 방문객 길이 이어지는 곳에 지어주세요.');
       }
-      if (getEarlyProductionRecipe(typeId) || type.unlockCondition.cost.materials) {
+      if (getEarlyProductionRecipe(typeId) || facility || materials) {
         const now = Date.now();
         const before = admissionSnapshot(park, now);
         const proposed = {
@@ -193,6 +340,8 @@ export class BuildingService {
           level: 1,
           positionX,
           positionY,
+          entranceSide: null,
+          isMirrored: false,
           status: BuildingStatus.ACTIVE,
           assignedGreatFigureId: null,
           completesAt: null,
@@ -204,34 +353,40 @@ export class BuildingService {
         if (before.canOpen && !admissionSnapshot(preview, now).canOpen)
           throw new BadRequestException('방문객 길을 막지 않는 위치에 시설을 놓아주세요.');
       }
-      if (type.unlockCondition.cost.materials)
-        await this.resources.consumeMaterials(tx, park.id, type.unlockCondition.cost.materials);
-      const debit = await tx.currency.updateMany({
-        where: { userId, gold: { gte: cost } },
-        data: { gold: { decrement: cost } },
-      });
-      if (!debit.count) throw new BadRequestException('골드가 부족합니다.');
+      if (materials && Object.keys(materials).length > 0)
+        await this.resources.consumeMaterials(tx, park.id, materials);
+      if (!freeVault) {
+        const debit = await tx.currency.updateMany({
+          where: { userId, gold: { gte: cost } },
+          data: { gold: { decrement: cost } },
+        });
+        if (!debit.count) throw new BadRequestException('골드가 부족합니다.');
+      }
       const building = await tx.building.create({
         data: {
           parkId: park.id,
           typeId,
           positionX,
           positionY,
-          status: BuildingStatus.CONSTRUCTING,
+          isMirrored: isMirrored ?? false,
+          status: freeVault ? BuildingStatus.ACTIVE : BuildingStatus.CONSTRUCTING,
           completesAt,
         },
       });
-      const currency = await tx.currency.findUniqueOrThrow({ where: { userId } });
-      await tx.transaction.create({
-        data: {
-          userId,
-          type: 'SPEND',
-          currencyType: 'gold',
-          amount: -cost,
-          reason: `시설 건설: ${type.nameKo}`,
-          balanceAfter: currency.gold,
-        },
-      });
+      if (!freeVault) {
+        const currency = await tx.currency.findUniqueOrThrow({ where: { userId } });
+        await tx.transaction.create({
+          data: {
+            ...(facility ? { id: researchFacilityReceiptId(building.id, 1) } : {}),
+            userId,
+            type: 'SPEND',
+            currencyType: 'gold',
+            amount: -cost,
+            reason: `시설 건설: ${type.nameKo}`,
+            balanceAfter: currency.gold,
+          },
+        });
+      }
       return {
         ...this.enrichBuildingData(building),
         goldSpent: cost,
@@ -269,7 +424,7 @@ export class BuildingService {
    */
   async instantComplete(buildingId: string, userId: string) {
     return this.prisma.$transaction(async (tx) => {
-      await this.operations.settleInTransaction(tx, userId);
+      await this.operations.settleInTransaction(tx, userId, false, undefined, { buildingId });
       const building = await tx.building.findUnique({
         where: { id: buildingId },
         include: { park: { select: { userId: true } } },
@@ -278,6 +433,12 @@ export class BuildingService {
       if (building.park.userId !== userId)
         throw new ForbiddenException('이 건물에 접근할 권한이 없습니다.');
       if (building.status === BuildingStatus.ACTIVE) return this.enrichBuildingData(building);
+      if (
+        building.status === BuildingStatus.UPGRADING &&
+        (getResearchFacilityUpgrade(building.typeId, building.level)?.minimumDurationSeconds ?? 0) >
+          0
+      )
+        throw new BadRequestException('이 강화는 공사 시간이 지나면 완공돼요.');
       if (
         building.typeId === PARK_ADMISSION.platformTypeId &&
         building.status === BuildingStatus.UPGRADING &&
@@ -302,7 +463,7 @@ export class BuildingService {
    */
   async upgrade(buildingId: string, userId: string, targetLevel?: number) {
     return this.prisma.$transaction(async (tx) => {
-      await this.operations.settleInTransaction(tx, userId);
+      await this.operations.settleInTransaction(tx, userId, false, undefined, { buildingId });
       const building = await tx.building.findUnique({
         where: { id: buildingId },
         include: { park: { include: { buildings: true } } },
@@ -325,9 +486,13 @@ export class BuildingService {
         throw new BadRequestException('현재 준비된 최대 레벨입니다.');
       const isPlatform = building.typeId === PARK_ADMISSION.platformTypeId;
       const platformUpgrade = isPlatform ? getViewingPlatformUpgrade(nextLevel) : undefined;
-      const claimedFirstHero = platformUpgrade?.materials.metal
-        ? await hasClaimedFirstHero(tx, building.parkId)
-        : undefined;
+      const securityUpgrade = getSecurityCenterUpgrade(building.typeId, nextLevel);
+      const configuredUpgrade = platformUpgrade ?? securityUpgrade;
+      const facility = getResearchFacilityUpgrade(building.typeId, nextLevel);
+      const claimedFirstHero =
+        platformUpgrade?.materials.metal || facility?.afterFirstHero
+          ? await hasClaimedFirstHero(tx, building.parkId)
+          : undefined;
       if (platformUpgrade) {
         const block = getViewingPlatformProgressBlock(
           building.park.level,
@@ -336,13 +501,33 @@ export class BuildingService {
         );
         if (block) throw new BadRequestException(block);
       }
+      if (facility) {
+        const now = new Date();
+        const research = facility.prerequisite
+          ? await tx.parkTechnologyResearch.findMany({
+              where: { parkId: building.parkId, technologyId: facility.prerequisite.technologyId },
+              select: { technologyId: true, level: true, completesAt: true },
+            })
+          : [];
+        const block = researchFacilityBlock(
+          facility,
+          building.park.level,
+          Boolean(claimedFirstHero),
+          completedTechnologyLevels(research, now),
+        );
+        if (block) throw new BadRequestException(block);
+      }
       await this.assertBuilderSlot(tx, building.parkId, building.park.buildings, claimedFirstHero);
-      const baseCost = type?.baseCost ?? type?.unlockCondition.cost.gold ?? 1000;
-      const upgradeCost = platformUpgrade?.gold ?? getUpgradeCost(baseCost, nextLevel);
+      const genericUpgrade = getGenericBuildingUpgradeQuote(building.typeId, nextLevel);
+      const upgradeCost = facility?.costs.gold ?? configuredUpgrade?.gold ?? genericUpgrade.gold;
       const upgradeTime =
-        platformUpgrade?.seconds ?? getUpgradeTime(type?.constructionTime ?? 60, nextLevel);
-      if (platformUpgrade)
-        await this.resources.consumeMaterials(tx, building.park.id, platformUpgrade.materials);
+        (facility && Math.max(facility.durationSeconds, facility.minimumDurationSeconds)) ??
+        configuredUpgrade?.seconds ??
+        genericUpgrade.seconds;
+      const materials = facility
+        ? researchFacilityMaterials(facility)
+        : configuredUpgrade?.materials;
+      if (materials) await this.resources.consumeMaterials(tx, building.park.id, materials);
       const debit = await tx.currency.updateMany({
         where: { userId, gold: { gte: upgradeCost } },
         data: { gold: { decrement: upgradeCost } },
@@ -356,6 +541,11 @@ export class BuildingService {
       const currency = await tx.currency.findUniqueOrThrow({ where: { userId } });
       await tx.transaction.create({
         data: {
+          ...(facility
+            ? { id: researchFacilityReceiptId(buildingId, nextLevel) }
+            : securityUpgrade
+              ? { id: securityCenterUpgradeReceiptId(buildingId) }
+              : {}),
           userId,
           type: 'SPEND',
           currencyType: 'gold',
@@ -449,14 +639,22 @@ export class BuildingService {
   /**
    * 건물 이동
    */
-  async move(buildingId: string, userId: string, positionX: number, positionY: number) {
+  async move(
+    buildingId: string,
+    userId: string,
+    positionX: number,
+    positionY: number,
+    isMirrored?: boolean,
+  ) {
     const owned = await this.getById(buildingId, userId);
     if (owned.typeId === PARK_ADMISSION.entranceTypeId) {
+      if (isMirrored !== undefined)
+        throw new BadRequestException('입구 방향은 파크 편집에서 변경해주세요.');
       await this.operations.moveEntrance(userId, positionX, positionY);
       return this.getById(buildingId, userId);
     }
     return this.prisma.$transaction(async (tx) => {
-      await this.operations.settleInTransaction(tx, userId);
+      await this.operations.settleInTransaction(tx, userId, false, undefined, { buildingId });
       const park = await tx.park.findUnique({
         where: { userId },
         include: { buildings: true, dinosaurs: true },
@@ -464,6 +662,17 @@ export class BuildingService {
       if (!park) throw new NotFoundException('파크를 찾을 수 없습니다.');
       const building = park.buildings.find((b) => b.id === buildingId);
       if (!building) throw new ForbiddenException('이 건물에 접근할 권한이 없습니다.');
+      if (
+        isMirrored !== undefined &&
+        building.positionX === positionX &&
+        building.positionY === positionY
+      ) {
+        const updated = await tx.building.update({
+          where: { id: buildingId },
+          data: { isMirrored },
+        });
+        return this.enrichBuildingData(updated);
+      }
       if (
         building.typeId === FIRST_HYBRID_HABITAT_ID &&
         park.dinosaurs.some(
@@ -485,7 +694,7 @@ export class BuildingService {
       }
       const updated = await tx.building.update({
         where: { id: buildingId },
-        data: { positionX, positionY },
+        data: { positionX, positionY, ...(isMirrored === undefined ? {} : { isMirrored }) },
       });
       return this.enrichBuildingData(updated);
     });
@@ -496,7 +705,15 @@ export class BuildingService {
    */
   async demolish(buildingId: string, userId: string) {
     return this.prisma.$transaction(async (tx) => {
-      await this.operations.settleInTransaction(tx, userId);
+      const { settledAt } = await this.operations.settleInTransaction(
+        tx,
+        userId,
+        false,
+        undefined,
+        {
+          buildingId,
+        },
+      );
       const building = await tx.building.findUnique({
         where: { id: buildingId },
         include: { park: { select: { userId: true } } },
@@ -508,6 +725,23 @@ export class BuildingService {
         throw new BadRequestException(
           '기본 입구와 초원은 철거할 수 없어요. 무료 이동을 이용해주세요.',
         );
+      if (building.typeId === GOLD_VAULT_ID)
+        throw new BadRequestException('파크 금고는 무료 이동으로 위치를 바꿀 수 있어요.');
+      const at = settledAt.getTime();
+      if (building.typeId === SECURITY_CENTER_TYPE_ID && activeAt(building, at)) {
+        const park = await tx.park.findUniqueOrThrow({
+          where: { id: building.parkId },
+          select: { buildings: true, dinosaurs: true, safariLayout: true },
+        });
+        const hasAnotherCenter = park.buildings.some(
+          (other) =>
+            other.id !== buildingId &&
+            other.typeId === SECURITY_CENTER_TYPE_ID &&
+            activeAt(other, at),
+        );
+        if (!hasAnotherCenter && parkExhibitRiskPoints(park, at) > 0)
+          throw new BadRequestException('위험 공룡을 먼저 배치 대기로 옮겨주세요.');
+      }
       if (
         getEarlyProductionRecipe(building.typeId) &&
         (await tx.productionJob.findUnique({ where: { activeSlot: building.id } }))
@@ -534,15 +768,58 @@ export class BuildingService {
           where: { assignedBuildingId: buildingId },
           data: { assignedBuildingId: null },
         });
-      const type = getBuildingById(building.typeId);
-      const baseCost = type?.baseCost ?? type?.unlockCondition.cost.gold ?? 1000;
+      // Older security centers used the generic price. Use the actual receipt for newer ones.
+      const securityUpgradeReceipt =
+        building.typeId === SECURITY_CENTER_TYPE_ID &&
+        building.level >= SECURITY_CENTER_LEVEL_TWO_UPGRADE.targetLevel
+          ? await tx.transaction.findUnique({
+              where: { id: securityCenterUpgradeReceiptId(buildingId), userId },
+              select: { amount: true },
+            })
+          : null;
+      const facilityReceipts = getResearchFacilityUpgrade(building.typeId, 1)
+        ? await tx.transaction.findMany({
+            where: {
+              userId,
+              id: {
+                in: Array.from({ length: building.level }, (_, index) =>
+                  researchFacilityReceiptId(buildingId, index + 1),
+                ),
+              },
+            },
+            select: { id: true, amount: true },
+          })
+        : [];
+      const facilityPaid = new Map(facilityReceipts.map(({ id, amount }) => [id, -amount]));
       let invested = 0;
-      for (let level = 1; level <= building.level; level++)
-        invested +=
-          (building.typeId === PARK_ADMISSION.platformTypeId
+      for (let level = 1; level <= building.level; level++) {
+        const stepPrice =
+          building.typeId === PARK_ADMISSION.platformTypeId
             ? getViewingPlatformUpgrade(level)?.gold
-            : undefined) ?? getUpgradeCost(baseCost, level);
+            : securityUpgradeReceipt && level === SECURITY_CENTER_LEVEL_TWO_UPGRADE.targetLevel
+              ? -securityUpgradeReceipt.amount
+              : facilityPaid.get(researchFacilityReceiptId(buildingId, level));
+        invested += stepPrice ?? getGenericBuildingUpgradeQuote(building.typeId, level).gold;
+      }
       const refund = Math.floor(invested * 0.5);
+      const readyLevelFlag =
+        building.typeId === PARK_ADMISSION.platformTypeId &&
+        growthFacilityHasCompletedLevel(building, PARK_LEVEL_SEVEN_GROWTH.platformLevel)
+          ? PARK_LEVEL_SEVEN_GROWTH.completedPlatformFlagId
+          : building.typeId === SECURITY_CENTER_TYPE_ID &&
+              growthFacilityHasCompletedLevel(
+                building,
+                SECURITY_CENTER_LEVEL_TWO_UPGRADE.targetLevel,
+              )
+            ? PARK_LEVEL_EIGHT_GROWTH.completedSecurityCenterFlagId
+            : null;
+      if (readyLevelFlag) {
+        await tx.storyFlag.createMany({
+          data: { userId, flagId: readyLevelFlag, value: true },
+          skipDuplicates: true,
+        });
+      }
+      await retainDemolishedGrowthFacility(tx, userId, building);
       await tx.building.delete({ where: { id: buildingId } });
       await tx.currency.update({ where: { userId }, data: { gold: { increment: refund } } });
       return { demolished: true, goldRefund: refund };
@@ -595,15 +872,17 @@ export class BuildingService {
   private enrichBuildingData(building: Building) {
     // game-data에서 건물 정보 가져오기
     const buildingData = getBuildingById(building.typeId);
-    const baseCost = buildingData?.baseCost ?? buildingData?.unlockCondition.cost.gold ?? 1000;
     const baseBonus = buildingData?.baseBonus || 5;
 
     const maximumLevel = buildingData?.maxLevel ?? MAX_BUILDING_LEVEL;
+    const nextLevel = building.level + 1;
     const nextLevelCost =
       building.level < maximumLevel
         ? building.typeId === PARK_ADMISSION.platformTypeId
-          ? (getViewingPlatformUpgrade(building.level + 1)?.gold ?? null)
-          : getUpgradeCost(baseCost, building.level + 1)
+          ? (getViewingPlatformUpgrade(nextLevel)?.gold ?? null)
+          : (getResearchFacilityUpgrade(building.typeId, nextLevel)?.costs.gold ??
+            getSecurityCenterUpgrade(building.typeId, nextLevel)?.gold ??
+            getGenericBuildingUpgradeQuote(building.typeId, nextLevel).gold)
         : null;
 
     const currentBonus = calculateBuildingBonus(baseBonus, building.level);

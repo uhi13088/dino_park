@@ -25,15 +25,16 @@ function table(key) {
   const rows=block.split('\n').filter(x=>x.startsWith('|')).map(x=>x.trim().slice(1,-1).split('|').map(x=>x.trim()));
   return rows.slice(2).map(cells=>Object.fromEntries(rows[0].map((name,i)=>[name,cells[i]])));
 }
-const all=definitions.flatMap(d=>table(d.key));
+const familyNodes = new Map(definitions.map(({key}) => [key, table(key)]));
+const all = [...familyNodes.values()].flat();
 const byId=new Map(all.map(n=>[n.id,n]));
-if(all.length!==72 || byId.size!==72)throw new Error('Expected 72 unique nodes');
+if(all.length!==69 || byId.size!==all.length)throw new Error('Expected 69 unique nodes');
 function parents(n) {return n['선행']==='-'?[]:n['선행'].split(',').map(s=>{const [id,level]=s.split(':');return {id,level:Number(level)};});}
 const edges=all.flatMap(n=>parents(n).map(p=>({from:p.id,to:n.id,level:p.level})));
 const roots=all.filter(n=>!parents(n).length);
 const labCache=new Map();
 function requiredLab(id,rank=1){const key=id+':'+rank;if(labCache.has(key))return labCache.get(key);const n=byId.get(id);const own=Number(n['연구소단계'].split(',')[rank-1]);const result=Math.max(own,...parents(n).map(p=>requiredLab(p.id,p.level)));labCache.set(key,result);return result;}
-if(edges.length!==65 || roots.length!==8)throw new Error('Canonical edge/root counts changed; review the diagram');
+if(edges.length!==63 || roots.length!==7)throw new Error('Canonical edge/root counts changed; review the diagram');
 function text(x,y,label,size=24,weight=500,fill=C.ink,extra='') {
   return `<text x="${x}" y="${y}" font-size="${size}" font-weight="${weight}" fill="${fill}" ${extra}>${esc(label)}</text>`;
 }
@@ -82,12 +83,12 @@ function layout(nodes) {
   return {positions,cols};
 }
 function panel(d) {
-  const ns=table(d.key);if(ns.length!==18)throw new Error('Expected 18 nodes in family');
+  const ns=familyNodes.get(d.key);
   const {positions,cols}=layout(ns);
   let s=`<g id="panel-${d.key}"><rect width="${W}" height="${H}" rx="28" fill="${C.white}" stroke="${C.line}" stroke-width="2"/>`;
   s+=`<rect x="0" y="0" width="${W}" height="154" rx="28" fill="${d.soft}"/><rect x="0" y="110" width="${W}" height="44" fill="${d.soft}"/>`;
   s+=icon(d.key,58,42,d.color,62)+text(142,85,d.name,45,700,d.color)+text(145,121,d.caption,22,500,C.muted);
-  s+=pill(W-273,68,'18개 기술',C.white,d.color,23);
+  s+=pill(W-273,68,`${ns.length}개 기술`,C.white,d.color,23);
   s+=text(W-280,119,'각 항목 최대 Lv.3 또는 5',19,500,C.muted);
   s+=text(64,196,'실제 선행 관계 →',19,600,C.muted)+text(W-64,196,'연결선 Lv. = 필요한 선행 기술 레벨',18,400,C.muted,'text-anchor="end"');
   const local=edges.filter(e=>byId.get(e.to)['계열']===d.name);
@@ -124,15 +125,15 @@ async function main(){
   let body=`<rect width="${posterW}" height="${posterH}" fill="${C.bg}"/>`;
   body+=text(76,90,'DINO PARK  /  RESEARCH MAP',22,700,'#45724E','letter-spacing="4"');
   body+=text(76,171,'다이노 파크 연구 스킬트리',66,750,C.ink);
-  body+=text(78,228,'4개 계열 · 계열당 18개 · 총 72개 기술',31,500,C.muted);
+  body+=text(78,228,`4개 계열 · 총 ${all.length}개 기술`,31,500,C.muted);
   body+=text(78,275,'연구소 성장 → 선행 기술 완료 → 부지·시설·새 지역·공룡 연구 개방',25,500,C.muted);
   body+=`<image href="data:image/svg+xml;base64,${mascot}" x="${posterW-235}" y="45" width="140" height="130"/>`;
   body+=pill(posterW-600,228,'기획 0.6 · 전체 구조안','#E7EEDC','#366042',23);
   panels.forEach((p,i)=>{const x=64+(i%2)*(W+40),y=326+Math.floor(i/2)*(H+40);body+=`<g transform="translate(${x},${y})">${p.svg}</g>`;});
   body+=text(78,posterH-74,'카드의 최대값은 해당 기술의 최대 레벨입니다. 연구소 조건은 기술 강화에 따라 추가로 높아집니다.',23,500,C.muted);
-  body+=text(78,posterH-35,'기획 구조도입니다. 72개 기술의 자원·시간·레벨별 효과를 정의했습니다. 후속 콘텐츠는 준비 후 연결합니다. 스토리·첫 영웅·원종 조건은 상세 기획서를 따릅니다.',21,400,C.muted);
-  const poster=wrap(body,posterW,posterH,'다이노 파크 4계열72기술의 실제 선행 스킬트리');
-  const assets=[{name:'research-tree-overview',svg:poster,width:posterW,height:posterH},...panels.map(p=>({name:`research-tree-${p.d.key}`,svg:wrap(p.svg,W,H,`${p.d.name}18개기술선행트리`),width:W,height:H}))];
+  body+=text(78,posterH-35,'연구별 자원·시간·레벨 효과와 스토리 조건은 플레이 가이드에서 확인하세요.',21,400,C.muted);
+  const poster=wrap(body,posterW,posterH,`다이노 파크 4계열 ${all.length}개 기술의 선행 스킬트리`);
+  const assets=[{name:'research-tree-overview',svg:poster,width:posterW,height:posterH},...panels.map(p=>({name:`research-tree-${p.d.key}`,svg:wrap(p.svg,W,H,`${p.d.name} ${p.nodes.length}개 기술 선행 트리`),width:W,height:H}))];
   const browser=await chromium.launch({headless:true});
   const page=await browser.newPage({deviceScaleFactor:1});
   const labelFailures=[];

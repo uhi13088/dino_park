@@ -1,0 +1,2 @@
+ALTER TABLE "parks"
+ADD COLUMN IF NOT EXISTS "visitorDepartures" JSONB NOT NULL DEFAULT '[]'::JSONB;

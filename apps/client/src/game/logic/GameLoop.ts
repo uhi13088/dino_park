@@ -8,8 +8,6 @@ import {
   HUNGER_INCREASE_PER_HOUR,
   MAX_HAPPINESS,
   MAX_HUNGER,
-  MAX_EXPLORATION_ENERGY,
-  ENERGY_RECHARGE_MINUTES,
   HOUR,
   MINUTE,
 } from '@dino-park/shared';
@@ -40,8 +38,6 @@ export interface TickResult {
   revenueResult: ParkRevenueResult;
   currencyUpdate: {
     gold: number;
-    explorationEnergy: number;
-    energyRechargeAt: string | null;
   };
 }
 
@@ -51,7 +47,6 @@ export interface TickResult {
 export interface GameLoopEvents {
   tick: TickResult;
   dinosaurDanger: { dinosaurId: string; reason: 'happiness' | 'hunger' };
-  energyFull: void;
 }
 
 type EventCallback<T> = (data: T) => void;
@@ -67,7 +62,6 @@ export class GameLoop {
 
   // 시간 추적
   private lastStateDecayTime = 0;
-  private lastEnergyRechargeTime = 0;
 
   /**
    * 게임 상태 설정
@@ -81,9 +75,6 @@ export class GameLoop {
           gold: 0,
           diamond: 0,
           dna: 0,
-          explorationEnergy: 0,
-          maxEnergy: MAX_EXPLORATION_ENERGY,
-          energyRechargeAt: null,
         },
         lastTickTime: Date.now(),
         accumulatedGold: 0,
@@ -117,7 +108,6 @@ export class GameLoop {
 
     this.isRunning = true;
     this.lastStateDecayTime = Date.now();
-    this.lastEnergyRechargeTime = Date.now();
 
     // 틱 인터벌 시작
     this.intervalId = setInterval(() => {
@@ -159,15 +149,7 @@ export class GameLoop {
       netRevenue: 0,
     };
 
-    // 에너지 충전 체크
-    const energyUpdate = this.updateEnergy(now);
-
-    // 상태 업데이트
     this.state.lastTickTime = now;
-    this.state.currency = {
-      ...this.state.currency,
-      ...energyUpdate,
-    };
 
     // 틱 결과
     const tickResult: TickResult = {
@@ -175,8 +157,6 @@ export class GameLoop {
       revenueResult,
       currencyUpdate: {
         gold: this.state.currency.gold,
-        explorationEnergy: energyUpdate.explorationEnergy,
-        energyRechargeAt: energyUpdate.energyRechargeAt,
       },
     };
 
@@ -234,48 +214,6 @@ export class GameLoop {
     });
 
     return updates;
-  }
-
-  /**
-   * 에너지 충전 업데이트
-   */
-  private updateEnergy(now: number): {
-    explorationEnergy: number;
-    energyRechargeAt: string | null;
-  } {
-    if (!this.state) {
-      return { explorationEnergy: 0, energyRechargeAt: null };
-    }
-
-    let { explorationEnergy, energyRechargeAt } = this.state.currency;
-
-    // 이미 최대치면 충전 불필요
-    if (explorationEnergy >= MAX_EXPLORATION_ENERGY) {
-      return { explorationEnergy: MAX_EXPLORATION_ENERGY, energyRechargeAt: null };
-    }
-
-    // 충전 시간 계산 (10분마다 1 충전)
-    const rechargeIntervalMs = ENERGY_RECHARGE_MINUTES * MINUTE;
-    const timeSinceLastRecharge = now - this.lastEnergyRechargeTime;
-
-    if (timeSinceLastRecharge >= rechargeIntervalMs) {
-      const energyGained = Math.floor(timeSinceLastRecharge / rechargeIntervalMs);
-      explorationEnergy = Math.min(MAX_EXPLORATION_ENERGY, explorationEnergy + energyGained);
-      this.lastEnergyRechargeTime = now;
-
-      if (explorationEnergy >= MAX_EXPLORATION_ENERGY) {
-        this.emit('energyFull', undefined);
-        energyRechargeAt = null;
-      } else {
-        // 다음 충전 시간
-        energyRechargeAt = new Date(now + rechargeIntervalMs).toISOString();
-      }
-    } else if (!energyRechargeAt) {
-      // 충전 시간 설정
-      energyRechargeAt = new Date(this.lastEnergyRechargeTime + rechargeIntervalMs).toISOString();
-    }
-
-    return { explorationEnergy, energyRechargeAt };
   }
 
   /**

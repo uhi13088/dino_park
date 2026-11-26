@@ -20,6 +20,7 @@ OUTPUT = ROOT / 'docs/current/park-progression-tables.md'
 followup = acquisition.followup
 building = followup.building
 MAX_PARK_LEVEL = 50
+CURRENT_STRATEGY_LEVELS = (6, 7)
 TRACKS = ('facility', 'research', 'field', 'operation')
 TRACK_LABELS = {'facility': '시설 준비', 'research': '연구 적용', 'field': '현장 발견', 'operation': '운영 실적'}
 SOURCE_PATHS = [
@@ -352,5 +353,5 @@ def summary():
             'cumulative_to_park50': sum(experience(n) for n in range(1, 50)),
             'remaining_at_park50': 0, 'implementation': 'planning_only',
             'duration_status': 'economy_and_live_play_unverified',
-            'requires_all_72_research_max': False, 'requires_all_83_species': False,
+            'requires_all_69_research_max': False, 'requires_all_83_species': False,
             'requires_all_15_recipes': False, 'new_repeat_xp': False}

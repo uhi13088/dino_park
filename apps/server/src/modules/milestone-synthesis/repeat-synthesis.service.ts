@@ -78,6 +78,14 @@ export class RepeatSynthesisService {
     }));
     const missing: string[] = [];
     if (!unlocked) missing.push('스테고케라톱스의 첫 전시를 마쳐주세요.');
+    if (
+      unlocked &&
+      (await tx.experimentalHybridJob.findUnique({
+        where: { activeSlot: park.id },
+        select: { id: true },
+      }))
+    )
+      missing.push('진행 중인 실험 합성 결과를 먼저 수령해주세요.');
     if (!lab) missing.push('DNA 연구소를 완공해주세요.');
     if (!hasHealthyParents(state.parents))
       missing.push('행복도 30 이상·허기 80 이하의 스테고사우루스와 트리케라톱스가 필요해요.');

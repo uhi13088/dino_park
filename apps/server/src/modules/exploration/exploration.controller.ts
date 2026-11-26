@@ -88,7 +88,7 @@ export class ExplorationController {
    * 탐험 시작
    */
   @Post()
-  @ApiOperation({ summary: '탐험 시작 (에너지 5 소모)' })
+  @ApiOperation({ summary: '탐험 시작' })
   @ApiResponse({
     status: 201,
     description: '탐험 시작됨',
@@ -100,7 +100,6 @@ export class ExplorationController {
         status: 'IN_PROGRESS',
         duration: 300,
         completesAt: '2024-01-15T10:05:00Z',
-        energyUsed: 5,
       },
     },
   })

@@ -1,0 +1,203 @@
+.park-world .park-placement {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  inline-size: min(304px, calc(100% - var(--park-hud-left) - var(--park-hud-right)));
+  padding: 10px 12px 12px;
+  color: #3b2c1b;
+  background: linear-gradient(160deg, rgb(255 249 236 / 97%), rgb(250 233 203 / 94%));
+  border-color: #d7bc8e;
+  box-shadow:
+    inset 0 1px 0 #fff8ec,
+    0 6px 18px rgb(40 28 17 / 24%);
+  overflow: hidden;
+}
+
+.park-placement__heading {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-block-size: 44px;
+  margin-block: -8px -4px;
+  margin-inline-end: -8px;
+}
+
+.park-placement__heading h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.park-placement__close {
+  display: grid;
+  flex: 0 0 44px;
+  block-size: 44px;
+  place-items: center;
+  color: #63462c;
+  border-radius: 8px;
+}
+
+.park-placement__close:hover:enabled {
+  background: rgb(114 77 36 / 10%);
+}
+
+.park-placement__close svg {
+  inline-size: 20px;
+  block-size: 20px;
+}
+
+.park-placement__body,
+.park-placement__footer {
+  display: grid;
+  gap: 10px;
+}
+
+.park-placement__body {
+  align-content: start;
+  min-block-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.park-placement__footer {
+  flex: none;
+  gap: 8px;
+  padding-block-end: 2px;
+}
+
+.park-placement__position,
+.park-placement__instruction,
+.park-placement__keys,
+.park-placement__status {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.park-placement__position,
+.park-placement__keys {
+  color: #695037;
+  font-variant-numeric: tabular-nums;
+}
+
+.park-placement__keys {
+  margin-block-start: -6px;
+}
+
+.park-placement__status {
+  padding-inline-start: 8px;
+  color: #524232;
+  border-inline-start: 3px solid #846746;
+  font-weight: 700;
+}
+
+.park-placement[data-tone='available'] .park-placement__status {
+  color: #38512e;
+  border-color: #6a824b;
+}
+
+.park-placement[data-tone='blocked'] .park-placement__status {
+  color: #813a2b;
+  border-color: #ad5d49;
+}
+
+.park-placement__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.park-world .park-placement__confirm {
+  flex: 1;
+  min-inline-size: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: #fff7e7;
+  background: #765025;
+  border: 1px solid #694520;
+  box-shadow:
+    inset 0 1px 0 rgb(255 222 170 / 35%),
+    0 2px 0 #583916;
+  font-weight: 800;
+}
+
+.park-world .park-placement__confirm:hover:enabled {
+  background: #865a2a;
+}
+
+.park-world .park-move__actions,
+.park-world .park-move__cancel {
+  position: absolute;
+  z-index: 15;
+  touch-action: manipulation;
+}
+
+.park-world .park-move__actions {
+  display: flex;
+  gap: 8px;
+  inset-block-end: var(--park-hud-bottom);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+
+.park-world .park-move__confirm {
+  min-inline-size: 112px;
+  color: #392615;
+  background: #f3c87f;
+  border: 1px solid #9a642f;
+  box-shadow: 0 2px 0 #694420;
+  font-weight: 800;
+}
+
+.park-world .park-move__confirm:hover:enabled {
+  background: #ffda98;
+}
+
+.park-world .park-move__rotate {
+  flex: none;
+  gap: 6px;
+  padding-inline: 12px;
+  color: #fff7e7;
+  background: #473425;
+  border: 1px solid #695040;
+  font-weight: 700;
+}
+
+.park-world .park-move__rotate:hover:enabled {
+  background: #604733;
+}
+
+.park-world .park-move__rotate[aria-pressed='true'],
+.park-world .park-move__rotate[aria-pressed='true']:hover:enabled {
+  color: #3c2819;
+  background: #edce97;
+  border-color: #a57d46;
+}
+
+.park-move__arrow {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.park-world .park-move__cancel {
+  display: grid;
+  inset-block-start: var(--park-hud-top);
+  inset-inline-start: var(--park-hud-left);
+  inline-size: 44px;
+  block-size: 44px;
+  place-items: center;
+}
+
+.park-move__cancel svg {
+  inline-size: 19px;
+  block-size: 19px;
+}
+
+@media (any-pointer: coarse), (max-height: 340px) and (orientation: landscape) {
+  .park-placement__keys {
+    display: none;
+  }
+}

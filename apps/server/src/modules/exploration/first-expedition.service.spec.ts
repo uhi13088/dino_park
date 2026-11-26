@@ -23,7 +23,6 @@ function fixture() {
     mission: null as Record<string, unknown> | null,
     eggs: [] as Array<Record<string, unknown>>,
     receipts: new Set<string>(),
-    transactions: [] as unknown[],
   };
   const update = (object: Record<string, unknown>, data: Record<string, unknown>) => {
     for (const [key, value] of Object.entries(data)) {
@@ -48,23 +47,11 @@ function fixture() {
     },
     currency: {
       findUniqueOrThrow: jest.fn(async () => state.currency),
-      update: jest.fn(async ({ data }) => update(state.currency, data)),
     },
     exploration: {
       findUnique: jest.fn(async ({ where }) =>
         where.id ? (state.mission?.id === where.id ? state.mission : null) : state.mission,
       ),
-      count: jest.fn(async () => 0),
-      create: jest.fn(async ({ data }) => {
-        state.mission = {
-          id: `mission-${++id}`,
-          status: 'IN_PROGRESS',
-          startedAt: now,
-          missionStep: 0,
-          ...data,
-        };
-        return state.mission;
-      }),
       update: jest.fn(async ({ data }) => update(state.mission!, data)),
     },
     hatchingQueue: {
@@ -93,6 +80,9 @@ function fixture() {
       ),
     },
     dinosaur: {
+      findFirst: jest.fn(
+        async ({ where }) => state.park.dinosaurs.find(({ id }) => id === where.id) ?? null,
+      ),
       create: jest.fn(async ({ data }) => {
         const dinosaur = {
           id: `dino-${++id}`,
@@ -123,12 +113,6 @@ function fixture() {
     driveRun: {
       findUnique: jest.fn(),
     },
-    transaction: {
-      create: jest.fn(async (args) => {
-        state.transactions.push(args);
-        return args.data;
-      }),
-    },
   };
   // Row-lock equivalent for concurrency tests; a rejected callback leaves the chain usable.
   let last = Promise.resolve<unknown>(undefined);
@@ -151,11 +135,16 @@ function fixture() {
   };
 }
 
-async function finishMission(f: ReturnType<typeof fixture>) {
-  await f.service.start('owner', 'grassland');
-  const id = f.state.mission!.id as string;
-  for (const [step, clue] of FIRST_EXPEDITION.clues.entries())
-    await f.service.choose('owner', id, step, clue.correctChoiceId);
+function completedMission(f: ReturnType<typeof fixture>) {
+  const id = 'old-first-expedition';
+  f.state.mission = {
+    id,
+    userId: 'owner',
+    regionId: FIRST_EXPEDITION.regionId,
+    missionId: FIRST_EXPEDITION.id,
+    status: 'COMPLETED',
+    missionStep: 3,
+  };
   return id;
 }
 
@@ -182,10 +171,12 @@ describe('first expedition and nursery', () => {
     expect((egg.completesAt as Date).getTime() - (egg.startedAt as Date).getTime()).toBe(3_600_000);
     await expect(f.service.claimHatching('owner', 'trike-egg')).rejects.toThrow('아직 알');
     egg.completesAt = new Date(0);
-    await Promise.all([
+    const reports = await Promise.all([
       f.service.claimHatching('owner', 'trike-egg'),
       f.service.claimHatching('owner', 'trike-egg'),
     ]);
+    const hatchedDinosaur = { id: f.state.park.dinosaurs[0].id, speciesId: 'triceratops' };
+    expect(reports).toMatchObject([{ hatchedDinosaur }, { hatchedDinosaur }]);
     expect(f.state.park.dinosaurs).toHaveLength(1);
     expect(f.state.park.dinosaurCollections).toEqual([
       expect.objectContaining({ speciesId: 'triceratops' }),
@@ -193,45 +184,20 @@ describe('first expedition and nursery', () => {
     expect(f.state.park.exp).toBe(800);
   });
 
-  it('requires the completed platform, then charges once even for concurrent resumes', async () => {
+  it('hides unfinished manual sessions and rejects attempts to collect their rewards', async () => {
     const f = fixture();
-    f.state.park.buildings[0].status = 'CONSTRUCTING';
-    await expect(f.service.start('owner', 'grassland')).rejects.toThrow('관람대');
-    expect(f.state.currency.gold).toBe(10000);
-    f.state.park.buildings[0].status = 'ACTIVE';
-    const results = await Promise.all([
-      f.service.start('owner', 'grassland'),
-      f.service.start('owner', 'grassland'),
-    ]);
-    expect(results.map((result) => result.mission?.id)).toEqual(['mission-1', 'mission-1']);
-    expect(f.state.currency.gold).toBe(9900);
-    expect(f.state.currency.explorationEnergy).toBe(25);
-    expect(f.tx.exploration.create).toHaveBeenCalledTimes(1);
-  });
-
-  it('cannot finish through time, future steps, mistakes or duplicate step submission', async () => {
-    const f = fixture();
-    await f.service.start('owner', 'grassland');
-    const id = f.state.mission!.id as string;
-    f.state.mission!.startedAt = new Date(0);
-    expect((await f.service.getState('owner')).stage).toBe('exploring');
-    await expect(f.service.claim('owner', id)).rejects.toThrow('세 단서');
-    await expect(f.service.choose('owner', id, 2, 'nest')).rejects.toThrow('앞의 단서');
-    const wrong = await f.service.choose('owner', id, 0, 'rocks');
-    expect(wrong.feedback?.correct).toBe(false);
-    expect(wrong.mission?.step).toBe(0);
-    await Promise.all([
-      f.service.choose('owner', id, 0, 'footprints'),
-      f.service.choose('owner', id, 0, 'footprints'),
-    ]);
-    expect((await f.service.getState('owner')).mission?.step).toBe(1);
-    expect(f.state.currency.gold).toBe(9900);
-    expect(f.state.currency.explorationEnergy).toBe(25);
+    const id = completedMission(f);
+    f.state.mission!.status = 'IN_PROGRESS';
+    f.state.mission!.missionStep = 1;
+    expect(await f.service.getState('owner')).toMatchObject({ stage: 'available', mission: null });
+    await expect(f.service.claim('owner', id)).rejects.toThrow('완료 기록');
+    expect(f.state.mission!.missionStep).toBe(1);
+    expect(f.state.eggs).toHaveLength(0);
   });
 
   it('stores the designated egg, starts manually and never claims before 60 seconds', async () => {
     const f = fixture();
-    const id = await finishMission(f);
+    const id = completedMission(f);
     await Promise.all([f.service.claim('owner', id), f.service.claim('owner', id)]);
     const state = await f.service.getState('owner');
     expect(state.stage).toBe('egg');
@@ -252,7 +218,7 @@ describe('first expedition and nursery', () => {
 
   it('grants one healthy owned dinosaur and one codex record/XP, preserving manual placement', async () => {
     const f = fixture();
-    const id = await finishMission(f);
+    const id = completedMission(f);
     await f.service.claim('owner', id);
     const egg = f.state.eggs[0];
     await f.service.startHatching('owner', egg.id as string);
@@ -281,7 +247,7 @@ describe('first expedition and nursery', () => {
   it('recognizes old collection or owned progress without charging or granting a bonus', async () => {
     const f = fixture();
     f.state.park.dinosaurCollections.push({ speciesId: 'iguanodon' });
-    expect((await f.service.start('owner', 'grassland')).stage).toBe('complete');
+    expect((await f.service.getState('owner')).stage).toBe('complete');
     expect(f.state.currency.gold).toBe(10000);
     expect(f.state.park.exp).toBe(0);
     expect(f.state.mission).toBeNull();
@@ -289,7 +255,7 @@ describe('first expedition and nursery', () => {
 
   it('keeps a stored egg when legacy incubation fills the basic slot; hatchery means total three', async () => {
     const f = fixture();
-    const id = await finishMission(f);
+    const id = completedMission(f);
     await f.service.claim('owner', id);
     f.state.eggs.push({
       id: 'legacy',
@@ -331,27 +297,13 @@ describe('first expedition and nursery', () => {
     expect(f.state.receipts.size).toBe(0);
     await expect(f.service.claimHatching('intruder', 'legacy')).rejects.toThrow('보유한 알');
   });
-  it('does not trust a skipped tutorial number as mission completion, and protects foreign missions', async () => {
+  it('keeps earned reports private and independent of the tutorial number', async () => {
     const f = fixture();
     f.state.user.tutorialStep = 999;
     expect((await f.service.getState('owner')).stage).toBe('available');
-    await f.service.start('owner', 'grassland');
-    const id = f.state.mission!.id as string;
-    await expect(f.service.choose('intruder', id, 0, 'footprints')).rejects.toThrow('첫 탐험');
+    const id = completedMission(f);
+    expect(await f.service.getState('owner')).toMatchObject({ stage: 'reward', mission: { id } });
     await expect(f.service.claim('intruder', id)).rejects.toThrow('첫 탐험');
-    expect(f.state.mission!.missionStep).toBe(0);
     expect(f.state.eggs).toHaveLength(0);
-  });
-
-  it('keeps the mission unopened when either preparation resource is insufficient', async () => {
-    const f = fixture();
-    f.state.currency.gold = 99;
-    await expect(f.service.start('owner', 'grassland')).rejects.toThrow('준비비');
-    f.state.currency.gold = 100;
-    f.state.currency.explorationEnergy = 4;
-    f.state.currency.energyLastRechargedAt = new Date();
-    await expect(f.service.start('owner', 'grassland')).rejects.toThrow('에너지');
-    expect(f.state.currency.gold).toBe(100);
-    expect(f.state.mission).toBeNull();
   });
 });

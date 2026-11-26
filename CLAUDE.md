@@ -64,9 +64,9 @@
 | 획득·DNA·변종·하이브리드 | [공룡 획득·DNA 연구 0.6](docs/current/dna-and-collection.md) |
 | 중후반 파크 성장·경험치 | [성장 정본](docs/current/park-progression.md)·[전체 공급표](docs/current/park-progression-tables.md). Park5~50·45전환·180일회성 목표/XP 소유. 실제 시설/기술/획득 권한과 비용은 기존 정본, 본편17장면 조건은story-progression§11 참조. 실제 수급/완주기간/런타임과 구별 |
 | 83종 최초·반복 획득 | [획득 정본](docs/current/dinosaur-acquisition.md)·[전체 획득표](docs/current/dinosaur-acquisition-tables.md). 반복 알68종·첫 랩터 예외1·합성15종을 연결. 레시피 비용/재료는DNA, 알비용밴드는balance를 읽고 별도 수치 원천을 만들지 않음 |
-| 건물 역할·25레벨 성장 | [건물 기획](docs/current/buildings.md)·[생성 상세표](docs/current/building-upgrade-tables.md). 주요25레벨/금고/연료 방향 확정, 새 수치 런타임 적용 전 |
-| 기술 연구트리·연구원 역할 | [기술 연구트리](docs/current/research-trees.md). 4계열72기술/총252회 연구의 목적·선행·연구소/시설권한, 72항목의 비용·시간·레벨별 효과 정의. 기존14개는 연구트리, 신규58개는 [효과 상세](docs/current/research-effects.md)가 소유. 각 기술3~5레벨/연구원 병렬수/DNA 합성 별도 작업을 구별 |
-| 후속 확장·수동 탐험 | [생성 상세표](docs/current/followup-content-tables.md)·[탐험 플레이](docs/current/exploration-play.md). 토지/특수시설/준비비는 balance16~17, 부모/레시피/추가2종은 DNA, 83종 호환은 buildings. 계획83종과 실제81종·게임 적용 여부를 구별 |
+| 건물 역할·25레벨 성장 | [건물 기획](docs/current/buildings.md)·[생성 상세표](docs/current/building-upgrade-tables.md). 주요25레벨/금고 방향 확정, 새 수치 런타임 적용 전 |
+| 기술 연구트리·연구원 역할 | [기술 연구트리](docs/current/research-trees.md). 4계열69기술/총239회 연구의 목적·선행·연구소/시설권한, 69항목의 비용·시간·레벨별 효과 정의. 기본12개는 연구트리, 상세57개는 [효과 상세](docs/current/research-effects.md)가 소유. 각 기술3~5레벨/연구원 병렬수/DNA 합성 별도 작업을 구별 |
+| 후속 확장·탐험가 파견 | [생성 상세표](docs/current/followup-content-tables.md)·[파견 지도](docs/current/exploration-spots.md). 토지·특수시설·준비비는 밸런스, 부모와 레시피는 DNA, 83종 서식지 호환은 건물 정본을 따른다. 후반 연구 해금의 적용 범위는 TASK에서 확인한다. |
 | 통합 스토리·등장인물 | [스토리 정본](docs/current/story-and-characters.md). 본편·사이드·4시즌의 단일 캐논, 아서의 마지막 여정과 유산. 초반 조건/대사와 후반17장면의 플레이 연결은 story-progression이 소유 |
 | 위인 GP·능력 | [위인 통합 기획](docs/current/great-figures.md). GP 영입과 보유/배정·500레벨 수치·시너지/상한. 연구원 다이아와 구별하며 합성 확률/시간 하한 보존 |
 | 제작·서비스 | [통합 명세](docs/current/production-and-services.md). 아트·사운드·시즌 운영·소셜·상점·품질 |
@@ -77,11 +77,11 @@
 ### 충돌 시 우선순위
 
 1. 사용자가 확정한 요구와 현재 대화의 수정.
-2. 최신 기획의 담당 문서. 자원 종류·품질·생산/사용 규칙은 resources-and-production, 구매·생산·25레벨 성능/시설·금고 한도·연료·미션·승급 수치는 balance, 개별 합성 레시피의 재료·제작비·시간은 dna-and-collection, 기술 항목·선행과 기존14효과는 research-trees, 신규58효과는 하위 research-effects, 기술 연구 비용/시간은 balance, 첫 영웅 이후 Park5~50 목표·경험치는 park-progression이 소유하며 다른 문서에서 별도 수치를 만들지 않는다.
+2. 최신 기획의 담당 문서. 자원 종류·품질·생산/사용 규칙은 resources-and-production, 구매·생산·25레벨 성능/시설·금고 한도·미션·승급 수치는 balance, 개별 합성 레시피의 재료·제작비·시간은 dna-and-collection, 기술 항목·선행과 기본12개 효과는 research-trees, 상세57개 효과는 하위 research-effects, 기술 연구 비용/시간은 balance, 첫 영웅 이후 Park5~50 목표·경험치는 park-progression이 소유하며 다른 문서에서 별도 수치를 만들지 않는다.
 3. 최신 기획에 명시적으로 승계한 도감의 종/원종 조합, 시나리오의 서사. 과거 직접 수익·합성 성공률·부속 경제 수치는 제외한다.
 4. 나머지 구버전 자료는 아이디어·설계 참고다. 최신 문서에 없는 기능을 자동으로 구현 범위에 넣지 않는다.
 
-**기획과 구현의 차이:** 최신 기획은 적용 예정 내용도 포함한다. 실제 게임은 코드를 확인한다. 예를 들어 현재 초기 골드는 10,000이며, 입장료·첫 시설 연결 없이 신규 자금을 먼저 낮추지 않는다. 기존 계정의 골드·공용 DNA·배치를 덮어쓰지 않는다. 0.6의 전체 금고/동적 연료 한도는 기존 초과분을 보존하며, 현재 탐험 에너지와 별도 연료 잔액을 병행하지 않는다.
+**기획과 구현의 차이:** 최신 기획은 적용 예정 내용도 포함한다. 실제 게임은 코드를 확인한다. 예를 들어 현재 초기 골드는 10,000이며, 입장료·첫 시설 연결 없이 신규 자금을 먼저 낮추지 않는다. 기존 계정의 골드·공용 DNA·배치를 덮어쓰지 않는다. 0.6의 전체 금고 한도는 기존 초과분을 보존한다. 탐험에는 파견할 탐험가, 조사 시간, 준비비를 적용한다. 깊은 바다와 지정 장거리 원정에만 연료를 추가한다.
 
 구버전 경로는 링크 호환을 위해 유지한다. 앞으로 새 설계는 `docs/current/`의 소유 문서에 반영하고 TASK에 변경과 검증을 기록한다. 런타임 수치 반영 시 기존 shared/game-data의 소유권을 정리해 서버·클라이언트가 같은 상수를 사용한다.
 
@@ -95,6 +95,7 @@
 - 도메인 규칙은 기존 담당 원천을 수정한다. 가이드북에 경쟁 수치 원천을 만들지 않는다.
 - `editorial`의 출처가 바뀌면 요약을 실제로 대조하고 갱신한다. 지문만 자동 갱신하지 않는다.
 - `bash docs/guidebook/update_guidebook.sh`로 페이지·목차·색인·북마크를 함께 생성한다. 달라진 렌더 페이지를 검토한다.
+- 확정된 규칙이 바뀌면 현행 가이드의 본문·표·목차·색인에서 해당 설명을 교체한다. 변경 이력은 TASK.md에 남긴다.
 - 완료 기록을 정리한 뒤 `bash docs/guidebook/update_guidebook.sh --check`를 통과시킨다. 최신성 검사가 실패한 상태로 가이드북 갱신 완료를 보고하지 않는다.
 - 최종 파일은 `docs/guidebook/output/`의 고정 이름을 사용한다. 실행 코드·DB 변경이나 외부 게시를 가이드북 갱신만으로 승인한 것으로 해석하지 않는다.
 

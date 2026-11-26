@@ -1,43 +1,76 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { getViewingPlatformStats } from '@dino-park/game-data';
-import type { EarlyResourceMaterial } from '@dino-park/shared';
+import { Link } from 'react-router-dom';
+import { FUEL_BUY_PRICE, getViewingPlatformStats } from '@dino-park/game-data';
+import type { PurchaseResourceRequest } from '@dino-park/shared';
 import { Button } from '@/components/ui';
 import { useUpgradeBuilding } from '@/api';
 import {
   cancelResourceReads,
-  useClaimResourceProduction,
   usePurchaseResource,
   useResources,
   useStartResourceProduction,
 } from '@/api/queries/resources';
 import { createRequestId } from '@/utils/requestId';
+import { buildingArtwork } from '@/game/parkArtwork';
+import PlatformAdmissionPreview, { type PlatformImpact } from './PlatformAdmissionPreview';
+import './ParkPanel.css';
+import ResearchQualityPanel from './ResearchQualityPanel';
+import { useParkHarvest } from './useParkHarvest';
 import './ResourcePanel.css';
 
 interface Props {
   onPlaceBuilding: (typeId: string) => void;
   onClose?: () => void;
+  focusPlatformUpgrade?: boolean;
+  focusPurchase?: boolean;
+  focusQuality?: boolean;
+  focusFuel?: boolean;
+  scoutReturnPath?: string;
+  focusProduction?: string;
+  admissionImpact?: PlatformImpact | null;
+  platformExhibitName?: string;
+  isParkOpen?: boolean;
+  admissionPaused?: boolean;
 }
+
+type PurchasableMaterial = PurchaseResourceRequest['material'];
 
 function countdown(milliseconds: number) {
   const seconds = Math.max(0, Math.ceil(milliseconds / 1000));
   return `${Math.floor(seconds / 60)}분 ${String(seconds % 60).padStart(2, '0')}초`;
 }
 
-export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
+export default function ResourcePanel({
+  onPlaceBuilding,
+  onClose,
+  focusPlatformUpgrade,
+  focusPurchase,
+  focusQuality,
+  focusFuel,
+  scoutReturnPath,
+  focusProduction,
+  admissionImpact,
+  platformExhibitName,
+  isParkOpen = false,
+  admissionPaused,
+}: Props) {
   const client = useQueryClient();
   const resources = useResources();
   const purchase = usePurchaseResource();
   const start = useStartResourceProduction();
-  const claim = useClaimResourceProduction();
+  const harvest = useParkHarvest();
   const upgrade = useUpgradeBuilding();
-  const [quantities, setQuantities] = useState<Partial<Record<EarlyResourceMaterial, number>>>({});
+  const [quantities, setQuantities] = useState<Partial<Record<PurchasableMaterial, number>>>({});
   const [lots, setLots] = useState<Record<string, number>>({});
   const [now, setNow] = useState(Date.now);
   const [working, setWorking] = useState(false);
   const inFlight = useRef(false);
+  const upgradeSection = useRef<HTMLElement>(null);
+  const inventoryHeading = useRef<HTMLHeadingElement>(null);
+  const productionSection = useRef<HTMLElement>(null);
   const pendingPurchase = useRef<{
-    material: EarlyResourceMaterial;
+    material: PurchasableMaterial;
     quantity: number;
     id: string;
   }>();
@@ -49,12 +82,28 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
   }, []);
   const state = resources.data;
   const platform = state?.platformUpgrade;
+  const platformBuildingId = platform?.buildingId;
+  const showAdmissionImpact =
+    admissionImpact &&
+    platform?.buildingId === admissionImpact.buildingId &&
+    platform.level === admissionImpact.fromLevel &&
+    platform.targetLevel === admissionImpact.toLevel;
+  useEffect(() => {
+    if (focusPlatformUpgrade && platformBuildingId) upgradeSection.current?.focus();
+  }, [focusPlatformUpgrade, platformBuildingId]);
+  const hasInventory = !!state;
+  useEffect(() => {
+    if (focusPurchase && hasInventory) inventoryHeading.current?.focus();
+  }, [focusPurchase, hasInventory]);
+  useEffect(() => {
+    if ((focusProduction || focusFuel) && hasInventory) productionSection.current?.focus();
+  }, [focusProduction, focusFuel, hasInventory]);
   const platformStats = platform ? getViewingPlatformStats(platform.level) : null;
   const targetPlatformStats = platform?.targetLevel
     ? getViewingPlatformStats(platform.targetLevel)
     : null;
   const platformTimeLeft = platform?.completesAt ? Date.parse(platform.completesAt) - now : 0;
-  const run = async (action: () => Promise<unknown>, message: string) => {
+  const run = async (action: () => Promise<unknown>, message?: string) => {
     if (inFlight.current) return;
     inFlight.current = true;
     setWorking(true);
@@ -64,7 +113,7 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
       await cancelResourceReads(client);
       await action();
       await resources.refetch();
-      setNotice(message);
+      if (message) setNotice(message);
     } catch (error) {
       setFailure(error instanceof Error ? error.message : '저장하지 못했어요. 다시 시도해주세요.');
     } finally {
@@ -73,7 +122,7 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
     }
   };
 
-  const buyMaterial = async (material: EarlyResourceMaterial, quantity: number) => {
+  const buyMaterial = async (material: PurchasableMaterial, quantity: number) => {
     let request = pendingPurchase.current;
     if (request?.material !== material || request.quantity !== quantity) {
       request = { material, quantity, id: createRequestId() };
@@ -84,16 +133,14 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
   };
 
   return (
-    <section className="resource-panel" role="region" aria-label="기본 자원">
-      <header className="resource-panel__header">
-        <div>
-          <h2>기본 자원</h2>
-          <p>필요한 만큼 구매하거나, 시설에서 생산해요.</p>
-        </div>
+    <section className="resource-panel park-panel-surface" role="region" aria-label="기본 자원">
+      {harvest.feedback}
+      <header className="park-panel-header">
+        <h2>기본 자원</h2>
         {onClose && (
           <button
             type="button"
-            className="resource-panel__close"
+            className="park-panel-close"
             aria-label="기본 자원 닫기"
             disabled={working}
             onClick={onClose}
@@ -122,7 +169,7 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
           {failure}
         </p>
       )}
-      <div className="resource-panel__body">
+      <div className="resource-panel__body park-panel-body">
         {resources.isPending ? (
           <p role="status">자원을 확인하고 있어요…</p>
         ) : resources.error ? (
@@ -134,13 +181,40 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
           </div>
         ) : state ? (
           <>
-            <p className="resource-panel__balance">
-              보유 골드 <strong>{state.gold.toLocaleString()}</strong> · 종류별 보관 한도{' '}
-              {state.capacityPerMaterial}개
-            </p>
+            {focusQuality || state.researchMaterials?.length ? (
+              <ResearchQualityPanel resources={state} focused={focusQuality} />
+            ) : null}
+            <dl className="resource-panel__balance">
+              <div>
+                <dt>보유 골드</dt>
+                <dd>{state.gold.toLocaleString()}</dd>
+              </div>
+              <div>
+                <dt>종류별 보관 한도</dt>
+                <dd>{state.capacityPerMaterial}개</dd>
+              </div>
+            </dl>
             {platform && platformStats && (
-              <section className="resource-panel__upgrade" aria-label="관람대 확장">
-                <h3>관람대 Lv.{platform.level}</h3>
+              <section
+                className="resource-panel__upgrade"
+                aria-label="관람대 확장"
+                ref={upgradeSection}
+                tabIndex={-1}
+              >
+                <div className="resource-panel__upgrade-title">
+                  <h3>관람대 Lv.{platform.level}</h3>
+                  {platform.targetLevel && <span>확장 후 Lv.{platform.targetLevel}</span>}
+                </div>
+                {showAdmissionImpact && (
+                  <div className="resource-panel__impact">
+                    <PlatformAdmissionPreview
+                      impact={admissionImpact}
+                      exhibitName={platformExhibitName}
+                      isParkOpen={isParkOpen}
+                      admissionPaused={admissionPaused}
+                    />
+                  </div>
+                )}
                 {platform.completesAt ? (
                   <>
                     <p className="resource-panel__hint">
@@ -152,14 +226,14 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
                     </p>
                     {platform.targetLevel && (
                       <p>
-                        현재 정원 {platformStats.capacity}명 · 완공 후 {platform.targetCapacity}명
+                        현재 관람석 {platformStats.capacity}석 · 완공 후 {platform.targetCapacity}석
                       </p>
                     )}
                   </>
                 ) : platform.targetLevel ? (
                   <>
                     <p>
-                      완공 후 관람대 정원 {platformStats.capacity}명 → {platform.targetCapacity}명
+                      완공 후 관람석 {platformStats.capacity}석 → {platform.targetCapacity}석
                       {platform.targetLevel === 5 && ' · 지붕·안내 표지 확장'}
                     </p>
                     {targetPlatformStats && (
@@ -168,7 +242,7 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
                         {targetPlatformStats.maintenanceCost}골드
                       </p>
                     )}
-                    <p>
+                    <p className="resource-panel__cost">
                       {platform.cost.gold.toLocaleString()}골드 · 목재 {platform.cost.wood}개 · 석재{' '}
                       {platform.cost.stone}개
                       {platform.cost.metal ? ` · 금속 ${platform.cost.metal}개` : ''}
@@ -192,13 +266,14 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
                   </>
                 ) : (
                   <p>
-                    관람대 정원 {platformStats.capacity}명
-                    {platform.reason && ` · ${platform.reason}`}
+                    관람석 {platformStats.capacity}석{platform.reason && ` · ${platform.reason}`}
                   </p>
                 )}
               </section>
             )}
-            <h3>재료함</h3>
+            <h3 ref={inventoryHeading} tabIndex={-1}>
+              재료함
+            </h3>
             <div className="resource-panel__inventory">
               {state.inventory.map((item) => {
                 const quantity =
@@ -260,25 +335,79 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
                 const selectedLots = lots[facility.typeId] ?? 1;
                 const quantity = facility.recipe.batchQuantity * selectedLots;
                 const cost = facility.recipe.batchCost * selectedLots;
+                const isFuel = facility.recipe.material === 'fuel';
                 const material = state.inventory.find(
                   (item) => item.material === facility.recipe.material,
-                )!;
-                const room = material.amount + quantity <= state.capacityPerMaterial;
+                );
+                const fuel = isFuel ? state.fuel : undefined;
+                if (!material && !fuel) return null;
+                const materialName = material?.name ?? '연료';
+                const room =
+                  isFuel || (material?.amount ?? 0) + quantity <= state.capacityPerMaterial;
+                const fuelQuantity = quantities.fuel ?? 1;
+                const fuelSpace = fuel ? Math.max(0, fuel.capacity - fuel.amount) : 0;
+                const fuelCost = fuelQuantity * FUEL_BUY_PRICE;
+                const canBuyFuel =
+                  Number.isInteger(fuelQuantity) && fuelQuantity > 0 && fuelQuantity <= fuelSpace;
                 const building = facility.building;
+                const focused =
+                  (focusFuel && isFuel) || (!!focusProduction && focusProduction === building?.id);
                 return (
-                  <article className="resource-panel__facility" key={facility.typeId}>
+                  <article
+                    className="resource-panel__facility"
+                    aria-label={facility.name}
+                    key={facility.typeId}
+                    ref={focused ? productionSection : undefined}
+                    tabIndex={focused ? -1 : undefined}
+                  >
                     <div className="resource-panel__facility-title">
-                      <img
-                        src={`/assets/placeholders/${facility.typeId}.svg`}
-                        alt=""
-                        width="60"
-                        height="48"
-                      />
+                      <img src={buildingArtwork(facility.typeId)} alt="" width="60" height="48" />
                       <div>
                         <h4>{facility.name}</h4>
-                        <p>{material.name} 생산 · 대기 유지비 없음</p>
+                        <p>
+                          {fuel
+                            ? `연료 ${fuel.amount} / ${fuel.capacity}`
+                            : `${materialName} 생산 · 대기 유지비 없음`}
+                        </p>
                       </div>
                     </div>
+                    {fuel && (
+                      <div className="resource-panel__material">
+                        <small>1개 {FUEL_BUY_PRICE}골드</small>
+                        <label>
+                          <span className="sr-only">연료 구매 수량</span>
+                          <input
+                            type="number"
+                            min={1}
+                            max={Math.max(1, fuelSpace)}
+                            step={1}
+                            value={fuelQuantity}
+                            disabled={working || fuelSpace === 0}
+                            onChange={(event) =>
+                              setQuantities((current) => ({
+                                ...current,
+                                fuel: Number(event.target.value),
+                              }))
+                            }
+                          />
+                        </label>
+                        <Button
+                          variant="outline"
+                          disabled={
+                            working || !canBuyFuel || state.parkLevel < 2 || state.gold < fuelCost
+                          }
+                          onClick={() =>
+                            void run(
+                              () => buyMaterial('fuel', fuelQuantity),
+                              `연료 ${fuelQuantity}개를 구매했어요.`,
+                            )
+                          }
+                        >
+                          연료 구매 · {Number.isFinite(fuelCost) ? fuelCost.toLocaleString() : 0}
+                          골드
+                        </Button>
+                      </div>
+                    )}
                     {!building ? (
                       <>
                         <p>
@@ -307,26 +436,28 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
                     ) : facility.job ? (
                       <>
                         <p role="status">
-                          {facility.job.ready ? '생산 완료' : '생산 중'} · {material.name}{' '}
+                          {facility.job.ready ? '생산 완료' : '생산 중'} · {materialName}{' '}
                           {facility.job.quantity}개
                           {!facility.job.ready &&
                             ` · ${countdown(Date.parse(facility.job.readyAt) - now)}`}
                         </p>
                         {facility.job.claimBlocked && (
                           <p className="resource-panel__hint">
-                            완료된 생산품을 보관 중이에요. 자재를 사용해 공간을 만든 뒤 수령하세요.
+                            {isFuel
+                              ? '완료된 연료를 보관 중이에요. 탐험에서 연료를 쓴 뒤 수령하세요.'
+                              : '완료된 생산품을 보관 중이에요. 자재를 사용해 공간을 만든 뒤 수령하세요.'}
                           </p>
                         )}
                         <Button
                           disabled={working || !facility.job.ready || facility.job.claimBlocked}
-                          onClick={() =>
-                            void run(
-                              () => claim.mutateAsync(facility.job!.id),
-                              `${material.name} 생산품을 수령했어요.`,
-                            )
-                          }
+                          onClick={({ currentTarget }) => {
+                            const anchor = currentTarget.getBoundingClientRect();
+                            void run(() =>
+                              harvest.collect(facility.job!, facility.recipe.material, anchor),
+                            );
+                          }}
                         >
-                          {material.name} {facility.job.quantity}개 수령
+                          {materialName} {facility.job.quantity}개 수령
                         </Button>
                       </>
                     ) : (
@@ -372,9 +503,18 @@ export default function ResourcePanel({ onPlaceBuilding, onClose }: Props) {
                             )
                           }
                         >
-                          {material.name} {quantity}개 생산 시작
+                          {materialName} {quantity}개 생산 시작
                         </Button>
                       </>
+                    )}
+                    {fuel && (
+                      <Link
+                        to={scoutReturnPath ?? '/exploration'}
+                        className="resource-panel__scout-link"
+                        onClick={onClose}
+                      >
+                        탐험으로
+                      </Link>
                     )}
                   </article>
                 );

@@ -1,3 +1,4 @@
+import type { ExperimentalHybridIdentity } from './experimental-hybrid.types';
 /**
  * API 요청/응답 타입 정의
  * 참조: docs/dino_park_technical_design.md
@@ -9,6 +10,8 @@ import { Currency, TransactionType } from './economy.types';
 import { BuildingStatus } from './building.types';
 import { ExplorationStatus } from './exploration.types';
 import type { DinosaurCompetitiveStats } from './dinosaur.types';
+import type { ParkEntranceSide } from '../utils/park-entrance.utils';
+import type { ShuttleDepartureInterval, ShuttleRouteEstimate } from '../utils/park-shuttle.utils';
 
 // ========================================
 // 공통 타입
@@ -62,7 +65,7 @@ export interface LoginResponse {
   refreshToken: string;
   isNewUser: boolean;
   user: Pick<User, 'id' | 'nickname' | 'level' | 'exp'>;
-  currency: Pick<Currency, 'gold' | 'diamond' | 'dna' | 'explorationEnergy'>;
+  currency: Pick<Currency, 'gold' | 'diamond' | 'dna'>;
   park: Pick<Park, 'id' | 'name' | 'level'>;
 }
 
@@ -77,7 +80,7 @@ export interface RefreshTokenResponse {
 
 export interface ProfileResponse {
   user: Pick<User, 'id' | 'nickname' | 'level' | 'exp'>;
-  currency: Pick<Currency, 'gold' | 'diamond' | 'dna' | 'explorationEnergy'>;
+  currency: Pick<Currency, 'gold' | 'diamond' | 'dna'>;
   park: Pick<Park, 'id' | 'name' | 'level'>;
 }
 
@@ -151,6 +154,7 @@ export interface DinosaurResponse {
   positionY: number;
   isInPark: boolean;
   competitiveStats?: DinosaurCompetitiveStats | null;
+  hybrid?: ExperimentalHybridIdentity;
 }
 
 export interface HybridExhibitSelection {
@@ -219,6 +223,14 @@ export interface BuildingResponse {
   status: BuildingStatus;
   assignedGreatFigureId: string | null;
   completesAt?: string | null;
+  entranceSide?: ParkEntranceSide | null;
+  isMirrored?: boolean;
+}
+
+export interface MoveParkEntranceRequest {
+  positionX: number;
+  positionY: number;
+  side?: ParkEntranceSide;
 }
 
 export interface BuildingListResponse {
@@ -230,6 +242,7 @@ export interface CreateBuildingRequest {
   typeId: string;
   positionX: number;
   positionY: number;
+  isMirrored?: boolean;
 }
 
 export interface AssignGreatFigureRequest {
@@ -244,9 +257,9 @@ export interface CurrencyResponse {
   gold: number;
   diamond: number;
   dna: number;
-  explorationEnergy: number;
-  maxEnergy: number;
-  energyRechargeAt: string | null;
+  explorationEnergy?: number;
+  maxExplorationEnergy?: number;
+  minutesUntilNextEnergy?: number;
 }
 
 export interface TransactionResponse {
@@ -282,7 +295,6 @@ export interface ExplorationRegionResponse {
   duration: number;
   unlockLevel: number;
   isUnlocked: boolean;
-  energyCost: number;
   possibleRewards: string[];
 }
 
@@ -454,19 +466,90 @@ export interface AdvanceSceneResponse {
   isChapterComplete: boolean;
 }
 
+export interface ExhibitViewingExperience {
+  crowdingPercent: number;
+  satisfactionPercent: number;
+}
+
+export interface BuyShuttleBusRequest {
+  requestId: string;
+}
+
+export interface SetShuttleRouteRequest {
+  busCount: number;
+  departureIntervalSeconds: ShuttleDepartureInterval;
+}
+
+export interface ParkShuttleDestination {
+  exhibitId: string;
+  typeId: string | null;
+  distance: number | null;
+  demandPerMinute: number;
+  path: Array<{ x: number; y: number }>;
+  route:
+    | (SetShuttleRouteRequest & {
+        status: 'running' | 'closed' | 'disconnected';
+        estimate: ShuttleRouteEstimate | null;
+      })
+    | null;
+}
+
+export interface ParkShuttleResponse {
+  unlocked: boolean;
+  unavailableReason: string | null;
+  ownedBusCount: number;
+  unassignedBusCount: number;
+  destinations: ParkShuttleDestination[];
+}
+
 /** Server-owned paid admission state; visitors drawn on the map are illustrative. */
 export interface ParkOperationsResponse {
   isOpen: boolean;
   canOpen: boolean;
   openingRequirements: string[];
   ticketPrice: number;
+  /** Operating throughput before the vault blocks paid admission. */
   visitorsPerMinute: number;
   demandPerMinute: number;
+  /** Maximum admissions per minute given the entrance and exhibit turnover. */
   capacity: number;
+  occupancy?: { current: number; capacity: number; visitSeconds: number };
+  /** Current admission limits and the next supported upgrade's local viewing effect. */
+  admission?: {
+    gatePerMinute: number;
+    exhibitPerMinute: number;
+    exhibitCount: number;
+    bottlenecks: Array<'demand' | 'entrance' | 'exhibit'>;
+    entranceResearchCompleted: boolean;
+    exhibitedDinosaurIds: string[];
+    exhibits: Array<
+      ExhibitViewingExperience & {
+        id: string;
+        dinosaurIds: string[];
+        /** Walkable tiles from the entrance to this exhibit's viewing perimeter. */
+        visitorPath?: Array<{ x: number; y: number }>;
+        /** Estimated share of the people currently inside the park. */
+        visitors?: number;
+        viewingCapacity?: number;
+      }
+    >;
+    platformImpact: {
+      buildingId: string;
+      fromLevel: number;
+      toLevel: number;
+      exhibitId: string | null;
+      before: ExhibitViewingExperience | null;
+      after: ExhibitViewingExperience | null;
+    } | null;
+  };
   totalVisitors: number;
   totalAdmissionGold: number;
   hourlyMaintenance: number;
   gold: number;
+  goldVault?: {
+    capacity: number;
+    admissionPaused: boolean;
+  };
   parkLevel: number;
   firstVisitorsGoal: { current: number; target: number; rewarded: boolean };
   pathTiles: Array<{ x: number; y: number }>;
@@ -477,7 +560,9 @@ export interface ParkOperationsResponse {
     width: number;
     height: number;
     onBoundary: boolean;
+    side?: ParkEntranceSide | null;
   } | null;
   suggestedEntrance: { x: number; y: number } | null;
   viewingPlatform: { id: string; level: number; status: string; completesAt: string | null } | null;
+  shuttle?: ParkShuttleResponse;
 }

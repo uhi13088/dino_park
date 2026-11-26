@@ -14,10 +14,8 @@ export const INITIAL_GOLD = 10000;
 export const INITIAL_DIAMOND = 100;
 export const INITIAL_DNA = 0;
 
-// === 에너지 ===
 export const MAX_EXPLORATION_ENERGY = 30;
 export const ENERGY_RECHARGE_MINUTES = 10;
-export const ENERGY_PER_EXPLORATION = 5;
 
 // === 공룡 상태 ===
 export const MAX_HAPPINESS = 100;

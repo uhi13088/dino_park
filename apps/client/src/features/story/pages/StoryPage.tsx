@@ -1,230 +1,209 @@
-import { useState } from 'react';
-import { useStoryChapters, useStartChapter, useAdvanceScene } from '@/api/queries';
-import type {
-  StoryChapterResponse,
-  StorySceneResponse,
-  AdvanceSceneResponse,
-} from '@dino-park/shared';
+import { useEffect, useRef, useState } from 'react';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { getChapterById } from '@dino-park/game-data';
+import type { StoryReward } from '@dino-park/shared';
+import {
+  type StoryPlaybackState,
+  type StoryRequirement,
+  useAdvanceScene,
+  useStartChapter,
+  useStoryChapters,
+} from '@/api/queries';
 import { Modal, Button } from '@/components/ui';
+import { useAuthStore } from '@/stores';
+import { parkGrowthHref, parseParkGrowthStage } from '@/utils/parkGrowthNavigation';
 import { StoryPlayer } from '../components/StoryPlayer';
+import './StoryPage.css';
 
-/**
- * 스토리 페이지 - 메인 스토리 챕터 선택
- */
+function requirementAction(requirement: StoryRequirement, chapter: string, stage?: number) {
+  const params = new URLSearchParams({ returnChapter: chapter });
+  if (stage !== undefined) params.set('stage', String(stage));
+  const withPath = (path: string, label: string) => ({
+    message: requirement.message,
+    href: `${path}?${params}`,
+    label,
+  });
+  const { kind, technologyId, facilityId, missionId, level } = requirement;
+  if (kind === 'research' && technologyId) {
+    params.set('technology', technologyId);
+    if (level) params.set('level', String(level));
+    return withPath('/research', '연구 보기');
+  }
+  if (kind === 'exploration' && missionId) {
+    params.set('mission', missionId);
+    return withPath('/exploration', '조사로 가기');
+  }
+  if (kind === 'facility' && facilityId) {
+    params.set('facility', facilityId);
+    return withPath('/park', '시설 관리');
+  }
+  params.set('panel', 'operations');
+  return withPath('/park', '파크 운영 보기');
+}
+
+function rewardLabel(type: StoryReward['type']) {
+  const labels: Record<StoryReward['type'], string> = {
+    gold: '골드',
+    diamond: '다이아',
+    dinosaur: '공룡',
+    greatFigure: '위인',
+    item: '아이템',
+    character: '인물',
+    building: '시설',
+    title: '칭호',
+  };
+  return labels[type];
+}
+
 export default function StoryPage() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentScene, setCurrentScene] = useState<StorySceneResponse | null>(null);
-  const [currentChapterId, setCurrentChapterId] = useState<string | null>(null);
-  const [showRewardModal, setShowRewardModal] = useState(false);
-  const [rewards, setRewards] = useState<AdvanceSceneResponse['rewards']>(undefined);
+  const authenticated = useAuthStore((state) => state.isAuthenticated);
+  const [params] = useSearchParams();
+  const requestedChapter = params.get('chapter');
+  const growthStage = parseParkGrowthStage(params.get('stage'));
+  const target = useRef<HTMLButtonElement>(null);
+  const [chapterId, setChapterId] = useState<string>();
+  const [playback, setPlayback] = useState<StoryPlaybackState>();
+  const [completedChapter, setCompletedChapter] = useState<string>();
+  const [rewards, setRewards] = useState<StoryReward[]>([]);
+  const [error, setError] = useState<string>();
+  const chapters = useStoryChapters();
+  const start = useStartChapter();
+  const advance = useAdvanceScene();
+  const current = chapters.data?.find(({ chapter }) => chapter.id === chapterId);
+  const scene = playback?.currentScene;
+  const busy = start.isPending || advance.isPending;
 
-  const { data: chaptersData, isLoading } = useStoryChapters();
-  const startChapterMutation = useStartChapter();
-  const advanceSceneMutation = useAdvanceScene();
+  useEffect(() => {
+    if (!requestedChapter || !chapters.data || scene) return;
+    target.current?.scrollIntoView?.({ block: 'nearest' });
+    target.current?.focus({ preventScroll: true });
+  }, [requestedChapter, chapters.data, scene]);
 
-  const chapters = chaptersData?.chapters ?? [];
-
-  const handleStartChapter = async (chapterId: string) => {
+  const play = async (id: string) => {
+    setError(undefined);
     try {
-      const result = await startChapterMutation.mutateAsync(chapterId);
-      setCurrentChapterId(chapterId);
-      setCurrentScene(result.scene);
-      setIsPlaying(true);
-    } catch (error) {
-      console.error('챕터 시작 실패:', error);
+      setPlayback(await start.mutateAsync(id));
+      setChapterId(id);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : '장면을 불러오지 못했어요.');
+    }
+  };
+  const move = async (choiceId?: string) => {
+    if (!chapterId || !scene) return;
+    setError(undefined);
+    try {
+      const result = await advance.mutateAsync({ chapterId, sceneId: scene.id, choiceId });
+      setPlayback(result);
+      if (result.isChapterComplete) {
+        setCompletedChapter(chapterId);
+        setRewards(result.rewards ?? []);
+      }
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : '진행을 저장하지 못했어요.');
     }
   };
 
-  const handleAdvanceScene = async (choiceId?: string): Promise<AdvanceSceneResponse> => {
-    if (!currentChapterId || !currentScene) {
-      throw new Error('No active scene');
-    }
-
-    const result = await advanceSceneMutation.mutateAsync({
-      chapterId: currentChapterId,
-      sceneId: currentScene.id,
-      choiceId,
-    });
-
-    if (result.scene) {
-      setCurrentScene(result.scene);
-    }
-
-    return result;
-  };
-
-  const handleChapterComplete = (chapterRewards?: AdvanceSceneResponse['rewards']) => {
-    setIsPlaying(false);
-    setCurrentScene(null);
-    setCurrentChapterId(null);
-
-    if (chapterRewards && chapterRewards.length > 0) {
-      setRewards(chapterRewards);
-      setShowRewardModal(true);
-    }
-  };
-
-  if (isLoading) {
+  if (!authenticated) return <Navigate to="/" replace />;
+  if (scene && chapterId) {
     return (
-      <div className="flex h-full items-center justify-center bg-gradient-to-b from-purple-900 to-purple-700">
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-white" />
-      </div>
-    );
-  }
-
-  // 스토리 플레이 모드
-  if (isPlaying && currentScene) {
-    return (
-      <div className="relative h-full">
-        <button
-          onClick={() => setIsPlaying(false)}
-          className="absolute left-4 top-4 z-20 text-white/60 hover:text-white"
-        >
-          ← 나가기
-        </button>
-        <StoryPlayer
-          scene={currentScene}
-          onAdvance={handleAdvanceScene}
-          onComplete={handleChapterComplete}
-          isAdvancing={advanceSceneMutation.isPending}
-        />
-      </div>
+      <StoryPlayer
+        key={scene.id}
+        scene={scene}
+        chapterTitle={current?.chapter.titleKo ?? getChapterById(chapterId)?.titleKo ?? '스토리'}
+        onExit={() => {
+          setPlayback(undefined);
+          setError(undefined);
+        }}
+        onAdvance={(choiceId) => void move(choiceId)}
+        onRefresh={() => void play(chapterId)}
+        busy={busy}
+        error={error}
+        requirement={
+          playback?.requirement
+            ? requirementAction(playback.requirement, chapterId, growthStage)
+            : undefined
+        }
+      />
     );
   }
 
   return (
-    <div className="flex h-full flex-col bg-gradient-to-b from-purple-900 to-purple-700">
-      {/* 헤더 */}
-      <div className="p-6 text-center text-white">
-        <h1 className="font-display mb-2 text-2xl font-bold">📖 메인 스토리</h1>
-        <p className="text-white/70">다이노 파크의 비밀을 밝혀라</p>
-      </div>
-
-      {/* 챕터 목록 */}
-      <div className="flex-1 space-y-4 overflow-auto px-4 pb-4">
-        {chapters.map((chapter) => (
-          <ChapterCard
-            key={chapter.id}
-            chapter={chapter}
-            onStart={handleStartChapter}
-            isStarting={startChapterMutation.isPending}
-          />
-        ))}
-      </div>
-
-      {/* 보상 모달 */}
-      <Modal isOpen={showRewardModal} onClose={() => setShowRewardModal(false)} title="챕터 완료!">
-        <div className="space-y-4">
-          <div className="flex justify-center">
-            <span className="text-6xl">🎉</span>
-          </div>
-
-          {rewards && rewards.length > 0 && (
-            <div className="space-y-2">
-              {rewards.map((reward, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between rounded-lg bg-purple-50 p-3"
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="text-xl">{getRewardEmoji(reward.type)}</span>
-                    <span>{reward.type}</span>
+    <section className="game-story" aria-labelledby="story-list-title">
+      <header className="game-story__header">
+        <Link to={growthStage === undefined ? '/park' : parkGrowthHref(growthStage)}>
+          {growthStage === undefined ? '← 파크' : '← 성장 목표'}
+        </Link>
+        <h1 id="story-list-title">메인 스토리</h1>
+      </header>
+      <div className="game-story__chapter-list">
+        {chapters.isPending && <p role="status">스토리를 불러오고 있어요…</p>}
+        {chapters.error && (
+          <p role="alert" className="game-story__error">
+            {chapters.error.message}{' '}
+            <button type="button" onClick={() => void chapters.refetch()}>
+              다시 시도
+            </button>
+          </p>
+        )}
+        {error && (
+          <p role="alert" className="game-story__error">
+            {error}
+          </p>
+        )}
+        {chapters.data?.map((entry) => {
+          const { chapter, isUnlocked, isCompleted, isStarted } = entry;
+          const total = chapter.totalScenes ?? getChapterById(chapter.id)?.scenes.length ?? 0;
+          const progress = entry.completedScenes;
+          const number =
+            chapter.order > 0 && /^chapter-/.test(chapter.id) ? `${chapter.order}장 ` : '';
+          return (
+            <button
+              key={chapter.id}
+              type="button"
+              ref={requestedChapter === chapter.id ? target : undefined}
+              className="game-story__chapter"
+              data-targeted={requestedChapter === chapter.id}
+              disabled={!isUnlocked || isCompleted || busy}
+              onClick={() => void play(chapter.id)}
+            >
+              <div>
+                <strong>
+                  {number}
+                  {chapter.titleKo}
+                </strong>
+                {!isUnlocked && entry.unlockRequirement && <span>{entry.unlockRequirement}</span>}
+                {isUnlocked && !isCompleted && isStarted && total > 0 && progress !== undefined && (
+                  <span>
+                    {progress}/{total} 장면 완료
                   </span>
-                  <span className="font-bold text-purple-600">+{reward.quantity}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <Button variant="primary" className="w-full" onClick={() => setShowRewardModal(false)}>
-            확인
-          </Button>
-        </div>
-      </Modal>
-    </div>
-  );
-}
-
-function ChapterCard({
-  chapter,
-  onStart,
-  isStarting,
-}: {
-  chapter: StoryChapterResponse;
-  onStart: (chapterId: string) => void;
-  isStarting: boolean;
-}) {
-  const progressPercent = (chapter.completedScenes / chapter.totalScenes) * 100;
-
-  return (
-    <button
-      disabled={chapter.isLocked || isStarting}
-      onClick={() => !chapter.isLocked && onStart(chapter.id)}
-      className={`w-full rounded-xl bg-white/10 p-4 text-left backdrop-blur transition-all ${
-        chapter.isLocked ? 'opacity-50' : 'hover:scale-[1.02] hover:bg-white/20'
-      }`}
-    >
-      <div className="flex items-start gap-4">
-        {/* 챕터 번호 */}
-        <div
-          className={`flex h-12 w-12 items-center justify-center rounded-lg text-lg font-bold ${
-            chapter.isCompleted
-              ? 'bg-green-500 text-white'
-              : chapter.isLocked
-                ? 'bg-gray-600 text-gray-400'
-                : 'bg-white/20 text-white'
-          }`}
-        >
-          {chapter.isLocked ? '🔒' : chapter.isCompleted ? '✓' : chapter.number}
-        </div>
-
-        {/* 챕터 정보 */}
-        <div className="flex-1">
-          <h3 className="mb-1 font-bold text-white">
-            챕터 {chapter.number}: {chapter.title}
-          </h3>
-          <p className="mb-2 text-sm text-white/60">{chapter.description}</p>
-
-          {/* 진행도 바 */}
-          {!chapter.isLocked && (
-            <div className="space-y-1">
-              <div className="flex justify-between text-xs text-white/60">
-                <span>
-                  {chapter.completedScenes}/{chapter.totalScenes} 씬
-                </span>
-                <span>{Math.round(progressPercent)}%</span>
+                )}
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/20">
-                <div
-                  className={`h-full rounded-full transition-all ${
-                    chapter.isCompleted ? 'bg-green-400' : 'bg-secondary-400'
-                  }`}
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* 잠금 조건 */}
-          {chapter.isLocked && chapter.unlockRequirement && (
-            <p className="mt-2 text-xs text-white/40">🔒 {chapter.unlockRequirement}</p>
-          )}
-        </div>
-
-        {/* 화살표 */}
-        {!chapter.isLocked && <span className="text-xl text-white/40">›</span>}
+              <span>
+                {isCompleted ? '완료' : !isUnlocked ? '잠김' : isStarted ? '이어 보기' : '시작'}
+              </span>
+            </button>
+          );
+        })}
       </div>
-    </button>
+      <Modal
+        isOpen={!!completedChapter}
+        onClose={() => setCompletedChapter(undefined)}
+        title="장 완료"
+      >
+        {completedChapter && <p>{getChapterById(completedChapter)?.titleKo} 이야기를 마쳤어요.</p>}
+        {!!rewards.length && <p>이 장의 보상 목록</p>}
+        {!!rewards.length && (
+          <ul>
+            {rewards.map((reward, index) => (
+              <li key={`${reward.type}-${reward.id ?? index}`}>
+                {rewardLabel(reward.type)}
+                {reward.amount ? ` ${reward.amount.toLocaleString('ko-KR')}` : ''}
+              </li>
+            ))}
+          </ul>
+        )}
+        <Button onClick={() => setCompletedChapter(undefined)}>확인</Button>
+      </Modal>
+    </section>
   );
-}
-
-function getRewardEmoji(type: string): string {
-  const emojis: Record<string, string> = {
-    gold: '🪙',
-    diamond: '💎',
-    dinosaur: '🦕',
-    greatFigure: '👤',
-    item: '📦',
-  };
-  return emojis[type] ?? '🎁';
 }

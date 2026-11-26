@@ -9,7 +9,6 @@ export enum CurrencyType {
   GOLD = 'gold',
   DIAMOND = 'diamond',
   DNA = 'dna',
-  EXPLORATION_ENERGY = 'explorationEnergy',
   SEASON_POINT = 'seasonPoint',
   GREAT_FIGURE_POINT = 'greatFigurePoint',
 }
@@ -28,8 +27,6 @@ export interface Currency extends BaseEntity {
   gold: number;
   diamond: number;
   dna: number;
-  explorationEnergy: number;
-  energyLastRechargedAt: Date;
 }
 
 // 거래 기록

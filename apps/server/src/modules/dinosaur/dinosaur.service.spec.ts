@@ -3,22 +3,26 @@ import { DinosaurService } from './dinosaur.service';
 import { ParkOperationsService } from '../park/park-operations.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { emptySafariLayout } from '@dino-park/shared';
+import { AT, building, dinosaur, world } from '../park/park-admission.fixtures';
 
 describe('DinosaurService', () => {
   let service: DinosaurService;
+  const settle = jest.fn();
 
   const mockPrismaService = {
     park: {
       findUnique: jest.fn(),
+      findUniqueOrThrow: jest.fn(),
       update: jest.fn(),
     },
     building: { findMany: jest.fn() },
     transaction: { create: jest.fn() },
     dinosaurCollection: { upsert: jest.fn() },
+    experimentalHybridJob: { findFirst: jest.fn() },
     dinosaur: {
       findUnique: jest.fn(),
       findUniqueOrThrow: jest.fn(),
-      findFirst: jest.fn(),
       updateMany: jest.fn(),
       findMany: jest.fn(),
       create: jest.fn(),
@@ -73,7 +77,7 @@ describe('DinosaurService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DinosaurService,
-        { provide: ParkOperationsService, useValue: { settleInTransaction: jest.fn() } },
+        { provide: ParkOperationsService, useValue: { settleInTransaction: settle } },
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -85,6 +89,7 @@ describe('DinosaurService', () => {
 
     // Reset all mocks
     jest.resetAllMocks();
+    settle.mockImplementation(async () => ({ settledAt: new Date() }));
     mockPrismaService.$transaction.mockImplementation(async (operation: unknown) => {
       if (typeof operation === 'function') return operation(mockPrismaService);
       return Promise.all(operation as Promise<unknown>[]);
@@ -92,7 +97,7 @@ describe('DinosaurService', () => {
     mockPrismaService.park.findUnique.mockResolvedValue(mockPark);
     mockPrismaService.park.update.mockResolvedValue(mockPark);
     mockPrismaService.building.findMany.mockResolvedValue([]);
-    mockPrismaService.dinosaur.findFirst.mockResolvedValue(null);
+    mockPrismaService.dinosaur.findMany.mockResolvedValue([]);
     mockPrismaService.dinosaur.updateMany.mockResolvedValue({ count: 1 });
     mockPrismaService.currency.updateMany.mockResolvedValue({ count: 1 });
     mockPrismaService.currency.findUniqueOrThrow.mockResolvedValue(mockCurrency);
@@ -111,9 +116,9 @@ describe('DinosaurService', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe('dino-1');
-      expect(mockPrismaService.park.findUnique).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
-      });
+      expect(mockPrismaService.park.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: 'user-1' } }),
+      );
     });
 
     it('should throw NotFoundException when park not found', async () => {
@@ -191,6 +196,17 @@ describe('DinosaurService', () => {
 
       await expect(service.create('user-1', 'trex', -1, 5)).rejects.toThrow(BadRequestException);
       await expect(service.create('user-1', 'trex', 100, 5)).rejects.toThrow(BadRequestException);
+    });
+
+    it('does not create a dinosaur on a reserved safari lane', async () => {
+      mockPrismaService.park.findUnique.mockResolvedValue({
+        ...mockPark,
+        safariLayout: { path: [{ x: 5, y: 5 }] },
+      });
+
+      await expect(service.create('user-1', 'trex', 5, 5)).rejects.toThrow('사파리 울타리');
+      expect(mockPrismaService.dinosaur.create).not.toHaveBeenCalled();
+      expect(mockPrismaService.dinosaurCollection.upsert).not.toHaveBeenCalled();
     });
   });
 
@@ -313,6 +329,19 @@ describe('DinosaurService', () => {
 
       expect(result.isInPark).toBe(false);
     });
+
+    it('directs the player to Safari management for an assigned dinosaur', async () => {
+      const layout = emptySafariLayout();
+      layout.zones.carnivore.dinosaurIds = [mockDinosaur.id];
+      mockPrismaService.dinosaur.findUnique.mockResolvedValue({
+        ...mockDinosaur,
+        isInPark: false,
+        park: { userId: 'user-1', safariLayout: { layout } },
+      });
+
+      await expect(service.removeFromPark('dino-1', 'user-1')).rejects.toThrow('사파리 관리');
+      expect(mockPrismaService.dinosaur.update).not.toHaveBeenCalled();
+    });
   });
 
   describe('placeInPark', () => {
@@ -352,7 +381,9 @@ describe('DinosaurService', () => {
       expect(mockPrismaService.dinosaur.update).not.toHaveBeenCalled();
     });
     it('rejects another dinosaur on the tile', async () => {
-      mockPrismaService.dinosaur.findFirst.mockResolvedValue({ id: 'other-dinosaur' });
+      mockPrismaService.dinosaur.findMany.mockResolvedValue([
+        { ...mockDinosaur, id: 'other-dinosaur' },
+      ]);
       await expect(service.placeInPark('dino-1', 'user-1', 10, 10)).rejects.toThrow('다른 공룡');
     });
     it('blocks the full building footprint, not just its origin', async () => {
@@ -381,6 +412,32 @@ describe('DinosaurService', () => {
       );
       expect(mockPrismaService.dinosaur.update).not.toHaveBeenCalled();
     });
+  });
+
+  it('projects dinosaur appeal independently of unchanged visitor space', async () => {
+    jest.useFakeTimers().setSystemTime(AT);
+    try {
+      const park = world();
+      park.buildings.push(building('hybrid', 'habitat-hybrid-zone', 13, 5));
+      park.dinosaurs.push(
+        { ...dinosaur('hero', 'stegoceratops'), positionX: 13, positionY: 5 },
+        { ...dinosaur('iggy', 'iguanodon'), isInPark: false },
+        { ...dinosaur('trike', 'triceratops'), isInPark: false },
+      );
+      mockPrismaService.park.findUniqueOrThrow.mockResolvedValue(park);
+
+      const trike = await service.getExhibitPlacementPreview('owner', 'trike', { x: 10, y: 9 });
+      const iggy = await service.getExhibitPlacementPreview('owner', 'iggy', { x: 10, y: 9 });
+      expect(trike.proposed!.demandPerMinute).toBeGreaterThan(iggy.proposed!.demandPerMinute);
+      expect(trike.exhibit!.proposedVisitors).toBeGreaterThan(iggy.exhibit!.proposedVisitors);
+      for (const choice of [trike, iggy]) {
+        expect(choice.proposed).toMatchObject({ visitorsPerMinute: 22, occupancyCapacity: 44 });
+        expect(choice.explanation).toContain('동시 수용 인원');
+      }
+      expect(mockPrismaService.dinosaur.update).not.toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   describe('release', () => {

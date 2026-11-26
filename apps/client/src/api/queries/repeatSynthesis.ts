@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { RepeatSynthesisStart, RepeatSynthesisState } from '@dino-park/shared';
 import { api, tokenManager } from '../client';
 import { queryKeys } from './index';
-import { driveKey } from './hybridMilestone';
 import { cancelResourceReads, resourcesQueryKey } from './resources';
 
 type RepeatSynthesisAction =
@@ -35,7 +34,7 @@ export function useRepeatSynthesisAction() {
     onSuccess: (state) => {
       client.setQueryData(queryKeys.repeatSynthesis(), state);
       for (const key of [
-        driveKey,
+        queryKeys.scoutExpedition(),
         resourcesQueryKey,
         queryKeys.currency(),
         queryKeys.parkOperations(),

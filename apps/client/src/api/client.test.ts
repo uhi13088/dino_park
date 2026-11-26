@@ -30,7 +30,7 @@ describe('API client server response contract', () => {
       refreshToken: 'refresh-token',
       isNewUser: true,
       user: { id: 'user-1', nickname: '신입 사육사', level: 1, exp: 0 },
-      currency: { gold: 10000, diamond: 100, dna: 0, explorationEnergy: 30 },
+      currency: { gold: 10000, diamond: 100, dna: 0 },
       park: { id: 'park-1', name: '신입 사육사의 파크', level: 1 },
     };
     fetchMock.mockResolvedValueOnce(successResponse(login, 201));
@@ -68,7 +68,7 @@ describe('API client server response contract', () => {
 
   it('reads refreshed tokens from the envelope and retries with the new token', async () => {
     tokenManager.setTokens('expired-access', 'old-refresh');
-    const currency = { gold: 10000, diamond: 100, explorationEnergy: 30 };
+    const currency = { gold: 10000, diamond: 100 };
     fetchMock
       .mockResolvedValueOnce(new Response(null, { status: 401 }))
       .mockResolvedValueOnce(

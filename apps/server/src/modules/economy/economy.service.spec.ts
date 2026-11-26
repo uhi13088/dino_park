@@ -73,15 +73,23 @@ describe('EconomyService', () => {
   });
 
   describe('getCurrency', () => {
-    it('should return currency with calculated energy', async () => {
-      mockPrismaService.currency.findUnique.mockResolvedValue(mockCurrency);
+    it('returns the active currency and preserves old above-cap fuel without writing', async () => {
+      mockPrismaService.currency.findUnique.mockResolvedValue({
+        ...mockCurrency,
+        explorationEnergy: 39,
+      });
 
       const result = await service.getCurrency('user-1');
 
       expect(result.gold).toBe(50000);
       expect(result.diamond).toBe(500);
       expect(result.dna).toBe(100);
-      expect(result.maxExplorationEnergy).toBe(30);
+      expect(result).toMatchObject({
+        explorationEnergy: 39,
+        maxExplorationEnergy: 30,
+        minutesUntilNextEnergy: 0,
+      });
+      expect(mockPrismaService.currency.update).not.toHaveBeenCalled();
     });
 
     it('should throw NotFoundException when currency not found', async () => {
@@ -245,91 +253,6 @@ describe('EconomyService', () => {
       });
 
       await expect(service.spendDna('user-1', 50, 'Hatching')).rejects.toThrow(BadRequestException);
-    });
-  });
-
-  describe('useEnergy', () => {
-    it('should use energy when sufficient', async () => {
-      mockPrismaService.currency.findUnique.mockResolvedValue(mockCurrency);
-      mockPrismaService.currency.update.mockResolvedValue({
-        ...mockCurrency,
-        explorationEnergy: mockCurrency.explorationEnergy - 5,
-      });
-
-      const result = await service.useEnergy('user-1', 5);
-
-      expect(result.explorationEnergy).toBe(15);
-    });
-
-    it('should throw BadRequestException when insufficient energy', async () => {
-      mockPrismaService.currency.findUnique.mockResolvedValue({
-        ...mockCurrency,
-        explorationEnergy: 3,
-      });
-
-      await expect(service.useEnergy('user-1', 5)).rejects.toThrow(BadRequestException);
-    });
-  });
-
-  describe('rechargeEnergy', () => {
-    it('should recharge energy based on time passed', async () => {
-      const oldEnergy = {
-        ...mockCurrency,
-        explorationEnergy: 10,
-        energyLastRechargedAt: new Date(Date.now() - 30 * 60 * 1000), // 30 min ago
-      };
-      mockPrismaService.currency.findUnique.mockResolvedValue(oldEnergy);
-      mockPrismaService.currency.update.mockResolvedValue({
-        ...oldEnergy,
-        explorationEnergy: 13, // 30 min / 10 min = 3 energy
-      });
-
-      const result = await service.rechargeEnergy('user-1');
-
-      expect(result!.explorationEnergy).toBe(13);
-    });
-
-    it('should not exceed max energy', async () => {
-      const almostFullEnergy = {
-        ...mockCurrency,
-        explorationEnergy: 28,
-        energyLastRechargedAt: new Date(Date.now() - 60 * 60 * 1000), // 1 hour ago
-      };
-      mockPrismaService.currency.findUnique.mockResolvedValue(almostFullEnergy);
-      mockPrismaService.currency.update.mockResolvedValue({
-        ...almostFullEnergy,
-        explorationEnergy: 30, // Max
-      });
-
-      const result = await service.rechargeEnergy('user-1');
-
-      expect(result!.explorationEnergy).toBe(30);
-    });
-  });
-
-  describe('refillEnergy', () => {
-    it('should refill energy using diamond', async () => {
-      mockPrismaService.currency.findUnique.mockResolvedValue(mockCurrency);
-      mockPrismaService.currency.update.mockResolvedValue({
-        ...mockCurrency,
-        diamond: mockCurrency.diamond - 30,
-        explorationEnergy: 30,
-      });
-      mockPrismaService.transaction.create.mockResolvedValue({});
-
-      const result = await service.refillEnergy('user-1');
-
-      expect(result.diamondSpent).toBe(30);
-      expect(result.energyRefilled).toBe(30);
-    });
-
-    it('should throw BadRequestException when insufficient diamond', async () => {
-      mockPrismaService.currency.findUnique.mockResolvedValue({
-        ...mockCurrency,
-        diamond: 20,
-      });
-
-      await expect(service.refillEnergy('user-1')).rejects.toThrow(BadRequestException);
     });
   });
 

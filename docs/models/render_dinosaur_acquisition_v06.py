@@ -78,9 +78,10 @@ def route_info(route):
                 'claim_rule': '기존 시작 지급 이력으로 한 번'}
     if kind in {'starter_egg', 'egg_mission'}:
         first = route.get('first_only', False)
-        return {'method': ('첫 지정 알 목표' if first else '종 지정 알 목표') + ' · ' + AREA[route['area']],
+        region = model.followup.scout_locations(route['ref'], AREA[route['area']])
+        return {'method': ('첫 지정 알 목표' if first else '종 지정 알 목표') + ' · ' + region,
                 'gate': gate_text(route),
-                'cost': f'{number(route["gold"])}골드 · 연료{route["fuel"]}',
+                'cost': f'{number(route["gold"])}골드' + model.followup.scout_fuel_label(route['ref']),
                 'time': '부화 ' + duration(route['hatch_seconds']),
                 'parents_materials': '보유 부모·합성 재료 불필요', 'reward': '지정 알1 → 부화 개체1',
                 'claim_rule': '최초 알1개 한 번; 등록 뒤 반복 목표' if first else '새 유료 회차마다 알1개'}
@@ -117,7 +118,8 @@ def render():
              '[DNA](dna-and-collection.md)는15레시피를, [밸런스](balance.md)는 기존 알 밴드를 소유합니다.', '',
              '자연종68·하이브리드12·변종3으로83종입니다. 반복 알 목표68개와 새 첫 벨로시랩터 예외1개를 합친 조회목표는69개입니다. '
              '기존 igua·trike·stego 초반 미션은 원래 목표를 참조하며69개에 다시 가산하지 않습니다. '
-             '시작 개체·알·부화 완료 개체·합성 결과를 구별합니다.', '',
+             '시작 개체·알·부화 완료 개체·합성 결과를 구별합니다. '
+             '알 목표를 선택할 핀은 [탐험가 파견 지도](exploration-spots.md)에서 확인합니다.', '',
              '아래 비용과 시간은 한 회차의 기본값입니다. 일반 부화·합성의 완료 연구/시설 보정은 해당 정본을 따릅니다. '
              '첫 부화 예외와 첫 지정 스테고100%·30분은 고정입니다. 합성 재료·부모 상세는 같은 문서의15레시피 표에서 확인합니다.', '',
              '## 83종 전체 경로', '']
@@ -132,8 +134,8 @@ def render():
                          first['cost'], first['time'], repeat_description])
     lines += [mdtable(['종', '분류·등급', '최초 획득', '최초 조건', '기본 비용', '기본 대기', '재획득'], overview), '',
               '## 새 자연종17개 목표', '',
-              '현재 연구의 유전 완료 단계에 연결된 비육상 보완 목록입니다. 실제 돔·해양관·거대종 허가·전시 안전을 알 회수에 요구하지 않습니다. '
-              '표의 판정 수를 직접 완료하고 알1개를 확정 수령합니다. 장소는 기존 화석 계곡·원시 습지 안의 해안 구획입니다.', '']
+              '유전 연구로 해금하는 익룡·해양 자연종입니다. 탐험가를 파견하면 귀환 보고서에서 지정 알1개를 받습니다. '
+              '각 종의 파견 위치와 난도는 [탐험가 파견 지도](exploration-spots.md)를 확인합니다. 부화한 개체를 전시하려면 호환 시설과 별도 안전 조건을 충족합니다.', '']
     species, _, _ = model.catalogue()
     extra = []
     for goal in model.repeat_egg_targets().values():
@@ -141,8 +143,8 @@ def render():
             continue
         extra.append([species[goal['species']]['nameKo'], RARITY[goal['rarity']], goal['id'],
                       AREA[goal['area']], model.research_label(goal['research']),
-                      number(goal['gold']), goal['fuel'], goal['checks'], duration(goal['hatch_seconds'])])
-    lines += [mdtable(['종', '등급', '목표 ID', '장소', '필요 연구', '준비 골드', '연료', '판단 수', '일반 부화'], extra), '',
+                      number(goal['gold']), duration(goal['hatch_seconds'])])
+    lines += [mdtable(['종', '등급', '목표 ID', '기존 목표 분류', '필요 연구', '준비 골드', '일반 부화'], extra), '',
               '## 최초5종과 반복의 차이', '',
               '첫 파라는 무료 개체1마리이며 부화 미션이 아닙니다. 첫 이구아노돈·트리케라·스테고는 기존 초반 목표의 비용·부화를 사용합니다. '
               '첫 벨로시랩터는2장 안전 목표 완료 뒤 선택하는 고급밴드 유료 목표이며 첫 영웅의 필수조건이 아닙니다. '
@@ -167,7 +169,7 @@ def render():
                           info['claim_rule'] + (' / 반복50%·최대5번째' if row['species_id'] == 'stegoceratops' else '')])
     lines += [mdtable(['결과', '실제 부모·필수 재료', '해금', '기본 골드', '기본 합성', '성공·보호'], syntheses), '',
               '## 검산 범위', '',
-              '83종 중복·누락, 자연종68개 반복 목표·조회69개,15개 합성 결과, 부모 경로의 순환 부재와 기존51개 목표·13레시피·252연구비용/효과의 보존을 확인합니다. '
+              '83종 중복·누락, 자연종68개 반복 목표·조회69개, 15개 합성 결과, 부모 경로와 기존 목표의 준비비·조건을 확인합니다. '
               '실제 미션·재고·원자 수령·동시성·시설/DB·실플레이·성장기간은 이 표 생성으로 검증되지 않습니다.', '']
     return '\n'.join(lines), counts
 

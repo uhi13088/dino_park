@@ -19,6 +19,7 @@ import type { IAPReward, GoldShopItem, SpecialPackage } from '@dino-park/shared'
 // 일일 상점 설정
 const DAILY_SHOP_ITEM_COUNT = 6;
 const DAILY_SHOP_REFRESH_HOUR = 4; // 오전 4시 리셋
+const goldShopPurchaseReason = (item: GoldShopItem) => `골드샵 구매: ${item.nameKo}`;
 
 @Injectable()
 export class ShopService {
@@ -95,8 +96,10 @@ export class ShopService {
     const dailyPurchases = await this.getUserDailyPurchases(userId, 'goldShop');
 
     return GOLD_SHOP_ITEMS.filter((item) => item.isActive).map((item) => {
-      const todayCount = dailyPurchases.get(item.id) || 0;
-      const remainingLimit = item.dailyLimit ? item.dailyLimit - todayCount : undefined;
+      const todayCount = dailyPurchases.get(goldShopPurchaseReason(item)) ?? 0;
+      const remainingLimit = item.dailyLimit
+        ? Math.max(0, item.dailyLimit - todayCount)
+        : undefined;
 
       return {
         ...item,
@@ -116,49 +119,40 @@ export class ShopService {
       throw new BadRequestException('아이템을 찾을 수 없습니다.');
     }
 
-    // 일일 구매 제한 확인
-    if (item.dailyLimit) {
-      const todayCount = await this.countTodayPurchases(userId, itemId, 'goldShop');
-      if (todayCount >= item.dailyLimit) {
-        throw new BadRequestException('오늘의 구매 한도를 초과했습니다.');
-      }
-    }
-
-    // 재화 확인 및 차감
-    const currency = await this.prisma.currency.findUnique({
-      where: { userId },
-    });
-
-    if (!currency) {
-      throw new BadRequestException('유저 재화 정보를 찾을 수 없습니다.');
-    }
-
     const currencyField = item.priceType === 'gold' ? 'gold' : 'diamond';
-    const currentAmount = currency[currencyField];
-
-    if (currentAmount < item.price) {
-      throw new BadRequestException(
-        `${item.priceType === 'gold' ? '골드' : '다이아'}가 부족합니다.`,
-      );
-    }
-
-    // 트랜잭션으로 처리
+    const reason = goldShopPurchaseReason(item);
     const result = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // 재화 차감
+      await tx.$queryRaw`SELECT id FROM currencies WHERE "userId" = ${userId} FOR UPDATE`;
+      const currency = await tx.currency.findUnique({ where: { userId } });
+      if (!currency) throw new BadRequestException('유저 재화 정보를 찾을 수 없습니다.');
+
+      const now = new Date();
+      if (item.dailyLimit) {
+        const todayCount = await tx.transaction.count({
+          where: { userId, type: 'SPEND', reason, createdAt: { gte: this.getTodayStart(now) } },
+        });
+        if (todayCount >= item.dailyLimit)
+          throw new BadRequestException('오늘의 구매 한도를 초과했습니다.');
+      }
+      if (currency[currencyField] < item.price)
+        throw new BadRequestException(
+          `${item.priceType === 'gold' ? '골드' : '다이아'}가 부족합니다.`,
+        );
+
       const updatedCurrency = await tx.currency.update({
         where: { userId },
         data: { [currencyField]: { decrement: item.price } },
       });
 
-      // 구매 기록
       await tx.transaction.create({
         data: {
           userId,
           type: 'SPEND',
           currencyType: item.priceType,
           amount: -item.price,
-          reason: `골드샵 구매: ${item.nameKo}`,
+          reason,
           balanceAfter: updatedCurrency[currencyField],
+          createdAt: now,
         },
       });
 
@@ -650,14 +644,6 @@ export class ShopService {
           granted.push({ type: 'dna', quantity });
           break;
 
-        case 'energy':
-          await tx.currency.update({
-            where: { userId },
-            data: { explorationEnergy: { increment: quantity } },
-          });
-          granted.push({ type: 'energy', quantity });
-          break;
-
         case 'dinosaur':
           // 공룡 지급 로직 (TODO: DinosaurService 연동)
           granted.push({ type: 'dinosaur', id: reward.id, quantity });
@@ -753,26 +739,6 @@ export class ShopService {
     }
 
     return counts;
-  }
-
-  /**
-   * 오늘 특정 아이템 구매 횟수
-   */
-  private async countTodayPurchases(
-    userId: string,
-    itemId: string,
-    _type: 'goldShop' | 'dailyShop',
-  ): Promise<number> {
-    const todayStart = this.getTodayStart();
-
-    return this.prisma.transaction.count({
-      where: {
-        userId,
-        type: 'SPEND',
-        reason: { contains: itemId },
-        createdAt: { gte: todayStart },
-      },
-    });
   }
 
   /**
@@ -874,8 +840,7 @@ export class ShopService {
   /**
    * 오늘 시작 시간 (오전 4시 기준)
    */
-  private getTodayStart(): Date {
-    const now = new Date();
+  private getTodayStart(now = new Date()): Date {
     const today = new Date(
       Date.UTC(
         now.getUTCFullYear(),

@@ -14,6 +14,8 @@ import { SeasonModule } from './modules/season/season.module';
 import { EconomyModule } from './modules/economy/economy.module';
 import { SocialModule } from './modules/social/social.module';
 import { MilestoneSynthesisModule } from './modules/milestone-synthesis/milestone-synthesis.module';
+import { ResearchModule } from './modules/research/research.module';
+import { ExperimentalHybridModule } from './modules/experimental-hybrid/experimental-hybrid.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { MilestoneSynthesisModule } from './modules/milestone-synthesis/mileston
     GreatFigureModule,
     ExplorationModule,
     MilestoneSynthesisModule,
+    ExperimentalHybridModule,
+    ResearchModule,
     StoryModule,
     ShopModule,
     SeasonModule,

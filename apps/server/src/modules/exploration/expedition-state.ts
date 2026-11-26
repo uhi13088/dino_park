@@ -8,6 +8,7 @@ import type { Building, HatchingQueue, Prisma } from '@prisma/client';
 
 export const IGUANODON_CARE_RECEIPT = 'first-iguanodon-care-v1';
 export const parentCareReceipt = (speciesId: string) => `first-parent-care-${speciesId}-v1`;
+export const FIRST_EXPEDITION_RECEIPT_STEPS = 3;
 
 export function getExpeditionEnergy(
   currency: { explorationEnergy: number; energyLastRechargedAt: Date },
@@ -22,12 +23,13 @@ export function getExpeditionEnergy(
     currency.explorationEnergy,
     Math.min(MAX_EXPLORATION_ENERGY, currency.explorationEnergy + count),
   );
+  const full = value >= MAX_EXPLORATION_ENERGY;
+  const last = full ? now : new Date(currency.energyLastRechargedAt.getTime() + count * interval);
   return {
     value,
-    last:
-      value >= MAX_EXPLORATION_ENERGY
-        ? now
-        : new Date(currency.energyLastRechargedAt.getTime() + count * interval),
+    capacity: MAX_EXPLORATION_ENERGY,
+    last,
+    nextRechargeAt: full ? null : new Date(last.getTime() + interval),
   };
 }
 

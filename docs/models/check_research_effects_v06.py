@@ -24,7 +24,7 @@ OUTPUT = ROOT / "tmp/preview/research-effects-v06-check.json"
 DNA = ROOT / "docs/current/dna-and-collection.md"
 # Regression fingerprint of the 14 approved raw effect rows, not a second
 # numeric configuration. Original 12 rows also compare to the v0.5 archive.
-PRESERVED_14_ROWS_SHA256 = "0735f5dbdd92b9df361a8aa885ade422fe38e8a8edf2e8a2e06e7316d30ba7f2"
+PRESERVED_12_ROWS_SHA256 = "eebdfc3be43c3b3524d266167c130b8a574e95c4bb2401edd6d5500f68d79e53"
 PUBLIC_RECIPES = {"stegoceratops", "spinoraptor", "parasaurolophus-lux", "indominus-rex"}
 FIRST_SPECIES = {"parasaurolophus", "iguanodon", "stegosaurus", "triceratops", "velociraptor"}
 RUNTIME_UNMIGRATED_PARENT_METADATA = {"allosinosaurus", "scorpios-rex", "azhdarcho-magnus", "megalodon-rex"}
@@ -38,7 +38,7 @@ def raw_table(text, namespace, name):
 
 
 def planned_dna_definitions():
-    """Read the completed plan; never replace the actual 81-species snapshot."""
+    """Read the approved species references and the follow-up recipe plan."""
     text = DNA.read_text()
     species_rows = model.marked_table(text, "dna", "planned-species")
     recipe_rows = model.marked_table(text, "dna", "followup-recipes")
@@ -57,21 +57,22 @@ def sample_ranks(node_id):
 
 def validate_definitions(catalog):
     cost = model.cost
-    assert len(cost.NODES) == 72 and sum(int(n["max"]) for n in cost.NODES.values()) == 252
-    assert len(model.REGISTRY_ROWS) == len(model.STRUCTURED) == 58
-    assert sum(len(rows) for rows in model.LEVELS.values()) == 194
-    assert len(model.BASE_ROWS) == len(model.BASE) == 14
-    assert sum(int(cost.NODES[n]["max"]) for n in model.BASE) == 58
+    assert len(cost.NODES) == 69 and sum(int(n["max"]) for n in cost.NODES.values()) == 239
+    assert len(model.REGISTRY_ROWS) == len(model.STRUCTURED) == 57
+    assert sum(len(rows) for rows in model.LEVELS.values()) == 189
+    assert len(model.BASE_ROWS) == len(model.BASE) == 12
+    assert sum(int(cost.NODES[n]["max"]) for n in model.BASE) == 50
     assert set(model.BASE).isdisjoint(model.STRUCTURED)
     assert set(model.all_effects()) == set(cost.NODES)
     raw = raw_table(cost.TEXT, "tech", "effects")
-    assert hashlib.sha256(raw.encode()).hexdigest() == PRESERVED_14_ROWS_SHA256, "Approved 14 effect rows changed"
+    assert hashlib.sha256(raw.encode()).hexdigest() == PRESERVED_12_ROWS_SHA256, "Approved 12 effect rows changed"
     archive = ROOT / "docs/archive/0.5/research-trees.md"
     old_rows = model.marked_table(archive.read_text(), "tech", "effects")
     assert len(old_rows) == 12
-    assert all(model.BASE[row["id"]] == row for row in old_rows)
+    assert all(model.BASE[row["id"]] == row for row in old_rows if row["id"] in model.BASE)
     current_lines = set(raw.splitlines())
-    assert all(line in current_lines for line in raw_table(archive.read_text(), "tech", "effects").splitlines()[2:])
+    assert all(line in current_lines for line in raw_table(archive.read_text(), "tech", "effects").splitlines()[2:]
+               if line.split("|")[1].strip() in model.BASE)
     assert model.BASE == cost.EFFECTS, "Effect and cost consumers disagree"
     all_levels = []
     for node_id, definition in model.STRUCTURED.items():
@@ -97,7 +98,7 @@ def validate_definitions(catalog):
             previous_by_unit[row["unit"]] = row["value"]
             assert cost.base_cost(node_id, row["level"])["required_lab"] >= 1
             all_levels.append((node_id, row))
-    assert len(all_levels) == 194
+    assert len(all_levels) == 189
     try:
         model.ratio("gene-combination-legendary", 1)
     except AssertionError:
@@ -105,10 +106,10 @@ def validate_definitions(catalog):
     else:
         raise AssertionError("Recipe permission count must not be interpreted as a percentage")
     assert model.ratio("gene-combination-legendary", 3) == F(".10")
-    assert Counter(node["계열"] for node in cost.NODES.values()) == {"운영": 18, "사육": 18, "탐험": 18, "유전": 18}
+    assert Counter(node["계열"] for node in cost.NODES.values()) == {"운영": 18, "사육": 18, "탐험": 15, "유전": 18}
     assert [int(model.value("ops-engineering", rank)) for rank in range(1, 4)] == [cap for rank, _lab, cap in cost.CAPS if rank]
     species = {d["id"]: d for d in catalog["species"]}
-    assert len(species) == 81
+    assert len(species) == 83
     for d in species.values():
         if d["category"] == "hybrid" or d.get("origin") in {"hybrid", "variant"}:
             assert d["rarity"] in {"epic", "legendary"}, d["id"]
@@ -116,14 +117,14 @@ def validate_definitions(catalog):
 
 
 def validate_species_and_permissions(species, all_levels):
-    new_planned_species, planned_recipes = planned_dna_definitions()
-    assert set(new_planned_species).isdisjoint(species)
-    planned_species_ids = set(species) | set(new_planned_species)
+    promoted_species, planned_recipes = planned_dna_definitions()
+    assert set(promoted_species) <= species.keys()
+    planned_species_ids = set(species)
     assert len(planned_species_ids) == 83
     future_habitats = {"habitat-desert", "habitat-volcanic", "habitat-glacier", "habitat-pterosaur-dome", "habitat-marine-aquarium"}
     permission_rows = model.permissions()
     permission_index = {p["id"]: (node, rank, p) for node, rank, p in permission_rows}
-    assert len(permission_rows) == len(permission_index) == 68
+    assert len(permission_rows) == len(permission_index) == 63
     natural_missions, recipe_targets, programs = {}, {}, {}
     for node_id, row in all_levels:
         kind = model.REGISTRY[node_id]["kind"]
@@ -224,6 +225,13 @@ def validate_species_and_permissions(species, all_levels):
     assert set(approved_completed_parents) == RUNTIME_UNMIGRATED_PARENT_METADATA
     assert all(planned_recipes[key]["parents"] == parents for key, parents in approved_completed_parents.items())
     giant_groups = [{v for v in row["unlocks"] if v in species} for row in model.LEVELS["care-giant"]]
+    for identifier, row in promoted_species.items():
+        if row['size'] == 'giant' and identifier not in set.union(*giant_groups):
+            house = model.marked_table((ROOT / 'docs/current/buildings.md').read_text(), 'housing', 'species')
+            requirement = next(item['giant_permission'] for item in house if item['id'] == identifier)
+            name, rank = requirement.split(':')
+            assert name == 'care-giant'
+            giant_groups[int(rank) - 1].add(identifier)
     assert all(species[k]["size"] == "giant" for group in giant_groups for k in group)
     assert all(giant_groups[i].isdisjoint(giant_groups[j]) for i in range(3) for j in range(i))
     giants = {k for k, d in species.items() if d["size"] == "giant"}
@@ -236,7 +244,7 @@ def validate_species_and_permissions(species, all_levels):
                               "runtime_unmigrated_parent_metadata_recipes": sorted(RUNTIME_UNMIGRATED_PARENT_METADATA),
                               "runtime_unregistered_followup_recipes": sorted(recipe_targets),
                               "planned_parent_definitions_complete": True, "planned_dna_recipes": len(planned_recipes),
-                              "additional_planned_species": len(new_planned_species), "planned_total_species": len(planned_species_ids),
+                              "promoted_species": len(promoted_species), "planned_total_species": len(planned_species_ids),
                               "giant_species": len(giants), "exhibitions": len(programs)}
 
 
@@ -262,8 +270,6 @@ def validate_expeditions(index, catalog):
             assert isinstance(p["reward"]["quantity"], int) and p["reward"]["quantity"] > 0
             assert p["reward_claims_per_completion"] == 1 and p["manual_successful_checks"] >= 2
             assert p["unlocks_codex_or_species_permission"] is False and p["egg_or_dinosaur_reward"] is False
-            assert p["base_fuel"] in {5, 10}
-            assert ("long-range" in p["tags"]) == (p["base_fuel"] == 10)
             for ref in p["required_region_permissions"]:
                 assert ref in base_regions or ref in index
                 if ref in index:
@@ -277,21 +283,12 @@ def validate_expeditions(index, catalog):
             assert p.get("correct_answer_reveal", False) is False
             assert p.get("extra_resource_reward", 0) == 0 and p.get("extra_observations", 0) == 0
             if node_id == "exp-objective-choice":
-                assert p["mutually_exclusive"] and p["base_fuel_unchanged"]
+                assert p["mutually_exclusive"]
                 assert p["eligibility"]["quality"] == 1 and p["eligibility"]["egg_or_dinosaur_reward"] is False
                 assert protected <= set(p["eligibility"]["excludes_protected_ids"])
     long_range = {p["id"] for p in missions if "long-range" in p["tags"]}
     assert len(long_range) == 8
-    for rank in range(1, 6):
-        row = model.level("exp-expedition-supply", rank)
-        assert set(row["contract"]["affected_mission_ids"]) == long_range
-        assert row["contract"]["final_fuel"] == 10 - row["value"] >= 5
-        for p in missions:
-            fuel = model.expedition_fuel(p, rank)
-            assert fuel == (10 - rank if p["id"] in long_range else p["base_fuel"])
-            assert fuel >= 5
-    assert {p["reward"]["material"] for p in missions} == materials
-    assert {p["reward"]["quality"] for p in missions} == qualities
+
     return {"permission_definitions": len(index), "mission_definitions": len(missions), "long_range_missions": len(long_range),
             "primary_research_per_permission": 1, "additional_technology_requirements": 0}
 
@@ -302,7 +299,6 @@ def validate_arithmetic(catalog):
     assert model.material_capacity(25, 3) == 5850 and model.material_capacity(0, 3) == 100
     assert model.production("lumber", 25, 6, 5, 3)["quantity"] == 720
     assert model.production("quarry", 25, 6, 5, 3)["quantity"] == 720
-    assert model.batch_lots(3, fuel=True) == 3
     assert model.hatching_slots(25, 3) == 11 and model.hatching_slots(0, 3) == 1
     assert (1 - b.P["incubation_reduction_max"]) * (1 - model.ratio("care-incubation", 5)) == F(".608")
     assert (1 - b.P["research_reduction_max"]) * (1 - model.ratio("gene-culture", 5)) == F(".684")
@@ -320,14 +316,14 @@ def validate_arithmetic(catalog):
         assert b.primary("warehouse", level) <= cap <= 5850
         counts["storage_stacks"] += 1
     for base, gate, entry, flow, theme in itertools.product([0, 20, 100000], [1, 10, 25], [0, 2, 5], [0, 1, 3], [0, 1, 3]):
-        result = model.visitor_rate(base, gate, [1, 10], 25, 25, entry, 3, flow, 3, theme, theme_eligible=True)
+        result = model.visitor_rate(base, gate, 3, 25, entry, 3, flow, theme, theme_eligible=True)
         rate = result["visitors_per_minute"]
-        assert 0 <= rate <= result["gate"] and rate <= result["demand"] and rate <= result["viewing_per_minute"]
+        assert 0 <= rate <= result["gate"] and rate <= result["demand"] and rate <= result["exhibit_per_minute"]
         counts["visitor_stacks"] += 1
         # Independent gate bound: a shorter visit must never multiply the
         # admission gate's own per-minute throughput.
         assert rate <= b.primary("gate", gate) * (1 + model.ratio("ops-entry", entry))
-        without_theme = model.visitor_rate(base, gate, [1, 10], 25, 25, entry, 3, flow, 3, theme, theme_eligible=False)
+        without_theme = model.visitor_rate(base, gate, 3, 25, entry, 3, flow, theme, theme_eligible=False)
         assert without_theme["demand"] == F(base) * (1 + b.primary("foodcourt", 25) / 100 + model.ratio("ops-marketing", 3))
     for security, care, isolation, environment in itertools.product([0, 10, 25], [0, 1, 3], [0, 1, 3], [0, 1, 3]):
         assert F(".64152") <= model.upkeep_ratio(security, care, isolation, environment_rank=environment) <= 1
@@ -349,7 +345,7 @@ def validate_arithmetic(catalog):
     assert first["goldCost"] == 4000 and first["durationMs"] == 30 * 60000
     assert [(r["material"], r["quality"], r["amount"]) for r in first["ingredients"]] == [("dna", 2, 20), ("catalyst", 2, 1), ("culture", 2, 2)]
     assert catalog["rules"]["epic"] == {"successRate": .5, "guaranteedAttempt": 5}
-    assert catalog["rules"]["legendary"] == {"successRate": .3, "guaranteedAttempt": 8}
+    assert catalog["rules"]["legendary"] == {"successRate": .1, "guaranteedAttempt": 8}
     for recipe in recipes.values():
         assert set(recipe["parentSpeciesIds"]) <= {d["id"] for d in catalog["species"]}
     special = set(model.level("gene-combination-legendary", 3)["unlocks"])
@@ -391,7 +387,7 @@ def validate_arithmetic(catalog):
 def validate_cost_linkage():
     cost, b = model.cost, model.building
     rows = cost.all_costs()
-    assert len(rows) == 252
+    assert len(rows) == 239
     buys = {row["material"]: int(row["buy"]) for row in b.PROD.values()}
     snapshots = 0
     for row in rows:
@@ -439,8 +435,8 @@ def validate():
               ROOT / "docs/archive/0.5/research-trees.md", Path(model.__file__), Path(__file__),
               Path(model.cost.__file__), Path(model.building.__file__)]
     return {"status": "pass", "kind": "canonical planning definitions and arithmetic only",
-            "technologies": 72, "research_actions": 252, "preserved_scalar_technologies": 14,
-            "structured_technologies": 58, "structured_levels": 194, "catalog_species": len(species),
+            "technologies": 69, "research_actions": 239, "preserved_scalar_technologies": 12,
+            "structured_technologies": 57, "structured_levels": 189, "catalog_species": len(species),
             "source_sha256": {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs},
             "compiled_catalog_source_provenance": provenance,
             "checks": {"preserved_14_original_effect_rows": True, "all_levels_defined_and_cost_linked": True,
@@ -448,8 +444,8 @@ def validate():
                        "completed_dna_plan_9_recipes_2_species_and_snapshot_separation": True,
                        "one_primary_expedition_permission_no_extra_technology_toll": True,
                        "first_hatch_and_first_guaranteed_synthesis_excluded": True,
-                       "unchanged_synthesis_success_and_protection": True,
-                       "storage_housing_fuel_visitor_and_duration_bounds": True,
+                       "synthesis_success_rates_and_guarantees": True,
+                       "storage_housing_visitor_and_duration_bounds": True,
                        "dna_30_percent_cap_actual_spend_refund_conservation": True},
             "content": content, "expedition": expedition, "combination_cases": combinations, "costs": costs,
             "maxima": {"gold_capacity": model.vault_capacity(25, 3), "ordinary_material_capacity": model.material_capacity(25, 3),

@@ -1,12 +1,8 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma, TransactionType } from '@prisma/client';
-import {
-  MAX_EXPLORATION_ENERGY,
-  ENERGY_RECHARGE_MINUTES,
-  MAX_OFFLINE_HOURS,
-  OFFLINE_REVENUE_RATE,
-} from '@dino-park/shared';
+import { MAX_OFFLINE_HOURS, OFFLINE_REVENUE_RATE } from '@dino-park/shared';
+import { getExpeditionEnergy } from '../exploration/expedition-state';
 import { ParkOperationsService } from '../park/park-operations.service';
 
 @Injectable()
@@ -28,28 +24,18 @@ export class EconomyService {
       throw new NotFoundException('재화 정보를 찾을 수 없습니다.');
     }
 
-    // 에너지 회복 계산
     const now = new Date();
-    const lastRecharge = currency.energyLastRechargedAt;
-    const minutesPassed = Math.floor((now.getTime() - lastRecharge.getTime()) / (1000 * 60));
-    const energyToAdd = Math.floor(minutesPassed / ENERGY_RECHARGE_MINUTES);
-    const currentEnergy = Math.min(
-      MAX_EXPLORATION_ENERGY,
-      currency.explorationEnergy + energyToAdd,
-    );
-
-    // 다음 에너지 회복까지 남은 시간
-    const minutesUntilNextEnergy =
-      currentEnergy >= MAX_EXPLORATION_ENERGY
-        ? 0
-        : ENERGY_RECHARGE_MINUTES - (minutesPassed % ENERGY_RECHARGE_MINUTES);
+    const fuel = getExpeditionEnergy(currency, now);
+    const minutesUntilNextEnergy = fuel.nextRechargeAt
+      ? Math.ceil((fuel.nextRechargeAt.getTime() - now.getTime()) / 60_000)
+      : 0;
 
     return {
       gold: currency.gold,
       diamond: currency.diamond,
       dna: currency.dna,
-      explorationEnergy: currentEnergy,
-      maxExplorationEnergy: MAX_EXPLORATION_ENERGY,
+      explorationEnergy: fuel.value,
+      maxExplorationEnergy: fuel.capacity,
       minutesUntilNextEnergy,
       lastUpdated: currency.updatedAt,
     };
@@ -214,97 +200,6 @@ export class EconomyService {
     );
 
     return updated;
-  }
-
-  /**
-   * 에너지 사용
-   */
-  async useEnergy(userId: string, amount: number) {
-    // 먼저 에너지 회복 처리
-    await this.rechargeEnergy(userId);
-
-    const currency = await this.prisma.currency.findUnique({
-      where: { userId },
-    });
-
-    if (!currency || currency.explorationEnergy < amount) {
-      throw new BadRequestException('에너지가 부족합니다.');
-    }
-
-    return this.prisma.currency.update({
-      where: { userId },
-      data: { explorationEnergy: { decrement: amount } },
-    });
-  }
-
-  /**
-   * 에너지 회복 체크 및 처리
-   */
-  async rechargeEnergy(userId: string) {
-    const currency = await this.prisma.currency.findUnique({
-      where: { userId },
-    });
-
-    if (!currency) return null;
-
-    const now = new Date();
-    const lastRecharge = currency.energyLastRechargedAt;
-    const minutesPassed = Math.floor((now.getTime() - lastRecharge.getTime()) / (1000 * 60));
-
-    const energyToAdd = Math.floor(minutesPassed / ENERGY_RECHARGE_MINUTES);
-
-    if (energyToAdd > 0 && currency.explorationEnergy < MAX_EXPLORATION_ENERGY) {
-      const newEnergy = Math.min(MAX_EXPLORATION_ENERGY, currency.explorationEnergy + energyToAdd);
-
-      return this.prisma.currency.update({
-        where: { userId },
-        data: {
-          explorationEnergy: newEnergy,
-          energyLastRechargedAt: now,
-        },
-      });
-    }
-
-    return currency;
-  }
-
-  /**
-   * 에너지 즉시 충전 (다이아 사용)
-   */
-  async refillEnergy(userId: string) {
-    const diamondCost = 30;
-
-    const currency = await this.prisma.currency.findUnique({
-      where: { userId },
-    });
-
-    if (!currency || currency.diamond < diamondCost) {
-      throw new BadRequestException('다이아가 부족합니다.');
-    }
-
-    const updated = await this.prisma.currency.update({
-      where: { userId },
-      data: {
-        diamond: { decrement: diamondCost },
-        explorationEnergy: MAX_EXPLORATION_ENERGY,
-        energyLastRechargedAt: new Date(),
-      },
-    });
-
-    await this.recordTransaction(
-      userId,
-      TransactionType.SPEND,
-      'diamond',
-      -diamondCost,
-      '에너지 충전',
-      updated.diamond,
-    );
-
-    return {
-      ...updated,
-      diamondSpent: diamondCost,
-      energyRefilled: MAX_EXPLORATION_ENERGY,
-    };
   }
 
   /**

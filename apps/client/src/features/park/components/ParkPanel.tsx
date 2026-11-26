@@ -1,9 +1,15 @@
+import { Link } from 'react-router-dom';
 import {
   getBuildingById,
-  getDinosaurById,
-  getViewingPlatformCompletedLevel,
+  getGenericBuildingUpgradeQuote,
+  resolveDinosaurSpecies,
   getViewingPlatformStats,
   MAX_VIEWING_PLATFORM_LEVEL,
+  RESEARCH_LAB_ID,
+  RESEARCH_STORAGE_ID,
+  GOLD_VAULT_ID,
+  SECURITY_CENTER_TYPE_ID,
+  FUEL_DEPOT_TYPE_ID,
 } from '@dino-park/game-data';
 import {
   FEEDING_GOLD_COST,
@@ -11,33 +17,75 @@ import {
   PARK_ADMISSION,
   type BuildingResponse,
   type DinosaurResponse,
+  type ParkOperationsResponse,
+  type ResourcesResponse,
 } from '@dino-park/shared';
 import { Button } from '@/components/ui';
-import { buildingArtwork, dinosaurArtwork } from '@/game/parkArtwork';
-import { useCurrency, useFeedDinosaur } from '@/api';
+import { entranceGateThumbnail } from '@/game/engine/EntranceGateArtwork';
+import {
+  buildingArtwork,
+  dinosaurArtwork,
+  getCompletedBuildingArtworkLevel,
+  HABITAT_FENCE_UPGRADE_LEVEL,
+  hasHabitatFenceUpgrade,
+} from '@/game/parkArtwork';
+import { useCurrency, useFeedDinosaur, useRemoveDinosaurFromPark, useUpgradeBuilding } from '@/api';
 import { useGameStore, useUIStore } from '@/stores';
+import { formatFacilityCountdown } from '@/utils/facilityCountdown';
 import HybridExhibitPanel from './HybridExhibitPanel';
+import ParkExhibitManagement from './ParkExhibitManagement';
+import SecurityCenterPanel from './SecurityCenterPanel';
+import FacilityCountdown from './FacilityCountdown';
+import { useParkHarvest } from './useParkHarvest';
+import './ParkPanel.css';
 
 interface ParkPanelProps {
   dinosaurs: DinosaurResponse[];
   buildings: BuildingResponse[];
+  operations?: ParkOperationsResponse;
+  resources?: ResourcesResponse;
   onShowResources: () => void;
+  onShowPlatformUpgrade?: () => void;
+  onShowProduction?: (buildingId: string) => void;
+  onReturnToGrowth?: () => void;
 }
 
-export default function ParkPanel({ dinosaurs, buildings, onShowResources }: ParkPanelProps) {
-  const { sidePanel, activeModal, modalData, openModal, closeSidePanel, closeModal, showToast } =
-    useUIStore();
+export default function ParkPanel({
+  dinosaurs,
+  buildings,
+  operations,
+  resources,
+  onShowResources,
+  onShowPlatformUpgrade,
+  onShowProduction,
+  onReturnToGrowth,
+}: ParkPanelProps) {
+  const {
+    sidePanel,
+    activeModal,
+    modalData,
+    openModal,
+    openSidePanel,
+    closeSidePanel,
+    closeModal,
+    showToast,
+  } = useUIStore();
   const { startPlacement, selectEntity } = useGameStore();
   const { data: currency } = useCurrency();
   const feed = useFeedDinosaur();
+  const withdraw = useRemoveDinosaurFromPark();
+  const harvest = useParkHarvest();
+  const upgrade = useUpgradeBuilding();
   const dinosaur = dinosaurs.find((item) => item.id === modalData?.dinosaurId);
   const building = buildings.find((item) => item.id === modalData?.buildingId);
   const showDinosaur = activeModal === 'dinosaur_detail' && dinosaur;
   const showBuilding = activeModal === 'building_detail' && building;
+  const showExhibits = sidePanel === 'exhibit_list' && operations;
   if (
     !['dinosaur_list', 'building_list'].includes(sidePanel ?? '') &&
     !showDinosaur &&
-    !showBuilding
+    !showBuilding &&
+    !showExhibits
   )
     return null;
 
@@ -62,34 +110,86 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
       });
     }
   };
-  const name = dinosaur ? (getDinosaurById(dinosaur.speciesId)?.nameKo ?? dinosaur.speciesId) : '';
+  const name = dinosaur ? (resolveDinosaurSpecies(dinosaur)?.nameKo ?? dinosaur.speciesId) : '';
   const buildingType = building ? getBuildingById(building.typeId) : undefined;
   const isPlatform = building?.typeId === PARK_ADMISSION.platformTypeId;
+  const isFuelDepot = building?.typeId === FUEL_DEPOT_TYPE_ID;
+  const isSecurityCenter = showBuilding && building.typeId === SECURITY_CENTER_TYPE_ID;
   const isUpgrading = building?.status.toUpperCase() === 'UPGRADING';
   const isConstructing = building?.status.toUpperCase() === 'CONSTRUCTING';
-  const platformLevel =
-    isPlatform && building ? getViewingPlatformCompletedLevel(building.level, isUpgrading) : null;
+  const production = resources?.facilities.find(
+    (facility) => facility.building?.id === building?.id,
+  );
+  const job = production?.job;
+  const hasFenceUpgrade = building && hasHabitatFenceUpgrade(building.typeId);
+  const artworkLevel = building ? getCompletedBuildingArtworkLevel(building) : 1;
+  const shownLevel = isPlatform || hasFenceUpgrade ? artworkLevel : building?.level;
+  const platformLevel = isPlatform ? artworkLevel : null;
   const platformStats = platformLevel === null ? null : getViewingPlatformStats(platformLevel);
+  const habitatUpgrade =
+    building &&
+    buildingType &&
+    hasFenceUpgrade &&
+    !isConstructing &&
+    !isUpgrading &&
+    building.level < buildingType.maxLevel
+      ? {
+          targetLevel: building.level + 1,
+          ...getGenericBuildingUpgradeQuote(building.typeId, building.level + 1),
+        }
+      : null;
+  const gold = operations?.gold ?? resources?.gold ?? currency?.gold;
+  const lacksHabitatUpgradeGold =
+    habitatUpgrade && gold !== undefined && gold < habitatUpgrade.gold;
+  const habitatUpgradeError =
+    typeof upgrade.variables === 'object' && upgrade.variables.id === building?.id
+      ? upgrade.error
+      : null;
   const title = showDinosaur
     ? dinosaur.nickname || name
     : showBuilding
       ? (buildingType?.nameKo ?? '시설 정보')
-      : sidePanel === 'dinosaur_list'
-        ? '내 공룡'
-        : '기본 시설';
-  const result = dinosaur && feed.variables === dinosaur.id ? feed.data : undefined;
+      : showExhibits
+        ? '전시 구역'
+        : sidePanel === 'dinosaur_list'
+          ? '내 공룡'
+          : '기본 시설';
+  const result = dinosaur?.isInPark && feed.variables === dinosaur.id ? feed.data : undefined;
+  const withdrawing = withdraw.isPending && withdraw.variables === dinosaur?.id;
+  const withdrawFailed = withdraw.isError && withdraw.variables === dinosaur?.id;
+  const occupiedHabitat =
+    building &&
+    buildingType?.category === 'dinosaur' &&
+    dinosaurs.some(
+      ({ isInPark, positionX, positionY }) =>
+        isInPark &&
+        positionX >= building.positionX &&
+        positionX < building.positionX + buildingType.size.width &&
+        positionY >= building.positionY &&
+        positionY < building.positionY + buildingType.size.height,
+    );
+  const collect = async (button: HTMLButtonElement) => {
+    if (!job || !production) return;
+    try {
+      await harvest.collect(job, production.recipe.material, button.getBoundingClientRect());
+    } catch (cause) {
+      showToast({
+        type: 'error',
+        message: cause instanceof Error ? cause.message : '생산품을 수확하지 못했어요.',
+      });
+    }
+  };
 
   return (
-    <section
-      aria-label={title}
-      className="absolute inset-x-3 bottom-3 z-20 mx-auto flex max-h-[65%] max-w-sm flex-col rounded-2xl bg-white text-slate-800 shadow-xl"
-    >
-      <div className="flex shrink-0 items-center justify-between gap-3 px-4 pb-3 pt-4">
-        <h2 className="text-lg font-bold">{title}</h2>
+    <section aria-label={title} className="park-context park-panel-surface">
+      {harvest.feedback}
+      <header className="park-panel-header">
+        <h2>{title}</h2>
         <button
+          type="button"
           aria-label="관리 패널 닫기"
           onClick={close}
-          className="flex h-11 w-11 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-700"
+          className="park-panel-close"
         >
           <svg
             width="20"
@@ -103,24 +203,47 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
             <path d="m6 6 12 12M18 6 6 18" />
           </svg>
         </button>
-      </div>
-      {/* Keep the scroll surface inside the floating panel above the WebGL map. */}
-      <div className="min-h-0 overflow-auto px-4 pb-4">
+      </header>
+      <div className="park-panel-body">
         {showDinosaur ? (
           <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <img src={dinosaurArtwork(dinosaur.speciesId)} alt="" width="76" height="70" />
+            <div className="park-context__hero">
+              <div className="park-context__art">
+                <img
+                  src={dinosaurArtwork(dinosaur.speciesId, dinosaur.hybrid)}
+                  alt=""
+                  width="104"
+                  height="90"
+                />
+              </div>
               <div className="min-w-0">
-                <p className="break-words text-sm font-medium">
+                <p className="park-context__level">
                   {name} · Lv.{dinosaur.level}
                 </p>
-                <p className="mt-1 text-sm text-slate-600">
+                <p className="park-context__muted" role="status">
                   {dinosaur.isInPark
                     ? `배치 위치 (${dinosaur.positionX}, ${dinosaur.positionY})`
-                    : '파크에 배치할 준비가 됐어요'}
+                    : '배치 대기'}
                 </p>
+                {dinosaur.isInPark && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="mt-1"
+                    disabled={feed.isPending || withdraw.isPending}
+                    aria-busy={withdrawing}
+                    onClick={() => withdraw.mutate(dinosaur.id)}
+                  >
+                    {withdrawing ? '이동 중…' : '배치 대기로'}
+                  </Button>
+                )}
               </div>
             </div>
+            {withdrawFailed && (
+              <p role="alert" className="text-sm text-red-700">
+                배치 대기로 옮기지 못했어요. 다시 시도해주세요.
+              </p>
+            )}
             {dinosaur.speciesId === FIRST_HYBRID_SPECIES_ID && (
               <HybridExhibitPanel key={dinosaur.id} selected={dinosaur} dinosaurs={dinosaurs} />
             )}
@@ -158,7 +281,7 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
               <Button
                 variant="outline"
                 className="min-h-11 flex-1 text-sm"
-                disabled={feed.isPending}
+                disabled={feed.isPending || withdrawing}
                 onClick={() => place(dinosaur)}
               >
                 {dinosaur.isInPark ? '위치 옮기기' : '배치하기'}
@@ -168,6 +291,7 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
                 isLoading={feed.isPending}
                 disabled={
                   !dinosaur.isInPark ||
+                  withdrawing ||
                   dinosaur.hunger === 0 ||
                   !currency ||
                   currency.gold < FEEDING_GOLD_COST
@@ -187,60 +311,117 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
             )}
           </div>
         ) : showBuilding ? (
-          <div className="flex items-center gap-4">
-            <img
-              className="shrink-0 object-contain"
-              src={buildingArtwork(building.typeId, platformLevel ?? building.level)}
-              alt=""
-              width="104"
-              height="90"
-            />
-            <div className="min-w-0">
-              <p className="text-sm">{buildingType?.description}</p>
-              <p className="mt-2 text-xs text-slate-600">
-                Lv.{platformLevel ?? building.level} · ({building.positionX}, {building.positionY})
-                {isConstructing && ' · 건설 중'}
-                {isUpgrading && ` · Lv.${building.level} 확장 중`}
-              </p>
-              {platformStats && (
-                <p className="mt-2 text-sm text-green-800">
-                  {isConstructing ? '완공 시 관람 정원' : '이 관람대 정원'} {platformStats.capacity}
-                  명 · 유지비 {platformStats.maintenanceCost}골드/시간
-                </p>
-              )}
-              {platformLevel !== null &&
-                platformLevel < MAX_VIEWING_PLATFORM_LEVEL &&
-                !isConstructing && (
-                  <Button
-                    variant="outline"
-                    className="mt-3 min-h-11 text-sm"
-                    onClick={onShowResources}
+          <>
+            <div className="park-context__hero">
+              <div className="park-context__art">
+                <img
+                  src={
+                    building.typeId === PARK_ADMISSION.entranceTypeId
+                      ? entranceGateThumbnail(operations?.isOpen)
+                      : buildingArtwork(building.typeId, artworkLevel)
+                  }
+                  alt=""
+                  width="104"
+                  height="90"
+                />
+              </div>
+              <div className="park-context__details">
+                <div className="park-context__facts">
+                  <span className="park-context__level">Lv.{shownLevel}</span>
+                  <span
+                    className="park-context__muted"
+                    aria-label={`지도 좌표 ${building.positionX}, ${building.positionY}`}
                   >
-                    관람대 확장 보기
-                  </Button>
+                    ({building.positionX}, {building.positionY})
+                  </span>
+                </div>
+                <p>{buildingType?.description}</p>
+                {isFuelDepot && resources?.fuel && (
+                  <p className="park-context__capacity">
+                    연료{' '}
+                    <strong>
+                      {resources.fuel.amount} / {resources.fuel.capacity}
+                    </strong>
+                  </p>
                 )}
-              {building.typeId === PARK_ADMISSION.entranceTypeId && (
-                <Button
-                  variant="outline"
-                  className="mt-3 min-h-11 text-sm"
-                  onClick={() => {
-                    close();
-                    startPlacement({ type: 'entrance', id: building.id });
-                  }}
-                >
-                  입구 옮기기 · 무료
-                </Button>
-              )}
+                {platformStats && (
+                  <p className="park-context__capacity">
+                    {isConstructing ? '완공 시 관람석' : '관람석'}{' '}
+                    <strong>{platformStats.capacity}석</strong>
+                    {' · '}유지비 <strong>{platformStats.maintenanceCost}골드/시간</strong>
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+            {isSecurityCenter && (
+              <SecurityCenterPanel
+                key={building.id}
+                building={building}
+                onShowResources={onShowResources}
+                onReturnToGrowth={onReturnToGrowth}
+              />
+            )}
+            {(isConstructing || isUpgrading) && building.completesAt && (
+              <FacilityCountdown completesAt={building.completesAt} />
+            )}
+            {habitatUpgrade && (
+              <p className="park-context__capacity mt-2">
+                <strong>{habitatUpgrade.gold.toLocaleString('ko-KR')}골드</strong> · 공사{' '}
+                <strong>{formatFacilityCountdown(habitatUpgrade.seconds)}</strong>
+                {habitatUpgrade.targetLevel === HABITAT_FENCE_UPGRADE_LEVEL &&
+                  ' · 완공 후 울타리 변경'}
+              </p>
+            )}
+            {lacksHabitatUpgradeGold && (
+              <p className="text-xs text-amber-900">강화할 골드가 부족해요.</p>
+            )}
+            {habitatUpgradeError && (
+              <p className="text-xs text-red-800" role="alert">
+                {habitatUpgradeError.message || '서식지를 강화하지 못했어요. 다시 시도해주세요.'}
+              </p>
+            )}
+            {job && !job.ready && <FacilityCountdown completesAt={job.readyAt} />}
+            {job?.claimBlocked && (
+              <p className="text-xs text-amber-900">
+                {isFuelDepot ? '탐험에서 연료를 쓴 뒤 수령하세요.' : '자원 보관 공간이 부족해요.'}
+              </p>
+            )}
+            {occupiedHabitat && (
+              <p className="text-xs text-amber-900">시설을 옮기려면 공룡을 먼저 옮겨주세요.</p>
+            )}
+          </>
+        ) : showExhibits ? (
+          <>
+            <ParkExhibitManagement
+              buildings={buildings}
+              dinosaurs={dinosaurs}
+              operations={showExhibits}
+              onShowDinosaurs={() => openSidePanel('dinosaur_list')}
+              onBuild={(typeId) => {
+                close();
+                startPlacement({ type: 'building', typeId });
+              }}
+            />
+            {onReturnToGrowth && (
+              <Button variant="outline" className="mt-3 min-h-11 w-full" onClick={onReturnToGrowth}>
+                성장 목표로 돌아가기
+              </Button>
+            )}
+          </>
         ) : sidePanel === 'dinosaur_list' ? (
           <ul className="space-y-3">
             {dinosaurs.map((item) => (
               <li key={item.id} className="flex items-center gap-3">
-                <img src={dinosaurArtwork(item.speciesId)} alt="" width="58" height="54" />
+                <img
+                  src={dinosaurArtwork(item.speciesId, item.hybrid)}
+                  alt=""
+                  width="58"
+                  height="54"
+                  className="object-contain"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold">
-                    {item.nickname || getDinosaurById(item.speciesId)?.nameKo}
+                    {item.nickname || resolveDinosaurSpecies(item)?.nameKo}
                   </p>
                   <p className="text-xs text-slate-600">
                     {item.isInPark ? '파크에서 지내는 중' : '배치 대기 중'}
@@ -270,20 +451,23 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
           <ul className="space-y-4">
             {buildings.map((item) => {
               const isViewingPlatform = item.typeId === PARK_ADMISSION.platformTypeId;
-              const level = isViewingPlatform
-                ? getViewingPlatformCompletedLevel(
-                    item.level,
-                    item.status.toUpperCase() === 'UPGRADING',
-                  )
-                : item.level;
+              const level =
+                isViewingPlatform || hasHabitatFenceUpgrade(item.typeId)
+                  ? getCompletedBuildingArtworkLevel(item)
+                  : item.level;
               return (
                 <li key={item.id} className="flex items-center gap-3">
                   <img
                     className="shrink-0 object-contain"
-                    src={buildingArtwork(item.typeId, level)}
+                    src={
+                      item.typeId === PARK_ADMISSION.entranceTypeId
+                        ? entranceGateThumbnail(operations?.isOpen)
+                        : buildingArtwork(item.typeId, level)
+                    }
                     alt=""
                     width="70"
                     height="60"
+                    loading="lazy"
                   />
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold">
@@ -293,7 +477,9 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
                       Lv.{level} · ({item.positionX}, {item.positionY})
                     </p>
                   </div>
-                  {isViewingPlatform && (
+                  {(isViewingPlatform ||
+                    item.typeId === SECURITY_CENTER_TYPE_ID ||
+                    item.typeId === FUEL_DEPOT_TYPE_ID) && (
                     <Button
                       variant="outline"
                       className="min-h-11 text-sm"
@@ -303,7 +489,11 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
                         openModal('building_detail', { buildingId: item.id });
                       }}
                     >
-                      관람대 상세
+                      {isViewingPlatform
+                        ? '관람대 상세'
+                        : item.typeId === SECURITY_CENTER_TYPE_ID
+                          ? '보안센터 상세'
+                          : '연료 보급소 상세'}
                     </Button>
                   )}
                 </li>
@@ -312,6 +502,93 @@ export default function ParkPanel({ dinosaurs, buildings, onShowResources }: Par
           </ul>
         )}
       </div>
+      {showBuilding && (
+        <div className="park-context__actions">
+          {habitatUpgrade && (
+            <Button
+              variant="gold"
+              className="park-panel-action--primary"
+              disabled={!!lacksHabitatUpgradeGold}
+              isLoading={upgrade.isPending}
+              onClick={() =>
+                upgrade.mutate({ id: building.id, targetLevel: habitatUpgrade.targetLevel })
+              }
+            >
+              Lv.{habitatUpgrade.targetLevel} 강화
+            </Button>
+          )}
+          {[RESEARCH_LAB_ID, RESEARCH_STORAGE_ID, GOLD_VAULT_ID].some(
+            (typeId) => typeId === building.typeId,
+          ) && (
+            <Link
+              to={
+                building.typeId === RESEARCH_LAB_ID
+                  ? '/research'
+                  : `/research?facility=${building.typeId}`
+              }
+              className="park-panel-action--primary inline-flex min-h-11 items-center rounded-lg border px-3 text-sm font-semibold"
+              onClick={close}
+            >
+              {building.typeId === RESEARCH_LAB_ID ? '연구 보기' : '강화 보기'}
+            </Link>
+          )}
+          {production && !isConstructing && (
+            <Button
+              variant={job?.ready ? 'gold' : 'outline'}
+              className="park-panel-action--primary"
+              isLoading={harvest.isPending}
+              disabled={!!job && (!job.ready || job.claimBlocked)}
+              onClick={({ currentTarget }) => {
+                if (job?.ready) void collect(currentTarget);
+                else if (onShowProduction) onShowProduction(building.id);
+                else onShowResources();
+              }}
+            >
+              {isFuelDepot && job
+                ? job.ready
+                  ? `연료 ${job.quantity}개 수령`
+                  : '생산 중'
+                : job
+                  ? '수확'
+                  : '생산 준비'}
+            </Button>
+          )}
+          {isFuelDepot && !isConstructing && (
+            <Link to="/exploration" className="resource-panel__scout-link" onClick={close}>
+              탐험으로
+            </Link>
+          )}
+          {platformLevel !== null &&
+            platformLevel < MAX_VIEWING_PLATFORM_LEVEL &&
+            !isConstructing && (
+              <Button
+                variant="outline"
+                className="park-panel-action--primary"
+                onClick={onShowPlatformUpgrade ?? onShowResources}
+              >
+                관람대 확장 보기
+              </Button>
+            )}
+          {!isConstructing && !isUpgrading && (
+            <Button
+              variant="outline"
+              disabled={!!occupiedHabitat}
+              onClick={() => {
+                close();
+                startPlacement(
+                  building.typeId === PARK_ADMISSION.entranceTypeId
+                    ? { type: 'entrance', id: building.id }
+                    : { type: 'building', id: building.id, typeId: building.typeId },
+                );
+              }}
+            >
+              {building.typeId === PARK_ADMISSION.entranceTypeId
+                ? '입구 옮기기 · 무료'
+                : '시설 옮기기'}
+            </Button>
+          )}
+        </div>
+      )}
     </section>
   );
 }

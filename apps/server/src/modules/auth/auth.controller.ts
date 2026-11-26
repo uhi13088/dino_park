@@ -37,7 +37,6 @@ export class AuthController {
           gold: 10000,
           diamond: 100,
           dna: 0,
-          explorationEnergy: 30,
         },
         park: {
           id: 'clx5678...',
@@ -97,7 +96,6 @@ export class AuthController {
           gold: 50000,
           diamond: 150,
           dna: 25,
-          explorationEnergy: 28,
         },
         park: {
           id: 'clx5678...',

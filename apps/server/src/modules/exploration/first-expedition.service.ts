@@ -18,7 +18,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import { ParkOperationsService } from '../park/park-operations.service';
 import {
-  getExpeditionEnergy,
+  FIRST_EXPEDITION_RECEIPT_STEPS,
   getHatchingEggState,
   getHatchingSlots,
   grantHatchingExperience,
@@ -42,25 +42,22 @@ export class FirstExpeditionService {
     });
     if (!park) throw new NotFoundException('파크를 찾을 수 없습니다.');
     const user = await tx.user.findUniqueOrThrow({ where: { id: userId } });
-    const currency = await tx.currency.findUniqueOrThrow({ where: { userId } });
-    const mission = await tx.exploration.findUnique({
+    const currency = await tx.currency.findUniqueOrThrow({
+      where: { userId },
+      select: { gold: true },
+    });
+    const storedMission = await tx.exploration.findUnique({
       where: { userId_missionId: { userId, missionId: FIRST_EXPEDITION.id } },
     });
+    const mission = storedMission?.status === 'IN_PROGRESS' ? null : storedMission;
     const egg = mission
       ? await tx.hatchingQueue.findUnique({ where: { sourceExplorationId: mission.id } })
       : null;
     const queue = await tx.hatchingQueue.findMany({ where: { userId, completed: false } });
-    const legacyActive = await tx.exploration.count({
-      where: { userId, status: 'IN_PROGRESS', missionId: null },
-    });
-    return { park, user, currency, mission, egg, queue, legacyActive };
+    return { park, user, currency, mission, egg, queue };
   }
 
-  private async response(
-    tx: Tx,
-    userId: string,
-    feedback?: FirstExpeditionStateResponse['feedback'],
-  ): Promise<FirstExpeditionStateResponse> {
+  private async response(tx: Tx, userId: string): Promise<FirstExpeditionStateResponse> {
     const world = await this.load(tx, userId);
     const { park, mission, egg, currency, user } = world;
     const owned =
@@ -77,12 +74,9 @@ export class FirstExpeditionService {
     const requirements: string[] = [];
     if (!mission && !reusedExisting && !platformReady)
       requirements.push('파크의 첫 관람대를 완공해주세요.');
-    if (!mission && !reusedExisting && world.legacyActive)
-      requirements.push('진행 중인 기존 탐험을 먼저 완료하고 보상을 받아주세요.');
     const unlocked = !!mission || reusedExisting || !requirements.length;
     let stage: FirstExpeditionStage = unlocked ? 'available' : 'locked';
     if (reusedExisting) stage = owned && !owned.isInPark ? 'placement' : 'complete';
-    else if (mission?.status === 'IN_PROGRESS') stage = 'exploring';
     else if (mission?.status === 'COMPLETED') stage = 'reward';
     else if (egg?.readyToStart) stage = 'egg';
     else if (egg?.completed) stage = owned && !owned.isInPark ? 'placement' : 'complete';
@@ -90,7 +84,6 @@ export class FirstExpeditionService {
     const steps: Record<FirstExpeditionStage, number> = {
       locked: 0,
       available: 5,
-      exploring: 6,
       reward: 7,
       egg: 8,
       hatching: 8,
@@ -104,30 +97,20 @@ export class FirstExpeditionService {
         where: { id: userId, tutorialStep: { lt: tutorialStep } },
         data: { tutorialStep },
       });
-    const clue =
-      mission?.status === 'IN_PROGRESS' ? FIRST_EXPEDITION.clues[mission.missionStep] : null;
     return {
       stage,
       tutorialStep,
       unlocked,
       requirements,
       gold: currency.gold,
-      energy: getExpeditionEnergy(currency).value,
       mission: mission
         ? {
             id: mission.id,
             regionId: mission.regionId,
             status: mission.status,
             step: mission.missionStep,
-            totalSteps: FIRST_EXPEDITION.clues.length,
-            clue: clue
-              ? {
-                  id: clue.id,
-                  title: clue.title,
-                  hint: clue.hint,
-                  options: clue.options.map((option) => ({ ...option })),
-                }
-              : null,
+            totalSteps: FIRST_EXPEDITION_RECEIPT_STEPS,
+            clue: null,
           }
         : null,
       egg: egg
@@ -154,63 +137,12 @@ export class FirstExpeditionService {
         : null,
       hatchingSlots: getHatchingSlots(park.buildings, world.queue),
       reusedExisting,
-      ...(feedback ? { feedback } : {}),
     };
   }
 
   async getState(userId: string) {
     return this.prisma.$transaction(async (tx) => {
       await this.operations.settleInTransaction(tx, userId, true);
-      return this.response(tx, userId);
-    });
-  }
-
-  async start(userId: string, regionId: string) {
-    if (regionId !== FIRST_EXPEDITION.regionId)
-      throw new BadRequestException('첫 탐험 장소는 초원 정찰입니다.');
-    return this.prisma.$transaction(async (tx) => {
-      await this.operations.settleInTransaction(tx, userId, true);
-      const world = await this.load(tx, userId);
-      if (
-        world.mission ||
-        world.park.dinosaurs.some((d) => d.speciesId === FIRST_EXPEDITION.speciesId) ||
-        world.park.dinosaurCollections.some((d) => d.speciesId === FIRST_EXPEDITION.speciesId)
-      )
-        return this.response(tx, userId);
-      if (
-        !world.park.buildings.some(
-          (b) => b.typeId === PARK_ADMISSION.platformTypeId && b.status === 'ACTIVE',
-        )
-      )
-        throw new BadRequestException('첫 관람대를 완공한 뒤 탐험을 시작할 수 있어요.');
-      if (world.legacyActive)
-        throw new BadRequestException('진행 중인 기존 탐험을 먼저 완료해주세요.');
-      const energy = getExpeditionEnergy(world.currency);
-      if (world.currency.gold < FIRST_EXPEDITION.goldCost)
-        throw new BadRequestException('탐험 준비비가 부족합니다.');
-      if (energy.value < FIRST_EXPEDITION.energyCost)
-        throw new BadRequestException('탐험 에너지가 부족합니다.');
-      const updated = await tx.currency.update({
-        where: { userId },
-        data: {
-          gold: { decrement: FIRST_EXPEDITION.goldCost },
-          explorationEnergy: energy.value - FIRST_EXPEDITION.energyCost,
-          energyLastRechargedAt: energy.last,
-        },
-      });
-      await tx.transaction.create({
-        data: {
-          userId,
-          type: 'SPEND',
-          currencyType: 'gold',
-          amount: -FIRST_EXPEDITION.goldCost,
-          reason: '첫 초원 정찰 준비',
-          balanceAfter: updated.gold,
-        },
-      });
-      await tx.exploration.create({
-        data: { userId, regionId, missionId: FIRST_EXPEDITION.id, missionStep: 0 },
-      });
       return this.response(tx, userId);
     });
   }
@@ -222,57 +154,13 @@ export class FirstExpeditionService {
     return mission;
   }
 
-  async choose(userId: string, id: string, step: number, choiceId: string) {
-    return this.prisma.$transaction(async (tx) => {
-      await this.operations.settleInTransaction(tx, userId, true);
-      const mission = await this.ownedMission(tx, userId, id);
-      const clue = FIRST_EXPEDITION.clues[step];
-      if (
-        !Number.isInteger(step) ||
-        !clue ||
-        !clue.options.some((option) => option.id === choiceId)
-      )
-        throw new BadRequestException('현재 단서의 선택지를 골라주세요.');
-      if (step > mission.missionStep)
-        throw new BadRequestException('앞의 단서를 먼저 확인해주세요.');
-      const correct = choiceId === clue.correctChoiceId;
-      if (step < mission.missionStep || mission.status !== 'IN_PROGRESS')
-        return this.response(tx, userId, {
-          correct,
-          message: '이미 확인한 단서예요. 이어서 진행해주세요.',
-        });
-      if (!correct) return this.response(tx, userId, { correct: false, message: clue.retry });
-      const next = mission.missionStep + 1;
-      await tx.exploration.update({
-        where: { id },
-        data: {
-          missionStep: next,
-          ...(next === FIRST_EXPEDITION.clues.length
-            ? {
-                status: 'COMPLETED',
-                completedAt: new Date(),
-                rewards: {
-                  egg: {
-                    type: 'common',
-                    speciesId: FIRST_EXPEDITION.speciesId,
-                    hatchTime: FIRST_EXPEDITION.hatchSeconds,
-                  },
-                },
-              }
-            : {}),
-        },
-      });
-      return this.response(tx, userId, { correct: true, message: clue.success });
-    });
-  }
-
   async claim(userId: string, id: string) {
     return this.prisma.$transaction(async (tx) => {
       await this.operations.settleInTransaction(tx, userId, true);
       const mission = await this.ownedMission(tx, userId, id);
-      if (mission.status === 'IN_PROGRESS' || mission.missionStep !== FIRST_EXPEDITION.clues.length)
-        throw new BadRequestException('세 단서를 모두 조사한 뒤 알을 가져갈 수 있어요.');
       if (mission.status === 'CLAIMED') return this.response(tx, userId);
+      if (mission.status !== 'COMPLETED')
+        throw new BadRequestException('완료 기록이 있는 기존 탐험만 보상을 수령할 수 있어요.');
       await tx.hatchingQueue.create({
         data: {
           userId,
@@ -345,7 +233,16 @@ export class FirstExpeditionService {
     return this.prisma.$transaction(async (tx) => {
       await this.operations.settleInTransaction(tx, userId, true);
       const egg = await this.ownedEgg(tx, userId, id);
-      if (egg.completed) return this.response(tx, userId);
+      if (egg.completed) {
+        const state = await this.response(tx, userId);
+        const hatch = egg.claimedDinosaurId
+          ? await tx.dinosaur.findFirst({
+              where: { id: egg.claimedDinosaurId, park: { userId } },
+              select: { id: true, speciesId: true },
+            })
+          : null;
+        return hatch ? { ...state, hatchedDinosaur: hatch } : state;
+      }
       if (egg.readyToStart) throw new BadRequestException('먼저 알 부화를 시작해주세요.');
       if (egg.completesAt.getTime() > Date.now())
         throw new BadRequestException('아직 알이 부화하지 않았어요.');
@@ -398,7 +295,10 @@ export class FirstExpeditionService {
           EARLY_PARENT_HATCH_XP,
         );
       }
-      return this.response(tx, userId);
+      return {
+        ...(await this.response(tx, userId)),
+        hatchedDinosaur: { id: dinosaur.id, speciesId: dinosaur.speciesId },
+      };
     });
   }
 }

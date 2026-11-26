@@ -22,10 +22,10 @@ def validate():
     assert summary['early_goal_xp'] == 4800 and summary['park5_carry_xp'] == 35
     assert summary['new_goal_xp'] == 3964614 and summary['cumulative_to_park50'] == 3969414
     assert goals[-1]['cumulative_park_xp'] == summary['cumulative_to_park50']
-    assert len(model.research.NODES) == 72
-    assert len(model.research.all_costs()) == 252
-    assert len(model.building.BUILD) + len(model.followup.SPECIAL) == 26
-    assert (len(model.building.BUILD) + len(model.followup.SPECIAL)) * 25 == 650
+    assert len(model.research.NODES) == 69
+    assert len(model.research.all_costs()) == 239
+    assert len(model.building.BUILD) + len(model.followup.SPECIAL) == 25
+    assert (len(model.building.BUILD) + len(model.followup.SPECIAL)) * 25 == 625
     counts = model.acquisition.summary()
     assert counts['species'] == 83 and counts['recipes'] == 15
     assert counts['indexed_egg_targets'] == 69 and counts['repeat_egg_targets'] == 68
@@ -33,6 +33,12 @@ def validate():
                for r in model.acquisition.acquisition_rows())
     assert {r['min_seconds'] // 86400 for r in model.research.all_costs() if r['min_seconds'] >= 7*86400} >= {7, 14, 21, 28}
     evidence = {track: set() for track in model.TRACKS}
+    single_choice_stages = {
+        'operation': set(range(5, 50)),
+        'field': {25, 30, 35},
+        'facility': {9, 14, 19, 24, 29, 34, 39, 40, 44, 49},
+        'research': {6, 11, 14, 20, 37, 46, 48},
+    }
     branch_count, closed_events = 0, set()
     for level in levels:
         park = level['park_level']
@@ -58,7 +64,7 @@ def validate():
             assert goal['claim_policy']['mode'] == 'manual_once'
             assert goal['claim_policy']['idempotency_key'] == ['park_id', 'goal_id']
             conditions = goal['conditions']['any_of']
-            expected_choices = 1 if goal['track'] == 'operation' or (goal['track'] == 'field' and park in {25, 30, 35}) else 2
+            expected_choices = 1 if park in single_choice_stages[goal['track']] else 2
             assert len(conditions) == expected_choices
             assert len({json.dumps(c, sort_keys=True) for c in conditions}) == len(conditions)
             for condition in conditions:
@@ -106,14 +112,14 @@ def validate():
         assert 'indominus-rex' not in closure['species_refs'] and 'livyatan' not in closure['species_refs']
         assert closure['min_lab'] == 20
     assert model.story_requirements('chapter-6')['completion_mode'] == 'one_selected_branch'
-    # A concrete witness selects the second research alternative. Even all
+    # A concrete witness selects the last available research alternative. Even all
     # native tech ancestors in that witness do not require every maxed node.
     witness = set()
     for g in goals:
         if g['track'] == 'research':
-            witness |= {tuple(e) for e in model.native_constraints(g['conditions']['any_of'][1])['native_events'] if e[0] == 'tech'}
-    assert len(witness) < 252
-    assert len({e[1] for e in witness}) < 72
+            witness |= {tuple(e) for e in model.native_constraints(g['conditions']['any_of'][-1])['native_events'] if e[0] == 'tech'}
+    assert len(witness) < 239
+    assert len({e[1] for e in witness}) < 69
     assert len(model.milestones()) == 7
     assert model.OUTPUT.read_text() == renderer.render(), 'Generated growth table is stale; run renderer --write'
     assert source_before == model.source_sha256(), 'Source changed during check; rerun after authors finish'

@@ -27,6 +27,7 @@ export interface Toast {
 export type SidePanelType =
   | 'dinosaur_list'
   | 'building_list'
+  | 'exhibit_list'
   | 'great_figure_list'
   | 'resources'
   | 'growth'

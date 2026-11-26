@@ -55,6 +55,5 @@ export const DOMAIN_TERMS = {
   popularity: '인기도',
   revenue: '수익',
   maintenanceCost: '유지비',
-  explorationEnergy: '탐험 에너지',
   seasonPoint: '시즌 포인트',
 } as const;

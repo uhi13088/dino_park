@@ -13,6 +13,7 @@ import { useBuildings, useCompleteBuilding, useParkMe } from '@/api';
 import { useFirstSynthesis, useFirstSynthesisAction } from '@/api/queries/hybridMilestone';
 import { Button } from '@/components/ui';
 import { useGameStore, useUIStore } from '@/stores';
+import { currentParkGrowthStage, parkGrowthHref } from '@/utils/parkGrowthNavigation';
 
 const FACILITIES = [
   'research-hatchery',
@@ -71,6 +72,7 @@ export default function FirstSynthesisPanel() {
   };
   const ownedBuildings = buildings.data?.buildings ?? [];
   const parkLevel = park.data?.level ?? 0;
+  const growthStage = currentParkGrowthStage(parkLevel);
   const job = state.job;
   const clock = Date.parse(state.serverTime) + Math.max(0, now - query.dataUpdatedAt);
   const remaining = job ? Math.max(0, Math.ceil((Date.parse(job.readyAt) - clock) / 1000)) : 0;
@@ -143,9 +145,16 @@ export default function FirstSynthesisPanel() {
                 도감에서 보기
               </Link>
               {job.exhibitedAt && (
-                <Link className="hybrid-text-link" to="/exploration?tab=repeat">
-                  반복 합성 준비
-                </Link>
+                <>
+                  {parkLevel >= 5 && (
+                    <Link className="hybrid-text-link" to={parkGrowthHref(growthStage)}>
+                      성장 목표 보기
+                    </Link>
+                  )}
+                  <Link className="hybrid-text-link" to="/exploration?tab=repeat">
+                    반복 합성 준비
+                  </Link>
+                </>
               )}
             </div>
           </div>

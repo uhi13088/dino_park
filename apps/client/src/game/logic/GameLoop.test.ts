@@ -11,9 +11,6 @@ describe('server-owned park gold', () => {
         gold: 500,
         diamond: 100,
         dna: 0,
-        explorationEnergy: 30,
-        maxEnergy: 30,
-        energyRechargeAt: null,
       },
     });
     loop.addDinosaur({

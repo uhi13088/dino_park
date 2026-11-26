@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 // 재화 타입
-export type CurrencyType = 'gold' | 'diamond' | 'dna' | 'energy';
+export type CurrencyType = 'gold' | 'diamond' | 'dna';
 
 // 재화 아이콘
 const currencyIcons: Record<CurrencyType, React.ReactNode> = {
@@ -53,16 +53,6 @@ const currencyIcons: Record<CurrencyType, React.ReactNode> = {
       <line x1="18" y1="3" x2="18" y2="21" stroke="#9C27B0" strokeWidth="2" strokeLinecap="round" />
     </svg>
   ),
-  energy: (
-    <svg className="h-full w-full" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
-        fill="#FFC107"
-        stroke="#FF9800"
-        strokeWidth="1"
-      />
-    </svg>
-  ),
 };
 
 // 재화 배경색
@@ -70,7 +60,6 @@ const currencyBgColors: Record<CurrencyType, string> = {
   gold: 'bg-yellow-100',
   diamond: 'bg-cyan-100',
   dna: 'bg-purple-100',
-  energy: 'bg-amber-100',
 };
 
 interface CurrencyDisplayProps {
@@ -163,22 +152,16 @@ export function CurrencyDisplay({
 interface CurrencyBarProps {
   gold: number;
   diamond: number;
-  energy?: number;
-  maxEnergy?: number;
   onGoldClick?: () => void;
   onDiamondClick?: () => void;
-  onEnergyClick?: () => void;
   className?: string;
 }
 
 export function CurrencyBar({
   gold,
   diamond,
-  energy,
-  maxEnergy = 30,
   onGoldClick,
   onDiamondClick,
-  onEnergyClick,
   className,
 }: CurrencyBarProps) {
   return (
@@ -199,20 +182,6 @@ export function CurrencyBar({
         compact
         onClick={onDiamondClick}
       />
-      {energy !== undefined && (
-        <div
-          className={cn(
-            'inline-flex h-6 items-center gap-1 rounded-full bg-amber-100 px-2 text-xs font-medium',
-            onEnergyClick && 'cursor-pointer hover:opacity-80',
-          )}
-          onClick={onEnergyClick}
-        >
-          <span className="h-4 w-4">{currencyIcons.energy}</span>
-          <span className="text-gray-800">
-            {energy}/{maxEnergy}
-          </span>
-        </div>
-      )}
     </div>
   );
 }

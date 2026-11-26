@@ -2,20 +2,20 @@
   "kind": "현행 위인·보유 효과·GP 기획의 출처를 가진 가이드북 파생 요약. 게임 실행 설정이 아님",
   "source_sha256": {
     "docs/dino_park_great_figures.md": "d86b2b01b4e4428792ea71306ed52d21c54a820866bc7e0c448680f7c6f4b778",
-    "docs/README.md": "2ad21b1f6e534f32a50cf9a6afc7c95267e53813344a1268fba1b316b8f3ec03",
+    "docs/README.md": "99c4b87793e3dfb5db2ebbd38b30baf32bab20570a869cafbfd7b4ad744984f2",
     "packages/game-data/src/great-figures/index.ts": "1e8905a25912a3e7cbc5481c9026cef60bd8e7c21a0fac2515a32caff29a577f",
     "packages/shared/src/types/great-figure.types.ts": "9f746ccd82049bec5f2ed990bdf1d3683a7ae885d2bbc86208d143b12855b395",
     "apps/server/src/modules/great-figure/great-figure.service.ts": "60094a958337e177e1cc1d9241ae3c98b13865d81fd4b1c32abec8338ae4bcdb",
     "apps/server/src/modules/great-figure/great-figure.controller.ts": "4b0c1551642494859c64c2e1bec086f8b19938f84cc8f3c6c3f59fe00c03e9fe",
-    "apps/server/prisma/schema.prisma": "85affbb172561a30fd6f11b9ff4b3dc23af5aebe8d5577e74749b2b270a1f280",
-    "docs/current/resources-and-production.md": "810dac83fbc77c4246c7a2e7f6d4ce6b47b48e75e498f605e6198bf687d9c96d",
-    "docs/current/balance.md": "009db7aef939f55251a377f25bebd53bdfcbf18b7c23f3a01c5bd7f143f41d47",
-    "docs/current/great-figures.md": "7b598c86fcf8ba96ddd34636bd223ea4891a1e94f2487b0900ecb8f884859a18",
-    "docs/current/story-and-characters.md": "89a1fc78400c618b05f8c32312922a9d1ba90152cde8298977d2ea93a073e105",
-    "docs/current/story-progression.md": "3dc9475940e9e76f18f7b17b67332585d8062ccd981efccfa70b2b464cfc98a5",
-    "docs/current/dna-and-collection.md": "35388face7504be37ee89f307bcb65ea4f44f1eff7ff7db6bc212fdae2f1eae2",
-    "docs/current/buildings.md": "ab4d80c7eeabf358da86d02b6f09b01c1892e1f5cafea764c3a9e118792c5245",
-    "docs/current/park-progression.md": "d4f89f794e6042836509fcd8abe26bb0a8e1fc211fd3f01543612fd3482791c8"
+    "apps/server/prisma/schema.prisma": "5250ca98545aea481c6ad94267f12381b802d697db1f850f29c4c08c46fa42b7",
+    "docs/current/resources-and-production.md": "c2b23f043c76c271a72e5b89d7d1339d1251fae6f35e2c6e0de8502657d8609d",
+    "docs/current/balance.md": "f625f4c3026d0fce6570d8eef1d3f03edb01b354338d7102dea3545fc17fedd8",
+    "docs/current/great-figures.md": "f887d8de620f559b504c9b9f6c2e90c0f85aa20f824225720440c691624e0690",
+    "docs/current/story-and-characters.md": "5495cdce429b534a0dc5c3a9b47cba448650ebd7da0b878cd16887eab79712f9",
+    "docs/current/story-progression.md": "7d40ce5bf2906d95cf490ce73923221eac43b7570320616b7070d7dedb195a9a",
+    "docs/current/dna-and-collection.md": "52eae44d31af9290ce96d998b276e2c5f5679152dd5e6023afe4737958e69324",
+    "docs/current/buildings.md": "3d3d0d99b0305df54f8b4c83b6e8ef06e8bd1e9ff290b366cf76015893417280",
+    "docs/current/park-progression.md": "e682d84e9f7941d3b913a486501c1240d461c0b361e7e10d1f13e033379a6f80"
   },
   "content": {
     "overview": [
@@ -24,7 +24,8 @@
       "각 프로필의 숫자는 설계 기준안이다. 보유 최고값·시설1명 배정·컬렉션 시너지를 효과별 상한 안에서 적용하며 게임 실행 적용/플레이 검증은 별도다.",
       "GP는 영입 재화, 위인XP와 골드는 성장에 사용한다. 기술 연구원의 다이아와 건설자의 골드 고용, 일반4+연구5의 기본 소모품9종과 구별한다.",
       "아서 창립자는 시즌1 마지막 여정 뒤 유산 기록으로 소유하며 현역 배정하지 않는다. 토마스는 생물공학자, 엘리자베스는60대의 닥터 진 스승이다.",
-      "위인XP와 ParkXP는 별개다. 첫 영웅 이후 Park5~50의180개 성장 성취와XP는 파크 성장 정본을 따르며, 위인의 영입·보유·배정·개인Lv.1~10 수치를 바꾸거나 장면 출현으로 위인을 무료 지급하지 않는다."
+      "위인 XP는 위인 성장에, 파크 XP는 파크 레벨에 사용한다. 각 위인의 성장과 지원 효과는 개인 Lv.1~10의 수치를 따른다.",
+      "실험 하이브리드는 원종의 희귀도와 체형으로 수량을 계산하고 결과 등급으로 재료 품질을 정한다. 개별 위인 지원 효과는 확정된 적용 조건에서만 사용한다."
     ],
     "figures": [
       {
@@ -9827,7 +9828,7 @@
       },
       {
         "title": "고정 확률과 최종 시간 하한",
-        "summary": "첫 합성100%·30분·정해진 재료/4000골드, 반복 영웅50%/전설30%와5/8번째 보호를 유지한다. 건설24→25 최소7일과 기술7/14/21/28일 등 최종 하한을 마지막에 적용한다.",
+        "summary": "첫 합성100%·30분·정해진 재료/4000골드, 반복 영웅50%/전설10%와5/8번째 보호를 유지한다. 건설24→25 최소7일과 기술7/14/21/28일 등 최종 하한을 마지막에 적용한다.",
         "status": "기획 · 수치 기준안 · 런타임 미적용/플레이 검증 전",
         "source": "docs/current/great-figures.md"
       },
@@ -10748,7 +10749,7 @@
         "research_quality_tiers": 3,
         "first_designated_synthesis_success_percent": 100,
         "repeated_epic_success_percent": 50,
-        "repeated_legendary_success_percent": 30,
+        "repeated_legendary_success_percent": 10,
         "basic_technical_researchers": 1,
         "figures_add_researcher_or_builder_slots": false,
         "construction_final_minimum_seconds": 604800,
@@ -10799,22 +10800,22 @@
       "refresh_contract": "현행 위인·GP·효과 정본은 docs/current/great-figures.md다. JSON은 출처지문을 가진 가이드북 파생본이다. 인물 식별/수록ID는 카탈로그와 대조하며 원천 변경 시 검토 없이 지문만 갱신하지 않는다.",
       "source_sha256": {
         "docs/dino_park_great_figures.md": "d86b2b01b4e4428792ea71306ed52d21c54a820866bc7e0c448680f7c6f4b778",
-        "docs/README.md": "2ad21b1f6e534f32a50cf9a6afc7c95267e53813344a1268fba1b316b8f3ec03",
+        "docs/README.md": "6da04ab23c421963cb2f77440725c0e60a45e15d3afa6fee13c0efe760e49a50",
         "packages/game-data/src/great-figures/index.ts": "1e8905a25912a3e7cbc5481c9026cef60bd8e7c21a0fac2515a32caff29a577f",
         "packages/shared/src/types/great-figure.types.ts": "9f746ccd82049bec5f2ed990bdf1d3683a7ae885d2bbc86208d143b12855b395",
         "apps/server/src/modules/great-figure/great-figure.service.ts": "60094a958337e177e1cc1d9241ae3c98b13865d81fd4b1c32abec8338ae4bcdb",
         "apps/server/src/modules/great-figure/great-figure.controller.ts": "4b0c1551642494859c64c2e1bec086f8b19938f84cc8f3c6c3f59fe00c03e9fe",
-        "apps/server/prisma/schema.prisma": "85affbb172561a30fd6f11b9ff4b3dc23af5aebe8d5577e74749b2b270a1f280",
-        "docs/current/resources-and-production.md": "55eaa1541eb3fe3ee056e2b947583787e0770dd05e6e29bf0c6cbf21123a3b55",
-        "docs/current/balance.md": "009db7aef939f55251a377f25bebd53bdfcbf18b7c23f3a01c5bd7f143f41d47",
-        "docs/current/great-figures.md": "7b598c86fcf8ba96ddd34636bd223ea4891a1e94f2487b0900ecb8f884859a18",
+        "apps/server/prisma/schema.prisma": "72757e70f5dd6133cf16c2af78db66fbc91b7b8274d3b418d4b6a88638d0b593",
+        "docs/current/resources-and-production.md": "640000402f02c254c1c17a2d667894a14bcfa7ab8eb7145740a9cc1b8bc37abe",
+        "docs/current/balance.md": "4ee790fce5f5586396202124195aee06fc2a6568af49c7d7750896214771b7b3",
+        "docs/current/great-figures.md": "92c26c3b8159d8dbfb79448c44200727d295d2c1745da2d8f798f0088db760d3",
         "docs/current/story-and-characters.md": "89a1fc78400c618b05f8c32312922a9d1ba90152cde8298977d2ea93a073e105",
-        "docs/current/story-progression.md": "3dc9475940e9e76f18f7b17b67332585d8062ccd981efccfa70b2b464cfc98a5",
-        "docs/current/dna-and-collection.md": "968c01612cd8c887526c15287aee3b7b4856d1e013c46353929bfe82484da99c",
-        "docs/current/buildings.md": "b3f08367a89d1ccbf82a08344db65b25492ceee936e08dcba4f0265dd3f270d6",
-        "docs/current/park-progression.md": "d4f89f794e6042836509fcd8abe26bb0a8e1fc211fd3f01543612fd3482791c8"
+        "docs/current/story-progression.md": "424226dda54ff5f13fc88d9f09a2226abd08b1ba9daf46368cc8e1182e6c1995",
+        "docs/current/dna-and-collection.md": "19cf0b12abb04fbd0b176acb56745771f5799320739299e8124c5dc72a9d29ef",
+        "docs/current/buildings.md": "a9e953e6e00dabefcf3096c731578adb9b3fb9949a3895f544eaae9103dbb191",
+        "docs/current/park-progression.md": "c6db7f3ac7533560f3c067f6070d56cb856f4dea4642c773d6cb9e33f3f8cb29"
       }
     }
   },
-  "review_note": "2026-11-18: 83종 획득 완결 범위를 원천과 대조. 추가17목표·변종2레시피·첫 랩터 선택 경로를 연결하고 기존 위인/서사·경제 수치 보존. 기획과 실제 게임 적용을 구별.\n2026-11-18: 성장·후반 스토리 연결에 따른 원천 변경을 검토했다. ParkXP180목표와 위인XP를 구분하며50프로필·500레벨·GP가격·능력·시너지 수치는 유지한다.\n2026-11-19: 참조 정본의 초반 주행·중급 재료와 첫 전시 실행 상태를 대조했다. 위인 영입과 보유·배정 효과에는 개정 사항이 없다. 주행·첫 합성 저장 모델을 추가한 현재 스키마와 첫 전시 시설 적용 상태도 확인했다.\n2026-11-19: 반복 합성 저장과 개체 매력도의 수요 반영을 확인했다. 위인 GP·능력치·입장 관련 기존 효과 조건에는 개정 사항이 없다.\n2026-11-19 경기용 능력치·추가 레시피 설명을 대조했다. 위인 GP·보유·배정 효과와 합성 확률 규칙은 그대로 유지한다.\n2026-11-19 파크 성장 보상과 기초 기술 연구 기록의 실제 추가를 확인했다. 위인 GP, 능력과 배정 규칙은 유지한다."
+  "review_note": "2026-11-18: 83종 획득 완결 범위를 원천과 대조. 추가17목표·변종2레시피·첫 랩터 선택 경로를 연결하고 기존 위인/서사·경제 수치 보존. 기획과 실제 게임 적용을 구별.\n2026-11-18: 성장·후반 스토리 연결에 따른 원천 변경을 검토했다. ParkXP180목표와 위인XP를 구분하며50프로필·500레벨·GP가격·능력·시너지 수치는 유지한다.\n2026-11-19: 참조 정본의 초반 주행·중급 재료와 첫 전시 실행 상태를 대조했다. 위인 영입과 보유·배정 효과에는 개정 사항이 없다. 주행·첫 합성 저장 모델을 추가한 현재 스키마와 첫 전시 시설 적용 상태도 확인했다.\n2026-11-19: 반복 합성 저장과 개체 매력도의 수요 반영을 확인했다. 위인 GP·능력치·입장 관련 기존 효과 조건에는 개정 사항이 없다.\n2026-11-19 경기용 능력치·추가 레시피 설명을 대조했다. 위인 GP·보유·배정 효과와 합성 확률 규칙은 그대로 유지한다.\n2026-11-19 파크 성장 보상과 기초 기술 연구 기록의 실제 추가를 확인했다. 위인 GP, 능력과 배정 규칙은 유지한다.\n2026-11-22 정문 방향 저장 필드의 소유와 위인 보유·배정 자료를 대조했다.\n2026-11-22 일반 시설의 좌우 반전 저장 필드를 확인했다. 위인 관련 필드와 기능은 그대로다.\n2026-11-23: 실험 합성의 재료·등급·지원 조건과 파크 Lv.15의 합성 진입을 대조했다. 위인 효과표의 적용 범위는 개별 위인 기준을 따른다.\n2026-11-23: 특수 원정의 연료 공급은 파크 자원 규칙에서 다룬다. 위인의 영입·성장과 개별 효과는 위인 정본을 따른다.\n2026-11-23: 새 서식지 공간 설계는 건물과 밸런스 정본의 영역이다. 위인의 시설 배정과 효과 수치는 해당 정본을 따른다.\n2026-11-24: 파크에 셔틀버스 차량과 노선 저장 필드를 추가한 스키마를 검토했다. 위인 효과표의 보유·배정 및 GP의 적용 범위를 대조했다.\n2026-11-24: 고정 코스 사파리 시범 관람의 안내를 추가한 건물 자료를 검토했다. 위인 보유·배정 범위는 위인 정본을 참조한다.\n2026-11-25: 독립 사파리 배치가 추가된 파크 저장 필드와 건물·골드 원천을 검토했다. 위인 영입·보유·배정 규칙의 소유 범위는 위인 정본을 따른다."
 }

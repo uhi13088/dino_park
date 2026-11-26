@@ -45,7 +45,7 @@ export class UserController {
         expForNextLevel: 559,
         tutorialStep: 10,
         lastLoginAt: '2024-01-15T10:00:00Z',
-        currency: { gold: 50000, diamond: 120, dna: 15, explorationEnergy: 25 },
+        currency: { gold: 50000, diamond: 120, dna: 15 },
         park: { id: 'clx5678...', name: '멋진 파크', level: 3, dinosaurCount: 8, buildingCount: 5 },
         greatFigureCount: 2,
       },

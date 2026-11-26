@@ -3,11 +3,13 @@ import type {
   FirstExpeditionStateResponse,
   LoginResponse,
   ResourcesResponse,
+  ScoutExpeditionState,
 } from '@dino-park/shared';
 import { isIsolatedParkConfigured, isolatedParkSetup, test } from './isolated-park';
 
 test.skip(!isIsolatedParkConfigured, isolatedParkSetup);
 test.use({ actionTimeout: 15_000 });
+const firstMissionId = 'first-iguanodon-v1';
 
 async function state<T>(page: Page, endpoint: string): Promise<T> {
   return page.evaluate(async (url) => {
@@ -47,7 +49,7 @@ async function clickSaved(page: Page, name: string, endpoint: string) {
   expect((await saved).ok()).toBeTruthy();
 }
 
-test('first investigation, real hatch, two dinosaurs and early production form one saved loop', async ({
+test('first scout dispatch, real hatch and early production form one saved loop', async ({
   page,
   request,
   database: prisma,
@@ -94,7 +96,7 @@ test('first investigation, real hatch, two dinosaurs and early production form o
     await authenticatePage(page, user);
     await page.setViewportSize({ width: 430, height: 932 });
     await page.goto('/park');
-    await expect(page.getByRole('button', { name: '첫 탐험 시작', exact: true })).toBeVisible({
+    await expect(page.getByRole('button', { name: '첫 탐험가 파견', exact: true })).toBeVisible({
       timeout: 30_000,
     });
     await expect(page.getByText('파크를 준비하고 있어요…', { exact: true })).toBeHidden({
@@ -120,26 +122,29 @@ test('first investigation, real hatch, two dinosaurs and early production form o
     expect(lumber.status).toBe('CONSTRUCTING');
     const lumberStartedAt = Date.now();
 
-    await page.getByRole('button', { name: '첫 탐험 시작', exact: true }).click();
-    await page.getByRole('button', { name: '초원 정찰 시작', exact: true }).click();
-    await page.getByRole('button', { name: /흔들리는 갈대/ }).click();
-    const wrong = await state<FirstExpeditionStateResponse>(page, '/explorations/first');
-    expect(wrong.mission?.step).toBe(0);
-    expect(wrong.energy).toBe(25);
+    await page.getByRole('button', { name: '첫 탐험가 파견', exact: true }).click();
+    await page.goto(`/exploration?tab=drive&mission=${firstMissionId}`);
+    await expect(page.getByRole('heading', { name: '파크 뒤 초원', exact: true })).toBeVisible();
+    await expect(page.locator('canvas')).toHaveCount(0);
+    await clickSaved(page, '탐험가 파견', '/explorations/scouts/dispatch');
+    const dispatched = await state<ScoutExpeditionState>(page, '/explorations/scouts');
+    const assignment = dispatched.scouts.find((scout) => scout.assignment)?.assignment;
+    if (!assignment) throw new Error('The paid scout assignment was not persisted.');
+    expect(assignment).toMatchObject({ missionId: firstMissionId, spotId: 'park-meadow' });
+    expect(dispatched.fuel).toBe(25);
     await page.reload();
-    await expect(page.getByRole('button', { name: /풀숲으로 이어진 발자국/ })).toBeVisible();
-    expect(
-      (await state<FirstExpeditionStateResponse>(page, '/explorations/first')).mission?.step,
-    ).toBe(0);
-    await page.getByRole('button', { name: /풀숲으로 이어진 발자국/ }).click();
-    await expect(page.getByRole('button', { name: /막 뜯긴 연한 잎/ })).toBeVisible();
+    await expect(page.getByLabel(/귀환까지/)).toBeVisible();
     await page.screenshot({ path: '.impeccable/review/play04-expedition-mobile.png' });
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.screenshot({ path: '.impeccable/review/play04-expedition-desktop.png' });
     await page.setViewportSize({ width: 430, height: 932 });
-    await page.getByRole('button', { name: /막 뜯긴 연한 잎/ }).click();
-    await page.getByRole('button', { name: /온전한 알이 있는 둥지/ }).click();
-    await page.getByRole('button', { name: '알 가져오기', exact: true }).click();
+    // Advance only the dispatch clock in the isolated test. The hatch still finishes in real time.
+    await prisma.scoutAssignment.update({
+      where: { id: assignment.id },
+      data: { completesAt: new Date(Date.now() - 1) },
+    });
+    await page.reload();
+    await clickSaved(page, '보고서 수령', `/explorations/scouts/reports/${assignment.id}/claim`);
     const eggState = await state<FirstExpeditionStateResponse>(page, '/explorations/first');
     expect(eggState.stage).toBe('egg');
     expect(eggState.egg?.status).toBe('stored');
@@ -153,7 +158,7 @@ test('first investigation, real hatch, two dinosaurs and early production form o
     ).toBe(0);
     await page.reload();
     await expect(page.getByRole('heading', { name: /부화 중/ })).toBeVisible();
-    await page.getByRole('link', { name: '파크', exact: true }).click();
+    await page.getByRole('link', { name: '파크로', exact: true }).click();
     await page.getByRole('button', { name: '자원 시설 보기', exact: true }).click();
     await expect
       .poll(
@@ -277,12 +282,16 @@ test('first investigation, real hatch, two dinosaurs and early production form o
     ).toBe(1);
     expect(
       await prisma.exploration.count({
-        where: { userId: user.user.id, missionId: 'first-iguanodon-v1' },
+        where: { userId: user.user.id, missionId: firstMissionId },
       }),
     ).toBe(1);
     expect(
       await prisma.transaction.count({
-        where: { userId: user.user.id, reason: '첫 초원 정찰 준비', amount: -100 },
+        where: {
+          userId: user.user.id,
+          reason: { endsWith: ' 준비' },
+          amount: -100,
+        },
       }),
     ).toBe(1);
     expect(errors).toEqual([]);

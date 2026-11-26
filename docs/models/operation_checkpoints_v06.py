@@ -48,7 +48,7 @@ LATE_EXHIBITS = {
 def facilities(rank, *, lab, vault, warehouse, security, marine=0, aerial=0):
     return {
         **dict.fromkeys(("gate", "platform", "grassland", "lumber", "quarry", "feedmill",
-                         "metalshop", "fueldepot", "admin", "restroom", "foodcourt", "info"), rank),
+                         "metalshop", "admin", "restroom", "foodcourt", "info"), rank),
         "lab": lab, "vault": vault, "warehouse": warehouse, "security": security,
         "carnivore": 5, "hybrid_herb": 5, "hatchery": 5,
         **({"marine": marine} if marine else {}),
@@ -60,7 +60,7 @@ SCENARIOS = {
     15: {
         "buildings": facilities(5, lab=10, vault=5, warehouse=3, security=5),
         "exhibits": COMMON_EXHIBITS,
-        "tech": {"ops-engineering": 2, "ops-offline": 1, "ops-entry": 2, "exp-recovery": 1},
+        "tech": {"ops-engineering": 2, "ops-offline": 1, "ops-entry": 2},
         "building_goal": ("lab", 11),
         "research_goal": ("gene-analysis", 2),
         "field_goal": ("egg", "gene-target-brachiosaurus"),
@@ -72,7 +72,7 @@ SCENARIOS = {
         "exhibits": AERIAL_EXHIBITS,
         "unexhibited": ("brachiosaurus",),
         "tech": {"gene-analysis": 2, "ops-offline": 2, "ops-land": 4, "ops-flow": 1,
-                 "ops-processing": 2, "exp-recovery": 2, "exp-tank": 1},
+                 "ops-processing": 2},
         "building_goal": ("marine", 1),
         "research_goal": ("care-marine", 1),
         "field_goal": ("material", "mission.primal-swamp.watermark-compare.v1"),
@@ -84,7 +84,7 @@ SCENARIOS = {
         "buildings": facilities(15, lab=20, vault=15, warehouse=13, security=10, marine=3, aerial=1),
         "exhibits": LATE_EXHIBITS,
         "tech": {"gene-analysis": 2, "ops-offline": 3, "ops-land": 5, "ops-flow": 2,
-                 "ops-processing": 3, "exp-recovery": 3, "exp-tank": 2},
+                 "ops-processing": 3},
         "building_goal": ("security", 11),
         "research_goal": ("exp-deep-expedition", 1),
         "field_goal": ("material", "mission.mutation-crater.thermal-pattern.v1"),
@@ -96,7 +96,7 @@ SCENARIOS = {
         "exhibits": LATE_EXHIBITS,
         "unexhibited": ("livyatan",),
         "tech": {"gene-analysis": 2, "ops-offline": 3, "ops-land": 5, "ops-flow": 3,
-                 "ops-processing": 4, "exp-recovery": 4, "exp-tank": 3},
+                 "ops-processing": 4},
         "building_goal": ("vault", 25),
         "research_goal": ("exp-deep-expedition", 3),
         "field_goal": ("material", "mission.mutation-crater.deep-fissure-survey.v1"),
@@ -108,11 +108,11 @@ SCENARIOS = {
 ASSUMPTIONS = [
     "이미 첫 영웅을 수령한 4개 독립 파크의 하루를 계산했다. 해당 파크까지 성장한 기간을 합산하지 않았다.",
     "12시간 간격으로 30분 접속한다. 각 11시간30분 비접속 구간의 첫8시간에 해당 정보센터·연구의 적립 계수를 적용한다.",
-    "전시 목록은 호환 서식지에서 정상 관람할 수 있다고 가정한다. 돌봄이 유지된 상태에서 시작해 12시간마다 영양 급식 2의 사료 1개로 행복 최대24와 허기 최대100을 회복한다. 매 회차 행복100·허기0 회복 가능 여부를 확인했으며 비전시 보유종은 골드 유지비를 계산한다.",
+    "호환 공룡을 전시한 서식지마다 관람길이 닿는다고 가정한다. 같은 서식지에 사는 종들은 전시 구역 한 곳을 공유한다. 12시간마다 영양 급식 2의 사료 1개로 행복 최대24와 허기 최대100을 회복한다. 매 회차 행복100·허기0 회복 가능 여부를 확인했으며 비전시 보유종은 골드 유지비를 계산한다.",
     "분 단위로 정산하며 같은 분의 유지비를 먼저 차감한다. 금고가 작거나 잔액이 많으면 입장을 거절하고 미수입 및 미납 유지비를 쌓지 않는다.",
     "기준 수입일은 골드 잔액 0에서 시작하고 지출 없이 유지비만 정산한다. 급식 사료는 미리 확보했다고 가정한다. 당일 사료 보충비를 다음 투자 여력에서 별도로 뺀다.",
     "건설자2명과 연구원1명을 사용한다. 유료 고용·광고·가속·위인·테마 전시·별도 보너스 수입은 계산에서 제외한다.",
-    "시설·기술·탐험은 해당 단계의 대표 목표다. 재료가 비어 있으면 직접 구매와 수동 생산을 비교하며 실제 지도 동선, 세션 내 조작 시간, 시즌 보상을 가정하지 않는다.",
+    "시설·기술·탐험은 해당 단계의 대표 목표다. 빈 창고에서 시작해 직접 구매와 수동 생산에 필요한 비용을 비교한다.",
 ]
 
 
@@ -230,10 +230,10 @@ def income_profile(snapshot, species, routes, tech):
     cap_minutes = int(building.P["offline_cap_seconds"]) // 60
     assert ONLINE_MINUTES + cap_minutes <= HALF_DAY_MINUTES
     rate_parameters = {
-        "gate_level": facilities["gate"], "platforms": [facilities["platform"]],
-        "restroom_level": facilities["restroom"], "foodcourt_level": facilities["foodcourt"],
+        "gate_level": facilities["gate"], "occupied_zones": len(set(exhibits.values())),
+        "foodcourt_level": facilities["foodcourt"],
         "entry_rank": tech.get("ops-entry", 0), "marketing_rank": tech.get("ops-marketing", 0),
-        "flow_rank": tech.get("ops-flow", 0), "comfort_rank": tech.get("ops-comfort", 0),
+        "flow_rank": tech.get("ops-flow", 0),
     }
     first = effect.visitor_rate(base_demand, **rate_parameters)
 
@@ -257,7 +257,7 @@ def income_profile(snapshot, species, routes, tech):
         "offline_rate": float(offline), "active_minutes": 2 * ONLINE_MINUTES,
         "offline_minutes": 2 * cap_minutes,
         "healthy_visitors_per_minute": round(float(first["visitors_per_minute"]), 2),
-        "bottleneck": min(("demand", "gate", "viewing_per_minute"), key=first.__getitem__),
+        "bottleneck": min(("demand", "gate", "exhibit_per_minute"), key=first.__getitem__),
     }
 
 
@@ -320,11 +320,14 @@ def work_goals(scenario, raw_mission, species, tech):
 
 def field_goal(raw_mission, facilities, species, tech, research_goal):
     node, rank = research_goal
-    scout = {key: raw_mission[key] for key in ("id", "gold", "checks", "fuel")}
+    scout = {key: raw_mission[key] for key in ("id", "gold", "checks")}
+    routes = [row for row in followup.scout_dispatches() if row["id"] == scout["id"]]
+    if routes:
+        departure = min(routes, key=lambda row: row["fuel"])
+        scout["departure_region"] = departure["region"]
+        scout["fuel"] = departure["fuel"]
     scout["required_research"] = raw_mission["research"]
     scout["after_research_goal"] = scout["required_research"] == f"{node}:{rank}"
-    if raw_mission.get("kind") == "mission_permission":
-        scout["fuel"] = effect.expedition_fuel(raw_mission, tech.get("exp-expedition-supply", 0))
     if "species" in raw_mission:
         dino = species[raw_mission["species"]]
         scout["name"] = f"{dino['nameKo']} 알 목표"
@@ -344,21 +347,16 @@ def resources(facilities, tech, bcost, rcost, scouts, exhibit_count):
     batches = tech.get("ops-batch", 0)
     production = {}
     storage = effect.material_capacity(facilities["warehouse"], tech.get("ops-storage", 0))
-    fuel_capacity = int(building.primary("fueldepot", facilities["fueldepot"])
-                        + effect.value("exp-tank", tech.get("exp-tank", 0)))
-    fuel_recharge = int(effect.value("exp-recovery", tech.get("exp-recovery", 0), building.P["fuel_recharge_seconds"]))
     for identifier, rule in building.PROD.items():
         mat = rule["material"]
         level = facilities[identifier]
         production[mat] = effect.production(identifier, level, 1, processing, batches)
-        cap = fuel_capacity if mat == "fuel" else storage
-        max_lots = min(effect.batch_lots(batches, fuel=mat == "fuel"), cap // production[mat]["quantity"])
+        max_lots = min(effect.batch_lots(batches), storage // production[mat]["quantity"])
         assert max_lots >= 1
         production[mat].update(
             max_lots=max_lots, building=identifier,
             purchase_gold=effect.discounted_positive(int(rule["buy"]),
-                                                     effect.value("ops-procurement", tech.get("ops-procurement", 0)))
-            if mat != "fuel" else int(rule["buy"]),
+                                                     effect.value("ops-procurement", tech.get("ops-procurement", 0))),
         )
 
     quantities = {m: bcost[m] + rcost[m] for m in MATERIALS}
@@ -377,7 +375,6 @@ def resources(facilities, tech, bcost, rcost, scouts, exhibit_count):
             "purchase_gold": need * recipe["purchase_gold"],
         }
 
-    field_fuel = sum(goal["fuel"] for goal in scouts)
     direct = bcost["gold"] + rcost["gold"] + sum(goal["gold"] for goal in scouts)
     produced = sum(batch_plan[mat]["gold"] for mat in MATERIALS)
     purchased = sum(batch_plan[mat]["purchase_gold"] for mat in MATERIALS)
@@ -388,9 +385,7 @@ def resources(facilities, tech, bcost, rcost, scouts, exhibit_count):
     target_vault_level = capacity_level(v_capacity, direct, facilities["vault"])
     target_storage_level = capacity_level(w_capacity, max(quantities.values()), facilities["warehouse"])
     funding = {
-        "vault_capacity": vault, "material_capacity": storage, "fuel_capacity": fuel_capacity,
-        "auto_fuel_seconds": fuel_recharge, "field_total_fuel": field_fuel,
-        "field_fuel_recharge_from_empty_seconds": field_fuel * fuel_recharge,
+        "vault_capacity": vault, "material_capacity": storage,
         "together_direct_gold": direct, "production_gold": produced, "purchase_gold": purchased,
         "together_produced_gold": direct + produced, "together_purchased_gold": direct + purchased,
         "production_max_seconds": max(batch_plan[mat]["seconds"] for mat in MATERIALS),

@@ -1,4 +1,5 @@
 import type { RefObject } from 'react';
+import { Link } from 'react-router-dom';
 import {
   CODEX_CATEGORY_LABELS,
   CODEX_ORIGIN_LABELS,
@@ -24,6 +25,7 @@ export function CodexDetail({
   onBack,
   headingRef,
   paneRef,
+  growthReturnPath,
 }: {
   entry: DinosaurCodexEntry;
   entries: DinosaurCodexEntry[];
@@ -31,6 +33,7 @@ export function CodexDetail({
   onBack: () => void;
   headingRef: RefObject<HTMLHeadingElement>;
   paneRef: RefObject<HTMLElement>;
+  growthReturnPath?: string;
 }) {
   const recipe = entry.recipe;
   return (
@@ -45,6 +48,11 @@ export function CodexDetail({
       <button className="codex-back" onClick={onBack}>
         ← 목록으로
       </button>
+      {growthReturnPath && (
+        <Link className="codex-growth-return" to={growthReturnPath}>
+          ← 성장 목표
+        </Link>
+      )}
       <div className={`codex-detail-portrait origin-${entry.origin}`}>
         <CodexArtwork entry={entry} />
         <span className="codex-collection-label">
@@ -106,7 +114,9 @@ export function CodexDetail({
         <section className="codex-detail-section" aria-label="합성 레시피">
           <div className="codex-section-heading">
             <h3>합성 레시피</h3>
-            <span className="codex-muted">{recipe ? '연구 개방 예정' : ''}</span>
+            <span className="codex-muted">
+              {recipe ? (entry.experimental ? '실험 연구자료' : '연구 개방 예정') : ''}
+            </span>
           </div>
           {recipe ? (
             <>

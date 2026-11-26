@@ -109,7 +109,7 @@ def effective_seconds(building, level, admin_level):
 
 def production(building, level, lots=1):
     recipe = PROD[building]
-    quantity = int(P["fuel_batch_base"] + (level-1)*P["fuel_batch_growth"]//24) if building == "fueldepot" else primary(building, level)
+    quantity = primary(building, level)
     discount = P["production_discount_max"] * F(level-1, 24)
     return {"quantity": quantity*lots, "gold": ceil(quantity * F(recipe["unit_gold"]) * (1-discount))*lots,
             "seconds": int(recipe["seconds"])*lots}
@@ -134,13 +134,18 @@ def effect_text(building, level):
         return f"총 {value}자리; 일반 부화 {number(P['incubation_reduction_max']*100*F(level-1,24))}% 단축"
     if kind == "security":
         return f"위험 {value}점; 위험종 유지비 {number(P['security_upkeep_reduction_max']*100*F(level-1,24))}% 완화"
-    if kind == "fuel_capacity":
-        batch = production(building, level)
-        return f"탱크 {value}; 1회 연료{batch['quantity']}/{batch['gold']}골드·10분"
-    labels = {"viewing": "관람 정원", "gate": "입구 한도", "warehouse": "일반 종류별 저장",
+    if building == "platform":
+        return f"담당 전시 관람 자리 {value}"
+    if building == "restroom":
+        return f"화장실 이용 인원 {value}"
+    labels = {"gate": "입구 한도", "warehouse": "일반 종류별 저장",
               "research_percent": "일반 연구 단축%", "construction_percent": "건설 단축%",
               "demand_percent": "방문 수요 증가%", "offline_percent": "오프라인 계수%", "gold_capacity": "전체 골드 한도"}
     return labels[kind] + " " + value
+
+
+def exhibit_capacity(occupied_zones):
+    return 0 if not occupied_zones else P["base_capacity"] + P["additional_exhibit_capacity"] * (occupied_zones - 1)
 
 
 def source_catalog():
@@ -152,7 +157,13 @@ def source_catalog():
             target = (path.parent / (source_map.get("sourceRoot") or "") / name).resolve()
             assert target.read_text() == content, f"Stale package build: {target}"
         provenance[package] = {"matching_sources": len(source_map["sources"])}
-    script = "const d=require('./packages/game-data/dist/index.js'); console.log(JSON.stringify({buildings:d.BUILDING_DATA,species:d.DINOSAUR_DATA,first:d.getSynthesisRecipe('stegoceratops')}));"
+    script = ("const d=require('./packages/game-data/dist/index.js'); "
+              "const {PARK_ADMISSION: admission,MAX_EXPLORATION_ENERGY: capacity,ENERGY_RECHARGE_MINUTES: rechargeMinutes}=require('./packages/shared/dist/index.js'); "
+              "const scoutSeconds=Object.fromEntries(d.SCOUT_MISSIONS.map(({id,seconds})=>[id,seconds])); "
+              "const scoutDispatches=d.SCOUT_REGIONS.flatMap(region=>region.spots.flatMap(spot=>spot.missionIds.map(id=>"
+              "({id,title:d.getScoutMission(id).title,region:region.name,regionId:region.id,spot:spot.name,spotId:spot.id,fuel:d.getScoutFuelCost(spot.id,id)})))); "
+              "const fuelSupply={capacity,rechargeMinutes,buy:d.FUEL_BUY_PRICE,recipe:d.getEarlyProductionRecipe(d.FUEL_DEPOT_TYPE_ID)}; "
+              "console.log(JSON.stringify({buildings:d.BUILDING_DATA,species:d.DINOSAUR_DATA,first:d.getSynthesisRecipe('stegoceratops'),admission,scoutSeconds,scoutDispatches,fuelSupply}));")
     catalog = json.loads(subprocess.check_output(["node", "-e", script], cwd=ROOT, text=True))
     return catalog, provenance
 
@@ -185,11 +196,11 @@ def bank_simulate(seconds, *, balance, capacity, period=F(5), fee_period=F(60), 
 
 def validate():
     catalog, provenance = source_catalog()
-    assert BUILD.keys() == PROFILE.keys() == EFFECT.keys() and len(BUILD) == 21
+    assert BUILD.keys() == PROFILE.keys() == EFFECT.keys() and len(BUILD) == 20
     assert set(LEVEL) == set(range(2, 26))
     assert LEVEL[25]["seconds"] == "-"
     assert P["final_upgrade_min_seconds"] == 7*86400
-    assert set(PROD) == {"lumber", "quarry", "metalshop", "feedmill", "fueldepot"}
+    assert set(PROD) == {"lumber", "quarry", "metalshop", "feedmill"}
     buy = {row["material"]: int(row["buy"]) for row in PROD.values()}
     rows, max_material, totals = [], 0, {}
     for bid in BUILD:
@@ -232,7 +243,7 @@ def validate():
     for bid in PROD:
         for level in range(1, 26):
             batch = production(bid, level, int(P["max_lots"]))
-            cap = primary("fueldepot", level) if bid == "fueldepot" else primary("warehouse", 2)
+            cap = primary("warehouse", 2)
             assert batch["quantity"] <= cap, (bid, level, "unreceivable batch")
             assert F(batch["gold"], batch["quantity"]) < int(PROD[bid]["buy"])
     assert production("lumber",25,3)["quantity"] > P["initial_material_capacity"]
@@ -247,6 +258,20 @@ def validate():
     assert actual["production-lumberyard"]["baseCost"] == int(BUILD["lumber"]["gold"])
     assert actual["production-quarry"]["unlockCondition"]["parkLevel"] == int(BUILD["quarry"]["park"])
     assert primary("grassland",1) == actual["habitat-grassland"]["baseStats"]["capacity"]
+    depot = actual["production-fuel-depot"]
+    assert depot["maxLevel"] == 1 and depot["baseCost"] == 1000 and depot["constructionTime"] == 60
+    assert depot["unlockCondition"] == {"parkLevel": 2, "cost": {"gold": 1000}}
+    assert depot["baseStats"]["maintenanceCost"] == 0
+    supply = catalog["fuelSupply"]
+    assert (supply["capacity"], supply["rechargeMinutes"], supply["buy"]) == (30, 10, 100)
+    recipe = supply["recipe"]
+    assert recipe["material"] == "fuel"
+    assert (recipe["batchQuantity"], recipe["batchCost"], recipe["batchSeconds"], recipe["maxLots"]) == (5, 300, 600, 3)
+    dispatches = catalog["scoutDispatches"]
+    assert all(row["fuel"] == 5 for row in dispatches if row["regionId"] == "deep-sea")
+    assert len({row["spotId"] for row in dispatches if row["regionId"] == "deep-sea"}) == 8
+    assert {row["fuel"] for row in dispatches if row["regionId"] != "deep-sea"} == {0, 10}
+    assert len({row["id"] for row in dispatches if row["fuel"] == 10}) == 7
     first = catalog["first"]
     # All required initial buildings fit the free Lv.1 vault with purchased materials.
     early = ["platform","hatchery","lab","carnivore","security","hybrid_herb"]
@@ -260,9 +285,7 @@ def validate():
     platform2 = upgrade("platform",2)
     first_budget += platform2["gold"] + sum(platform2[m]*buy[m] for m in ["wood","stone","metal"])
     first_budget += sum(int(row["gold"]) for row in missions) + buy["feed"] + first["goldCost"]
-    fuel_need = len(missions) * P["fuel_per_mission"]
     assert first_budget == 76400
-    assert fuel_need == 35 and P["fuel_base_capacity"] + P["parent_hatch_seconds"]//P["fuel_recharge_seconds"] >= fuel_need
     assert P["quality_upgrade_ratio"]**2 == 9
     assert P["quality_mid_gold"]*P["quality_upgrade_ratio"] + P["quality_high_gold"] == 300
     whole = bank_simulate(7200,balance=24990,capacity=25000)
@@ -274,29 +297,23 @@ def validate():
     assert resumed["gross"] == 20  # one new arrival, no accumulated backlog
     legacy = bank_simulate(600,balance=60000,capacity=25000,fee_period=F(1000000))
     assert legacy["balance"] == 60000 and legacy["gross"] == 0
-    # Natural recovery never clips an existing over-cap balance. A ready batch
-    # remains outside the spendable tank until the entire quantity fits.
-    def recover(stock, cap, units):
-        return stock if stock >= cap else min(cap, stock+units)
-    assert recover(90,30,1) == 90 and recover(29,30,2) == 30
-    assert recover(119,120,2) == 120
-    tank, ready, cap = 29, 5, 30
-    assert tank+ready > cap
-    tank -= int(P["fuel_per_mission"])
-    assert tank+ready <= cap
-    tank += ready
-    assert tank == 29
     # Upper bound uses actual catalog popularity; no claim all species are
     # already obtainable, compatible or simultaneously placed on the map.
     species = catalog["species"]
     demand_bound = 8 + 4*F(135,100)*sum(F(str(s["stats"]["popularity"])) for s in species) + 4*(len(species)-1)
     demand_bound *= 1 + F(primary("foodcourt",25),100)
-    planned_capacity = min(primary("gate",25), P["base_capacity"] + P["platform_max_count"]*primary("platform",25) + primary("restroom",25))
+    admission = catalog['admission']
+    assert P['base_capacity'] == admission['baseCapacity']
+    assert P['additional_exhibit_capacity'] == admission['additionalExhibitCapacity']
+    assert P['visit_seconds'] == admission['visitSeconds']
+    assert [exhibit_capacity(count) for count in range(4)] == [0, 24, 44, 64]
+    # This loose bound permits a connected habitat per catalogue species.
+    planned_capacity = min(primary("gate",25), exhibit_capacity(len(species)) * 60 / P["visit_seconds"])
     theoretical_gross = min(demand_bound,planned_capacity) * P["ticket"] * 60
     return {"kind":"design arithmetic, not live gameplay or DB concurrency", "rows":len(rows), "buildings":len(BUILD),
             "source_sha256":hashlib.sha256(SOURCE.read_bytes()).hexdigest(),"source_provenance":provenance,
             "checks":{"preserved_early_anchors":True,"monotonic_upgrades":True,"vault_next_upgrade_fits":True,
-                      "warehouse_next_upgrade_fits":True,"batch_storage":True,"single_fuel_stock":True,
+                      "warehouse_next_upgrade_fits":True,"batch_storage":True,
                       "exact_bank_partition_invariance":True,"no_full_vault_backlog":True,"legacy_overcap_preserved":True,
                       "first_hero_no_high_level_or_metal_gate":True,
                       "single_final_upgrade_min_7_days_after_admin":True,
@@ -307,7 +324,7 @@ def validate():
             "catalog_species":len(species),"catalog_demand_upper_per_minute":float(demand_bound),
             "planned_max_capacity":int(planned_capacity),"theoretical_gross_per_hour":float(theoretical_gross),
             "bank_example":whole,
-            "first_loop_purchase_budget":first_budget,"first_loop_fuel":int(fuel_need),
+            "first_loop_purchase_budget":first_budget,
             "final_upgrade_minimum_after_admin":min(effective_seconds(bid,25,25) for bid in BUILD),
             "final_timings":{bid:{"base_seconds":upgrade(bid,25)["seconds"],"max_admin_seconds":effective_seconds(bid,25,25)} for bid in BUILD},
             "unverified":["actual late-game play time and fun","full collection and map progression","server/DB concurrency","late recipes and mission rewards"]}
@@ -325,8 +342,8 @@ def duration(seconds):
 def render(result):
     text = ["# 주요 건물 25레벨 강화 상세표", "",
             "기준: 기획0.6 · 설계 수치이며 런타임 적용 전 · [밸런스 원천](balance.md) · [역할과 외형](buildings.md)", "",
-            "525행은 원천 표에서 자동 생성했다. 각 행의 골드·자재·시간은 그 레벨로 올리는 한 번의 비용이며 누적이 아니다. 시간은 관리사무소 보정 전 기본값, 효과는 완료 후 총값이다. **24→25 한 번의 일반 강화는 관리사무소 보정 뒤에도 최소7일**이다. 금속 행은 첫 영웅 이후다. 같은 부지·단일 재고·수동 수령 규칙은 밸런스 원천을 따른다. 표를 직접 수정하지 않는다. 0.6의 연구소/시설 고도화 권한은 기술 연구트리를 함께 확인한다. 이 표는 가격/성능 산술이며72기술 전체 해금 경로의 완료 검증이 아니다.", "",
-            "시작 초원·입구·금고Lv.1은 무료 제공이다. 추가 초원은 원천의 건설 비용을 사용한다. 부화장 자리에는 기본 무료 자리가 포함된다. 기본 창고/연료 한도는 각 시설 미건설 상태에도 제공된다.", ""]
+            "500행은 원천 표에서 자동 생성했다. 각 행의 골드·자재·시간은 그 레벨로 올리는 한 번의 비용이며 누적이 아니다. 시간은 관리사무소 보정 전 기본값, 효과는 완료 후 총값이다. **24→25 한 번의 일반 강화는 관리사무소 보정 뒤에도 최소7일**이다. 금속 행은 첫 영웅 이후다. 같은 부지·단일 재고·수동 수령 규칙은 밸런스 원천을 따른다. 표를 직접 수정하지 않는다. 0.6의 연구소/시설 고도화 권한은 기술 연구트리를 함께 확인한다. 이 표는 가격/성능 산술이며69기술 전체 해금 경로의 완료 검증이 아니다.", "",
+            "시작 초원·입구·금고Lv.1은 무료 제공이다. 추가 초원은 원천의 건설 비용을 사용한다. 부화장 자리에는 기본 무료 자리가 포함된다. 기본 창고 한도는 각 시설 미건설 상태에도 제공된다.", ""]
     for bid, base in BUILD.items():
         text += [f"## {base['건물']}", "", f"최초 해금 파크Lv.{base['park']}" + ("·첫 영웅 이후" if int(base['after_hero']) else "") + ".", "",
                  "| 목표 Lv. | 골드 | 목재 | 석재 | 금속 | 기본 시간 | 유지비/시간 | 완료 효과 |",
@@ -338,9 +355,9 @@ def render(result):
         final=result["final_timings"][bid]
         text += ["", f"24→25 한 번: 기본 **{duration(final['base_seconds']).strip()}**, 가능한 최고 관리사무소 보정 후 **{duration(final['max_admin_seconds']).strip()}**. 최소7일 하한 적용; 관리사무소 자신은 직전 완공 레벨의 효과만 적용."]
         text += ["", f"Lv.1→25 강화 누적: **{t['gold']:,}골드 · 목재{t['wood']:,} · 석재{t['stone']:,} · 금속{t['metal']:,} · 기본 타이머 {duration(t['seconds']).strip()}**. 최초 건설 비용은 별도.", ""]
-    text += ["## 검산 결과", "", f"21종×25레벨={result['rows']}행. 초반 앵커·단조성·금고/창고 다음 강화·생산/연료 수령·분할 정산·기존 초과분 보존 검사 통과.", "",
-             f"21종 전체 Lv.1→25 강화 골드 합은 {result['all_upgrade_gold']:,}, 기본 건설자 점유는 {duration(result['all_builder_seconds']).strip()}이다. 동시 작업·관리사무소 할인·자재/골드 수급·접속 공백을 제외한 산술 합이다. 21시설×관리사무소1~25 모든 조합에서 최종 강화7일 하한과 할인 후 시간 단조성을 검사했다.", "",
-             f"추가 효율기술0·필수 해금 권한 확보 가정으로 현재 카탈로그 {result['catalog_species']}종의 인기도로 계산한 후기 수요 상한은 분당 {result['catalog_demand_upper_per_minute']:.2f}명이다. 계획 입구 한도 {result['planned_max_capacity']}와 수요를 함께 제한한 이론 최대 입장료는 시간당 {result['theoretical_gross_per_hour']:,.0f}골드다. 실제 종 획득·맵 수용/동선·돌봄·금고·유지비·오프라인은 별도 제약이다.", "",
+    text += ["## 검산 결과", "", f"20종×25레벨={result['rows']}행. 초반 앵커·단조성·금고/창고 다음 강화·생산 수령·분할 정산·기존 초과분 보존 검사 통과.", "",
+             f"20종 전체 Lv.1→25 강화 골드 합은 {result['all_upgrade_gold']:,}, 기본 건설자 점유는 {duration(result['all_builder_seconds']).strip()}이다. 동시 작업·관리사무소 할인·자재/골드 수급·접속 공백을 제외한 산술 합이다. 20시설×관리사무소1~25 모든 조합에서 최종 강화7일 하한과 할인 후 시간 단조성을 검사했다.", "",
+             f"추가 효율기술0·필수 해금 권한 확보 가정으로 현재 카탈로그 {result['catalog_species']}종의 인기도로 계산한 후기 수요 상한은 분당 {result['catalog_demand_upper_per_minute']:.2f}명이다. 종마다 전시 구역 한 곳을 열 수 있다고 가정하고 입구 한도까지 반영하면 분당 최대 {result['planned_max_capacity']}명을 수용한다. 이론 최대 입장료는 시간당 {result['theoretical_gross_per_hour']:,.0f}골드다. 실제 종 획득·맵 수용/동선·돌봄·금고·유지비·오프라인은 별도 제약이다.", "",
              "후기 수집/실플레이 시간·미션 재미·DB 동시성·새 런타임 이관은 검증하지 않았다. 재현: `python3 docs/models/check_building_progression_v06.py --write`.", ""]
     return "\n".join(text)
 

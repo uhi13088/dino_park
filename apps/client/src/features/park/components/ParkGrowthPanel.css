@@ -64,10 +64,36 @@
   font-weight: 800;
 }
 
+.park-growth__stage-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
 .park-growth__progress p,
 .park-growth__reward {
   font-size: 13px;
   font-variant-numeric: tabular-nums;
+}
+
+.park-growth__next {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding-block: 12px;
+  border-bottom: 1px solid #dbe9d8;
+}
+
+.park-growth__next p {
+  flex: 1 1 215px;
+}
+
+.park-growth__next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .park-growth progress {
@@ -153,6 +179,7 @@
 }
 
 .park-growth .park-growth__close,
+.park-growth .park-growth__stage-link,
 .park-growth__link {
   border-color: #acbfad;
   background: #fff;
@@ -182,6 +209,157 @@
 .park-growth__notice--error {
   background: #fdf1ef;
   color: #84241c;
+}
+
+.park-growth__routes {
+  margin-top: 14px;
+}
+
+.park-growth__routes-guide {
+  margin-bottom: 8px;
+  font-weight: 650;
+}
+
+.park-growth__route-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.park-growth__route {
+  padding: 12px;
+  border: 1px solid #dbe9d8;
+  border-radius: 12px;
+  background: #f6f9f3;
+}
+
+.park-growth__route h3 {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.park-growth__route h4 {
+  font-weight: 750;
+}
+
+.park-growth__route-counts {
+  padding-block: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.park-growth__route-counts > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 8px;
+  padding-block: 4px;
+}
+
+.park-growth__route-counts dd {
+  font-weight: 750;
+}
+
+.park-growth__route-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.park-growth__route-research,
+.park-growth__mission-steps {
+  margin-top: 8px;
+  border-top: 1px solid #dbe9d8;
+  padding-top: 8px;
+}
+
+.park-growth__route-research button {
+  margin-top: 6px;
+}
+
+.park-growth__mission-step {
+  padding: 2px 0 6px;
+}
+
+.park-growth__mission-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 8px;
+}
+
+.park-growth__mission-step a {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  padding-block: 6px;
+  color: #275f37;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.park-growth__mission-step a:hover {
+  color: #193c2b;
+}
+
+.park-growth__mission-step a:focus-visible {
+  outline: 2px solid #234c32;
+  outline-offset: 2px;
+}
+
+.park-growth__midgame-select {
+  min-height: 44px;
+  max-width: 100%;
+  border: 1px solid #a4bca5;
+  border-radius: 6px;
+  padding-inline: 8px;
+  background: #f5fbf4;
+  color: #234c32;
+}
+
+.park-growth__midgame-guide {
+  margin-block: 8px 2px;
+  color: #526951;
+  font-size: 13px;
+}
+
+.park-growth__midgame-goal {
+  border-bottom: 1px solid #dbe9d8;
+  padding-block: 10px;
+}
+
+.park-growth__midgame-goal h3 {
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.park-growth__midgame-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.park-growth__midgame-alternatives .park-growth__midgame-row {
+  margin-block-start: 4px;
+  border-radius: 6px;
+  padding: 4px 8px;
+  background-color: #f5fbf4;
+}
+
+.park-growth__midgame-done {
+  color: #275f37;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+@media (max-width: 480px) {
+  .park-growth__route-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 420px) {

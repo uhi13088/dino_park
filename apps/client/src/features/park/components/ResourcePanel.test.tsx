@@ -1,6 +1,8 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FUEL_DEPOT_TYPE_ID } from '@dino-park/game-data';
 import type { ResourcesResponse } from '@dino-park/shared';
 import ResourcePanel from './ResourcePanel';
 
@@ -32,6 +34,7 @@ function data(): ResourcesResponse {
     gold: 10000,
     parkLevel: 2,
     capacityPerMaterial: 100,
+    fuel: { amount: 20, capacity: 30, nextRechargeAt: null },
     inventory: [
       { material: 'wood', name: '목재', amount: 0, buyPrice: 20 },
       { material: 'stone', name: '석재', amount: 0, buyPrice: 30 },
@@ -67,11 +70,17 @@ function data(): ResourcesResponse {
     },
   };
 }
-function openPanel(onPlaceBuilding = vi.fn()) {
+function openPanel(onPlaceBuilding = vi.fn(), focusFuel = false, scoutReturnPath?: string) {
   const client = new QueryClient();
   render(
     <QueryClientProvider client={client}>
-      <ResourcePanel onPlaceBuilding={onPlaceBuilding} />
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <ResourcePanel
+          onPlaceBuilding={onPlaceBuilding}
+          focusFuel={focusFuel}
+          scoutReturnPath={scoutReturnPath}
+        />
+      </MemoryRouter>
     </QueryClientProvider>,
   );
   return onPlaceBuilding;
@@ -83,7 +92,67 @@ beforeEach(() => {
   mocks.cancel.mockResolvedValue(undefined);
   mocks.refetch.mockResolvedValue(undefined);
   mocks.purchase.mockResolvedValue(undefined);
+  mocks.start.mockResolvedValue(undefined);
   mocks.upgrade.mockResolvedValue(undefined);
+});
+
+describe('scout fuel depot', () => {
+  const depot: ResourcesResponse['facilities'][number] = {
+    typeId: FUEL_DEPOT_TYPE_ID,
+    name: '탐험 연료 보급소',
+    unlockLevel: 2,
+    cost: 1000,
+    constructionSeconds: 60,
+    building: null,
+    recipe: { material: 'fuel', batchQuantity: 5, batchCost: 300, batchSeconds: 600, maxLots: 3 },
+    job: null,
+  };
+
+  it('focuses and buys fuel before construction without duplicating the purchase controls', async () => {
+    mocks.state!.facilities.push(depot);
+    const returnPath = '/exploration?mission=natural-target-plesiosaurus&spot=continental-shelf';
+    const place = openPanel(vi.fn(), true, returnPath);
+    const article = screen.getByRole('article', { name: '탐험 연료 보급소' });
+    expect(article).toHaveFocus();
+    expect(within(article).getByText('연료 20 / 30')).toBeVisible();
+    expect(screen.getAllByRole('spinbutton', { name: '연료 구매 수량' })).toHaveLength(1);
+    expect(within(article).getByRole('link', { name: '탐험으로' })).toHaveAttribute(
+      'href',
+      returnPath,
+    );
+    fireEvent.change(within(article).getByRole('spinbutton', { name: '연료 구매 수량' }), {
+      target: { value: '3' },
+    });
+    fireEvent.click(within(article).getByRole('button', { name: '연료 구매 · 300골드' }));
+    await waitFor(() =>
+      expect(mocks.purchase).toHaveBeenCalledWith({
+        material: 'fuel',
+        quantity: 3,
+        requestId: expect.any(String),
+      }),
+    );
+    expect(await screen.findByText('연료 3개를 구매했어요.')).toBeVisible();
+    expect(place).not.toHaveBeenCalled();
+    fireEvent.click(within(article).getByRole('button', { name: /보급소 배치.*1,000골드/ }));
+    expect(place).toHaveBeenCalledWith(FUEL_DEPOT_TYPE_ID);
+  });
+
+  it('starts production with a full tank while direct buying stays disabled', async () => {
+    mocks.state!.fuel.amount = 30;
+    mocks.state!.facilities.push({
+      ...depot,
+      building: { id: 'fuel-depot', status: 'ACTIVE', completesAt: null },
+    });
+    openPanel();
+    const article = within(screen.getByRole('article', { name: '탐험 연료 보급소' }));
+    expect(article.getByRole('button', { name: '연료 구매 · 100골드' })).toBeDisabled();
+    fireEvent.change(article.getByRole('combobox', { name: '생산량' }), { target: { value: '2' } });
+    fireEvent.click(article.getByRole('button', { name: '연료 10개 생산 시작' }));
+    await waitFor(() =>
+      expect(mocks.start).toHaveBeenCalledWith({ buildingId: 'fuel-depot', lots: 2 }),
+    );
+    expect(mocks.purchase).not.toHaveBeenCalled();
+  });
 });
 
 describe('early ordinary resource panel', () => {
@@ -140,6 +209,39 @@ describe('early ordinary resource panel', () => {
       mocks.upgrade.mock.invocationCallOrder[0],
     );
   });
+
+  it('focuses the upgrade and only shows the local effects for the matching deck and level', () => {
+    const client = new QueryClient();
+    const pane = (buildingId: string, admissionPaused = false) => (
+      <QueryClientProvider client={client}>
+        <ResourcePanel
+          onPlaceBuilding={vi.fn()}
+          focusPlatformUpgrade
+          isParkOpen
+          admissionPaused={admissionPaused}
+          platformExhibitName="초원 서식지"
+          admissionImpact={{
+            buildingId,
+            fromLevel: 1,
+            toLevel: 2,
+            exhibitId: 'grassland',
+            before: { crowdingPercent: 20, satisfactionPercent: 74 },
+            after: { crowdingPercent: 0, satisfactionPercent: 85 },
+          }}
+        />
+      </QueryClientProvider>
+    );
+    const { rerender } = render(pane('deck'));
+    expect(screen.getByRole('region', { name: '관람대 확장' })).toHaveFocus();
+    expect(screen.getByText('20% → 0%')).toBeVisible();
+    expect(screen.getByText('74% → 85%')).toBeVisible();
+    rerender(pane('deck', true));
+    expect(screen.getByRole('region', { name: '관람대 확장' })).toHaveTextContent(
+      '초원 서식지 관람 효과 · 입장 재개 시',
+    );
+    rerender(pane('another-deck'));
+    expect(screen.queryByText('20% → 0%')).not.toBeInTheDocument();
+  });
   it('previews the next capacity and buys missing metal through the same inventory', async () => {
     const state = mocks.state!;
     state.parkLevel = 5;
@@ -153,7 +255,7 @@ describe('early ordinary resource panel', () => {
     });
     openPanel();
     expect(screen.getByRole('heading', { name: '관람대 Lv.2' })).toBeVisible();
-    expect(screen.getByText(/완공 후 관람대 정원 40명 → 60명/)).toBeVisible();
+    expect(screen.getByText(/완공 후 관람석 40석 → 60석/)).toBeVisible();
     expect(screen.getByText(/시간당 유지비 35 → 50골드/)).toBeVisible();
     expect(screen.getByRole('button', { name: '관람대 Lv.3로 확장' })).toBeDisabled();
     expect(screen.getByRole('spinbutton', { name: '금속 구매 수량' })).toHaveValue(8);
@@ -180,7 +282,7 @@ describe('early ordinary resource panel', () => {
     openPanel();
     expect(screen.getByRole('heading', { name: '관람대 Lv.4' })).toBeVisible();
     expect(screen.getByText(/Lv.5 확장 중.*10분 00초/)).toBeVisible();
-    expect(screen.getByText(/현재 정원 80명 · 완공 후 100명/)).toBeVisible();
+    expect(screen.getByText(/현재 관람석 80석 · 완공 후 100석/)).toBeVisible();
     expect(screen.queryByRole('button', { name: /확장$/ })).not.toBeInTheDocument();
   });
 });

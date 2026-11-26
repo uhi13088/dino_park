@@ -34,3 +34,5 @@ export * from './codex';
 export * from './expedition';
 
 export * from './production';
+
+export * from './experimental-hybrid';

@@ -4,10 +4,17 @@ import {
   BadRequestException,
   ConflictException,
 } from '@nestjs/common';
+import type { Prisma, StoryProgress } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { STORY_CHAPTERS, getChapterById, getSceneById } from '@dino-park/game-data';
 import { EARLY_SYNTHESIS_SAFETY_FLAG } from '@dino-park/shared';
 import type { StoryChapter, StoryChoice, StoryReward } from '@dino-park/shared';
+import { storySceneRequirement } from './story-scene-gates';
+
+type StoryDatabase = Prisma.TransactionClient;
+type SceneAction = { sceneId?: string; nextSceneId?: string; choiceId?: string };
+
+const isFollowup = (chapter: StoryChapter) => chapter.order >= 4;
 
 // 호감도 레벨별 필요 경험치
 const AFFINITY_THRESHOLDS = [0, 50, 150, 300, 500, 750, 1050, 1400, 1800, 2250];
@@ -81,11 +88,14 @@ export class StoryService {
         titleKo: chapter.titleKo,
         order: chapter.order,
         scenes: chapter.scenes,
-        rewards: chapter.rewards,
+        rewards: isFollowup(chapter) ? [] : chapter.rewards,
         unlockCondition: chapter.unlockCondition,
       },
       progress: progress || null,
       isUnlocked: await this.isChapterUnlocked(userId, chapter),
+      requirement: progress?.sceneId
+        ? await storySceneRequirement(this.prisma, userId, progress.sceneId)
+        : undefined,
     };
   }
 
@@ -93,33 +103,40 @@ export class StoryService {
    * 해금 가능한 챕터 목록 조회
    */
   async getAvailableChapters(userId: string) {
-    const chapters: Array<{
-      chapter: Partial<StoryChapter>;
-      isUnlocked: boolean;
-      isStarted: boolean;
-      isCompleted: boolean;
-    }> = [];
-
-    for (const chapter of STORY_CHAPTERS) {
-      const progress = await this.prisma.storyProgress.findUnique({
-        where: { userId_chapterId: { userId, chapterId: chapter.id } },
-      });
-
-      chapters.push({
-        chapter: {
-          id: chapter.id,
-          title: chapter.title,
-          titleKo: chapter.titleKo,
-          order: chapter.order,
-          unlockCondition: chapter.unlockCondition,
-        },
-        isUnlocked: await this.isChapterUnlocked(userId, chapter),
-        isStarted: !!progress,
-        isCompleted: progress?.completed ?? false,
-      });
-    }
-
-    return chapters;
+    return Promise.all(
+      STORY_CHAPTERS.map(async (chapter) => {
+        const progress = await this.prisma.storyProgress.findUnique({
+          where: { userId_chapterId: { userId, chapterId: chapter.id } },
+        });
+        const unlocked = !!progress || (await this.isChapterUnlocked(userId, chapter));
+        const totalScenes =
+          chapter.id === 'chapter-6' ? 3 : chapter.id === 'epilogue' ? 1 : chapter.scenes.length;
+        const resumedAt = chapter.scenes.findIndex(({ id }) => id === progress?.sceneId);
+        const prior =
+          chapter.unlockCondition.type === 'chapter' &&
+          typeof chapter.unlockCondition.value === 'string'
+            ? getChapterById(chapter.unlockCondition.value)
+            : undefined;
+        return {
+          chapter: {
+            id: chapter.id,
+            title: chapter.title,
+            titleKo: chapter.titleKo,
+            order: chapter.order,
+            totalScenes,
+            unlockCondition: chapter.unlockCondition,
+          },
+          isUnlocked: unlocked,
+          isStarted: !!progress,
+          isCompleted: progress?.completed ?? false,
+          currentSceneId: progress?.sceneId ?? null,
+          completedScenes: progress?.completed
+            ? totalScenes
+            : Math.max(0, Math.min(totalScenes - 1, resumedAt)),
+          unlockRequirement: !unlocked && prior ? `${prior.titleKo}을 먼저 마쳐주세요.` : undefined,
+        };
+      }),
+    );
   }
 
   // ================================================================
@@ -135,172 +152,138 @@ export class StoryService {
       throw new NotFoundException(`챕터를 찾을 수 없습니다: ${chapterId}`);
     }
 
-    // 해금 조건 확인
-    const isUnlocked = await this.isChapterUnlocked(userId, chapter);
-    if (!isUnlocked) {
-      throw new BadRequestException('이 챕터는 아직 해금되지 않았습니다.');
-    }
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM parks WHERE "userId" = ${userId} FOR UPDATE`;
+      const key = { userId_chapterId: { userId, chapterId } };
+      const existing = await tx.storyProgress.findUnique({ where: key });
+      if (existing) return this.sceneState(tx, userId, chapter, existing);
+      if (!(await this.isChapterUnlocked(userId, chapter, tx)))
+        throw new BadRequestException('이 챕터는 아직 해금되지 않았습니다.');
 
-    // 이미 시작한 경우 기존 진행 반환
-    const existing = await this.prisma.storyProgress.findUnique({
-      where: { userId_chapterId: { userId, chapterId } },
+      const firstScene = await this.openingScene(tx, userId, chapter);
+      const progress = await tx.storyProgress.upsert({
+        where: key,
+        create: { userId, chapterId, sceneId: firstScene.id, choices: [], effects: {} },
+        update: {},
+      });
+      return this.sceneState(tx, userId, chapter, progress);
     });
+  }
 
-    if (existing) {
-      return {
-        progress: existing,
-        currentScene: getSceneById(chapterId, existing.sceneId || chapter.scenes[0].id),
-      };
+  private async openingScene(tx: StoryDatabase, userId: string, chapter: StoryChapter) {
+    if (chapter.id === 'epilogue') {
+      const finale = await tx.storyProgress.findUnique({
+        where: { userId_chapterId: { userId, chapterId: 'chapter-6' } },
+        select: { choices: true },
+      });
+      const selected = getSceneById('chapter-6', 'ch6-scene-2')?.choices?.find(
+        ({ id }) => Array.isArray(finale?.choices) && finale.choices.includes(id),
+      );
+      const endingScene = selected?.nextSceneId?.replace('ch6-scene-3-', 'epilogue-scene-');
+      if (endingScene) {
+        const scene = getSceneById(chapter.id, endingScene);
+        if (scene) return scene;
+      }
+      // Accounts that completed the older finale without a choice keep their opening.
     }
+    return chapter.scenes[0];
+  }
 
-    // 새 진행 생성
-    const firstScene = chapter.scenes[0];
-    const progress = await this.prisma.storyProgress.create({
-      data: {
-        userId,
-        chapterId,
-        sceneId: firstScene.id,
-        choices: [],
-        effects: {},
-      },
-    });
-
+  private async sceneState(
+    tx: StoryDatabase,
+    userId: string,
+    chapter: StoryChapter,
+    progress: StoryProgress,
+  ) {
+    const currentScene =
+      !progress.completed && progress.sceneId
+        ? (getSceneById(chapter.id, progress.sceneId) ?? null)
+        : null;
     return {
       progress,
-      currentScene: firstScene,
+      currentScene,
+      isChapterComplete: progress.completed,
+      requirement: currentScene
+        ? await storySceneRequirement(tx, userId, currentScene.id)
+        : undefined,
+      rewards: progress.completed ? (isFollowup(chapter) ? [] : chapter.rewards) : undefined,
     };
   }
 
-  /**
-   * 다음 씬으로 진행
-   */
-  async advanceScene(userId: string, chapterId: string, nextSceneId?: string) {
+  /** Advance the open scene and persist any choice with its effects in the same transaction. */
+  async advanceScene(userId: string, chapterId: string, action: SceneAction = {}) {
     const chapter = getChapterById(chapterId);
-    if (!chapter) {
-      throw new NotFoundException(`챕터를 찾을 수 없습니다: ${chapterId}`);
-    }
+    if (!chapter) throw new NotFoundException(`챕터를 찾을 수 없습니다: ${chapterId}`);
 
-    const progress = await this.prisma.storyProgress.findUnique({
-      where: { userId_chapterId: { userId, chapterId } },
-    });
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM parks WHERE "userId" = ${userId} FOR UPDATE`;
+      const key = { userId_chapterId: { userId, chapterId } };
+      const progress = await tx.storyProgress.findUnique({ where: key });
+      if (!progress) throw new BadRequestException('챕터를 먼저 시작해야 합니다.');
+      const choices = Array.isArray(progress.choices) ? progress.choices : [];
+      if (
+        progress.completed ||
+        (action.sceneId && action.sceneId !== progress.sceneId) ||
+        (action.choiceId && choices.includes(action.choiceId))
+      )
+        return this.sceneState(tx, userId, chapter, progress);
 
-    if (!progress) {
-      throw new BadRequestException('챕터를 먼저 시작해야 합니다.');
-    }
+      const index = chapter.scenes.findIndex((scene) => scene.id === progress.sceneId);
+      const current = chapter.scenes[index];
+      if (!current) throw new BadRequestException('현재 장면을 찾을 수 없습니다.');
+      const requirement = await storySceneRequirement(tx, userId, current.id);
+      if (requirement) throw new BadRequestException(requirement.message);
 
-    if (progress.completed) {
-      throw new BadRequestException('이미 완료된 챕터입니다.');
-    }
+      const choice = current.choices?.find(({ id }) => id === action.choiceId);
+      if (action.choiceId && !choice)
+        throw new BadRequestException('현재 장면의 선택지를 골라주세요.');
+      if (isFollowup(chapter) && !choice && current.choices?.length)
+        throw new BadRequestException('현재 장면의 선택지를 골라주세요.');
 
-    // 현재 씬 인덱스 찾기
-    const currentSceneIndex = chapter.scenes.findIndex((s) => s.id === progress.sceneId);
+      const terminal = chapter.id === 'epilogue' || current.id.startsWith('ch6-scene-3-');
+      const canonical = terminal
+        ? undefined
+        : choice?.nextSceneId
+          ? getSceneById(chapterId, choice.nextSceneId)
+          : chapter.scenes[index + 1];
+      if (isFollowup(chapter) && action.nextSceneId && action.nextSceneId !== canonical?.id)
+        throw new BadRequestException('현재 장면에서 이어지는 이야기로 진행해주세요.');
+      const next =
+        !isFollowup(chapter) && !choice && action.nextSceneId
+          ? getSceneById(chapterId, action.nextSceneId)
+          : canonical;
+      if (!next) await this.assertMilestoneComplete(userId, chapterId, tx);
+      if (choice) await this.processChoiceEffects(userId, choice, tx);
 
-    // 다음 씬 결정
-    let nextScene;
-    if (nextSceneId) {
-      nextScene = chapter.scenes.find((s) => s.id === nextSceneId);
-    } else {
-      nextScene = chapter.scenes[currentSceneIndex + 1];
-    }
-
-    // 다음 씬이 없으면 챕터 완료
-    if (!nextScene) {
-      await this.assertMilestoneComplete(userId, chapterId);
-      const updatedProgress = await this.prisma.storyProgress.update({
-        where: { userId_chapterId: { userId, chapterId } },
+      const previousEffects =
+        progress.effects && typeof progress.effects === 'object' && !Array.isArray(progress.effects)
+          ? progress.effects
+          : {};
+      const updated = await tx.storyProgress.update({
+        where: key,
         data: {
-          sceneId: null,
-          completed: true,
+          sceneId: next?.id ?? null,
+          completed: !next,
+          ...(choice
+            ? {
+                choices: [...choices, choice.id],
+                effects: { ...previousEffects, ...choice.effect },
+              }
+            : {}),
         },
       });
-
-      return {
-        progress: updatedProgress,
-        currentScene: null,
-        isChapterComplete: true,
-        rewards: chapter.rewards,
-      };
-    }
-
-    // 진행 업데이트
-    const updatedProgress = await this.prisma.storyProgress.update({
-      where: { userId_chapterId: { userId, chapterId } },
-      data: { sceneId: nextScene.id },
+      return this.sceneState(tx, userId, chapter, updated);
     });
-
-    return {
-      progress: updatedProgress,
-      currentScene: nextScene,
-      isChapterComplete: false,
-    };
   }
 
-  // ================================================================
-  // 선택지 처리
-  // ================================================================
-
-  /**
-   * 스토리 선택지 선택
-   */
   async makeChoice(userId: string, chapterId: string, choiceId: string) {
-    const chapter = getChapterById(chapterId);
-    if (!chapter) {
-      throw new NotFoundException(`챕터를 찾을 수 없습니다: ${chapterId}`);
-    }
-
-    const progress = await this.prisma.storyProgress.findUnique({
-      where: { userId_chapterId: { userId, chapterId } },
-    });
-
-    if (!progress) {
-      throw new BadRequestException('챕터를 먼저 시작해야 합니다.');
-    }
-
-    if (progress.completed) {
-      throw new BadRequestException('이미 완료된 챕터입니다.');
-    }
-
-    // 현재 씬에서 선택지 찾기
-    const currentScene = chapter.scenes.find((s) => s.id === progress.sceneId);
-    if (!currentScene) {
-      throw new BadRequestException('현재 씬을 찾을 수 없습니다.');
-    }
-
-    const choice = currentScene.choices?.find((c) => c.id === choiceId);
-    if (!choice) {
-      throw new BadRequestException('유효하지 않은 선택지입니다.');
-    }
-
-    // 선택지 효과 처리
-    await this.processChoiceEffects(userId, choice);
-
-    // 선택 기록 및 효과 저장
-    const existingChoices = (progress.choices as string[]) || [];
-    const existingEffects = (progress.effects as Record<string, number | string | boolean>) || {};
-
-    const mergedEffects = { ...existingEffects, ...choice.effect };
-
-    await this.prisma.storyProgress.update({
-      where: { userId_chapterId: { userId, chapterId } },
-      data: {
-        choices: [...existingChoices, choiceId],
-        effects: JSON.parse(JSON.stringify(mergedEffects)),
-      },
-    });
-
-    // 다음 씬으로 자동 진행
-    if (choice.nextSceneId) {
-      return this.advanceScene(userId, chapterId, choice.nextSceneId);
-    }
-
-    // nextSceneId가 null이면 자동으로 다음 씬으로
-    return this.advanceScene(userId, chapterId);
+    return this.advanceScene(userId, chapterId, { choiceId });
   }
 
   /**
    * 선택지 효과 처리
    */
-  private async processChoiceEffects(userId: string, choice: StoryChoice) {
+  private async processChoiceEffects(userId: string, choice: StoryChoice, tx: StoryDatabase) {
     const effect = choice.effect;
 
     for (const [key, value] of Object.entries(effect)) {
@@ -308,18 +291,18 @@ export class StoryService {
       if (key.endsWith('Affinity')) {
         const characterId = key.replace('Affinity', '').toLowerCase();
         if (CHARACTERS.includes(characterId) && typeof value === 'number') {
-          await this.updateCharacterAffinity(userId, characterId, value);
+          await this.updateCharacterAffinity(userId, characterId, value, tx);
         }
       }
 
       // 스토리 플래그 처리
       if (key === 'storyFlag' && typeof value === 'string') {
-        await this.setStoryFlag(userId, value, true);
+        await this.setStoryFlag(userId, value, true, tx);
       }
 
       // 엔딩 플래그
       if (key === 'ending' && typeof value === 'string') {
-        await this.setStoryFlag(userId, `ending_${value}`, true);
+        await this.setStoryFlag(userId, `ending_${value}`, true, tx);
       }
     }
   }
@@ -344,6 +327,8 @@ export class StoryService {
     if (!progress || !progress.completed) {
       throw new BadRequestException('챕터를 완료해야 보상을 받을 수 있습니다.');
     }
+
+    if (isFollowup(chapter)) return { rewards: [], message: '이야기 완료 기록을 확인했어요.' };
 
     // 이미 보상을 받았는지 확인
     const rewardFlag = `reward_claimed_${chapterId}`;
@@ -469,15 +454,20 @@ export class StoryService {
   /**
    * 캐릭터 호감도 업데이트
    */
-  async updateCharacterAffinity(userId: string, characterId: string, amount: number) {
+  async updateCharacterAffinity(
+    userId: string,
+    characterId: string,
+    amount: number,
+    tx: StoryDatabase = this.prisma,
+  ) {
     // 캐릭터가 해금되어 있는지 확인
-    let affinity = await this.prisma.characterAffinity.findUnique({
+    let affinity = await tx.characterAffinity.findUnique({
       where: { userId_characterId: { userId, characterId } },
     });
 
     if (!affinity) {
       // 처음 만나는 캐릭터인 경우 자동 해금
-      affinity = await this.prisma.characterAffinity.create({
+      affinity = await tx.characterAffinity.create({
         data: {
           userId,
           characterId,
@@ -499,7 +489,7 @@ export class StoryService {
         newLevel++;
       }
 
-      affinity = await this.prisma.characterAffinity.update({
+      affinity = await tx.characterAffinity.update({
         where: { userId_characterId: { userId, characterId } },
         data: {
           affinity: newAffinity,
@@ -549,8 +539,13 @@ export class StoryService {
   /**
    * 스토리 플래그 설정
    */
-  async setStoryFlag(userId: string, flagId: string, value: unknown = true) {
-    await this.prisma.storyFlag.upsert({
+  async setStoryFlag(
+    userId: string,
+    flagId: string,
+    value: unknown = true,
+    tx: StoryDatabase = this.prisma,
+  ) {
+    await tx.storyFlag.upsert({
       where: { userId_flagId: { userId, flagId } },
       create: { userId, flagId, value: JSON.stringify(value) },
       update: { value: JSON.stringify(value) },
@@ -560,8 +555,12 @@ export class StoryService {
   /**
    * 스토리 플래그 확인
    */
-  async hasStoryFlag(userId: string, flagId: string): Promise<boolean> {
-    const flag = await this.prisma.storyFlag.findUnique({
+  async hasStoryFlag(
+    userId: string,
+    flagId: string,
+    tx: StoryDatabase = this.prisma,
+  ): Promise<boolean> {
+    const flag = await tx.storyFlag.findUnique({
       where: { userId_flagId: { userId, flagId } },
     });
     return !!flag;
@@ -600,7 +599,11 @@ export class StoryService {
   /**
    * 챕터 해금 여부 확인
    */
-  private async isChapterUnlocked(userId: string, chapter: StoryChapter): Promise<boolean> {
+  private async isChapterUnlocked(
+    userId: string,
+    chapter: StoryChapter,
+    tx: StoryDatabase = this.prisma,
+  ): Promise<boolean> {
     const { type, value } = chapter.unlockCondition;
 
     switch (type) {
@@ -609,7 +612,7 @@ export class StoryService {
 
       case 'chapter':
         if (typeof value === 'string') {
-          const prevProgress = await this.prisma.storyProgress.findUnique({
+          const prevProgress = await tx.storyProgress.findUnique({
             where: { userId_chapterId: { userId, chapterId: value } },
           });
           return prevProgress?.completed ?? false;
@@ -618,7 +621,7 @@ export class StoryService {
 
       case 'parkLevel':
         if (typeof value === 'number') {
-          const park = await this.prisma.park.findUnique({
+          const park = await tx.park.findUnique({
             where: { userId },
           });
           return (park?.level ?? 0) >= value;
@@ -627,7 +630,7 @@ export class StoryService {
 
       case 'building':
         if (typeof value === 'string') {
-          const building = await this.prisma.building.findFirst({
+          const building = await tx.building.findFirst({
             where: {
               park: { userId },
               typeId: value,
@@ -639,7 +642,7 @@ export class StoryService {
 
       case 'dinosaur':
         if (typeof value === 'string') {
-          const dinosaur = await this.prisma.dinosaur.findFirst({
+          const dinosaur = await tx.dinosaur.findFirst({
             where: {
               park: { userId },
               speciesId: value,
@@ -665,21 +668,29 @@ export class StoryService {
     const progress = await this.prisma.storyProgress.findUnique({
       where: { userId_chapterId: { userId, chapterId } },
     });
-    if (!progress?.completed) await this.assertMilestoneComplete(userId, chapterId);
+    const chapter = getChapterById(chapterId);
+    if (!progress || !chapter) throw new NotFoundException('진행 중인 챕터를 찾을 수 없습니다.');
+    if (progress.completed) return progress;
+    if (isFollowup(chapter)) throw new BadRequestException('마지막 장면까지 진행해주세요.');
+    await this.assertMilestoneComplete(userId, chapterId);
     return this.prisma.storyProgress.update({
       where: { userId_chapterId: { userId, chapterId } },
       data: { completed: true },
     });
   }
 
-  private async assertMilestoneComplete(userId: string, chapterId: string) {
+  private async assertMilestoneComplete(
+    userId: string,
+    chapterId: string,
+    tx: StoryDatabase = this.prisma,
+  ) {
     if (
       chapterId === 'chapter-2' &&
-      !(await this.hasStoryFlag(userId, EARLY_SYNTHESIS_SAFETY_FLAG))
+      !(await this.hasStoryFlag(userId, EARLY_SYNTHESIS_SAFETY_FLAG, tx))
     )
       throw new BadRequestException('원종 돌봄과 2장 안전 점검을 마쳐주세요.');
     if (chapterId !== 'chapter-3') return;
-    const milestone = await this.prisma.firstSynthesisJob.findFirst({
+    const milestone = await tx.firstSynthesisJob.findFirst({
       where: { park: { userId }, exhibitedAt: { not: null } },
       select: { parkId: true },
     });

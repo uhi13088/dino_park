@@ -1,0 +1,5452 @@
+{
+  "technology": [
+    {
+      "id": "ops-entry",
+      "name": "입장 수속",
+      "description": "입구의 분당 처리 상한을 높여 입구 혼잡을 줄임",
+      "family": "ops",
+      "prerequisites": [],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 1,
+          "afterFirstHero": false,
+          "costs": {
+            "gold": 500,
+            "wood": 5,
+            "stone": 5,
+            "metal": 0
+          },
+          "durationSeconds": 60,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 2,
+          "afterFirstHero": false,
+          "costs": {
+            "gold": 1500,
+            "wood": 10,
+            "stone": 10,
+            "metal": 0
+          },
+          "durationSeconds": 300,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 3,
+          "afterFirstHero": false,
+          "costs": {
+            "gold": 4000,
+            "wood": 20,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 1800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 4,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 10000,
+            "wood": 35,
+            "stone": 35,
+            "metal": 5
+          },
+          "durationSeconds": 7200,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 20000,
+            "wood": 50,
+            "stone": 50,
+            "metal": 10
+          },
+          "durationSeconds": 21600,
+          "minimumDurationSeconds": 0
+        }
+      ]
+    },
+    {
+      "id": "ops-flow",
+      "name": "관람 동선",
+      "description": "평균 관람 시간을 줄여 열린 전시 구역의 관람 회전율을 높임",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-entry",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 5000,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 3600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 49500,
+            "wood": 150,
+            "stone": 120,
+            "metal": 30
+          },
+          "durationSeconds": 93600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 300000,
+            "wood": 495,
+            "stone": 420,
+            "metal": 125
+          },
+          "durationSeconds": 734400,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "ops-view-facilities",
+      "name": "관람시설 설계",
+      "description": "추가 관람대 2·3·4번째의 건설 권한을 단계적으로 개방",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-entry",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6500,
+            "wood": 30,
+            "stone": 25,
+            "metal": 0
+          },
+          "durationSeconds": 4500,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 64350,
+            "wood": 165,
+            "stone": 130,
+            "metal": 30
+          },
+          "durationSeconds": 118800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 390000,
+            "wood": 545,
+            "stone": 460,
+            "metal": 140
+          },
+          "durationSeconds": 907200,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "ops-land",
+      "name": "토지 개발",
+      "description": "새 정사각 부지의 확장 권한을 개방한다. 실제 확장은 별도 미리보기·확인과 자원 소비를 거친다.",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-entry",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3750,
+            "wood": 20,
+            "stone": 15,
+            "metal": 0
+          },
+          "durationSeconds": 2700,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 11450,
+            "wood": 50,
+            "stone": 35,
+            "metal": 5
+          },
+          "durationSeconds": 9900,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 18750,
+            "wood": 75,
+            "stone": 55,
+            "metal": 10
+          },
+          "durationSeconds": 21600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 8,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 33800,
+            "wood": 105,
+            "stone": 80,
+            "metal": 20
+          },
+          "durationSeconds": 45000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 81900,
+            "wood": 185,
+            "stone": 150,
+            "metal": 35
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "ops-engineering",
+      "name": "시설 고도화",
+      "description": "연구소·서식지를 포함한 주요 시설의 강화 상한을10·20·25로 단계 개방",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-land",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3750,
+            "wood": 20,
+            "stone": 15,
+            "metal": 0
+          },
+          "durationSeconds": 2700,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 64350,
+            "wood": 165,
+            "stone": 130,
+            "metal": 30
+          },
+          "durationSeconds": 118800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1950000,
+            "wood": 1575,
+            "stone": 1335,
+            "metal": 440
+          },
+          "durationSeconds": 1771200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "ops-construction",
+      "name": "공사 공법",
+      "description": "개별 건설·강화 시간을 완화; 마지막 강화 최소7일 유지",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 45000,
+            "wood": 140,
+            "stone": 110,
+            "metal": 25
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 275000,
+            "wood": 475,
+            "stone": 400,
+            "metal": 120
+          },
+          "durationSeconds": 691200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1430,
+            "stone": 1210,
+            "metal": 400
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "ops-processing",
+      "name": "생산 공정",
+      "description": "일반4자원 생산 시간을 줄임; 생산량과 단가는 별도 효과",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-maintenance",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 5000,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 3600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8800,
+            "wood": 45,
+            "stone": 35,
+            "metal": 5
+          },
+          "durationSeconds": 8100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 14400,
+            "wood": 70,
+            "stone": 50,
+            "metal": 10
+          },
+          "durationSeconds": 17100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 8,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 26000,
+            "wood": 95,
+            "stone": 70,
+            "metal": 15
+          },
+          "durationSeconds": 36000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 63000,
+            "wood": 170,
+            "stone": 135,
+            "metal": 30
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "ops-batch",
+      "name": "일괄 생산",
+      "description": "시설당 한 작업의 선택 회분 상한을 늘려 긴 접속 간격에 대응",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-processing",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 36000,
+            "wood": 120,
+            "stone": 95,
+            "metal": 25
+          },
+          "durationSeconds": 73800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 220000,
+            "wood": 405,
+            "stone": 340,
+            "metal": 100
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1200000,
+            "wood": 1220,
+            "stone": 1030,
+            "metal": 340
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "ops-storage",
+      "name": "창고 적재",
+      "description": "일반4자원의 창고 저장 한도를 개선해 큰 공사와 생산 배치를 준비",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-processing",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 45000,
+            "wood": 140,
+            "stone": 110,
+            "metal": 25
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 275000,
+            "wood": 475,
+            "stone": 400,
+            "metal": 120
+          },
+          "durationSeconds": 691200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1430,
+            "stone": 1210,
+            "metal": 400
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "ops-maintenance",
+      "name": "시설 정비",
+      "description": "가동 시설 골드 유지비를 줄임; 생산 작업비·공룡 유지비 제외",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-entry",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3000,
+            "wood": 15,
+            "stone": 10,
+            "metal": 0
+          },
+          "durationSeconds": 1800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8000,
+            "wood": 25,
+            "stone": 20,
+            "metal": 5
+          },
+          "durationSeconds": 21600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 18000,
+            "wood": 40,
+            "stone": 30,
+            "metal": 10
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 8,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 40000,
+            "wood": 60,
+            "stone": 45,
+            "metal": 20
+          },
+          "durationSeconds": 259200,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 80000,
+            "wood": 90,
+            "stone": 70,
+            "metal": 35
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "ops-materials",
+      "name": "자재 규격화",
+      "description": "일반 건설·강화의 목재/석재/금속 소모를 완화; 연구 자재 제외",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-maintenance",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 5000,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 3600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8800,
+            "wood": 45,
+            "stone": 35,
+            "metal": 5
+          },
+          "durationSeconds": 8100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 14400,
+            "wood": 70,
+            "stone": 50,
+            "metal": 10
+          },
+          "durationSeconds": 17100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 8,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 26000,
+            "wood": 95,
+            "stone": 70,
+            "metal": 15
+          },
+          "durationSeconds": 36000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 63000,
+            "wood": 170,
+            "stone": 135,
+            "metal": 30
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "ops-procurement",
+      "name": "물자 조달",
+      "description": "일반4자원의 골드 구매 단가를 개선해 급한 부족분을 조달",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-materials",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 5000,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 3600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 49500,
+            "wood": 150,
+            "stone": 120,
+            "metal": 30
+          },
+          "durationSeconds": 93600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 300000,
+            "wood": 495,
+            "stone": 420,
+            "metal": 125
+          },
+          "durationSeconds": 734400,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "ops-finance",
+      "name": "금고 관리",
+      "description": "전체 보유 골드 저장 한도를 개선; 이자/별도 예금/직접 수익 없음",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 45000,
+            "wood": 140,
+            "stone": 110,
+            "metal": 25
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 275000,
+            "wood": 475,
+            "stone": 400,
+            "metal": 120
+          },
+          "durationSeconds": 691200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1430,
+            "stone": 1210,
+            "metal": 400
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "ops-building-budget",
+      "name": "건축 경제",
+      "description": "건물 건설·강화의 골드 지출을 완화; 채용·합성 연구비 제외",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-materials",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 45000,
+            "wood": 140,
+            "stone": 110,
+            "metal": 25
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 275000,
+            "wood": 475,
+            "stone": 400,
+            "metal": 120
+          },
+          "durationSeconds": 691200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1430,
+            "stone": 1210,
+            "metal": 400
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "ops-offline",
+      "name": "부재중 운영",
+      "description": "기존 오프라인 운영 계수를 개선해 비접속 입장료·유지비를 함께 정산",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-maintenance",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 45000,
+            "wood": 140,
+            "stone": 110,
+            "metal": 25
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 275000,
+            "wood": 475,
+            "stone": 400,
+            "metal": 120
+          },
+          "durationSeconds": 691200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1430,
+            "stone": 1210,
+            "metal": 400
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "ops-marketing",
+      "name": "파크 홍보",
+      "description": "실제 관람 가능한 공룡의 방문 수요를 높임",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-maintenance",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 30000,
+            "wood": 60,
+            "stone": 50,
+            "metal": 20
+          },
+          "durationSeconds": 172800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 12,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 75000,
+            "wood": 90,
+            "stone": 75,
+            "metal": 40
+          },
+          "durationSeconds": 345600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 150000,
+            "wood": 130,
+            "stone": 110,
+            "metal": 70
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "ops-comfort",
+      "name": "편의시설 개선",
+      "description": "완공된 화장실의 이용 인원을 늘려 편의시설 혼잡을 완화한다.",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-marketing",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 45000,
+            "wood": 140,
+            "stone": 110,
+            "metal": 25
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 275000,
+            "wood": 475,
+            "stone": 400,
+            "metal": 120
+          },
+          "durationSeconds": 691200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1430,
+            "stone": 1210,
+            "metal": 400
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "ops-exhibitions",
+      "name": "테마 전시 기획",
+      "description": "세 테마 전시 프로그램을 순서대로 열고 하나를 수동 선택한다. 지정된 세 종을 실제 관람할 수 있을 때만 수요가 증가한다.",
+      "family": "ops",
+      "prerequisites": [
+        {
+          "technologyId": "ops-marketing",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 325000,
+            "wood": 495,
+            "stone": 420,
+            "metal": 125
+          },
+          "durationSeconds": 777600,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1787500,
+            "wood": 1505,
+            "stone": 1275,
+            "metal": 420
+          },
+          "durationSeconds": 1641600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7800000,
+            "wood": 2905,
+            "stone": 2665,
+            "metal": 1065
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1814400
+        }
+      ]
+    },
+    {
+      "id": "care-adaptation",
+      "name": "환경 적응",
+      "description": "배치된 호환 서식지 공룡의 행복도 감소·배고픔 증가 속도를 총2/4/6/8/10% 완화한다.; 복귀 간격에 맞춘 기본 돌봄 효율을 선택한다. 기존 항목의 ID·최대 단계·효과를 보존한다.",
+      "family": "care",
+      "prerequisites": [],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 1,
+          "afterFirstHero": false,
+          "costs": {
+            "gold": 500,
+            "wood": 5,
+            "stone": 5,
+            "metal": 0
+          },
+          "durationSeconds": 60,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 2,
+          "afterFirstHero": false,
+          "costs": {
+            "gold": 1500,
+            "wood": 10,
+            "stone": 10,
+            "metal": 0
+          },
+          "durationSeconds": 300,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 3,
+          "afterFirstHero": false,
+          "costs": {
+            "gold": 4000,
+            "wood": 20,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 1800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 4,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 10000,
+            "wood": 35,
+            "stone": 35,
+            "metal": 5
+          },
+          "durationSeconds": 7200,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 20000,
+            "wood": 50,
+            "stone": 50,
+            "metal": 10
+          },
+          "durationSeconds": 21600,
+          "minimumDurationSeconds": 0
+        }
+      ]
+    },
+    {
+      "id": "care-upkeep",
+      "name": "사육 관리",
+      "description": "기존 유지비 대상 공룡의 골드 유지비를 총3/6/10% 줄인다.; 공룡 수가 늘어난 뒤 관리 비용에 투자한다. 기존 항목의 ID·최대 단계·효과를 보존한다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-adaptation",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3000,
+            "wood": 15,
+            "stone": 10,
+            "metal": 0
+          },
+          "durationSeconds": 1800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8000,
+            "wood": 25,
+            "stone": 20,
+            "metal": 5
+          },
+          "durationSeconds": 21600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 18000,
+            "wood": 40,
+            "stone": 30,
+            "metal": 10
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        }
+      ]
+    },
+    {
+      "id": "care-nutrition",
+      "name": "영양 관리",
+      "description": "급식 한 번의 행복도 회복을 개선한다. 행복100 상한·배고픔 회복량·사료 소비는 유지한다.; 사료를 사용하는 실제 돌봄의 회복 가치를 높인다. 상태 악화 속도 기술과 다른 순간 효과다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-adaptation",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 5000,
+            "wood": 30,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 3600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8800,
+            "wood": 50,
+            "stone": 30,
+            "metal": 5
+          },
+          "durationSeconds": 8100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 14400,
+            "wood": 75,
+            "stone": 45,
+            "metal": 10
+          },
+          "durationSeconds": 17100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 8,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 26000,
+            "wood": 105,
+            "stone": 65,
+            "metal": 15
+          },
+          "durationSeconds": 36000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 63000,
+            "wood": 185,
+            "stone": 120,
+            "metal": 30
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "care-interaction",
+      "name": "교감 훈련",
+      "description": "명시적 개별 교감의 행복도 회복을 개선한다. 교감 시간/기본 증가량의 원천을 통일하고 독립 교감 시각을 사용한다.; 사료 투입과 별도로 직접 교감하는 플레이에 투자한다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-adaptation",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 5000,
+            "wood": 30,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 3600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8800,
+            "wood": 50,
+            "stone": 30,
+            "metal": 5
+          },
+          "durationSeconds": 8100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 14400,
+            "wood": 75,
+            "stone": 45,
+            "metal": 10
+          },
+          "durationSeconds": 17100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 8,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 26000,
+            "wood": 105,
+            "stone": 65,
+            "metal": 15
+          },
+          "durationSeconds": 36000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 63000,
+            "wood": 185,
+            "stone": 120,
+            "metal": 30
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "care-group-feeding",
+      "name": "단체 급식",
+      "description": "수동 선택·비용 확인·확정으로 여러 개체를 급식한다. 개체별 비용/적격은 유지한다.; 개체 수가 늘어난 파크에서 반복 조작을 줄이는 새 행동을 제공한다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-nutrition",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 36000,
+            "wood": 135,
+            "stone": 85,
+            "metal": 20
+          },
+          "durationSeconds": 73800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 220000,
+            "wood": 445,
+            "stone": 310,
+            "metal": 90
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1200000,
+            "wood": 1340,
+            "stone": 930,
+            "metal": 295
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-group-interaction",
+      "name": "단체 교감",
+      "description": "수동으로 여러 개체를 선택해 교감한다. 개체별 적격/쿨다운은 유지한다.; 성장한 파크의 돌봄 경로를 직접 선택하고 개별 교감 반복을 줄인다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-interaction",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 200000,
+            "wood": 425,
+            "stone": 295,
+            "metal": 85
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1100000,
+            "wood": 1280,
+            "stone": 885,
+            "metal": 285
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4800000,
+            "wood": 2470,
+            "stone": 1855,
+            "metal": 720
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-incubation",
+      "name": "반복 부화 공정",
+      "description": "일반 반복 자연종 알의 부화 시간을 추가 단축한다. 첫 지정60초 부화는 제외한다.; 부화장 건물의 슬롯/기본 효율과 별도로 반복 원종 수집 속도에 투자한다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-adaptation",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 5000,
+            "wood": 30,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 3600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8800,
+            "wood": 50,
+            "stone": 30,
+            "metal": 5
+          },
+          "durationSeconds": 8100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 14400,
+            "wood": 75,
+            "stone": 45,
+            "metal": 10
+          },
+          "durationSeconds": 17100,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 8,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 26000,
+            "wood": 105,
+            "stone": 65,
+            "metal": 15
+          },
+          "durationSeconds": 36000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 63000,
+            "wood": 185,
+            "stone": 120,
+            "metal": 30
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "care-hatch-capacity",
+      "name": "부화 설비 확장",
+      "description": "완공 부화장의 총 부화 자리를 파크 공통으로 늘린다. 추가 자리는 연구 효과를 따른다.; 여러 종류의 자연종 알을 동시에 진행하는 운영 선택을 연다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-incubation",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 250000,
+            "wood": 495,
+            "stone": 345,
+            "metal": 100
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1375000,
+            "wood": 1505,
+            "stone": 1040,
+            "metal": 335
+          },
+          "durationSeconds": 1339200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6000000,
+            "wood": 2905,
+            "stone": 2180,
+            "metal": 850
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-nursery",
+      "name": "신생 개체 보육",
+      "description": "일반 반복 부화로 새로 수령한 개체의 초기 상태 악화를 잠시 유예한다. 기존 개체의 돌봄 시각을 초기화하지 않는다.; 여러 알을 수령한 뒤 파크 배치·다른 활동을 준비할 여유를 준다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-hatch-capacity",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1250000,
+            "wood": 1430,
+            "stone": 990,
+            "metal": 315
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3300000,
+            "wood": 2430,
+            "stone": 1655,
+            "metal": 590
+          },
+          "durationSeconds": 1987200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6000000,
+            "wood": 2905,
+            "stone": 2180,
+            "metal": 850
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-desert",
+      "name": "건조 환경 사육",
+      "description": "Lv.1은 사막 서식지의 건설·호환 사육 권한을 연다. Lv.2/3은 그 환경에 맞게 실제 전시 중인 개체 유지비를추가 완화한다.; 새 지역에서 얻은 종의 적합한 전시 환경을 선택하는 해금 분기다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-adaptation",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 58500,
+            "wood": 170,
+            "stone": 110,
+            "metal": 25
+          },
+          "durationSeconds": 108000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 275000,
+            "wood": 520,
+            "stone": 360,
+            "metal": 105
+          },
+          "durationSeconds": 691200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1575,
+            "stone": 1090,
+            "metal": 350
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-volcanic",
+      "name": "화산 환경 사육",
+      "description": "Lv.1은 화산 서식지의 건설·호환 사육 권한을 연다. Lv.2/3은 그 환경에 맞게 실제 전시 중인 개체 유지비를추가 완화한다.; 새 지역에서 얻은 종의 적합한 전시 환경을 선택하는 해금 분기다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-desert",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1625000,
+            "wood": 1575,
+            "stone": 1090,
+            "metal": 350
+          },
+          "durationSeconds": 1512000,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3300000,
+            "wood": 2430,
+            "stone": 1655,
+            "metal": 590
+          },
+          "durationSeconds": 1987200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6000000,
+            "wood": 2905,
+            "stone": 2180,
+            "metal": 850
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-glacier",
+      "name": "극지 환경 사육",
+      "description": "Lv.1은 빙하 서식지의 건설·호환 사육 권한을 연다. Lv.2/3은 그 환경에 맞게 실제 전시 중인 개체 유지비를추가 완화한다.; 새 지역에서 얻은 종의 적합한 전시 환경을 선택하는 해금 분기다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-desert",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6500000,
+            "wood": 2905,
+            "stone": 2180,
+            "metal": 850
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1814400
+        },
+        {
+          "level": 2,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 5500000,
+            "wood": 2775,
+            "stone": 2080,
+            "metal": 810
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6000000,
+            "wood": 2905,
+            "stone": 2180,
+            "metal": 850
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-aerial",
+      "name": "익룡 사육",
+      "description": "Lv.1은 익룡 돔의 건설·호환 사육 권한을 연다. Lv.2/3은 그 환경의 실제 전시 개체 유지비를추가 완화한다.; 비행·수중 생태의 실제 원종을 수용할 수 있는 별도 사육 경로를 연다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-incubation",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 325000,
+            "wood": 545,
+            "stone": 380,
+            "metal": 110
+          },
+          "durationSeconds": 777600,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1375000,
+            "wood": 1505,
+            "stone": 1040,
+            "metal": 335
+          },
+          "durationSeconds": 1339200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6000000,
+            "wood": 2905,
+            "stone": 2180,
+            "metal": 850
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-marine",
+      "name": "해양 생물 사육",
+      "description": "Lv.1은 해양관의 건설·호환 사육 권한을 연다. Lv.2/3은 그 환경의 실제 전시 개체 유지비를추가 완화한다.; 비행·수중 생태의 실제 원종을 수용할 수 있는 별도 사육 경로를 연다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-aerial",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1625000,
+            "wood": 1575,
+            "stone": 1090,
+            "metal": 350
+          },
+          "durationSeconds": 1512000,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3300000,
+            "wood": 2430,
+            "stone": 1655,
+            "metal": 590
+          },
+          "durationSeconds": 1987200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6000000,
+            "wood": 2905,
+            "stone": 2180,
+            "metal": 850
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-giant",
+      "name": "거대종 사육",
+      "description": "실제 GIANT 크기의 육상 초식→육상 육식→기타 거대종(익룡 포함)의 사육 허가를 누적 개방한다. 별도 호환 환경과 안전 조건은 유지한다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-upkeep",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 325000,
+            "wood": 545,
+            "stone": 380,
+            "metal": 110
+          },
+          "durationSeconds": 777600,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1787500,
+            "wood": 1655,
+            "stone": 1145,
+            "metal": 365
+          },
+          "durationSeconds": 1641600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7800000,
+            "wood": 3195,
+            "stone": 2400,
+            "metal": 935
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1814400
+        }
+      ]
+    },
+    {
+      "id": "care-isolation",
+      "name": "격리 연구",
+      "description": "보안센터가 담당하는 위험 전시 공룡의 유지비를 총3/6/10% 추가 줄인다.; 위험종 운영비에 투자한다. 기존 항목의 ID·최대 단계·효과를 보존한다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-adaptation",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 2,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4000,
+            "wood": 20,
+            "stone": 15,
+            "metal": 0
+          },
+          "durationSeconds": 1800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 12000,
+            "wood": 40,
+            "stone": 30,
+            "metal": 5
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 30000,
+            "wood": 60,
+            "stone": 50,
+            "metal": 15
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "care-transfer",
+      "name": "집단 이동 관리",
+      "description": "여러 개체의 호환 목적지 칸을 함께 미리보기하고 수동 확정한다. 대상 한도는 연구 효과를 따른다.; 커진 파크의 서식지 재배치를 반복 개별 이동 대신 계획한 한 작업으로 처리한다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-isolation",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1000000,
+            "wood": 1220,
+            "stone": 845,
+            "metal": 270
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 2640000,
+            "wood": 2065,
+            "stone": 1410,
+            "metal": 500
+          },
+          "durationSeconds": 1684800,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4800000,
+            "wood": 2470,
+            "stone": 1855,
+            "metal": 720
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "care-feeding-plans",
+      "name": "급식 계획",
+      "description": "개체/서식지별 수동 급식 대상 프리셋을 저장한다. 자동 구매/급식/소모는 없다.; 자주 돌보는 대상과 필요한 자원을 준비한 뒤 수동으로 확인·실행하는 계획 도구를 제공한다.",
+      "family": "care",
+      "prerequisites": [
+        {
+          "technologyId": "care-group-feeding",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1000000,
+            "wood": 1220,
+            "stone": 845,
+            "metal": 270
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 2640000,
+            "wood": 2065,
+            "stone": 1410,
+            "metal": 500
+          },
+          "durationSeconds": 1684800,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4800000,
+            "wood": 2470,
+            "stone": 1855,
+            "metal": 720
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "exp-field-mapping",
+      "name": "현장 지도화",
+      "description": "연구 단계마다 조사 구획을 연다. Lv.1 완료 뒤 화석 계곡의 기슭 화석층을 재조사할 수 있다.",
+      "family": "exp",
+      "prerequisites": [],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 1,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 400,
+            "wood": 5,
+            "stone": 5,
+            "metal": 0
+          },
+          "durationSeconds": 60,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7150,
+            "wood": 30,
+            "stone": 30,
+            "metal": 0
+          },
+          "durationSeconds": 5400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 70200,
+            "wood": 155,
+            "stone": 150,
+            "metal": 40
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "exp-frontier-routes",
+      "name": "외곽 탐사로",
+      "description": "기존 다섯 연구 재료 장소 안의 외곽 구역과 그 구역 전용 후속 미션 접근을 단계별로 연다.; 단순 보상 배율 대신 실제 방문 가능한 지도 범위를 넓힌다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-field-mapping",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 58500,
+            "wood": 140,
+            "stone": 135,
+            "metal": 35
+          },
+          "durationSeconds": 108000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 12,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 128700,
+            "wood": 230,
+            "stone": 230,
+            "metal": 70
+          },
+          "durationSeconds": 234000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 390000,
+            "wood": 495,
+            "stone": 510,
+            "metal": 170
+          },
+          "durationSeconds": 907200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 4,
+          "labLevel": 18,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1183000,
+            "wood": 970,
+            "stone": 1030,
+            "metal": 355
+          },
+          "durationSeconds": 1339200,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 5,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 2275000,
+            "wood": 1545,
+            "stone": 1600,
+            "metal": 595
+          },
+          "durationSeconds": 2030400,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "exp-deep-expedition",
+      "name": "심부 원정",
+      "description": "이미 개척한 장소의 심부 조사 구역과 장거리 완결 목표를 단계별로 연다.; 외곽 접근 다음의 장기 탐사 목표를 만들고 후반 연구가 실제 콘텐츠 접근으로 이어지게 한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-frontier-routes",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1625000,
+            "wood": 1290,
+            "stone": 1335,
+            "metal": 495
+          },
+          "durationSeconds": 1512000,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4290000,
+            "wood": 2185,
+            "stone": 2225,
+            "metal": 925
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 9000000,
+            "wood": 2615,
+            "stone": 2930,
+            "metal": 1335
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 2419200
+        }
+      ]
+    },
+    {
+      "id": "exp-collection",
+      "name": "정밀 채집",
+      "description": "기존안 유지: 반복 가능 DNA 수집 미션 성공 완료 때 하급 DNA를 기술 단계에 따라 추가한다.; 수량 중심 반복 채집 투자와 상위 품질 미션 개방을 구별한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-field-mapping",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 30000,
+            "wood": 60,
+            "stone": 50,
+            "metal": 20
+          },
+          "durationSeconds": 172800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 12,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 75000,
+            "wood": 90,
+            "stone": 75,
+            "metal": 40
+          },
+          "durationSeconds": 345600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 150000,
+            "wood": 130,
+            "stone": 110,
+            "metal": 70
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "exp-quality-survey",
+      "name": "중급 시료 조사",
+      "description": "장소별 반복 미션 중 중급 시료를 직접 회수하는 목표 유형을 단계별로 연다.; 첫 보장 중급 이후의 반복 수급을 실제 조사 선택으로 제공한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-collection",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 58500,
+            "wood": 140,
+            "stone": 135,
+            "metal": 35
+          },
+          "durationSeconds": 108000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 357500,
+            "wood": 470,
+            "stone": 485,
+            "metal": 165
+          },
+          "durationSeconds": 820800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1950000,
+            "wood": 1420,
+            "stone": 1465,
+            "metal": 545
+          },
+          "durationSeconds": 1771200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "exp-highgrade-sampling",
+      "name": "상급 시료 채취",
+      "description": "개방된 장소의 고난도 조사에서 상급 시료를 직접 얻는 미션 유형을 연다.; 전설 준비에 직접 고난도 조사와 기존 하급·중급 승급 중 선택 경로를 둔다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-quality-survey",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1625000,
+            "wood": 1290,
+            "stone": 1335,
+            "metal": 495
+          },
+          "durationSeconds": 1512000,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4290000,
+            "wood": 2185,
+            "stone": 2225,
+            "metal": 925
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7800000,
+            "wood": 2615,
+            "stone": 2930,
+            "metal": 1335
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1814400
+        }
+      ]
+    },
+    {
+      "id": "exp-cave-strata",
+      "name": "동굴 지층 탐사",
+      "description": "광물 동굴에서 지층·어두운 갈림길을 직접 판독하는 안정제 조사 경로를 단계별로 연다.; 안정제의 장소를 단순 상점 대신 지형 조사 콘텐츠로 도입한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-field-mapping",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6500,
+            "wood": 25,
+            "stone": 25,
+            "metal": 0
+          },
+          "durationSeconds": 4500,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 64350,
+            "wood": 150,
+            "stone": 140,
+            "metal": 35
+          },
+          "durationSeconds": 118800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 390000,
+            "wood": 495,
+            "stone": 510,
+            "metal": 170
+          },
+          "durationSeconds": 907200,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "exp-wetland-crossing",
+      "name": "습지 수로 탐사",
+      "description": "원시 습지의 수위·수로 흔적을 읽어 진입하는 안쪽 배양액 조사 경로를 연다.; 동굴의 지층 판독과 다른 관찰 규칙으로 같은 장소의 새 조사 방식을 만든다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-field-mapping",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 58500,
+            "wood": 140,
+            "stone": 135,
+            "metal": 35
+          },
+          "durationSeconds": 108000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 357500,
+            "wood": 470,
+            "stone": 485,
+            "metal": 165
+          },
+          "durationSeconds": 820800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1950000,
+            "wood": 1420,
+            "stone": 1465,
+            "metal": 545
+          },
+          "durationSeconds": 1771200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "exp-crater-reading",
+      "name": "분화구 환경 분석",
+      "description": "변이 분화구의 환경 징후를 판독하는 변이세포 조사 경로를 단계별로 연다.; 변종 준비용 장소를 독립적인 지형 이해와 직접 조사로 연결한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-field-mapping",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 325000,
+            "wood": 450,
+            "stone": 460,
+            "metal": 155
+          },
+          "durationSeconds": 777600,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1787500,
+            "wood": 1355,
+            "stone": 1400,
+            "metal": 520
+          },
+          "durationSeconds": 1641600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7800000,
+            "wood": 2615,
+            "stone": 2930,
+            "metal": 1335
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1814400
+        }
+      ]
+    },
+    {
+      "id": "exp-risk-reading",
+      "name": "위험 흔적 판독",
+      "description": "자연 육식종의 흔적과 안전 거리를 직접 판단하는 추적 미션 유형을 연다.; 연구 재료 수집과 다른 자연종 원종 확보 목표를 제공한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-field-mapping",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6500,
+            "wood": 25,
+            "stone": 25,
+            "metal": 0
+          },
+          "durationSeconds": 4500,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 64350,
+            "wood": 150,
+            "stone": 140,
+            "metal": 35
+          },
+          "durationSeconds": 118800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 390000,
+            "wood": 495,
+            "stone": 510,
+            "metal": 170
+          },
+          "durationSeconds": 907200,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "exp-ruin-containment",
+      "name": "통제구역 조사",
+      "description": "버려진 연구소의 위험 구획에서 현장 상황을 확인하고 촉매를 회수하는 전문 미션을 연다.; 초반 촉매 목표 이후의 고위험 환경 조사와 현장 판단을 확장한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-risk-reading",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 325000,
+            "wood": 450,
+            "stone": 460,
+            "metal": 155
+          },
+          "durationSeconds": 777600,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1787500,
+            "wood": 1355,
+            "stone": 1400,
+            "metal": 520
+          },
+          "durationSeconds": 1641600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7800000,
+            "wood": 2615,
+            "stone": 2930,
+            "metal": 1335
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1814400
+        }
+      ]
+    },
+    {
+      "id": "exp-apex-tracking",
+      "name": "최상위 개체 추적",
+      "description": "이미 열린 심부 구역에서 상위 자연종의 복합 흔적을 추적하는 최후반 미션을 연다.; 연구소25가 즉시 공룡 지급 대신 새로운 직접 플레이 목표로 이어지게 한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-ruin-containment",
+          "level": 1
+        },
+        {
+          "technologyId": "exp-deep-expedition",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7500000,
+            "wood": 2380,
+            "stone": 2665,
+            "metal": 1210
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 2419200
+        },
+        {
+          "level": 2,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8250000,
+            "wood": 2495,
+            "stone": 2800,
+            "metal": 1275
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 2419200
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 9000000,
+            "wood": 2615,
+            "stone": 2930,
+            "metal": 1335
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 2419200
+        }
+      ]
+    },
+    {
+      "id": "exp-clue-comparison",
+      "name": "흔적 대조",
+      "description": "후속 조사 중 서로 다른 현장 단서를 비교해 진로를 선택하는 대체 풀이 경로를 연다.; 정답 보너스 대신 플레이어가 사용할 수 있는 조사 행동을 늘린다.",
+      "family": "exp",
+      "prerequisites": [],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 1,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 400,
+            "wood": 5,
+            "stone": 5,
+            "metal": 0
+          },
+          "durationSeconds": 60,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4400,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 3360,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 43200,
+            "wood": 120,
+            "stone": 115,
+            "metal": 30
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "exp-objective-choice",
+      "name": "조사 목표 선택",
+      "description": "출발 전에 열린 장소의 짧은 관측/집중 조사 등 서로 다른 목표 유형을 선택할 수 있게 한다.; 플레이 가능한 조작 길이와 목표에 맞춰 같은 장소의 미션을 고르게 한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-clue-comparison",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 36000,
+            "wood": 110,
+            "stone": 105,
+            "metal": 30
+          },
+          "durationSeconds": 73800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 220000,
+            "wood": 365,
+            "stone": 375,
+            "metal": 125
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1200000,
+            "wood": 1095,
+            "stone": 1135,
+            "metal": 425
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "exp-evidence-validation",
+      "name": "복합 단서 검증",
+      "description": "이미 열린 구역 안에서 여러 단서의 일치 여부를 순차 검증하는 전문 조사 미션 유형을 연다.; 후반 연구가 단순 수량 증가 이외에 더 깊은 판단과 새로운 과제를 제공하게 한다.",
+      "family": "exp",
+      "prerequisites": [
+        {
+          "technologyId": "exp-objective-choice",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1000000,
+            "wood": 995,
+            "stone": 1030,
+            "metal": 385
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 2640000,
+            "wood": 1690,
+            "stone": 1720,
+            "metal": 715
+          },
+          "durationSeconds": 1684800,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4800000,
+            "wood": 2020,
+            "stone": 2265,
+            "metal": 1030
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "gene-common-herbivore",
+      "name": "일반 초식 원종 조사",
+      "description": "갈리미무스·에드몬토사우루스·드라코렉스·코리토사우루스·마이아사우라·무타부라사우루스의 추가 목표 조사/알 추적을 단계별 개방한다. 자연종은 탐험·부화로 얻고 DNA 합성으로 만들지 않는다. 파라·첫 이구아노돈은 연구 조건에서 제외한다.",
+      "family": "gene",
+      "prerequisites": [],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 1,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 400,
+            "wood": 5,
+            "stone": 5,
+            "metal": 0
+          },
+          "durationSeconds": 60,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7150,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 5400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 70200,
+            "wood": 130,
+            "stone": 100,
+            "metal": 45
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "gene-uncommon-herbivore",
+      "name": "고급 초식 원종 조사",
+      "description": "안킬로사우루스·파키케팔로사우루스·켄트로사우루스·사우롤로푸스·우라노사우루스의 추가 목표 조사/알 추적을 단계별 개방한다. 첫 합성 부모인 트리케라·스테고의 기존 목표는 이 연구를 요구하지 않는다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-common-herbivore",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6500,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 4500,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 64350,
+            "wood": 125,
+            "stone": 100,
+            "metal": 45
+          },
+          "durationSeconds": 118800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 390000,
+            "wood": 410,
+            "stone": 345,
+            "metal": 205
+          },
+          "durationSeconds": 907200,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "gene-rare-herbivore",
+      "name": "희귀 초식 원종 조사",
+      "description": "브라키오사우루스·디플로도쿠스·아파토사우루스·카마라사우루스·테리지노사우루스·니게르사우루스의 추가 목표를 단계별 개방한다. 실제 열린 지역과 호환 서식지 조건을 함께 확인한다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-uncommon-herbivore",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 58500,
+            "wood": 120,
+            "stone": 95,
+            "metal": 40
+          },
+          "durationSeconds": 108000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 357500,
+            "wood": 390,
+            "stone": 330,
+            "metal": 195
+          },
+          "durationSeconds": 820800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1950000,
+            "wood": 1180,
+            "stone": 1000,
+            "metal": 655
+          },
+          "durationSeconds": 1771200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "gene-common-carnivore",
+      "name": "일반 육식 원종 조사",
+      "description": "딜로포사우루스·콤프소그나투스·코엘로피시스·프로콤프소그나투스·케라토사우루스·마준가사우루스의 추가 원종 조사 목표를 단계별 개방한다. 안전 시설은 기존 조건대로 필요하다.",
+      "family": "gene",
+      "prerequisites": [],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 1,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 400,
+            "wood": 5,
+            "stone": 5,
+            "metal": 0
+          },
+          "durationSeconds": 60,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7150,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 5400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 70200,
+            "wood": 130,
+            "stone": 100,
+            "metal": 45
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "gene-uncommon-carnivore",
+      "name": "고급 육식 원종 조사",
+      "description": "알로사우루스·카르노타우루스·바리오닉스·수코미무스·데이노니쿠스·유타랩터·메갈로사우루스의 후속 목표를 단계별 개방한다. 기존 안전 챕터의 첫 벨로시랩터 경로는 면제한다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-common-carnivore",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6500,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 4500,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 64350,
+            "wood": 125,
+            "stone": 100,
+            "metal": 45
+          },
+          "durationSeconds": 118800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 390000,
+            "wood": 410,
+            "stone": 345,
+            "metal": 205
+          },
+          "durationSeconds": 907200,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "gene-rare-carnivore",
+      "name": "희귀 육식 원종 조사",
+      "description": "티라노사우루스·스피노사우루스·기가노토사우루스·아크로칸토사우루스·타르보사우루스·카르카로돈토사우루스의 추가 추적 목표를 단계별 개방한다. 상위 합성에 필요한 실제 보유 부모 확보로 연결한다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-uncommon-carnivore",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 58500,
+            "wood": 120,
+            "stone": 95,
+            "metal": 40
+          },
+          "durationSeconds": 108000,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 357500,
+            "wood": 390,
+            "stone": 330,
+            "metal": 195
+          },
+          "durationSeconds": 820800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1950000,
+            "wood": 1180,
+            "stone": 1000,
+            "metal": 655
+          },
+          "durationSeconds": 1771200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "gene-analysis",
+      "name": "고급 유전자 분석",
+      "description": "기존 3단계의 영웅 하이브리드/영웅 변종/전설 계통 분석 권한을 유지한다. 스피노랩터·파라 룩스·인도미누스의 기존 공개 경로와 이미 얻은 해금 권한을 보존한다. 첫 지정 및 반복 스테고케라톱스는 이 연구를 요구하지 않는다.",
+      "family": "gene",
+      "prerequisites": [],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 1,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4000,
+            "wood": 20,
+            "stone": 15,
+            "metal": 0
+          },
+          "durationSeconds": 1800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 12000,
+            "wood": 40,
+            "stone": 30,
+            "metal": 5
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 30000,
+            "wood": 60,
+            "stone": 50,
+            "metal": 15
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "gene-epic-natural",
+      "name": "영웅 원종 계통 조사",
+      "description": "아르젠티노사우루스·파타고티탄·드레드노투스 같은 실제 영웅 자연종의 목표 조사를 단계별 개방한다. 자연종 획득은 탐험 알·부화를 유지하고 하이브리드로 재분류하지 않는다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-rare-herbivore",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 325000,
+            "wood": 375,
+            "stone": 315,
+            "metal": 185
+          },
+          "durationSeconds": 777600,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1787500,
+            "wood": 1130,
+            "stone": 955,
+            "metal": 625
+          },
+          "durationSeconds": 1641600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7800000,
+            "wood": 2180,
+            "stone": 2000,
+            "metal": 1600
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1814400
+        }
+      ]
+    },
+    {
+      "id": "gene-legend-natural",
+      "name": "전설 원종 계통 조사",
+      "description": "티타노사우루스·바하리아사우루스·리바이어던 같은 실제 전설 자연종의 후속 추적 목표를 개방한다. 등급만으로 합성 결과에 넣지 않고 원종 획득 방식을 유지한다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-epic-natural",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1875000,
+            "wood": 1075,
+            "stone": 910,
+            "metal": 595
+          },
+          "durationSeconds": 1641600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4950000,
+            "wood": 1820,
+            "stone": 1520,
+            "metal": 1110
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 9000000,
+            "wood": 2180,
+            "stone": 2000,
+            "metal": 1600
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 2419200
+        }
+      ]
+    },
+    {
+      "id": "gene-combination-foundation",
+      "name": "확장 하이브리드 설계",
+      "description": "안키로덕터·카르노랩터·알로사이노 등 실제 영웅 하이브리드의 후속 레시피 설계 권한을 단계별로 개방한다. 기존 스테고케라톱스·스피노랩터 공개 레시피는 이 연구의 추가 조건으로 삼지 않는다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-analysis",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6500,
+            "wood": 25,
+            "stone": 20,
+            "metal": 0
+          },
+          "durationSeconds": 4500,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 64350,
+            "wood": 125,
+            "stone": 100,
+            "metal": 45
+          },
+          "durationSeconds": 118800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 390000,
+            "wood": 410,
+            "stone": 345,
+            "metal": 205
+          },
+          "durationSeconds": 907200,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "gene-combination-special",
+      "name": "특수 복합 조합 설계",
+      "description": "기가스피누스·인도랩터·스코르피오스 렉스·아즈다르코 제왕종 같은 실제 후속 영웅 하이브리드의 레시피군을 개방한다. 보유 원종과 격리/비행 등 실제 전시 조건을 함께 요구한다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-combination-foundation",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 325000,
+            "wood": 375,
+            "stone": 315,
+            "metal": 185
+          },
+          "durationSeconds": 777600,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1787500,
+            "wood": 1130,
+            "stone": 955,
+            "metal": 625
+          },
+          "durationSeconds": 1641600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7800000,
+            "wood": 2180,
+            "stone": 2000,
+            "metal": 1600
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1814400
+        }
+      ]
+    },
+    {
+      "id": "gene-combination-legendary",
+      "name": "전설 조합 설계",
+      "description": "Lv.1/2는 인도미누스 렉스 제왕종·메가로돈 렉스의 후속 레시피를 각각 개방하고, Lv.3은 이 두 후속 레시피의 상급 DNA 소모 효율을 개선한다. DNA 감소율은 효과 상세를 따르고, 부모·재료·비용·시간은 DNA 정본의 완성 계획을 따른다. 상급 품질·성공률·보호 규칙은 유지하며 기존 인도미누스 렉스를 소급 잠그지 않는다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-analysis",
+          "level": 3
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1875000,
+            "wood": 1075,
+            "stone": 910,
+            "metal": 595
+          },
+          "durationSeconds": 1641600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 2,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 4950000,
+            "wood": 1820,
+            "stone": 1520,
+            "metal": 1110
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 3,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 6000000,
+            "wood": 1980,
+            "stone": 1815,
+            "metal": 1455
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "gene-culture",
+      "name": "배양 공정",
+      "description": "기존 일반/반복 DNA 합성 시간 단축 효과를 유지한다. 첫 지정 100% 스테고케라톱스의 기본 시간은 줄이지 않는다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-analysis",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 5,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3000,
+            "wood": 15,
+            "stone": 10,
+            "metal": 0
+          },
+          "durationSeconds": 1800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 6,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 8000,
+            "wood": 25,
+            "stone": 20,
+            "metal": 5
+          },
+          "durationSeconds": 21600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 7,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 18000,
+            "wood": 40,
+            "stone": 30,
+            "metal": 10
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 4,
+          "labLevel": 8,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 40000,
+            "wood": 60,
+            "stone": 45,
+            "metal": 20
+          },
+          "durationSeconds": 259200,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 5,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 80000,
+            "wood": 90,
+            "stone": 70,
+            "metal": 35
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        }
+      ]
+    },
+    {
+      "id": "gene-synthesis-budget",
+      "name": "합성 예산 관리",
+      "description": "반복 DNA 합성의 골드 연구비만 절감한다. 재료 양·성공률·시간·기술 연구비·직원 다이아 가격은 바꾸지 않는다. 첫 지정 합성은 제외한다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-culture",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 45000,
+            "wood": 105,
+            "stone": 85,
+            "metal": 40
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 12,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 99000,
+            "wood": 175,
+            "stone": 145,
+            "metal": 80
+          },
+          "durationSeconds": 187200,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 300000,
+            "wood": 375,
+            "stone": 315,
+            "metal": 185
+          },
+          "durationSeconds": 734400,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 4,
+          "labLevel": 18,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 910000,
+            "wood": 735,
+            "stone": 640,
+            "metal": 390
+          },
+          "durationSeconds": 1080000,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 5,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1750000,
+            "wood": 1170,
+            "stone": 990,
+            "metal": 650
+          },
+          "durationSeconds": 1598400,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "gene-dna-quantification",
+      "name": "DNA 정량 배양",
+      "description": "반복 합성의 DNA 샘플 요구량만 소폭 줄여 화석 계곡에서 모은 DNA의 활용을 높인다. 촉매·배양액·안정제·변이세포는 같은 이름의 중복 절감 연구로 나누지 않는다. 첫 지정 레시피는 제외한다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-culture",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 250000,
+            "wood": 340,
+            "stone": 285,
+            "metal": 170
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 18,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 770000,
+            "wood": 670,
+            "stone": 585,
+            "metal": 355
+          },
+          "durationSeconds": 950400,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1075,
+            "stone": 910,
+            "metal": 595
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 4,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3900000,
+            "wood": 1815,
+            "stone": 1510,
+            "metal": 1105
+          },
+          "durationSeconds": 2289600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 5,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7000000,
+            "wood": 2160,
+            "stone": 1980,
+            "metal": 1585
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "gene-preservation",
+      "name": "시료 보존",
+      "description": "기존 안정제 미사용 실패 반환율80→최대90% 효과를 유지한다. 안정제를 사용한 필수 재료100% 반환이 우선하며 성공률50/30과 확정 보호 시도 수는 바꾸지 않는다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-culture",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 30000,
+            "wood": 60,
+            "stone": 50,
+            "metal": 20
+          },
+          "durationSeconds": 172800,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 12,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 75000,
+            "wood": 90,
+            "stone": 75,
+            "metal": 40
+          },
+          "durationSeconds": 345600,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 150000,
+            "wood": 130,
+            "stone": 110,
+            "metal": 70
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 4,
+          "labLevel": 18,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 300000,
+            "wood": 180,
+            "stone": 150,
+            "metal": 110
+          },
+          "durationSeconds": 864000,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 5,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 600000,
+            "wood": 240,
+            "stone": 200,
+            "metal": 160
+          },
+          "durationSeconds": 1209600,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "gene-study-budget",
+      "name": "기술 연구 예산 관리",
+      "description": "연구트리 기술 과제의 골드 연구비만 절감한다. 합성 예산 관리와 달리 DNA 합성비는 줄이지 않으며 재료·연구원 다이아 고용비도 바꾸지 않는다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-analysis",
+          "level": 1
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 10,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 45000,
+            "wood": 105,
+            "stone": 85,
+            "metal": 40
+          },
+          "durationSeconds": 86400,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 2,
+          "labLevel": 12,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 99000,
+            "wood": 175,
+            "stone": 145,
+            "metal": 80
+          },
+          "durationSeconds": 187200,
+          "minimumDurationSeconds": 0
+        },
+        {
+          "level": 3,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 300000,
+            "wood": 375,
+            "stone": 315,
+            "metal": 185
+          },
+          "durationSeconds": 734400,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 4,
+          "labLevel": 18,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 910000,
+            "wood": 735,
+            "stone": 640,
+            "metal": 390
+          },
+          "durationSeconds": 1080000,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 5,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1750000,
+            "wood": 1170,
+            "stone": 990,
+            "metal": 650
+          },
+          "durationSeconds": 1598400,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    },
+    {
+      "id": "gene-study-protocol",
+      "name": "기술 실험 절차 개선",
+      "description": "기술 연구 작업의 기본 시간을 추가 단축한다. DNA 합성 시간은 배양 공정이 담당하고 연구원 수는 병렬 작업 수만 결정한다. 연구소/기술 보정을 모두 적용한 뒤 후기7일/극후반14·21·28일 하한을 유지한다.",
+      "family": "gene",
+      "prerequisites": [
+        {
+          "technologyId": "gene-study-budget",
+          "level": 2
+        }
+      ],
+      "ranks": [
+        {
+          "level": 1,
+          "labLevel": 15,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 250000,
+            "wood": 340,
+            "stone": 285,
+            "metal": 170
+          },
+          "durationSeconds": 604800,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 2,
+          "labLevel": 18,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 770000,
+            "wood": 670,
+            "stone": 585,
+            "metal": 355
+          },
+          "durationSeconds": 950400,
+          "minimumDurationSeconds": 604800
+        },
+        {
+          "level": 3,
+          "labLevel": 20,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 1500000,
+            "wood": 1075,
+            "stone": 910,
+            "metal": 595
+          },
+          "durationSeconds": 1425600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 4,
+          "labLevel": 23,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 3900000,
+            "wood": 1815,
+            "stone": 1510,
+            "metal": 1105
+          },
+          "durationSeconds": 2289600,
+          "minimumDurationSeconds": 1209600
+        },
+        {
+          "level": 5,
+          "labLevel": 25,
+          "afterFirstHero": true,
+          "costs": {
+            "gold": 7000000,
+            "wood": 2160,
+            "stone": 1980,
+            "metal": 1585
+          },
+          "durationSeconds": 2419200,
+          "minimumDurationSeconds": 1209600
+        }
+      ]
+    }
+  ],
+  "facilities": {
+    "research-dna-lab": [
+      {
+        "level": 1,
+        "costs": {
+          "gold": 8000,
+          "wood": 40,
+          "stone": 30,
+          "metal": 0
+        },
+        "durationSeconds": 300,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 0.0,
+        "upkeep": 50
+      },
+      {
+        "level": 2,
+        "costs": {
+          "gold": 8000,
+          "wood": 40,
+          "stone": 30,
+          "metal": 0
+        },
+        "durationSeconds": 150,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 1.0,
+        "upkeep": 54
+      },
+      {
+        "level": 3,
+        "costs": {
+          "gold": 11200,
+          "wood": 50,
+          "stone": 38,
+          "metal": 0
+        },
+        "durationSeconds": 150,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 2.0,
+        "upkeep": 58
+      },
+      {
+        "level": 4,
+        "costs": {
+          "gold": 15200,
+          "wood": 60,
+          "stone": 45,
+          "metal": 0
+        },
+        "durationSeconds": 375,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 3.0,
+        "upkeep": 62
+      },
+      {
+        "level": 5,
+        "costs": {
+          "gold": 20800,
+          "wood": 91,
+          "stone": 69,
+          "metal": 23
+        },
+        "durationSeconds": 750,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 4.0,
+        "upkeep": 66
+      },
+      {
+        "level": 6,
+        "costs": {
+          "gold": 28000,
+          "wood": 104,
+          "stone": 78,
+          "metal": 26
+        },
+        "durationSeconds": 1125,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 5.0,
+        "upkeep": 70,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 7,
+        "costs": {
+          "gold": 36800,
+          "wood": 117,
+          "stone": 88,
+          "metal": 30
+        },
+        "durationSeconds": 1500,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 6.0,
+        "upkeep": 74,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 8,
+        "costs": {
+          "gold": 48000,
+          "wood": 130,
+          "stone": 98,
+          "metal": 33
+        },
+        "durationSeconds": 2250,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 7.0,
+        "upkeep": 78,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 9,
+        "costs": {
+          "gold": 62400,
+          "wood": 143,
+          "stone": 108,
+          "metal": 36
+        },
+        "durationSeconds": 3000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 8.0,
+        "upkeep": 82,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 10,
+        "costs": {
+          "gold": 80000,
+          "wood": 192,
+          "stone": 144,
+          "metal": 48
+        },
+        "durationSeconds": 4500,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 9.0,
+        "upkeep": 86,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 11,
+        "costs": {
+          "gold": 104000,
+          "wood": 208,
+          "stone": 156,
+          "metal": 52
+        },
+        "durationSeconds": 9000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 10.0,
+        "upkeep": 90,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 12,
+        "costs": {
+          "gold": 136000,
+          "wood": 224,
+          "stone": 168,
+          "metal": 56
+        },
+        "durationSeconds": 13500,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 11.0,
+        "upkeep": 94,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 13,
+        "costs": {
+          "gold": 176000,
+          "wood": 240,
+          "stone": 180,
+          "metal": 60
+        },
+        "durationSeconds": 27000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 12.0,
+        "upkeep": 98,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 14,
+        "costs": {
+          "gold": 224000,
+          "wood": 256,
+          "stone": 192,
+          "metal": 64
+        },
+        "durationSeconds": 40500,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 13.0,
+        "upkeep": 102,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 15,
+        "costs": {
+          "gold": 288000,
+          "wood": 323,
+          "stone": 243,
+          "metal": 81
+        },
+        "durationSeconds": 54000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 14.0,
+        "upkeep": 106,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 16,
+        "costs": {
+          "gold": 368000,
+          "wood": 342,
+          "stone": 257,
+          "metal": 86
+        },
+        "durationSeconds": 81000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 15.0,
+        "upkeep": 110,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 17,
+        "costs": {
+          "gold": 464000,
+          "wood": 361,
+          "stone": 271,
+          "metal": 91
+        },
+        "durationSeconds": 108000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 16.0,
+        "upkeep": 114,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 18,
+        "costs": {
+          "gold": 584000,
+          "wood": 380,
+          "stone": 285,
+          "metal": 95
+        },
+        "durationSeconds": 162000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 17.0,
+        "upkeep": 118,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 19,
+        "costs": {
+          "gold": 736000,
+          "wood": 399,
+          "stone": 300,
+          "metal": 100
+        },
+        "durationSeconds": 216000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 18.0,
+        "upkeep": 122,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 20,
+        "costs": {
+          "gold": 928000,
+          "wood": 484,
+          "stone": 363,
+          "metal": 121
+        },
+        "durationSeconds": 270000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 19.0,
+        "upkeep": 126,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 21,
+        "costs": {
+          "gold": 1168000,
+          "wood": 506,
+          "stone": 380,
+          "metal": 127
+        },
+        "durationSeconds": 324000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 20.0,
+        "upkeep": 130,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 22,
+        "costs": {
+          "gold": 1472000,
+          "wood": 528,
+          "stone": 396,
+          "metal": 132
+        },
+        "durationSeconds": 432000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 21.0,
+        "upkeep": 134,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 23,
+        "costs": {
+          "gold": 1856000,
+          "wood": 550,
+          "stone": 413,
+          "metal": 138
+        },
+        "durationSeconds": 540000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 22.0,
+        "upkeep": 138,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 24,
+        "costs": {
+          "gold": 2336000,
+          "wood": 572,
+          "stone": 429,
+          "metal": 143
+        },
+        "durationSeconds": 648000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 23.0,
+        "upkeep": 142,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 25,
+        "costs": {
+          "gold": 2944000,
+          "wood": 675,
+          "stone": 507,
+          "metal": 169
+        },
+        "durationSeconds": 1209600,
+        "minimumDurationSeconds": 604800,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 24.0,
+        "upkeep": 146,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      }
+    ],
+    "operation-vault": [
+      {
+        "level": 1,
+        "costs": {
+          "gold": 0,
+          "wood": 0,
+          "stone": 0,
+          "metal": 0
+        },
+        "durationSeconds": 0,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 1,
+        "afterFirstHero": false,
+        "effect": 25000.0,
+        "upkeep": 0
+      },
+      {
+        "level": 2,
+        "costs": {
+          "gold": 10000,
+          "wood": 20,
+          "stone": 10,
+          "metal": 0
+        },
+        "durationSeconds": 120,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 43750.0,
+        "upkeep": 0
+      },
+      {
+        "level": 3,
+        "costs": {
+          "gold": 17500,
+          "wood": 25,
+          "stone": 13,
+          "metal": 0
+        },
+        "durationSeconds": 120,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 62500.0,
+        "upkeep": 0
+      },
+      {
+        "level": 4,
+        "costs": {
+          "gold": 25000,
+          "wood": 30,
+          "stone": 15,
+          "metal": 0
+        },
+        "durationSeconds": 300,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 81250.0,
+        "upkeep": 0
+      },
+      {
+        "level": 5,
+        "costs": {
+          "gold": 32500,
+          "wood": 46,
+          "stone": 23,
+          "metal": 0
+        },
+        "durationSeconds": 600,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 100000.0,
+        "upkeep": 0
+      },
+      {
+        "level": 6,
+        "costs": {
+          "gold": 40000,
+          "wood": 52,
+          "stone": 26,
+          "metal": 0
+        },
+        "durationSeconds": 900,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 180000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 7,
+        "costs": {
+          "gold": 72000,
+          "wood": 59,
+          "stone": 30,
+          "metal": 0
+        },
+        "durationSeconds": 1200,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 260000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 8,
+        "costs": {
+          "gold": 104000,
+          "wood": 65,
+          "stone": 33,
+          "metal": 0
+        },
+        "durationSeconds": 1800,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 340000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 9,
+        "costs": {
+          "gold": 136000,
+          "wood": 72,
+          "stone": 36,
+          "metal": 0
+        },
+        "durationSeconds": 2400,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 420000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 10,
+        "costs": {
+          "gold": 168000,
+          "wood": 96,
+          "stone": 48,
+          "metal": 24
+        },
+        "durationSeconds": 3600,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 500000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 11,
+        "costs": {
+          "gold": 200000,
+          "wood": 104,
+          "stone": 52,
+          "metal": 26
+        },
+        "durationSeconds": 7200,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 800000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 12,
+        "costs": {
+          "gold": 320000,
+          "wood": 112,
+          "stone": 56,
+          "metal": 28
+        },
+        "durationSeconds": 10800,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 1100000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 13,
+        "costs": {
+          "gold": 440000,
+          "wood": 120,
+          "stone": 60,
+          "metal": 30
+        },
+        "durationSeconds": 21600,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 1400000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 14,
+        "costs": {
+          "gold": 560000,
+          "wood": 128,
+          "stone": 64,
+          "metal": 32
+        },
+        "durationSeconds": 32400,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 1700000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 15,
+        "costs": {
+          "gold": 680000,
+          "wood": 162,
+          "stone": 81,
+          "metal": 41
+        },
+        "durationSeconds": 43200,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 2000000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 16,
+        "costs": {
+          "gold": 800000,
+          "wood": 171,
+          "stone": 86,
+          "metal": 43
+        },
+        "durationSeconds": 64800,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 2800000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 17,
+        "costs": {
+          "gold": 1120000,
+          "wood": 181,
+          "stone": 91,
+          "metal": 46
+        },
+        "durationSeconds": 86400,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 3600000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 18,
+        "costs": {
+          "gold": 1440000,
+          "wood": 190,
+          "stone": 95,
+          "metal": 48
+        },
+        "durationSeconds": 129600,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 4400000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 19,
+        "costs": {
+          "gold": 1760000,
+          "wood": 200,
+          "stone": 100,
+          "metal": 50
+        },
+        "durationSeconds": 172800,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 5200000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 20,
+        "costs": {
+          "gold": 2080000,
+          "wood": 242,
+          "stone": 121,
+          "metal": 61
+        },
+        "durationSeconds": 216000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 6000000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 21,
+        "costs": {
+          "gold": 2400000,
+          "wood": 253,
+          "stone": 127,
+          "metal": 64
+        },
+        "durationSeconds": 259200,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 8800000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 22,
+        "costs": {
+          "gold": 3520000,
+          "wood": 264,
+          "stone": 132,
+          "metal": 66
+        },
+        "durationSeconds": 345600,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 11600000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 23,
+        "costs": {
+          "gold": 4640000,
+          "wood": 275,
+          "stone": 138,
+          "metal": 69
+        },
+        "durationSeconds": 432000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 14400000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 24,
+        "costs": {
+          "gold": 5760000,
+          "wood": 286,
+          "stone": 143,
+          "metal": 72
+        },
+        "durationSeconds": 518400,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 17200000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 25,
+        "costs": {
+          "gold": 6880000,
+          "wood": 338,
+          "stone": 169,
+          "metal": 85
+        },
+        "durationSeconds": 1209600,
+        "minimumDurationSeconds": 604800,
+        "parkLevel": 3,
+        "afterFirstHero": true,
+        "effect": 20000000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      }
+    ],
+    "production-warehouse": [
+      {
+        "level": 1,
+        "costs": {
+          "gold": 1000,
+          "wood": 20,
+          "stone": 10,
+          "metal": 0
+        },
+        "durationSeconds": 60,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 3,
+        "afterFirstHero": false,
+        "effect": 250.0,
+        "upkeep": 0
+      },
+      {
+        "level": 2,
+        "costs": {
+          "gold": 2000,
+          "wood": 40,
+          "stone": 20,
+          "metal": 0
+        },
+        "durationSeconds": 120,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": false,
+        "effect": 400.0,
+        "upkeep": 0
+      },
+      {
+        "level": 3,
+        "costs": {
+          "gold": 2800,
+          "wood": 50,
+          "stone": 25,
+          "metal": 0
+        },
+        "durationSeconds": 120,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": false,
+        "effect": 500.0,
+        "upkeep": 0
+      },
+      {
+        "level": 4,
+        "costs": {
+          "gold": 3800,
+          "wood": 60,
+          "stone": 30,
+          "metal": 0
+        },
+        "durationSeconds": 225,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": false,
+        "effect": 600.0,
+        "upkeep": 0
+      },
+      {
+        "level": 5,
+        "costs": {
+          "gold": 5200,
+          "wood": 91,
+          "stone": 46,
+          "metal": 0
+        },
+        "durationSeconds": 450,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": false,
+        "effect": 700.0,
+        "upkeep": 0
+      },
+      {
+        "level": 6,
+        "costs": {
+          "gold": 7000,
+          "wood": 104,
+          "stone": 52,
+          "metal": 0
+        },
+        "durationSeconds": 675,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": false,
+        "effect": 800.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 7,
+        "costs": {
+          "gold": 9200,
+          "wood": 117,
+          "stone": 59,
+          "metal": 0
+        },
+        "durationSeconds": 900,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": false,
+        "effect": 900.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 8,
+        "costs": {
+          "gold": 12000,
+          "wood": 130,
+          "stone": 65,
+          "metal": 0
+        },
+        "durationSeconds": 1350,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": false,
+        "effect": 1000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 9,
+        "costs": {
+          "gold": 15600,
+          "wood": 143,
+          "stone": 72,
+          "metal": 0
+        },
+        "durationSeconds": 1800,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": false,
+        "effect": 1100.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 10,
+        "costs": {
+          "gold": 20000,
+          "wood": 192,
+          "stone": 96,
+          "metal": 10
+        },
+        "durationSeconds": 2700,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 1200.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 1
+        }
+      },
+      {
+        "level": 11,
+        "costs": {
+          "gold": 26000,
+          "wood": 208,
+          "stone": 104,
+          "metal": 11
+        },
+        "durationSeconds": 5400,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 1360.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 12,
+        "costs": {
+          "gold": 34000,
+          "wood": 224,
+          "stone": 112,
+          "metal": 12
+        },
+        "durationSeconds": 8100,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 1520.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 13,
+        "costs": {
+          "gold": 44000,
+          "wood": 240,
+          "stone": 120,
+          "metal": 12
+        },
+        "durationSeconds": 16200,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 1680.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 14,
+        "costs": {
+          "gold": 56000,
+          "wood": 256,
+          "stone": 128,
+          "metal": 13
+        },
+        "durationSeconds": 24300,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 1840.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 15,
+        "costs": {
+          "gold": 72000,
+          "wood": 323,
+          "stone": 162,
+          "metal": 17
+        },
+        "durationSeconds": 32400,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 2000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 16,
+        "costs": {
+          "gold": 92000,
+          "wood": 342,
+          "stone": 171,
+          "metal": 18
+        },
+        "durationSeconds": 48600,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 2200.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 17,
+        "costs": {
+          "gold": 116000,
+          "wood": 361,
+          "stone": 181,
+          "metal": 19
+        },
+        "durationSeconds": 64800,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 2400.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 18,
+        "costs": {
+          "gold": 146000,
+          "wood": 380,
+          "stone": 190,
+          "metal": 19
+        },
+        "durationSeconds": 97200,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 2600.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 19,
+        "costs": {
+          "gold": 184000,
+          "wood": 399,
+          "stone": 200,
+          "metal": 20
+        },
+        "durationSeconds": 129600,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 2800.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 20,
+        "costs": {
+          "gold": 232000,
+          "wood": 484,
+          "stone": 242,
+          "metal": 25
+        },
+        "durationSeconds": 162000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 3000.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 2
+        }
+      },
+      {
+        "level": 21,
+        "costs": {
+          "gold": 292000,
+          "wood": 506,
+          "stone": 253,
+          "metal": 26
+        },
+        "durationSeconds": 194400,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 3300.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 22,
+        "costs": {
+          "gold": 368000,
+          "wood": 528,
+          "stone": 264,
+          "metal": 27
+        },
+        "durationSeconds": 259200,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 3600.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 23,
+        "costs": {
+          "gold": 464000,
+          "wood": 550,
+          "stone": 275,
+          "metal": 28
+        },
+        "durationSeconds": 324000,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 3900.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 24,
+        "costs": {
+          "gold": 584000,
+          "wood": 572,
+          "stone": 286,
+          "metal": 29
+        },
+        "durationSeconds": 388800,
+        "minimumDurationSeconds": 0,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 4200.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      },
+      {
+        "level": 25,
+        "costs": {
+          "gold": 736000,
+          "wood": 675,
+          "stone": 338,
+          "metal": 34
+        },
+        "durationSeconds": 604800,
+        "minimumDurationSeconds": 604800,
+        "parkLevel": 5,
+        "afterFirstHero": true,
+        "effect": 4500.0,
+        "upkeep": 0,
+        "prerequisite": {
+          "technologyId": "ops-engineering",
+          "level": 3
+        }
+      }
+    ]
+  },
+  "researchPolicy": {
+    "goldQuantum": 1,
+    "timeQuantumSeconds": 1,
+    "defaultResearcherCount": 1,
+    "budgetPercent": [
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "protocolPercent": [
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "entryBonusPercent": [
+      4,
+      8,
+      12,
+      16,
+      20
+    ],
+    "careAdaptationPercent": [
+      2,
+      4,
+      6,
+      8,
+      10
+    ]
+  }
+}

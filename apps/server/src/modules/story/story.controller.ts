@@ -10,16 +10,28 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { StoryService } from './story.service';
+import { IsOptional, IsString } from 'class-validator';
 
 // DTO 정의
 class MakeChoiceDto {
   @ApiProperty({ description: '선택지 ID', example: 'choice_1' })
+  @IsString()
   choiceId!: string;
 }
 
 class AdvanceSceneDto {
   @ApiProperty({ description: '다음 씬 ID (옵션)', example: 'scene_2', required: false })
+  @IsOptional()
+  @IsString()
   nextSceneId?: string;
+
+  @IsOptional()
+  @IsString()
+  sceneId?: string;
+
+  @IsOptional()
+  @IsString()
+  choiceId?: string;
 }
 
 @ApiTags('stories')
@@ -81,7 +93,7 @@ export class StoryController {
     @CurrentUser('id') userId: string,
     @Body() body?: AdvanceSceneDto,
   ) {
-    return this.storyService.advanceScene(userId, chapterId, body?.nextSceneId);
+    return this.storyService.advanceScene(userId, chapterId, body);
   }
 
   @Post(':chapterId/choice')

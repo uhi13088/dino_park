@@ -119,18 +119,6 @@ export const INITIAL_CURRENCY = {
 } as const;
 
 // ========================================
-// 에너지 시스템
-// ========================================
-
-export const ENERGY = {
-  maxExplorationEnergy: 30,
-  rechargeMinutes: 10, // 10분당 1 에너지
-  perExploration: 5, // 탐험 1회당 소모량
-  dailyAdRechargeLimit: 5, // 일일 광고 충전 횟수
-  adRechargeAmount: 5, // 광고 시청 시 충전량
-} as const;
-
-// ========================================
 // 공룡 상태
 // ========================================
 
@@ -226,12 +214,12 @@ export const BUILDING_TYPE_STATS = {
 
 export const EXPLORATION = {
   regions: {
-    asia: { unlockLevel: 1, energyCost: 5, baseRewardGold: 500 },
-    europe: { unlockLevel: 5, energyCost: 6, baseRewardGold: 800 },
-    americas: { unlockLevel: 10, energyCost: 7, baseRewardGold: 1200 },
-    africa: { unlockLevel: 15, energyCost: 8, baseRewardGold: 1800 },
-    oceania: { unlockLevel: 20, energyCost: 9, baseRewardGold: 2500 },
-    antarctica: { unlockLevel: 30, energyCost: 10, baseRewardGold: 4000 },
+    asia: { unlockLevel: 1, baseRewardGold: 500 },
+    europe: { unlockLevel: 5, baseRewardGold: 800 },
+    americas: { unlockLevel: 10, baseRewardGold: 1200 },
+    africa: { unlockLevel: 15, baseRewardGold: 1800 },
+    oceania: { unlockLevel: 20, baseRewardGold: 2500 },
+    antarctica: { unlockLevel: 30, baseRewardGold: 4000 },
   },
   eggDropRates: {
     common: 0.5, // 50%
@@ -291,7 +279,6 @@ export const SUBSCRIPTION_CONFIG = {
     benefits: {
       dailyDiamond: 30,
       offlineRevenueBonus: 0.3, // +30%
-      explorationEnergyBonus: 10, // +10 최대 에너지
       adSkip: true,
     },
   },
@@ -301,7 +288,6 @@ export const SUBSCRIPTION_CONFIG = {
     benefits: {
       dailyDiamond: 100,
       offlineRevenueBonus: 0.5, // +50%
-      explorationEnergyBonus: 20, // +20 최대 에너지
       adSkip: true,
       exclusiveDinosaurs: true,
       doubleSeasonExp: true,
@@ -402,20 +388,6 @@ export function calculateOfflineRevenue(
   const clampedMinutes = Math.min(offlineMinutes, maxMinutes);
   const rate = isPremium ? OFFLINE.premiumRevenueRate : OFFLINE.revenueRate;
   return Math.floor(revenuePerMinute * clampedMinutes * rate);
-}
-
-/**
- * 에너지 회복량 계산
- * @param lastRechargeTime 마지막 충전 시간
- * @param currentEnergy 현재 에너지
- * @returns 회복된 에너지량
- */
-export function calculateEnergyRecharge(lastRechargeTime: Date, currentEnergy: number): number {
-  const now = Date.now();
-  const elapsedMinutes = Math.floor((now - lastRechargeTime.getTime()) / (1000 * 60));
-  const rechargedEnergy = Math.floor(elapsedMinutes / ENERGY.rechargeMinutes);
-  const maxRecharge = ENERGY.maxExplorationEnergy - currentEnergy;
-  return Math.min(rechargedEnergy, maxRecharge);
 }
 
 /**

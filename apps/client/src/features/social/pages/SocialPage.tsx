@@ -19,7 +19,7 @@ export default function SocialPage() {
     friends,
     friendRequests,
     guestbooks,
-    gifts,
+    gifts: receivedGifts,
     setFriends,
     setFriendRequests,
     setGuestbooks,
@@ -184,6 +184,7 @@ export default function SocialPage() {
     }
   };
 
+  const gifts = receivedGifts.filter(({ type }) => type !== 'energy');
   const unclaimedGiftCount = gifts.filter((g) => !g.isClaimed).length;
   const pendingRequestCount = friendRequests.length;
 
@@ -196,7 +197,6 @@ export default function SocialPage() {
   const giftTypeConfig: Record<string, { icon: string; label: string; color: string }> = {
     gold: { icon: '🪙', label: '골드', color: 'text-yellow-400' },
     diamond: { icon: '💎', label: '다이아', color: 'text-blue-400' },
-    energy: { icon: '⚡', label: '에너지', color: 'text-green-400' },
     dna: { icon: '🧬', label: 'DNA', color: 'text-purple-400' },
   };
 

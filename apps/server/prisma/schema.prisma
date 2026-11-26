@@ -92,6 +92,9 @@ model Park {
   economySettledAt DateTime?
   onlineUntil DateTime?
   visitorRemainder Float @default(0)
+  visitorDepartures Json @default("[]")
+  shuttleService Json?
+  safariLayout Json?
   maintenanceRemainder Float @default(0)
   totalVisitors Int @default(0)
   totalAdmissionGold Int @default(0)
@@ -107,8 +110,13 @@ model Park {
   resourceInventory ResourceInventory[]
   productionJobs ProductionJob[]
   driveRuns DriveRun[]
+  scouts Scout[]
   firstSynthesis FirstSynthesisJob?
   repeatSyntheses RepeatSynthesisJob[]
+  experimentalHybridJobs ExperimentalHybridJob[]
+  experimentalHybridRecipes ExperimentalHybridRecipe[]
+  hybridListingsForSale ExperimentalHybridListing[] @relation("HybridListingSeller")
+  hybridListingPurchases ExperimentalHybridListing[] @relation("HybridListingBuyer")
   growthClaims ParkGrowthClaim[]
   technologyResearch ParkTechnologyResearch[]
 
@@ -156,6 +164,8 @@ model Dinosaur {
   positionY        Int
   isInPark         Boolean  @default(true)
   competitiveStats Json?
+  hybridSpecies    Json?
+  careProgress     Json?
   lastFedAt        DateTime @default(now())
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -190,6 +200,8 @@ model Building {
   level                 Int            @default(1)
   positionX             Int
   positionY             Int
+  entranceSide          String?
+  isMirrored            Boolean        @default(false)
   status                BuildingStatus @default(ACTIVE)
   assignedGreatFigureId String?
   completesAt DateTime?
@@ -348,6 +360,36 @@ enum DriveRunStatus {
   FAILED
   CLAIMED
   ABANDONED
+}
+
+model Scout {
+  id String @id @default(cuid())
+  parkId String
+  slot Int
+  experience Int @default(0)
+  hiredAt DateTime @default(now())
+  park Park @relation(fields: [parkId], references: [id], onDelete: Cascade)
+  assignments ScoutAssignment[]
+
+  @@unique([parkId, slot])
+  @@map("scouts")
+}
+
+model ScoutAssignment {
+  id String @id @default(cuid())
+  scoutId String
+  activeSlot String? @unique
+  spotId String
+  missionId String
+  legacyMissionId String?
+  reward Json
+  startedAt DateTime @default(now())
+  completesAt DateTime
+  claimedAt DateTime?
+  scout Scout @relation(fields: [scoutId], references: [id], onDelete: Cascade)
+
+  @@index([scoutId, missionId, claimedAt])
+  @@map("scout_assignments")
 }
 
 // ========================================
@@ -672,4 +714,94 @@ model RepeatSynthesisJob {
   @@unique([parkId, requestId])
   @@unique([parkId, sequence])
   @@map("repeat_synthesis_jobs")
+}
+
+model ExperimentalHybridLineage {
+  id               String   @id @default(cuid())
+  key              String   @unique
+  parentSpeciesIds String[]
+  focus            String
+  tier             String
+  species          Json
+  artworkWidth     Int
+  artwork          Bytes?
+  artworkState     String   @default("idle")
+  artworkAttempts  Int      @default(0)
+  artworkToken     String?
+  artworkLease     DateTime?
+  discoveredBy     String?
+  createdAt        DateTime @default(now())
+
+  jobs     ExperimentalHybridJob[]
+  recipes  ExperimentalHybridRecipe[]
+  listings ExperimentalHybridListing[]
+
+  @@index([artworkState, artworkLease])
+  @@map("experimental_hybrid_lineages")
+}
+
+model ExperimentalHybridJob {
+  id               String   @id @default(cuid())
+  parkId           String
+  lineageId        String
+  requestId        String
+  activeSlot       String?  @unique
+  parentIds        String[]
+  attempt          Int
+  sequence         Int
+  successChance    Float
+  success          Boolean
+  traits           Json?
+  debits           Json
+  refunds          Json
+  goldCost         Int
+  startedAt        DateTime @default(now())
+  readyAt          DateTime
+  claimedAt        DateTime?
+  cancelledAt      DateTime?
+  resultDinosaurId String?
+
+  park    Park                      @relation(fields: [parkId], references: [id], onDelete: Cascade)
+  lineage ExperimentalHybridLineage @relation(fields: [lineageId], references: [id], onDelete: Restrict)
+
+  @@unique([parkId, requestId])
+  @@unique([parkId, sequence])
+  @@index([parkId, lineageId, sequence])
+  @@map("experimental_hybrid_jobs")
+}
+
+model ExperimentalHybridRecipe {
+  parkId    String
+  lineageId String
+  source    String
+  learnedAt DateTime @default(now())
+
+  park    Park                      @relation(fields: [parkId], references: [id], onDelete: Cascade)
+  lineage ExperimentalHybridLineage @relation(fields: [lineageId], references: [id], onDelete: Restrict)
+
+  @@id([parkId, lineageId])
+  @@map("experimental_hybrid_recipes")
+}
+
+model ExperimentalHybridListing {
+  id           String    @id @default(cuid())
+  sellerParkId String
+  buyerParkId  String?
+  lineageId    String
+  requestId    String
+  activeSlot   String?   @unique
+  price        Int
+  sellerPaidGold Int      @default(0)
+  listedAt     DateTime  @default(now())
+  soldAt       DateTime?
+  cancelledAt  DateTime?
+
+  sellerPark Park                      @relation("HybridListingSeller", fields: [sellerParkId], references: [id], onDelete: Cascade)
+  buyerPark  Park?                     @relation("HybridListingBuyer", fields: [buyerParkId], references: [id], onDelete: SetNull)
+  lineage    ExperimentalHybridLineage @relation(fields: [lineageId], references: [id], onDelete: Restrict)
+
+  @@unique([sellerParkId, requestId])
+  @@index([sellerParkId, lineageId, listedAt])
+  @@index([soldAt, cancelledAt, listedAt])
+  @@map("experimental_hybrid_listings")
 }

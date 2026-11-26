@@ -143,6 +143,18 @@ export class DinosaurController {
     return { dinosaurs, total: dinosaurs.length };
   }
 
+  @Get(':id/placement-preview')
+  async getExhibitPlacementPreview(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @Query() { positionX, positionY }: PlaceInParkDto,
+  ) {
+    return this.dinosaurService.getExhibitPlacementPreview(userId, id, {
+      x: positionX,
+      y: positionY,
+    });
+  }
+
   /**
    * 공룡 상세 조회
    */

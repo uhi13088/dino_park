@@ -15,7 +15,6 @@ export interface ExplorationRegion {
   name: string;
   nameKo: string;
   unlockLevel: number;
-  energyCost: number;
   duration: number;
   rewards: ExplorationReward[];
 }

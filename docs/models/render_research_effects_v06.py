@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the reader-facing 58-technology/194-rank effect tables.
+"""Generate the reader-facing 57-technology/189-rank effect tables.
 
 The editable specification is research-effects.md, with research-trees.md
 owning requirements. This renderer only labels and presents those inputs.
@@ -36,6 +36,8 @@ MATERIAL_NAMES = {
     "mutation_cell": "변이세포", "stabilizer": "안정제", "catalyst": "합성촉매",
     "culture": "배양액", "dna": "DNA 샘플",
 }
+SCOUT_PLAN_PENDING = {"exp-risk-reading", "exp-clue-comparison", "exp-objective-choice"}
+SCOUT_PLAN_STATUS = "탐험가 파견에 적용할 효과를 준비 중입니다."
 PERMISSION_NAMES = {
     "permission:care.group-feeding": "단체 급식 행동",
     "permission:care.group-interaction": "단체 교감 행동",
@@ -117,7 +119,7 @@ class Labels:
                         "catalog": "카탈로그", "unlocks": "해금 목록", "new_unlocks": "이번 추가 해금",
                         "parent_species_ids": "기존 실행 부모 매핑", "null": "런타임 매핑 미이관",
                         "planned_recipe_ref": "DNA 정본 참조",
-                        "explorationEnergy": "탐험 연료", "long-range": "장거리",
+                        "long-range": "장거리",
                         "dna-combine": "부모 미기록 DNA 조합", "AND": "모두 충족",
                         "natural": "자연종", "hybrid": "하이브리드", "habitat": "서식지",
                         "desert": "사막", "volcanic": "화산", "glacier": "빙하",
@@ -154,6 +156,8 @@ def level_limits(node_id, row, model, labels):
     parts = [f"연구소 Lv.{model.cost.effective_lab(node_id, row['level'])}"]
     if model.cost.after_hero(node_id, row["level"]):
         parts.append("첫 영웅 이후")
+    if node_id in SCOUT_PLAN_PENDING:
+        return " / ".join(parts)
     contract = row["contract"]
     program = contract.get("contract", {})
     if program.get("required_species"):
@@ -164,24 +168,17 @@ def level_limits(node_id, row, model, labels):
         constraints = []
         if regions := permission.get("required_region_permissions"):
             constraints.append("진입: " + "·".join(labels.name(k) for k in regions))
-        if permission.get("manual_successful_checks") is not None:
-            constraints.append(f"성공 판단 {permission['manual_successful_checks']}구간")
         if permission.get("reward_claims_per_completion") is not None:
-            constraints.append(f"성공당 수령 {permission['reward_claims_per_completion']}회")
-        parts.append(labels.name(permission["id"]) + ": " + ", ".join(constraints))
+            constraints.append(f"귀환 보고서 수령 {permission['reward_claims_per_completion']}회")
+        if constraints:
+            parts.append(labels.name(permission["id"]) + ": " + ", ".join(constraints))
     for permission in contract.get("permissions", []):
         if permission["kind"] != "optional_mission_action_permission":
             continue
-        if permission.get("correct_answer_reveal") is False:
-            parts.append("정답 공개 없음")
         if permission.get("extra_resource_reward") == 0:
             parts.append("추가 재료 보상 없음")
-        if permission.get("extra_observations") == 0:
-            parts.append("새 단서 생성 없음")
         if permission.get("mutually_exclusive"):
             parts.append("출발 때 모드 하나 선택")
-        if permission.get("base_fuel_unchanged"):
-            parts.append("기본 연료 유지")
     if contract.get("affected_mission_ids"):
         parts.append(f"지정 장거리 미션 {len(contract['affected_mission_ids'])}개만 적용")
     bindings = contract.get("mission_bindings", [])
@@ -200,6 +197,8 @@ def level_limits(node_id, row, model, labels):
 
 
 def preparation(definition, labels):
+    if definition["id"].startswith("exp-"):
+        return "현재 파견 가능 여부는 [탐험가 파견 지도](exploration-spots.md)에서 확인합니다."
     value = definition["availability"]
     if isinstance(value, str):
         return labels.text(value)
@@ -211,6 +210,8 @@ def preparation(definition, labels):
 
 def source_notes(node_id, model, labels):
     """Keep authored plain-language exceptions; never expose JSON contracts."""
+    if node_id in SCOUT_PLAN_PENDING:
+        return []
     end = f"<!-- /effects:node:{node_id} -->"
     tail = model.TEXT.split(end)[1]
     boundary = re.search(r"\n(?:<a id=|### |## )", tail)
@@ -222,14 +223,19 @@ def source_notes(node_id, model, labels):
     # Per-rank lab gates already appear in the table. Their removal here lets
     # otherwise identical authored restrictions appear once per technology.
     notes = [re.sub(r"연구소\s*Lv\.\d+ 및 정본 선행을 따른다\.\s*", "", note) for note in notes]
+    if node_id.startswith("exp-"):
+        notes = [sentence for note in notes
+                 for sentence in re.split(r"(?<=다\.)\s+", note)
+                 if not any(word in sentence for word in ["오답", "정답", "관측과 다른 조사 UI", "구간 모드", "대조 UI"])]
+        notes = [note.replace("보상과 검증 구간을", "보상을") for note in notes]
     stacking = labels.text(model.REGISTRY[node_id]["stacking"])
     return unique([note for note in notes if note != stacking])
 
 
 def render(model):
     nodes, registry = model.cost.NODES, model.REGISTRY
-    assert len(registry) == 58 and set(registry) == set(nodes) - set(model.BASE)
-    assert len(model.BASE) == 14
+    assert len(registry) == 57 and set(registry) == set(nodes) - set(model.BASE)
+    assert len(model.BASE) == 12
     catalog, provenance = model.catalog_data()
     labels = Labels(model, catalog)
     counts = {family: {"technologies": 0, "levels": 0} for _, family in FAMILIES}
@@ -238,18 +244,18 @@ def render(model):
         assert [r["level"] for r in rows] == list(range(1, int(nodes[node_id]["max"]) + 1))
         counts[nodes[node_id]["계열"]]["technologies"] += 1
         counts[nodes[node_id]["계열"]]["levels"] += len(rows)
-    assert sum(value["levels"] for value in counts.values()) == 194
+    assert sum(value["levels"] for value in counts.values()) == 189
     lines = ["# 연구 효과 한눈에 보기 0.6", "",
-             "**신규 58개 기술·194개 레벨의 생성표입니다.** [효과 기획 원천](research-effects.md)과 [연구트리](research-trees.md)를 읽어 만들며 별도 수정 원천으로 사용하지 않습니다. 효과값을 바꿀 때는 원천을 수정하고 이 표를 다시 생성합니다.", "",
-             "후속 레시피의 부모·재료·비용·시간은 [DNA 정본](dna-and-collection.md)을 읽어 표시합니다. 현재 실행 카탈로그81종과 신규 계획2종을 구분하며, 부모 계획 완료를 실제 합성 실행 가능 상태로 표시하지 않습니다.", "",
-             "기존 14개 기술·58개 레벨은 [연구트리 효과표](research-trees.md#5-기본-연구-효과-수치)를 따릅니다. 두 범위를 합하면 72개 기술·252회 연구입니다. 아래 내용은 기획이며 게임에 적용됐다는 뜻이 아닙니다.", "",
+             "**상세 57개 기술·189개 레벨의 생성표입니다.** [효과 기획 원천](research-effects.md)과 [연구트리](research-trees.md)를 읽어 만들며 별도 수정 원천으로 사용하지 않습니다. 효과값을 바꿀 때는 원천을 수정하고 이 표를 다시 생성합니다.", "",
+             f"후속 레시피의 부모·재료·비용·시간은 [DNA 정본](dna-and-collection.md)을 읽어 표시합니다. 실행 카탈로그 {len(catalog['species'])}종에서 원종을 찾고, 합성 가능 여부는 해당 레시피의 공개 상태에서 확인합니다.", "",
+             "기본 12개 기술·50개 레벨은 [연구트리 효과표](research-trees.md#5-기본-연구-효과-수치)를 따릅니다. 두 범위를 합하면 69개 기술·239회 연구입니다. 아래 내용은 기획이며 게임에 적용됐다는 뜻이 아닙니다.", "",
              "- 각 행은 해당 완료레벨의 총효과입니다. 이전 레벨의 수치를 더하지 않습니다. ‘이번 레벨 해금’에는 이번에 새로 열린 권한만 적고 이전 권한은 유지합니다.",
              "- 연구소·선행 조건 외에 실제 시설·미션·레시피가 준비돼야 합니다. 후속 콘텐츠가 준비되지 않은 단계는 연구 시작도 활성화하지 않습니다.",
-             "- 연구 완료 자체는 재료·알·공룡 지급이 아닙니다. 탐험 성공·수동 수령·부화·실제 합성을 거칩니다. 첫 부화와 첫 지정 합성의 기존 조건은 보존합니다.",
-             "- 비용과 연구시간은 [252회 비용표](research-cost-tables.md)를, 정확한 전체 중첩·보존 규칙은 [공통 계산과 상한](research-effects.md#3-공통-계산과-상한)을 따릅니다.", ""]
+             "- 연구로 탐험 목표나 합성 설계를 엽니다. 탐험 보상은 귀환 보고서에서 받고, 공룡은 부화 또는 합성으로 얻습니다. 첫 부화와 첫 지정 합성에는 각각 정해진 조건이 있습니다.",
+             "- 비용과 연구시간은 [239회 비용표](research-cost-tables.md)를, 정확한 전체 중첩·보존 규칙은 [공통 계산과 상한](research-effects.md#3-공통-계산과-상한)을 따릅니다.", ""]
     lines += table(["계열", "신규 기술", "표시 레벨"],
                    [[family, counts[family]["technologies"], counts[family]["levels"]] for _, family in FAMILIES]
-                   + [["합계", 58, 194]])
+                   + [["합계", 57, 189]])
     rendered = []
     for prefix, family in FAMILIES:
         lines += ["", f"## {family}", ""]
@@ -257,9 +263,11 @@ def render(model):
             if node_id not in registry or node_id.split("-")[0] != prefix:
                 continue
             definition = registry[node_id]
+            pending_scout_effect = node_id in SCOUT_PLAN_PENDING
+            stacking = SCOUT_PLAN_STATUS if pending_scout_effect else labels.text(definition["stacking"])
             lines += [f"### {node['항목']} · 최대 Lv.{node['max']}", "",
                       f"선행: {requirements(node_id, model, labels)} · [상세 원천](research-effects.md#{node_id})", "",
-                      "**적용·중첩:** " + labels.text(definition["stacking"]), ""]
+                      "**적용·중첩:** " + stacking, ""]
             rows = []
             previously_opened = set()
             for row in model.LEVELS[node_id]:
@@ -268,8 +276,12 @@ def render(model):
                 if "new_unlocks" in row["contract"]:
                     assert opened == row["contract"]["new_unlocks"], (node_id, row["level"], "new-unlock discrepancy")
                 new_names = " · ".join(labels.name(k) for k in opened) or "추가 해금 없음"
-                rows.append([f"Lv.{row['level']}", labels.text(row["effect"]), new_names,
-                             level_limits(node_id, row, model, labels)])
+                effect = labels.text(row["effect"])
+                if pending_scout_effect:
+                    effect = new_names = "—"
+                if node_id == "exp-evidence-validation":
+                    effect = re.sub(r"서로 연결된 판단\d+구간, ", "", effect)
+                rows.append([f"Lv.{row['level']}", effect, new_names, level_limits(node_id, row, model, labels)])
                 rendered.append((node_id, row["level"]))
             lines += [f"<!-- effect-view:{node_id} -->"]
             lines += table(["레벨", "효과", "이번 레벨 해금", "적용·제한"], rows)
@@ -277,22 +289,22 @@ def render(model):
             for note in source_notes(node_id, model, labels):
                 lines += ["**제한:** " + note, ""]
             lines += ["**후속 준비:** " + preparation(definition, labels), ""]
-    assert len(rendered) == len(set(rendered)) == 194
+    assert len(rendered) == len(set(rendered)) == 189
     document = "\n".join(lines).rstrip() + "\n"
     detail_rows = 0
     for node_id in registry:
         block = document.split(f"<!-- effect-view:{node_id} -->")[1].split(f"<!-- /effect-view:{node_id} -->")[0]
         detail_rows += sum(line.startswith("| Lv.") for line in block.splitlines())
-    assert detail_rows == 194
+    assert detail_rows == 189
     assert '"permissions":' not in document and '"contract":' not in document and "| contract |" not in document
     # Every source unlock has a display name and no untranslated material tokens remain.
     for token in MATERIAL_NAMES:
         assert not re.search(r"(?<![A-Za-z0-9_-])" + token + r"(?![A-Za-z0-9_-])", document), token
     document += "\n## 생성·확인\n\n"
-    document += "`python3 -B docs/models/render_research_effects_v06.py --write`로 재생성하고 `--check`로 원천 일치와58기술·194레벨 커버를 확인합니다. 실행 결과는 원천 파일의 SHA-256을 함께 출력합니다. 실제 게임 실행·DB 저장·후속 콘텐츠 완성·전체 수급과 재미를 검증하는 도구는 아닙니다.\n"
+    document += "`python3 -B docs/models/render_research_effects_v06.py --write`로 재생성하고 `--check`로 원천 일치와57기술·189레벨 커버를 확인합니다. 실행 결과는 원천 파일의 SHA-256을 함께 출력합니다. 실제 게임 실행·DB 저장·후속 콘텐츠 완성·전체 수급과 재미를 검증하는 도구는 아닙니다.\n"
     return document, {"technologies": len(registry), "levels": len(rendered), "families": counts,
-                      "named_catalog_species": len(catalog["species"]), "additional_planned_species": len(labels.planned_species),
-                      "named_planned_total_species": len(catalog["species"]) + len(labels.planned_species),
+                      "named_catalog_species": len(catalog["species"]), "promoted_species": len(labels.planned_species),
+                      "named_total_species": len(catalog["species"]),
                       "catalog_provenance": provenance}
 
 

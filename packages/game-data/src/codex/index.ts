@@ -24,6 +24,7 @@ const HABITAT_NAMES: Record<string, string> = {
   'marine-connection': '해양관 연결 구역',
   'sky-dome-special': '특수 하늘 돔',
   aquarium: '수족관',
+  'marine-aquarium': '해양관',
   'marine-hall': '해양관',
   'large-marine': '대형 해양관',
   'hybrid-zone': '초식 하이브리드 서식지',

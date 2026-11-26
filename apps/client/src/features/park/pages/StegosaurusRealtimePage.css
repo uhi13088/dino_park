@@ -1,0 +1,46 @@
+.stegosaurus-realtime__field {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.stegosaurus-realtime__controls {
+  display: flex;
+  gap: 4px;
+}
+
+.stegosaurus-realtime .stegosaurus-realtime__controls button[aria-pressed='true'] {
+  border-color: #f8e2ac;
+  background: var(--safari-accent);
+  color: #382817;
+}
+
+.stegosaurus-realtime__controls button:disabled[aria-pressed='false'] {
+  color: var(--safari-muted);
+}
+
+.stegosaurus-realtime__notice {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 9px;
+  background: var(--safari-plate);
+  font-weight: 700;
+}
+
+@media (max-aspect-ratio: 1 / 1) {
+  .stegosaurus-realtime__bottom {
+    align-items: end;
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 370px) {
+  .stegosaurus-realtime .safari-preview__top {
+    flex-wrap: wrap;
+  }
+}

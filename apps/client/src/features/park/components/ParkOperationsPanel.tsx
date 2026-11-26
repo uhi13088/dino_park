@@ -1,7 +1,9 @@
 import { useEffect, useState, type Ref } from 'react';
 import {
+  ENTRANCE_RESEARCH,
   FIRST_EXPEDITION,
   getBuildingById,
+  resolveDinosaurSpecies,
   MAX_VIEWING_PLATFORM_LEVEL,
 } from '@dino-park/game-data';
 import {
@@ -11,16 +13,24 @@ import {
   type FirstExpeditionStateResponse,
 } from '@dino-park/shared';
 import { Button } from '@/components/ui';
+import { ParkIcon } from './ParkHud';
+import PlatformAdmissionPreview from './PlatformAdmissionPreview';
 import './ParkOperations.css';
 
 const platformType = getBuildingById(PARK_ADMISSION.platformTypeId)!;
 const platformCost = platformType.baseCost ?? platformType.unlockCondition.cost.gold;
-const entranceSize = getBuildingById(PARK_ADMISSION.entranceTypeId)!.size;
+const admissionFactorLabels = {
+  demand: '관람 수요',
+  entrance: '입구 처리량',
+  exhibit: '전시 구역 수용량',
+};
+const admissionRate = new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 1 });
 
 interface Props {
   operations: ParkOperationsResponse;
   dinosaurs: DinosaurResponse[];
   busy: boolean;
+  onClose?: () => void;
   onOpenChange: (isOpen: boolean) => void;
   onPlaceDinosaur: (dinosaur: DinosaurResponse) => void;
   onCareDinosaur: (dinosaur: DinosaurResponse) => void;
@@ -33,8 +43,16 @@ interface Props {
   onExplore?: () => void;
   onClaimHatch?: (id: string) => void;
   onShowResources?: () => void;
+  onPurchaseResources?: () => void;
   onShowGrowth?: () => void;
+  onShowShuttle?: () => void;
+  onManageDemand?: () => void;
+  onManageEntrance?: () => void;
+  onManageExhibits?: () => void;
+  onViewPlatformUpgrade?: () => void;
+  platformExhibitName?: string;
   growthTrigger?: Ref<HTMLButtonElement>;
+  shuttleTrigger?: Ref<HTMLButtonElement>;
   onFirstHybrid?: () => void;
   firstHybridExhibited?: boolean;
 }
@@ -43,6 +61,7 @@ export default function ParkOperationsPanel({
   operations,
   dinosaurs,
   busy,
+  onClose,
   onOpenChange,
   onPlaceDinosaur,
   onCareDinosaur,
@@ -55,15 +74,71 @@ export default function ParkOperationsPanel({
   onExplore,
   onClaimHatch,
   onShowResources,
+  onPurchaseResources,
   onShowGrowth,
+  onShowShuttle,
+  onManageDemand,
+  onManageEntrance,
+  onManageExhibits,
+  onViewPlatformUpgrade,
+  platformExhibitName,
   growthTrigger,
+  shuttleTrigger,
   onFirstHybrid,
   firstHybridExhibited,
 }: Props) {
   const [now, setNow] = useState(Date.now);
   const platform = operations.viewingPlatform;
   const constructing = platform && platform.status.toUpperCase() !== 'ACTIVE';
+  const upgrading = platform?.status.toUpperCase() === 'UPGRADING';
+  const admission =
+    firstHybridExhibited && operations.admission?.exhibitCount !== undefined
+      ? operations.admission
+      : undefined;
+  const bottlenecks = admission?.bottlenecks ?? [];
+  const bottleneckActionClass = bottlenecks.length === 1 ? 'park-panel-action--primary' : undefined;
+  const platformImpact = admission?.platformImpact;
+  const fullVault =
+    operations.isOpen && operations.goldVault?.admissionPaused ? operations.goldVault : undefined;
+  const admissionEstimateLabel = fullVault ? '재개 시 예상 입장' : '예상 입장';
+  const occupancy = operations.occupancy;
+  const parkIsFull = occupancy && occupancy.capacity > 0 && occupancy.current >= occupancy.capacity;
+  const visitDuration =
+    occupancy &&
+    (occupancy.visitSeconds % 60 === 0
+      ? `${occupancy.visitSeconds / 60}분`
+      : `${occupancy.visitSeconds}초`);
+  const parkLimitLabel = occupancy
+    ? `파크 안 ${admissionRate.format(occupancy.current)} / ${admissionRate.format(occupancy.capacity)}명`
+    : `파크 입장 한도 ${admissionRate.format(operations.capacity)}명/분`;
+  const hasOpeningRequirements = !operations.canOpen && operations.openingRequirements.length > 0;
   const hatching = firstExpedition?.stage === 'hatching';
+  const demandLimited = bottlenecks.includes('demand');
+  const entranceLimited = bottlenecks.includes('entrance');
+  const exhibitLimited = bottlenecks.includes('exhibit');
+  const blockedRoute = !!admission && !operations.canOpen && !admission.exhibitedDinosaurIds.length;
+  const manageLimits = !!admission && operations.isOpen && !fullVault && operations.canOpen;
+  const careTarget =
+    manageLimits && demandLimited
+      ? dinosaurs
+          .filter(
+            ({ id, isInPark, hunger, happiness }) =>
+              isInPark &&
+              admission.exhibitedDinosaurIds.includes(id) &&
+              hunger > 0 &&
+              (hunger > 20 || happiness < 80),
+          )
+          .sort(
+            (a, b) =>
+              Number(b.hunger > 80) - Number(a.hunger > 80) ||
+              a.happiness - b.happiness ||
+              b.hunger - a.hunger,
+          )[0]
+      : undefined;
+  const careName = careTarget
+    ? careTarget.nickname || resolveDinosaurSpecies(careTarget)?.nameKo || '공룡'
+    : undefined;
+  const firstGrowth = !!firstHybridExhibited && operations.parkLevel === 5;
   useEffect(() => {
     if (!constructing && !hatching) return;
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
@@ -86,7 +161,7 @@ export default function ParkOperationsPanel({
 
   if (!operations.entrance && onRecoverEntrance) {
     title = '입구를 놓을 자리를 비워주세요';
-    detail = `입구를 복구하려면 파크 테두리에 ${entranceSize.width}×${entranceSize.height}칸의 빈 공간이 필요해요.`;
+    detail = '입구를 복구하려면 파크 테두리에 빈 공간이 필요해요.';
     action = (
       <Button className="park-operations__primary" disabled={busy} onClick={onRecoverEntrance}>
         입구 다시 찾기 · 무료
@@ -131,16 +206,12 @@ export default function ParkOperationsPanel({
       ) : null;
     if (first.stage === 'available') {
       title = '초원에서 두 번째 친구를 찾아요';
-      detail = `닥터 진: 발자국과 먹이 흔적을 따라 이구아노돈 알을 찾아봐요. 준비비 ${FIRST_EXPEDITION.goldCost}골드 · 에너지 ${FIRST_EXPEDITION.energyCost}`;
-      action = exploreButton('첫 탐험 시작');
-    } else if (first.stage === 'exploring') {
-      title = `첫 조사 중 · 단서 ${first.mission?.step ?? 0}/${first.mission?.totalSteps ?? FIRST_EXPEDITION.clues.length}`;
-      detail = '발견한 단서를 보고 다음 경로를 골라주세요. 앱을 닫아도 찾은 흔적은 남아요.';
-      action = exploreButton('조사 이어하기');
+      detail = `탐험가를 고용해 파크 뒤 초원에 보내요. 준비비 ${FIRST_EXPEDITION.goldCost}골드`;
+      action = exploreButton('첫 탐험가 파견');
     } else if (first.stage === 'reward') {
-      title = '이구아노돈 알을 찾았어요';
-      detail = '조사한 둥지에서 알을 가져오면 기본 부화 슬롯을 사용할 수 있어요.';
-      action = exploreButton('알 가져오러 가기');
+      title = '탐험가가 돌아왔어요';
+      detail = '귀환 보고서에서 이구아노돈 알을 수령해 부화시켜봐요.';
+      action = exploreButton('귀환 보고서 보기');
     } else if (first.stage === 'egg') {
       title = '첫 알을 부화시켜봐요';
       detail = `별도 부화장을 사지 않아도 기본 슬롯에서 ${FIRST_EXPEDITION.hatchSeconds}초 동안 부화할 수 있어요.`;
@@ -187,16 +258,13 @@ export default function ParkOperationsPanel({
       );
     }
   } else if (platform && constructing) {
-    const upgrading = platform.status.toUpperCase() === 'UPGRADING';
     title =
       secondsLeft > 0
         ? `관람대 ${upgrading ? '확장' : '건설'} 중 · ${secondsLeft}초`
         : '관람대 완공을 확인해주세요';
     detail = upgrading
-      ? '확장이 끝나면 기존 관람대를 넓게 사용할 수 있어요. 현재 관람은 계속돼요.'
-      : operations.isOpen
-        ? `완공되면 관람 정원이 ${platformType.baseStats.capacity}명 늘어나요. 기다리는 동안에도 입장료가 쌓여요.`
-        : `완공되면 관람 정원이 ${platformType.baseStats.capacity}명 늘어나요. 파크를 개장하면 기다리는 동안에도 손님을 맞이해요.`;
+      ? '완공되면 연결된 전시를 더 쾌적하게 볼 수 있어요. 공사 중에도 관람은 계속돼요.'
+      : '완공되면 가까운 전시에서 손님들이 편하게 공룡을 볼 수 있어요.';
     action = (
       <Button
         className="park-operations__primary"
@@ -208,16 +276,8 @@ export default function ParkOperationsPanel({
     );
   } else if (platform && !constructing) {
     if (firstHybridExhibited) {
-      title = '스테고케라톱스 첫 전시를 열었어요';
-      const platformCanExpand = platform.level < MAX_VIEWING_PLATFORM_LEVEL;
-      detail = platformCanExpand
-        ? '관람대 정원을 늘려 더 많은 손님을 맞이해보세요.'
-        : '도감에 등록한 영웅을 관람객이 파크에서 만나고 있어요.';
-      action = onShowResources ? (
-        <Button className="park-operations__primary" onClick={onShowResources}>
-          {platformCanExpand ? '관람대 확장 보기' : '자원 시설 보기'}
-        </Button>
-      ) : null;
+      title = admission ? '' : '스테고케라톱스 첫 전시를 열었어요';
+      detail = '도감에 등록한 영웅을 관람객이 파크에서 만나고 있어요.';
     } else if (firstExpedition?.stage === 'complete') {
       title = firstExpedition.dinosaur
         ? dinosaurs.filter((dinosaur) => dinosaur.isInPark).length >= 2
@@ -227,7 +287,7 @@ export default function ParkOperationsPanel({
       detail =
         platform.level >= 2
           ? '관람대 확장도 마쳤어요. 자원 생산과 새로운 연구를 준비할 수 있어요.'
-          : '목재·석재를 모아 관람대를 확장해보세요. 첫 탐험과 부화 진행은 저장돼 있어요.';
+          : '목재·석재로 관람대를 확장하면 연결된 전시를 더 쾌적하게 볼 수 있어요.';
       action = onShowResources ? (
         <Button className="park-operations__primary" onClick={onShowResources}>
           자원 시설 보기
@@ -235,7 +295,7 @@ export default function ParkOperationsPanel({
       ) : null;
     } else {
       title = '첫 관람대가 완공됐어요';
-      detail = `관람 정원이 ${operations.capacity}명으로 늘었어요. 더 많은 손님을 맞이해보세요.`;
+      detail = '가까운 전시에서 손님들이 편하게 공룡을 볼 수 있어요.';
       action = (
         <Button variant="ghost" onClick={onShowBuildings}>
           시설 보기
@@ -247,7 +307,7 @@ export default function ParkOperationsPanel({
     detail =
       goldShortage > 0
         ? `${platformCost.toLocaleString()}골드 중 ${goldShortage.toLocaleString()}골드를 더 모으면 지을 수 있어요.`
-        : `${platformCost.toLocaleString()}골드 · 건설 ${platformType.constructionTime}초 · 관람 정원 +${platformType.baseStats.capacity}명`;
+        : `${platformCost.toLocaleString()}골드 · 건설 ${platformType.constructionTime}초 · 가까운 전시의 관람 환경 개선`;
     action = (
       <Button
         className="park-operations__primary"
@@ -265,83 +325,341 @@ export default function ParkOperationsPanel({
     detail = '파크를 개장하면 손님이 입장료를 내고 공룡을 관람해요.';
   }
 
+  let admissionReason = '';
+  if (admission) {
+    if (!operations.isOpen || !operations.canOpen) {
+      admissionReason = hasOpeningRequirements
+        ? '개장 조건을 먼저 확인해주세요.'
+        : '파크를 개장하면 입장 제한 요인을 확인할 수 있어요.';
+    } else if (bottlenecks.length) {
+      const restriction = fullVault ? '재개 시 입장 제한' : '현재 입장 제한';
+      admissionReason = `${restriction} · ${bottlenecks.map((factor) => admissionFactorLabels[factor]).join(' · ')}`;
+    } else {
+      admissionReason =
+        operations.openingRequirements.join(' ') || '입구와 관람 가능한 전시를 연결해주세요.';
+    }
+  }
+
   return (
     <section className="park-operations" aria-label="파크 운영">
-      <div className="park-operations__heading">
+      <header className="park-operations__heading park-panel-header">
         <div className="park-operations__name">
           <h1>파크 운영</h1>
           <span className={operations.isOpen ? 'park-operations__open' : ''}>
             {operations.isOpen ? '개장 중' : '휴장 중'}
           </span>
         </div>
-        <Button
-          variant={operations.isOpen ? 'outline' : 'primary'}
-          className={operations.isOpen ? 'park-operations__secondary' : 'park-operations__primary'}
-          disabled={busy || (!operations.isOpen && !operations.canOpen)}
-          aria-describedby={
-            !operations.canOpen && !operations.isOpen ? 'park-opening-requirements' : undefined
-          }
-          onClick={() => onOpenChange(!operations.isOpen)}
-        >
-          {operations.isOpen ? '파크 휴장' : '파크 개장'}
-        </Button>
-      </div>
-      <dl className="park-operations__numbers">
-        <div>
-          <dt>입장료</dt>
-          <dd>{operations.ticketPrice.toLocaleString()}골드</dd>
+        <div className="park-operations__header-controls">
+          {onShowShuttle && (
+            <Button
+              ref={shuttleTrigger}
+              variant="outline"
+              size="sm"
+              disabled={busy}
+              onClick={onShowShuttle}
+            >
+              셔틀버스
+            </Button>
+          )}
+          <Button
+            variant={operations.isOpen ? 'outline' : 'primary'}
+            className={
+              operations.isOpen ? 'park-operations__secondary' : 'park-operations__primary'
+            }
+            disabled={busy || (!operations.isOpen && !operations.canOpen)}
+            aria-describedby={hasOpeningRequirements ? 'park-opening-requirements' : undefined}
+            onClick={() => onOpenChange(!operations.isOpen)}
+          >
+            {operations.isOpen ? '파크 휴장' : '파크 개장'}
+          </Button>
+          {onClose && (
+            <button
+              type="button"
+              className="park-panel-close"
+              aria-label="운영 패널 닫기"
+              onClick={onClose}
+            >
+              <ParkIcon name="close" />
+            </button>
+          )}
         </div>
-        <div>
-          <dt>유료 입장객</dt>
-          <dd>{operations.totalVisitors.toLocaleString()}명</dd>
-        </div>
-        <div>
-          <dt>누적 입장료</dt>
-          <dd>{operations.totalAdmissionGold.toLocaleString()}골드</dd>
-        </div>
-      </dl>
-      <div className="park-operations__goal">
-        <div>
-          <h2>{title}</h2>
-          <p>{detail}</p>
-          {!operations.canOpen &&
-            !operations.isOpen &&
-            operations.openingRequirements.length > 0 && (
-              <p id="park-opening-requirements" className="park-operations__requirements">
-                {operations.openingRequirements.join(' · ')}
+      </header>
+      <div className="park-panel-body">
+        <dl className="park-operations__numbers">
+          <div>
+            <dt>입장료</dt>
+            <dd>{operations.ticketPrice.toLocaleString()}골드</dd>
+          </div>
+          <div>
+            <dt>유료 입장객</dt>
+            <dd>{operations.totalVisitors.toLocaleString()}명</dd>
+          </div>
+          <div>
+            <dt>누적 입장료</dt>
+            <dd>{operations.totalAdmissionGold.toLocaleString()}골드</dd>
+          </div>
+        </dl>
+        {fullVault && (
+          <div className="park-operations__vault" role="status">
+            <div>
+              <p>
+                <strong>금고가 찼어요</strong> · 한도 {fullVault.capacity.toLocaleString()}골드
+              </p>
+              <p>
+                유료 입장이 멈췄어요. 금고에 {operations.ticketPrice}골드 이상 여유가 생기면
+                자동으로 재개돼요.
+              </p>
+            </div>
+            {onPurchaseResources && (
+              <Button variant="outline" size="sm" onClick={onPurchaseResources} disabled={busy}>
+                기본 자원 구매
+              </Button>
+            )}
+          </div>
+        )}
+        {(title || (hasOpeningRequirements && !admission)) && (
+          <div className="park-operations__goal">
+            <div>
+              {title && (
+                <>
+                  <h2>{title}</h2>
+                  <p>{detail}</p>
+                </>
+              )}
+              {hasOpeningRequirements && !admission && (
+                <p id="park-opening-requirements" className="park-operations__requirements">
+                  {operations.openingRequirements.join(' · ')}
+                </p>
+              )}
+            </div>
+            {action && <div className="park-operations__action">{action}</div>}
+          </div>
+        )}
+        {admission && (
+          <section className="park-operations__admission" aria-labelledby="park-admission-title">
+            <div className="park-operations__admission-heading">
+              <div>
+                <h2 id="park-admission-title">입장 진단</h2>
+                <p>{admissionReason}</p>
+                {hasOpeningRequirements && (
+                  <p id="park-opening-requirements" className="park-operations__requirements">
+                    {operations.openingRequirements.join(' · ')}
+                  </p>
+                )}
+              </div>
+              <div className="park-operations__admission-rates">
+                {occupancy && (
+                  <p className="park-operations__admission-rate">
+                    파크 안{' '}
+                    <strong>
+                      {admissionRate.format(occupancy.current)} /{' '}
+                      {admissionRate.format(occupancy.capacity)}명
+                    </strong>
+                  </p>
+                )}
+                <p className="park-operations__admission-rate">
+                  {admissionEstimateLabel}{' '}
+                  <strong>{admissionRate.format(operations.visitorsPerMinute)}명/분</strong>
+                </p>
+              </div>
+            </div>
+            {occupancy && (
+              <p className="park-operations__visit-duration">
+                관람 {visitDuration}
+                {parkIsFull &&
+                  operations.isOpen &&
+                  !fullVault &&
+                  ' · 관람을 마친 손님이 나가면 다음 손님을 받아요.'}
               </p>
             )}
+            <div className="park-operations__admission-detail">
+              <dl className="park-operations__admission-factors">
+                {(
+                  [
+                    ['demand', operations.demandPerMinute],
+                    ['entrance', admission.gatePerMinute],
+                    ['exhibit', admission.exhibitPerMinute],
+                  ] as const
+                ).map(([factor, rate]) => (
+                  <div key={factor} data-limiting={bottlenecks.includes(factor)}>
+                    <dt>{admissionFactorLabels[factor]}</dt>
+                    <dd>
+                      {admissionRate.format(rate)}명/분
+                      {factor === 'exhibit' && <span>운영 중 {admission.exhibitCount}곳</span>}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              {blockedRoute && (
+                <div className="park-operations__admission-actions">
+                  <div>
+                    {operations.entrance?.onBoundary && (
+                      <Button variant="outline" size="sm" disabled={busy} onClick={onMoveEntrance}>
+                        입구 옮기기 · 무료
+                      </Button>
+                    )}
+                    {onManageExhibits && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={busy}
+                        onClick={onManageExhibits}
+                      >
+                        전시 구역 관리
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+              {manageLimits && bottlenecks.length > 0 && (
+                <div className="park-operations__admission-actions">
+                  {bottlenecks.length > 1 && (
+                    <p>같은 수치로 제한된 항목은 함께 개선해야 입장이 늘어요.</p>
+                  )}
+                  {demandLimited && careTarget && (
+                    <div>
+                      <p>
+                        {careName}의 행복도 {careTarget.happiness} · 허기 {careTarget.hunger}
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={bottleneckActionClass}
+                        disabled={busy}
+                        onClick={() => onCareDinosaur(careTarget)}
+                      >
+                        {careName} 돌보기
+                      </Button>
+                    </div>
+                  )}
+                  {demandLimited && !careTarget && (
+                    <div>
+                      <p>매력도가 높거나 종류가 다른 공룡을 전시하면 관람 수요를 높일 수 있어요.</p>
+                      {(onManageDemand || onManageExhibits) && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className={bottleneckActionClass}
+                          disabled={busy}
+                          onClick={onManageExhibits ?? onManageDemand}
+                        >
+                          전시·돌봄 보기
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  {entranceLimited && onManageEntrance && (
+                    <div>
+                      <p>
+                        {admission.entranceResearchCompleted
+                          ? '입장 수속 연구 효과가 적용 중이에요.'
+                          : `입구 처리량을 ${ENTRANCE_RESEARCH.bonusPercent}% 늘리는 연구예요.`}
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={bottleneckActionClass}
+                        disabled={busy}
+                        onClick={onManageEntrance}
+                      >
+                        {admission.entranceResearchCompleted
+                          ? '입구 관리 보기'
+                          : '입장 수속 연구 보기'}
+                      </Button>
+                    </div>
+                  )}
+                  {exhibitLimited && onManageExhibits && (
+                    <div>
+                      <p>관람길이 닿는 서식지에 공룡을 전시하면 파크 정원이 늘어요.</p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={bottleneckActionClass}
+                        disabled={busy}
+                        onClick={onManageExhibits}
+                      >
+                        전시 구역 관리
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {platformImpact ? (
+                <div className="park-operations__platform-impact">
+                  <div>
+                    <h3>
+                      관람대 Lv.{platformImpact.fromLevel} → Lv.{platformImpact.toLevel}
+                    </h3>
+                    <PlatformAdmissionPreview
+                      impact={platformImpact}
+                      exhibitName={platformExhibitName}
+                      isParkOpen={operations.isOpen}
+                      admissionPaused={!!fullVault}
+                    />
+                  </div>
+                  {onViewPlatformUpgrade && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={busy}
+                      onClick={onViewPlatformUpgrade}
+                    >
+                      {upgrading ? '관람대 완공 보기' : '관람대 강화 보기'}
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                platform &&
+                !constructing &&
+                platform.level >= MAX_VIEWING_PLATFORM_LEVEL && (
+                  <p className="park-operations__platform-limit">
+                    관람대는 현재 최고 단계인 Lv.{platform.level}에 도달했어요.
+                  </p>
+                )
+              )}
+            </div>
+          </section>
+        )}
+        <div className="park-operations__shortcuts">
+          {admission && !blockedRoute && !(manageLimits && exhibitLimited) && onManageExhibits && (
+            <Button variant="outline" size="sm" disabled={busy} onClick={onManageExhibits}>
+              전시 구역 관리
+            </Button>
+          )}
+          {firstHybridExhibited && onShowGrowth && (
+            <Button
+              ref={growthTrigger}
+              variant={firstGrowth ? 'primary' : 'outline'}
+              size="sm"
+              className={firstGrowth ? 'park-operations__primary' : 'park-operations__growth'}
+              aria-describedby={firstGrowth ? 'park-first-growth-benefit' : undefined}
+              onClick={onShowGrowth}
+            >
+              {firstGrowth ? 'Lv.6 성장 목표 보기' : '성장 목표'}
+            </Button>
+          )}
+          {firstExpedition?.stage === 'complete' && onFirstHybrid && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="park-operations__secondary"
+              onClick={onFirstHybrid}
+            >
+              {firstHybridExhibited ? '반복 합성 준비' : '첫 스테고케라톱스 준비'}
+            </Button>
+          )}
         </div>
-        {action && <div className="park-operations__action">{action}</div>}
-      </div>
-      <div className="park-operations__shortcuts">
-        {firstHybridExhibited && onShowGrowth && (
-          <Button
-            ref={growthTrigger}
-            variant="outline"
-            size="sm"
-            className="park-operations__growth"
-            onClick={onShowGrowth}
-          >
-            성장 목표
-          </Button>
+        {firstGrowth && onShowGrowth && (
+          <p className="park-operations__capacity" id="park-first-growth-benefit">
+            입장 수속을 익히고 Lv.6에서 전시 확장과 재료 원정 중 먼저 할 일을 골라요.
+          </p>
         )}
-        {firstExpedition?.stage === 'complete' && onFirstHybrid && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="park-operations__secondary"
-            onClick={onFirstHybrid}
-          >
-            {firstHybridExhibited ? '반복 합성 준비' : '첫 스테고케라톱스 준비'}
-          </Button>
-        )}
+        <p className="park-operations__capacity">
+          {!admission &&
+            `${parkLimitLabel} · ${admissionEstimateLabel} ${admissionRate.format(operations.visitorsPerMinute)}명/분 · `}
+          유지비 {operations.hourlyMaintenance.toLocaleString()}골드/시간
+        </p>
       </div>
-      <p className="park-operations__capacity">
-        관람 정원 {operations.capacity}명 · 예상 입장{' '}
-        {operations.visitorsPerMinute.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}명/분 ·
-        유지비 {operations.hourlyMaintenance.toLocaleString()}골드/시간
-      </p>
     </section>
   );
 }

@@ -4,7 +4,9 @@ import type {
   CurrencyResponse,
   PurchaseResourceRequest,
   ResourcesResponse,
+  ScoutExpeditionState,
   StartProductionRequest,
+  UpgradeResearchMaterialRequest,
 } from '@dino-park/shared';
 import { api, tokenManager } from '../client';
 import { queryKeys } from './index';
@@ -13,7 +15,16 @@ export const resourcesQueryKey = ['resources'] as const;
 
 function syncResources(client: QueryClient, state: ResourcesResponse) {
   client.setQueryData<CurrencyResponse>(queryKeys.currency(), (current) =>
-    current ? { ...current, gold: state.gold } : current,
+    current
+      ? {
+          ...current,
+          gold: state.gold,
+          ...(state.fuel &&
+            typeof current.explorationEnergy === 'number' && {
+              explorationEnergy: state.fuel.amount,
+            }),
+        }
+      : current,
   );
   return state;
 }
@@ -24,6 +35,7 @@ export async function cancelResourceReads(client: QueryClient) {
     client.cancelQueries({ queryKey: queryKeys.firstExpedition() }),
     client.cancelQueries({ queryKey: queryKeys.parkOperations() }),
     client.cancelQueries({ queryKey: queryKeys.currency() }),
+    client.cancelQueries({ queryKey: queryKeys.scoutExpedition() }),
   ]);
 }
 
@@ -53,6 +65,13 @@ function useResourceMutation<T>(send: (variables: T) => Promise<ResourcesRespons
     onSuccess: (state) => {
       syncResources(client, state);
       client.setQueryData(resourcesQueryKey, state);
+      if (state.fuel) {
+        const { amount: fuel, capacity: fuelMax } = state.fuel;
+        client.setQueryData<ScoutExpeditionState>(queryKeys.scoutExpedition(), (current) =>
+          current ? { ...current, gold: state.gold, fuel, fuelMax } : current,
+        );
+        void client.invalidateQueries({ queryKey: queryKeys.scoutExpedition() });
+      }
       void client.invalidateQueries({ queryKey: queryKeys.park });
       void client.invalidateQueries({ queryKey: queryKeys.buildings });
     },
@@ -72,5 +91,11 @@ export function useStartResourceProduction() {
 export function useClaimResourceProduction() {
   return useResourceMutation((id: string) =>
     api.post<ResourcesResponse>(`/resources/production/${id}/claim`),
+  );
+}
+
+export function useUpgradeResearchMaterial() {
+  return useResourceMutation((request: UpgradeResearchMaterialRequest) =>
+    api.post<ResourcesResponse>('/resources/upgrade-quality', request),
   );
 }

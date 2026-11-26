@@ -229,7 +229,7 @@ export default function RepeatSynthesisPanel() {
                 ))}
               </dl>
               <Link className="hybrid-text-link" to="/exploration">
-                주행 탐험에서 재료 모으기
+                탐험가를 파견해 재료 모으기
               </Link>
             </div>
             <div>

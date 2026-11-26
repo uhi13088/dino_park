@@ -87,7 +87,7 @@ def repeat_egg_targets():
             'area': row['area'], 'rarity': rarity, 'additional_parent': False,
             'supplemental_natural': True, 'scene': row['scene'],
             'reward_eggs': 1,
-            **{k: int(band[k]) for k in ['gold', 'fuel', 'checks', 'hatch_seconds', 'hatch_gold']},
+            **{k: int(band[k]) for k in ['gold', 'checks', 'hatch_seconds', 'hatch_gold']},
         }
     return result
 
@@ -103,7 +103,7 @@ def egg_targets():
         'research': starter['first_gate'], 'area': 'fossil-valley',
         'rarity': species['velociraptor']['rarity'], 'additional_parent': False,
         'starter_first': True, 'repeatable': False, 'reward_eggs': 1,
-        **{k: int(band[k]) for k in ['gold', 'fuel', 'checks', 'hatch_seconds', 'hatch_gold']},
+        **{k: int(band[k]) for k in ['gold', 'checks', 'hatch_seconds', 'hatch_gold']},
     }
     return result
 
@@ -178,8 +178,9 @@ def all_recipe_data():
         record['story_completion_ref'] = ('chapter-'+story_gate[1] if story_gate and '완료' in story_gate[0] and '-' not in story_gate[1] else None)
         record['requires_isolation_security'] = '격리' in record['context'] and '보안' in record['context']
         record['parents_preserved'] = True
-        record['success_rate'] = 0.5 if record['rarity'] == 'epic' else 0.3
-        record['guaranteed_attempt'] = 5 if record['rarity'] == 'epic' else 8
+        rule = raw['rules'][record['rarity']]
+        record['success_rate'] = rule['successRate']
+        record['guaranteed_attempt'] = rule['guaranteedAttempt']
         assert record['gold'] is not None and record['seconds'] is not None, sid
     return result
 
@@ -200,7 +201,7 @@ def _starter_first(row, targets):
     sid, ref = row['species'], row['first_ref']
     if sid == 'parasaurolophus':
         return {'kind': 'initial_individual', 'ref': ref, 'gate': row['first_gate'],
-                'gate_label': research_label(row['first_gate']), 'gold': 0, 'fuel': 0,
+                'gate_label': research_label(row['first_gate']), 'gold': 0,
                 'checks': 0, 'hatch_seconds': 0, 'hatch_gold': 0,
                 'reward_eggs': 0, 'reward_individuals': 1, 'first_only': True,
                 'repeatable': False, 'extra_park_xp': 0, 'requires_exhibition': False}
@@ -217,7 +218,7 @@ def _starter_first(row, targets):
         hatch_seconds = int(followup.building.P['parent_hatch_seconds'])
     return {'kind': 'starter_egg', 'ref': ref, 'gate': row['first_gate'],
             'gate_label': research_label(row['first_gate']), 'area': 'fossil-valley',
-            'gold': int(original['gold']), 'fuel': int(followup.building.P['fuel_per_mission']),
+            'gold': int(original['gold']),
             'checks': int(followup.BANDS[catalogue()[0][sid]['rarity']]['checks']),
             'hatch_seconds': hatch_seconds, 'hatch_gold': 0,
             'reward_eggs': int(original['quantity']), 'reward_individuals': 0,
@@ -246,7 +247,7 @@ def acquisition_rows():
             repeat = {**recipe, 'kind': 'synthesis', 'ref': sid, 'recipe_id': sid,
                       'gate': recipe.get('required_research'),
                       'gate_label': research_label(recipe['required_research']) if recipe.get('required_research') else recipe['context'],
-                      'fuel': 0, 'checks': 0, 'hatch_seconds': 0, 'hatch_gold': 0,
+                      'checks': 0, 'hatch_seconds': 0, 'hatch_gold': 0,
                       'reward_eggs': 0, 'reward_individuals': 1, 'extra_park_xp': 0,
                       'first_only': False, 'repeatable': True}
             first = copy.deepcopy(repeat)

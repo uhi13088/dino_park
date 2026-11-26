@@ -21,11 +21,11 @@ import followup_content_model_v06 as model
 
 ROOT = model.ROOT
 OUTPUT = ROOT / 'tmp/preview/followup-content-v06-check.json'
-COST_252_SHA256 = 'c7a7d19e208556cbcd3d9adccf9811e1c8ad726b7c655d3cd42fb187e81bc7c9'
-SCALAR_14_SHA256 = '0735f5dbdd92b9df361a8aa885ade422fe38e8a8edf2e8a2e06e7316d30ba7f2'
-MISSION_41_SHA256 = '961aa22b0c4600928a63c24e89deaff06a669c1770bf27cc13d16fc72b3b9fc1'
+COST_239_SHA256 = '7cc87501a8d1c36dbe8d35e46f7638eb34f755d360aaaf73f7d973f938bd6491'
+SCALAR_12_SHA256 = 'eebdfc3be43c3b3524d266167c130b8a574e95c4bb2401edd6d5500f68d79e53'
+MISSION_41_SHA256 = '9cb83bfd48f6528771498643f8db600f286fa968a2729ac92d7eb202bb6a5ba6'
 MISSION_FIELDS = ['id', 'area_id', 'primary_research', 'required_region_permissions',
-                  'required_additional_technology', 'reward', 'base_fuel', 'manual_successful_checks']
+                  'required_additional_technology', 'reward', 'manual_successful_checks']
 AREA_MATERIAL = {'fossil-valley': 'dna', 'primal-swamp': 'culture', 'abandoned-lab': 'catalyst',
                  'mineral-cave': 'stabilizer', 'mutation-crater': 'mutation_cell'}
 MATERIALS = ['wood', 'stone', 'metal']
@@ -64,27 +64,43 @@ def optional_json(path):
 
 def preserved_inputs():
     costs = model.effect.cost.all_costs()
-    assert len(costs) == 252 and digest(costs) == COST_252_SHA256
+    assert len(costs) == 239 and digest(costs) == COST_239_SHA256
     snapshot_path = ROOT / 'tmp/preview/plan09c-before.json'
     before = optional_json(snapshot_path)
     if before is not None:
-        assert costs == before['research_costs']
+        assert costs == [row for row in before['research_costs'] if row['id'] in model.effect.cost.NODES]
     archive = ROOT / 'docs/archive/0.5/balance.md'
-    old_tables = ['params', 'construction', 'profiles', 'effects', 'levels', 'exceptions', 'production', 'missions']
+    exhibit_parameters = {'base_capacity', 'additional_exhibit_capacity', 'visit_seconds'}
+    old_params = table(archive, 'plan', 'params')
+    current_params = table(model.BALANCE, 'plan', 'params')
+    assert [row for row in old_params
+            if row['id'] not in exhibit_parameters and not row['id'].startswith('fuel_')] == [
+        row for row in current_params if row['id'] not in exhibit_parameters
+    ], 'Preserved economy parameters changed'
+    assert {row['id'] for row in current_params} >= exhibit_parameters
+    old_tables = ['construction', 'profiles', 'effects', 'levels', 'exceptions', 'production', 'missions']
     for name in old_tables:
-        assert table(archive, 'plan', name) == table(model.BALANCE, 'plan', name), (name, 'preserved building/first mission table changed')
-    assert len(model.building.BUILD) == 21
+        archived = [row for row in table(archive, 'plan', name) if next(iter(row.values())) != 'fueldepot']
+        assert archived == table(model.BALANCE, 'plan', name), (name, 'preserved building/first mission table changed')
+    assert len(model.building.BUILD) == 20
     old_rows = [model.building.upgrade(bid, level) for bid in model.building.BUILD for level in range(1, 26)]
-    assert len(old_rows) == 525
-    assert hashlib.sha256(raw_table(ROOT / 'docs/current/research-trees.md', 'tech', 'effects').encode()).hexdigest() == SCALAR_14_SHA256
+    assert len(old_rows) == 500
+    assert hashlib.sha256(raw_table(ROOT / 'docs/current/research-trees.md', 'tech', 'effects').encode()).hexdigest() == SCALAR_12_SHA256
     missions = [p for _node, _rank, p in model.effect.permissions() if p['kind'] == 'mission_permission']
     reward_contracts = sorted([{k: p.get(k) for k in MISSION_FIELDS} for p in missions], key=lambda p: p['id'])
-    assert len(reward_contracts) == 41 and digest(reward_contracts) == MISSION_41_SHA256
+    deep_survey, = [row for row in reward_contracts if row['id'] == 'mission.fossil-valley.high-repeat.v1']
+    assert deep_survey['reward']['quantity'] == 6, 'Deep preserved bed must award six high-grade DNA'
+    # Compare with the frozen contracts after undoing the approved reward quantity change.
+    baseline_contracts = [
+        {**row, 'reward': {**row['reward'], 'quantity': 3}} if row is deep_survey else row
+        for row in reward_contracts
+    ]
+    assert len(baseline_contracts) == 41 and digest(baseline_contracts) == MISSION_41_SHA256
     old_exp = optional_json(Path('/tmp/plan09b-exp-effects.json'))
     if old_exp is not None:
         prior = sorted([{k: p.get(k) for k in MISSION_FIELDS} for node in old_exp for rank in node['levels']
                         for p in rank.get('permissions', []) if p['kind'] == 'mission_permission'], key=lambda p: p['id'])
-        assert reward_contracts == prior
+        assert baseline_contracts == prior
     # Preserve the three fully priced public rows; indominus only gains its two missing values.
     current_dna = model.DNA.read_text()
     old_dna = ROOT / 'docs/archive/0.5/dna-and-collection.md'
@@ -97,8 +113,8 @@ def preserved_inputs():
         note='; 기존 유전자센터 해금 권한 보존 이관'
         assert len(old) == len(new) == 1 and [v.replace(note,'') for v in old] == [v.replace(note,'') for v in new], (label, 'public recipe regression')
         if note in old[0]:assert '이미 얻은 권한은 보존' in current_dna
-    return {'research_costs': 252, 'research_cost_digest': digest(costs), 'building_tables': len(old_tables),
-            'old_building_rows': len(old_rows), 'first_missions': 7, 'scalar_effects': 14,
+    return {'research_costs': 239, 'research_cost_digest': digest(costs), 'building_tables': len(old_tables),
+            'old_building_rows': len(old_rows), 'first_missions': 7, 'scalar_effects': 12,
             'research_material_missions': 41, 'snapshot_comparison_performed': before is not None,
             'staged_mission_contract_comparison_performed': old_exp is not None}
 
@@ -189,6 +205,16 @@ def check_construction(catalog):
                 special_cases += 1
             special_rows.append({'id': identifier, **row})
     assert len(special_rows) == 125
+    tiers = model.aviary_space_tiers()
+    assert model.AVIARY_SIZE_COSTS == {'small': 1, 'medium': 2, 'large': 4, 'giant': 6}
+    assert [r['tier'] for r in tiers] == [1, 2, 3, 4, 5]
+    assert [(r['width'], r['height']) for r in tiers] == [(4, 4), (6, 6), (8, 8), (10, 10), (14, 14)]
+    assert [r['flight_points'] for r in tiers] == [5, 8, 10, 13, 18]
+    assert [r['max_animals'] for r in tiers] == [5, 6, 7, 8, 9]
+    assert [r['max_giants'] for r in tiers] == [0, 0, 0, 0, 1]
+    assert [list(r['by_size'].values()) for r in tiers] == [
+        [5, 2, 1, 0], [6, 4, 2, 0], [7, 5, 2, 0], [8, 6, 3, 0], [9, 9, 4, 1],
+    ]
     # Compare every derived proposal row after omitting review-only annotations.
     if proposed:
         index = {(r['id'], r['level']): r for r in special_rows}
@@ -196,7 +222,7 @@ def check_construction(catalog):
             for old in definition['level_rows']:
                 now = index[definition['plan_id'], old['level']]
                 assert all(now[k] == old[k] for k in ['gold', *MATERIALS, 'seconds', 'upkeep', 'capacity', 'care_reduction_percent'])
-    return {'land_rows': 5, 'land_discount_cases': land_cases, 'special_rows': 125,
+    return {'land_rows': 5, 'land_discount_cases': land_cases, 'special_rows': 125, 'aviary_space_tiers': len(tiers),
             'special_discount_cases': special_cases,
             'max_special_gold': max(r['gold'] for r in special_rows),
             'max_special_material': max(r[k] for r in special_rows for k in MATERIALS),
@@ -204,18 +230,17 @@ def check_construction(catalog):
 
 
 def check_housing(planned, actual):
-    assert len(actual) == 81 and len(planned) == len(model.HOUSES) == 83
-    assert set(model.PLANNED) == set(planned)-set(actual) == {'sinoceratops', 'megalodon'}
+    assert actual == planned and len(actual) == len(model.HOUSES) == 83
+    assert set(model.ADDED_SPECIES) == {'sinoceratops', 'megalodon'}
     assert set(model.HOUSES) == set(planned)
-    assert Counter(x['size'] for x in actual.values())['giant'] == 28
-    assert Counter(x['size'] for x in planned.values())['giant'] == 29
+    assert Counter(x['size'] for x in actual.values())['giant'] == 29
     defaults = {'grassland':'grassland', 'forest':'forest', 'giant-plains':'grassland',
                 'wetland':'diet', 'rocky':'forest', 'desert':'desert', 'special':'forest',
                 'carnivore-zone':'carnivore', 'forest-isolation':'carnivore', 'raptor-zone':'carnivore',
                 'large-carnivore-zone':'carnivore', 'riverside':'carnivore', 'trex-isolation':'carnivore',
                 'large-carnivore-isolation':'carnivore', 'special-isolation':'origin-carnivore',
                 'aviary':'aerial', 'sky-dome':'aerial', 'marine-connection':'aerial', 'sky-dome-special':'aerial',
-                'aquarium':'marine', 'marine-hall':'marine', 'large-marine':'marine',
+                'aquarium':'marine', 'marine-hall':'marine', 'large-marine':'marine', 'marine-aquarium':'marine',
                 'hybrid-zone':'hybrid_herb', 'hybrid-zone-isolation':'hybrid_carn'}
     aliases = set()
     actual_giant_levels = {}
@@ -261,16 +286,15 @@ def check_housing(planned, actual):
         else:
             group, risk = species['category'], 1
         assert house['group'] == group and int(house['security_points']) == risk, sid
-    assert len(aliases) == 36
+    assert len(aliases) == 37
     assert json.loads(model.HOUSES['sinoceratops']['alternatives']) == [{'facility':'grassland','min_level':1}, {'facility':'forest','min_level':1}]
     assert json.loads(model.HOUSES['megalodon']['alternatives']) == [{'facility':'marine','min_level':1}]
-    for sid, row in model.PLANNED.items():
+    for row in model.ADDED_SPECIES.values():
         assert int(row['hatch_seconds']) == int(model.BANDS[row['rarity']]['hatch_seconds'])
-        assert planned[sid]['planned_only'] is True and sid not in actual
     body = model.HOUSING.read_text()
     assert 'OR 조건' in body and '고정 호환목록' in body and '별도의 사용자 입력' in body
-    return {'actual_species':81, 'planned_species':83, 'planned_additions':2,
-            'original_giants':28, 'planned_giants':29, 'old_aliases':36,
+    return {'actual_species':83, 'planned_species':83, 'catalog_promotions':2,
+            'runtime_giants':29, 'planned_giants':29, 'habitat_aliases':37,
             'safety_groups':dict(Counter(r['group'] for r in model.HOUSES.values()))}
 
 
@@ -284,12 +308,12 @@ def check_missions(planned):
         row = material[p['id']]
         assert p['primary_research'] == row['research'] == f'{node}:{rank}'
         assert p['required_additional_technology'] == []
-        assert row['reward'] == p['reward'] and row['fuel'] == p['base_fuel'] and row['checks'] == p['manual_successful_checks']
+        assert row['reward'] == p['reward'] and row['checks'] == p['manual_successful_checks']
         assert p['reward']['material'] == AREA_MATERIAL[p['area_id']]
     for identifier, row in material.items():
         assert row['area_id'] in AREA_MATERIAL and row['reward']['material'] == AREA_MATERIAL[row['area_id']]
         assert row['reward']['quality'] in {1,2,3} and row['reward']['quantity'] >= 1
-        assert row['gold'] > 0 and row['fuel'] in {5,10} and row['checks'] in {3,4,5,6}
+        assert row['gold'] > 0 and row['checks'] in {3,4,5,6}
         assert row['play'] in model.PLAY and 'deadline' not in row
     assert set(model.PLAY) == {'guided','routine','advanced'}
     for row in model.PLAY.values():
@@ -317,15 +341,15 @@ def check_missions(planned):
             assert row['research']=='previous_registration' and row['species'] in {'parasaurolophus','iguanodon','triceratops','stegosaurus','velociraptor'}
         else:
             assert row['research'].startswith('gene-') and model.required_lab(row['research'])<=25
-        assert all(row[key]==int(model.BANDS[row['rarity']][key]) for key in ['gold','fuel','checks','hatch_seconds','hatch_gold'])
-        assert row['hatch_gold']==0 and row['fuel']==5
+        assert all(row[key]==int(model.BANDS[row['rarity']][key]) for key in ['gold','checks','hatch_seconds','hatch_gold'])
+        assert row['hatch_gold']==0
     staged=optional_json(Path('/tmp/plan09c-exploration.json'))
     if staged:
         assert set(model.FEES)=={r['mission_id'] for r in staged['existing_mission_prices']}
         for row in staged['existing_mission_prices']:
             assert int(model.FEES[row['mission_id']]['gold'])==row['gold']
         for row in staged['natural_price_bands']:
-            assert all(int(model.BANDS[row['rarity']][k])==row[k] for k in ['gold','fuel','checks','hatch_seconds','hatch_gold'])
+            assert all(int(model.BANDS[row['rarity']][k])==row[k] for k in ['gold','checks','hatch_seconds','hatch_gold'])
         for row in staged['natural_targets']:
             now=eggs[row['mission_id']]
             assert now['species']==row['species_id'] and now['research']==row['primary_research'] and now['area']==row['display_area']
@@ -348,7 +372,7 @@ def check_genetics(planned, raw):
     assert set(raw['materials'].values())==set(AREA_MATERIAL.values())
     assert {v for v in raw['qualities'].values() if isinstance(v,int)}=={1,2,3}
     assert raw['rules']['epic']=={'successRate':0.5,'guaranteedAttempt':5}
-    assert raw['rules']['legendary']=={'successRate':0.3,'guaranteedAttempt':8}
+    assert raw['rules']['legendary']=={'successRate':0.1,'guaranteedAttempt':8}
     assert len(model.RECIPES)==9 and len(model.PUBLIC_COMPLETION)==1 and len(recipes)==10
     assert set(model.RECIPES)<=set(planned)
     approved_parents={'allosinosaurus':['allosaurus','sinoceratops'],
@@ -416,7 +440,7 @@ def check_genetics(planned, raw):
             assert paid==max(1,ceil(base*(1-percent))) and paid>=1
     assert model.synthesis_actual('megalodon-rex')['dna']==180>model.building.P['initial_material_capacity']
     pity={}
-    for rarity,p,limit in [('epic',F(1,2),5),('legendary',F(3,10),8)]:
+    for rarity,p,limit in [('epic',F(1,2),5),('legendary',F(1,10),8)]:
         probabilities=[(1-p)**(n-1)*p for n in range(1,limit)]+[(1-p)**(limit-1)]
         expected=sum(n*probability for n,probability in enumerate(probabilities,1))
         assert sum(probabilities)==1 and model.expected_attempts(rarity)==expected

@@ -13,7 +13,6 @@ interface Currency {
   gold: number;
   diamond: number;
   dna: number;
-  explorationEnergy: number;
 }
 
 interface Park {

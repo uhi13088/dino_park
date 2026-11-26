@@ -25,7 +25,12 @@ export * from './api.types';
 
 export * from './first-expedition.types';
 export * from './drive-expedition.types';
+export * from './scout-expedition.types';
 
 export * from './resources.types';
 export * from './milestone-synthesis.types';
 export * from './repeat-synthesis.types';
+export * from './exhibit-placement.types';
+export * from './technology.types';
+export * from './experimental-hybrid.types';
+export * from './safari.types';

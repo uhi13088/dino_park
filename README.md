@@ -69,6 +69,10 @@ DATABASE_URL='postgresql://postgres:postgres@localhost:5432/dino_park?schema=pub
 5. [공룡 개체 능력치](apps/server/prisma/patches/20261119_dinosaur_competitive_stats.sql)
 6. [반복 합성](apps/server/prisma/patches/20261119_repeat_synthesis.sql)
 7. [파크 성장 목표와 기술 연구](apps/server/prisma/patches/20261119_park_growth.sql)
+8. [파크 관람객 퇴장 시각](apps/server/prisma/patches/20261119_park_visitors.sql)
+9. [공룡의 돌봄 상태 변화 기록](apps/server/prisma/patches/20261119_dinosaur_care_progress.sql)
+
+이미 셔틀버스 이전 스키마로 실행 중인 로컬 개발 DB에는 [셔틀버스 보유·배차 저장 패치](apps/server/prisma/patches/20261124_park_shuttle.sql)를 적용합니다. 새 개발 DB는 현재 스키마로 준비합니다.
 
 패치는 기존 잔액·공룡·시설·좌표·경험치를 보존합니다. 새 입장 실적은 0명부터 계산되고, 도감을 열면 기존에 보유한 공룡이 실제 획득 시각으로 등록됩니다. 개체별 능력치가 비어 있으면 종별 인기도와 기본 능력치를 사용합니다.
 
@@ -81,7 +85,7 @@ corepack pnpm@9.0.0 --filter @dino-park/client dev --host 127.0.0.1
 
 게임은 <http://127.0.0.1:3000>, API 문서는 <http://localhost:4000/api/docs>에서 확인합니다. 현재 시작 버튼은 개발용 로그인으로 새 계정을 생성합니다.
 
-빈 파크에는 파라사우롤로푸스 1마리, 초원 서식지, 경계 입구가 한 번 지급됩니다. **초원에 공룡 배치 → 먹이 주기 → 파크 개장 → 유료 입장객10명 → 첫 관람대 건설** 순서로 플레이합니다. 첫 관람대는1,500골드·30초이며 정원이12명에서32명으로 늘어납니다. 건설은 위치 미리보기 뒤 확정하고 취소하면 차감하지 않습니다. 배치 중 방향키·Enter·Esc를 사용할 수 있고 전체 보기·확대·축소도 지원합니다. 배치·상태·골드·입장 실적·시설은 DB에 저장됩니다. 기존 파크의 재화/개체/시설은 보존하며 중앙에 있는 입구는 무료로 옮길 수 있습니다. 이미 돌본 공룡의 과거 이력도 인정하고 시작 콘텐츠를 반복 지급하지 않습니다.
+빈 파크에는 파라사우롤로푸스 1마리, 초원 서식지, 경계 입구가 한 번 지급됩니다. **초원에 공룡 배치 → 먹이 주기 → 파크 개장 → 유료 입장객 10명 → 첫 관람대 건설** 순서로 플레이합니다. 첫 관람대는 1,500골드와 30초가 들며 가까운 전시의 혼잡을 줄이고 만족도를 높입니다. 파크의 동시 수용 인원은 관람길로 이어진 전시에 따라 늘어나며, 손님은 2분 동안 관람한 뒤 퇴장합니다. 건설은 위치 미리보기 뒤 확정하고 취소하면 차감하지 않습니다. 배치 중 방향키·Enter·Esc를 사용할 수 있고 전체 보기·확대·축소도 지원합니다. 배치·상태·골드·입장 실적·시설은 DB에 저장됩니다. 기존 파크의 재화/개체/시설은 보존하며 중앙에 있는 입구는 무료로 옮길 수 있습니다. 이미 돌본 공룡의 과거 이력도 인정하고 시작 콘텐츠를 반복 지급하지 않습니다.
 
 입구가 없는 기존 파크에는 공룡과 시설을 유지하면서 통로가 확보된 경계의 빈자리에 입구를 무료로 설치합니다. 배치할 공간이 부족하면 경계 공간을 확보한 뒤 파크 화면에서 **입구 다시 찾기**를 누릅니다.
 
@@ -112,15 +116,15 @@ corepack pnpm@9.0.0 exec playwright test e2e/starter-park.spec.ts --project=chro
 - [기본 자원·생산](docs/current/resources-and-production.md): 일반 4종+연구 5종, 필요성·품질·획득/생산·사용처와 구버전 통합
 - [운영·생산·초반 밸런스](docs/current/balance.md): 입장료·자원 생산·시설·미션의 비용/시간과 검산 상태
 - [공룡 획득·DNA 연구](docs/current/dna-and-collection.md): 탐험·변종·하이브리드
-- [기술 연구트리](docs/current/research-trees.md): 4계열72항목·각3~5단계·연구원 병렬 작업과 DNA 합성 분리. 72항목의 자원·시간·레벨별 효과 정의 완료안. [나머지58항목 레벨별 효과표](docs/current/research-effect-tables.md)
+- [기술 연구트리](docs/current/research-trees.md): 4계열 69항목·각 3~5단계의 자원, 시간, 효과. 연구원 병렬 작업과 DNA 합성은 별개다. [상세 효과표](docs/current/research-effect-tables.md)
 - [확장·탐험·후속 합성 상세](docs/current/followup-content-tables.md): 토지5단계·특수시설125레벨·재료/알목표·계획83종과 후속 레시피. [탐험 플레이](docs/current/exploration-play.md)와 함께 읽는 구현 전 기획안
-- [연구별 자원·시간 전체표](docs/current/research-cost-tables.md):72기술의각레벨총252회연구자원·기본시간·최종하한
-- [건물 성장 기획](docs/current/buildings.md): 주요25레벨·5레벨 외형/기능 변화, 금고와 연료 보급소. 기존52종 통합 분류
-- [건물별 1~25 상세표](docs/current/building-upgrade-tables.md): 21시설525행의 효과·자원·골드·시간과 누적 투자
+- [연구별 자원·시간 전체표](docs/current/research-cost-tables.md): 한 기술의 모든 레벨을 합한 239회 연구의 자원·기본 시간·최종 하한
+- [건물 성장 기획](docs/current/buildings.md): 주요 시설 25레벨, 5레벨마다의 외형·기능 변화와 금고
+- [건물별 1~25 상세표](docs/current/building-upgrade-tables.md): 주요 20개 시설 500행의 효과·자원·골드·시간과 누적 투자
 - [파크 성장과 경험치](docs/current/park-progression.md): 파크 Lv.5→6 실행 경로와 이후 레벨별 성장 기획
 - [TASK](TASK.md): 실제 완료·검증과 다음 구현 순서
 
-전체 골드 한도와 금고, 연료 보급소, 관람대 Lv.6 이후의 시설 성장, 전체 연구트리는 0.6 기획에 따라 단계적으로 적용합니다.
+전체 골드 한도와 금고, 관람대 Lv.6 이후의 시설 성장, 전체 연구트리는 0.6 기획에 따라 단계적으로 적용합니다. 탐험가를 파견할 때 조사별 준비비를 지불합니다. 깊은 바다와 지정 장거리 원정은 연료도 사용합니다.
 
 기존 GDD·도감·시나리오·기술 설계는 원자료로 보존합니다. 새 기획은 `docs/current/`에 반영하며, 미구현 내용과 현재 실행 동작을 혼용하지 않습니다.
 

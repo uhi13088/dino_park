@@ -19,16 +19,17 @@ def render():
     s = model.summary()
     goals, levels = model.goal_rows(), model.level_rows()
     lines = ['# Park5~50 성장 목표·경험치 공급표 0.6', '',
-             '**[성장 정본](park-progression.md)에서 생성한 기획 표다. 실제 게임 적용·완주기간 검증을 뜻하지 않는다.**', '',
+             '**[성장 정본](park-progression.md)에서 생성한 전체 기획 표다. 현재 이용할 수 있는 목표는 [첫 전시 뒤 파크 Lv.15까지](park-progression.md#첫-전시-뒤-파크-lv15까지)에서 확인한다.**', '',
              f'초반 {s["early_goal_xp"]:,}XP → Park5 잔여{s["park5_carry_xp"]}XP. '
-             f'추가 {s["goals"]}개 목표 {s["new_goal_xp"]:,}XP → 누적{s["cumulative_to_park50"]:,}XP, Park50 잔여0.', '',
-             '목표는 파크 소유·첫 영웅 개체 수령 후·해당 Park 이상에서 수동 한 번 수령한다. '
+             f'이후 레벨 전환 보상 {s["new_goal_xp"]:,}XP → 누적{s["cumulative_to_park50"]:,}XP, Park50 잔여0.', '',
+             'Lv.6→7과 Lv.7→8은 현재 운영·탐험 경로를 완료하고 보상을 수령한다. '
+             '아래 네 분야 표는 장기 기획에 해당한다. 첫 영웅 개체 수령 후 해당 Park 이상에서 목표별로 한 번 수령한다. '
              '시설·연구와 일반 현장은 두 대안 중 하나로 완료한다. Park25·30·35 현장은 본편 장 완료 단일조건이다. 정상 선완료 이력을 인정한다. '
              '네 트랙 수령 순서는 자유다. 기존 비용·시간·연구원·부모·허가는 그대로이며 탐험 직접XP는0이다. '
-             '입장마다XP를 지급하지 않고 유한한45개 실적 구간만 한 번 보상한다.', '',
+             '누적 입장 경험치 보상은 해당 실적 목표를 달성했을 때 한 번 받는다.', '',
              '권장 연구소 준비는 새 Park 해금이 아니다. 장면 링크(story_refs)는 안내이며 '
              'Park25·30·35에 명시한 장 완료 외에 추가 스토리 조건을 붙이지 않는다. '
-             '72기술 전체최대·83종 전수집·15합성·전결말·추가 유료연구원·다이아구매는 필수가 아니다. '
+             '69기술 전체최대·83종 전수집·15합성·전결말·추가 유료연구원·다이아구매는 필수가 아니다. '
              '수급·실제기간·실플레이 완주는 미검증이며 Park50 이후에도 운영·확장·수집을 이어 간다.', '',
              '## 성장 단계', '',
              mdtable(['권장 Park', '단계', '기존 콘텐츠 연결', '장면 ID'],
@@ -42,6 +43,11 @@ def render():
                        f'Lv.{r["recommended_lab"]}'] for r in levels]), '']
     for level in levels:
         park = level['park_level']
+        if park in model.CURRENT_STRATEGY_LEVELS:
+            lines += [f'## Park{park} → {park+1}', '',
+                      f'전환 보상 {level["new_xp"]:,}XP, 수령 후 전체 누적 {level["cumulative_park_xp"]:,}XP. '
+                      f'[운영·탐험 경로](park-progression.md#파크-레벨-{park}에서-{park+1}까지)에서 현재 조건을 확인한다.', '']
+            continue
         lines += [f'## Park{park} → {park+1}', '',
                   f'권장 연구소 Lv.{level["recommended_lab"]}; 기존 선행기술·시설고도화·공사를 거친다. '
                   f'네 목표 합계 {level["new_xp"]:,}XP, 수령 후 전체 누적 {level["cumulative_park_xp"]:,}XP.', '']

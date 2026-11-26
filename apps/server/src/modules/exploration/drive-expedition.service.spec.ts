@@ -1,123 +1,91 @@
-import {
-  EARLY_SYNTHESIS_SAFETY_FLAG,
-  MaterialQuality,
-  PARK_LEVEL_SIX_CATALYST_MISSION_ID,
-  ResearchMaterial,
-} from '@dino-park/shared';
+import { MaterialQuality, ResearchMaterial, type DriveMissionReward } from '@dino-park/shared';
+import type { DriveRunStatus } from '@prisma/client';
 import type { PrismaService } from '../../prisma/prisma.service';
 import type { ParkOperationsService } from '../park/park-operations.service';
 import { DriveExpeditionService } from './drive-expedition.service';
-import { IGUANODON_CARE_RECEIPT } from './expedition-state';
 
-function fixture() {
-  const park = {
-    id: 'park',
-    level: 5,
-    exp: 0,
-    buildings: [],
-    dinosaurs: [],
-    dinosaurCollections: [{ speciesId: 'iguanodon' }],
-    firstSynthesis: { claimedAt: null as Date | null, exhibitedAt: null as Date | null },
-  };
+function fixture(reward: DriveMissionReward, status: DriveRunStatus = 'REWARD') {
+  const run = { id: 'run', parkId: 'park', missionId: 'trike', reward, status };
   const tx = {
-    park: { findUnique: jest.fn(async () => park) },
-    currency: {
-      findUniqueOrThrow: jest.fn(async () => ({
-        gold: 10000,
-        explorationEnergy: 30,
-        energyLastRechargedAt: new Date(),
-      })),
-      update: jest.fn(),
-    },
     driveRun: {
-      findUnique: jest.fn(async () => null),
-      groupBy: jest.fn(async () =>
-        ['dna1', 'dna2', 'culture', 'catalyst'].map((missionId) => ({ missionId })),
+      findFirst: jest.fn(async ({ where }) =>
+        where.park.userId === 'owner' &&
+        (!where.id || where.id === run.id) &&
+        (!where.status || where.status === run.status)
+          ? run
+          : null,
       ),
+      update: jest.fn(async ({ data }) => Object.assign(run, data)),
     },
-    hatchingQueue: { findMany: jest.fn(async () => []) },
-    storyFlag: {
-      findMany: jest.fn(async () =>
-        [IGUANODON_CARE_RECEIPT, EARLY_SYNTHESIS_SAFETY_FLAG].map((flagId) => ({
-          flagId,
-          value: true,
-        })),
-      ),
-    },
-    exploration: { findFirst: jest.fn() },
-    resourceInventory: { findMany: jest.fn(async () => []) },
+    hatchingQueue: { create: jest.fn() },
+    resourceInventory: { upsert: jest.fn() },
   };
+  let last = Promise.resolve<unknown>(undefined);
   const service = new DriveExpeditionService(
     {
-      $transaction: (callback: (client: typeof tx) => Promise<unknown>) => callback(tx),
+      ...tx,
+      $transaction: (callback: (client: typeof tx) => Promise<unknown>) => {
+        const task = last.then(() => callback(tx));
+        last = task.catch(() => undefined);
+        return task;
+      },
     } as unknown as PrismaService,
     { settleInTransaction: jest.fn() } as unknown as ParkOperationsService,
   );
-  return { park, tx, service };
+  return { run, tx, service };
 }
 
-describe('post-exhibit material driving', () => {
-  it('reopens previously claimed material targets when the first hybrid is exhibited', async () => {
-    const { park, tx, service } = fixture();
-    const before = await service.getState('owner');
-    expect(before.missions.filter(({ reward }) => reward.type === 'material')).toEqual(
-      expect.arrayContaining(
-        ['dna1', 'dna2', 'culture', 'catalyst'].map((id) =>
-          expect.objectContaining({ id, status: 'claimed', repeatable: false }),
-        ),
-      ),
-    );
-    await expect(service.start('owner', 'dna1')).rejects.toThrow('이미 수령');
-    expect(tx.currency.update).not.toHaveBeenCalled();
+const egg = {
+  type: 'egg',
+  speciesId: 'triceratops',
+  hatchSeconds: 3600,
+} satisfies DriveMissionReward;
 
-    park.firstSynthesis.exhibitedAt = new Date();
-    const after = await service.getState('owner');
-    expect(after.missions.filter(({ repeatable }) => repeatable)).toEqual(
-      expect.arrayContaining(
-        ['dna1', 'dna2', 'culture', 'catalyst'].map((id) =>
-          expect.objectContaining({ id, status: 'available' }),
-        ),
-      ),
-    );
-    expect(after.missions.filter(({ reward }) => reward.type === 'egg')).toEqual(
-      before.missions.filter(({ reward }) => reward.type === 'egg'),
-    );
+describe('completed legacy drive rewards', () => {
+  it.each(['RUNNING', 'FAILED', 'ABANDONED'] as const)(
+    'hides and declines an unearned %s result',
+    async (status) => {
+      const { service, tx } = fixture(egg, status);
+      expect(await service.getState('owner')).toEqual({ run: null });
+      await expect(service.claim('owner', 'run')).rejects.toThrow('완료 기록');
+      expect(tx.hatchingQueue.create).not.toHaveBeenCalled();
+    },
+  );
+
+  it('limits pending reports to their owner and allows one repeat-safe hatch receipt', async () => {
+    const { service, tx } = fixture(egg);
+    expect(await service.getState('owner')).toMatchObject({ run: { id: 'run', reward: egg } });
+    expect(await service.getState('intruder')).toEqual({ run: null });
+    await expect(service.claim('intruder', 'run')).rejects.toThrow('탐험 기록');
+    await Promise.all([service.claim('owner', 'run'), service.claim('owner', 'run')]);
+    expect(tx.hatchingQueue.create).toHaveBeenCalledTimes(1);
+    expect(tx.hatchingQueue.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        sourceDriveId: 'run',
+        speciesId: 'triceratops',
+        readyToStart: true,
+      }),
+    });
+    expect(await service.getState('owner')).toEqual({ run: null });
   });
 
-  it('preserves the existing mission prerequisites when a material target is repeatable', async () => {
-    const { park, tx, service } = fixture();
-    park.firstSynthesis.exhibitedAt = new Date();
-    tx.driveRun.groupBy.mockResolvedValueOnce([{ missionId: 'dna1' }]);
-    const { missions } = await service.getState('owner');
-    expect(missions.find(({ id }) => id === 'dna2')).toMatchObject({ status: 'available' });
-    expect(missions.find(({ id }) => id === 'catalyst')).toMatchObject({
-      status: 'locked',
-      repeatable: true,
-    });
-  });
-
-  it('offers the repeatable growth route after the hero claim, with separate quality stock', async () => {
-    const { park, service } = fixture();
-    const missionId = PARK_LEVEL_SIX_CATALYST_MISSION_ID;
-    await expect(service.start('owner', missionId)).rejects.toThrow(
-      '주행 목표를 찾을 수 없습니다.',
+  it('grants the frozen material reward and retains the canonical claimed record', async () => {
+    const reward = {
+      type: 'material',
+      material: ResearchMaterial.DNA,
+      quality: MaterialQuality.MIDDLE,
+      amount: 10,
+    } satisfies DriveMissionReward;
+    const { service, tx } = fixture(reward);
+    await service.claim('owner', 'run');
+    expect(tx.resourceInventory.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        update: { amount: { increment: 10 } },
+      }),
     );
-    park.firstSynthesis.claimedAt = new Date();
-    const { missions, stock } = await service.getState('owner');
-    expect(missions.find(({ id }) => id === missionId)).toMatchObject({
-      goldCost: 350,
-      energyCost: 5,
-      status: 'available',
-      repeatable: true,
-      reward: { material: ResearchMaterial.CATALYST, quality: MaterialQuality.LOW, amount: 1 },
+    expect(tx.driveRun.update).toHaveBeenCalledWith({
+      where: { id: 'run' },
+      data: { activeSlot: null, status: 'CLAIMED', claimedAt: expect.any(Date) },
     });
-    expect(missions.find(({ id }) => id === 'catalyst')).toMatchObject({
-      status: 'claimed',
-      repeatable: false,
-    });
-    expect(stock.filter(({ material }) => material === ResearchMaterial.CATALYST)).toEqual([
-      { material: ResearchMaterial.CATALYST, quality: MaterialQuality.MIDDLE, amount: 0 },
-      { material: ResearchMaterial.CATALYST, quality: MaterialQuality.LOW, amount: 0 },
-    ]);
   });
 });

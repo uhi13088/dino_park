@@ -21,26 +21,26 @@
     "docs/dino_park_technical_design.md": "5f72fab078b1c0c48a60f162e3d75cd668d67ea32ad6d868173c4ba1c6de2792",
     "docs/dino_park_tycoon_gdd.md": "1158c4f02d29e0573a0d51c6bac2ca644737e712839ae3b6e2c7078b9597dfc7",
     "docs/dino_park_ui_art_guide.md": "343c567c10f4fc6bc5e7a3af7894adb925edb64858731b56a56507cdec11ad98",
-    "docs/current/story-progression.md": "3dc9475940e9e76f18f7b17b67332585d8062ccd981efccfa70b2b464cfc98a5",
-    "docs/current/game-design.md": "76ccc67e7c71d0a3d471ab4b6b94d81e6fdd306604c4a1449eb2038150232a07",
-    "docs/current/resources-and-production.md": "810dac83fbc77c4246c7a2e7f6d4ce6b47b48e75e498f605e6198bf687d9c96d",
-    "docs/current/balance.md": "009db7aef939f55251a377f25bebd53bdfcbf18b7c23f3a01c5bd7f143f41d47",
-    "docs/current/dna-and-collection.md": "35388face7504be37ee89f307bcb65ea4f44f1eff7ff7db6bc212fdae2f1eae2",
-    "docs/current/buildings.md": "ab4d80c7eeabf358da86d02b6f09b01c1892e1f5cafea764c3a9e118792c5245",
-    "docs/current/research-trees.md": "7d1389bcc51bef08e06cf80131afd8d4e8aa7abd5035713e3b4984d3926f868f",
-    "docs/current/research-effects.md": "b0da4b8f14b7bff84cfcbaaff6f7a998a4eac2269a1e379bd138928d911ade2b",
-    "docs/current/exploration-play.md": "0b251ebdcdae70ca5278c429e0fef63e96832434bc7c5725915a8ba017888f82",
-    "docs/current/building-upgrade-tables.md": "3af28c8f96dbb3ab683dc27bf567f2e6f7ceabf0245464cacbe5ff9d230e59ac",
-    "docs/current/research-cost-tables.md": "6ada7b9ad77fa85c39b8a1d70e9bc953127098684b805ff7bbf43f0b056ca36b",
-    "docs/current/research-effect-tables.md": "cf532a9a38537bf42f67e1b24878d322f5623d17529c02c9f9cff28d6b4684d3",
-    "docs/current/followup-content-tables.md": "723bdde998917a3ae093f3ed96a6c0f052301531dcdd9395052c7f65473e6390",
-    "docs/current/dinosaur-acquisition-tables.md": "8eba323a5684ccbb29bd130fd7369d3f132e4fe1342ca66a73a783c637942bcd",
-    "docs/current/dinosaur-acquisition.md": "1a76d557763a5e91265f56cb76054a6e1eb8f281c8886b2695bb658d137c82cb",
-    "docs/current/great-figures.md": "7b598c86fcf8ba96ddd34636bd223ea4891a1e94f2487b0900ecb8f884859a18",
-    "docs/current/production-and-services.md": "d4dbb06acfb8d9ef0880843e3b4a9b79ed0e7a9cd1e458a5686847fe14210718",
-    "docs/current/story-and-characters.md": "89a1fc78400c618b05f8c32312922a9d1ba90152cde8298977d2ea93a073e105",
-    "docs/current/park-progression.md": "d4f89f794e6042836509fcd8abe26bb0a8e1fc211fd3f01543612fd3482791c8",
-    "docs/current/park-progression-tables.md": "014c3b960761651b91908c75f0fddd4ff96f1f685a4969473db30b0f890c2683",
+    "docs/current/story-progression.md": "7d40ce5bf2906d95cf490ce73923221eac43b7570320616b7070d7dedb195a9a",
+    "docs/current/game-design.md": "0fec23ad7a4548be152ef4efd925757c7c015834710b80e3dcc8b44539d350d9",
+    "docs/current/resources-and-production.md": "c2b23f043c76c271a72e5b89d7d1339d1251fae6f35e2c6e0de8502657d8609d",
+    "docs/current/balance.md": "f625f4c3026d0fce6570d8eef1d3f03edb01b354338d7102dea3545fc17fedd8",
+    "docs/current/dna-and-collection.md": "52eae44d31af9290ce96d998b276e2c5f5679152dd5e6023afe4737958e69324",
+    "docs/current/buildings.md": "3d3d0d99b0305df54f8b4c83b6e8ef06e8bd1e9ff290b366cf76015893417280",
+    "docs/current/research-trees.md": "c882185dc1555a64a78ec7cff4bc8b96b767915bb161b2b307db5016db8f3218",
+    "docs/current/research-effects.md": "6ccefe4ed9ed382db81032f6d1b58064fce5e526ceebf721525af3e95fc6ba5b",
+    "docs/current/exploration-play.md": "6aca0449ca83cfa69618ad7807c4ec0e17a2e458029b03ca367506856eb01477",
+    "docs/current/building-upgrade-tables.md": "07e46a98e62485a8ba6af600d2760e2f0c2ca48993a40ad1cdc0d292c3957331",
+    "docs/current/research-cost-tables.md": "89abc0a7fa88ee7ad81b90303f46fc788a39de2fce23da296d3522a2b64ef57c",
+    "docs/current/research-effect-tables.md": "231d3474704009a495c7806f87edf7437521d363c1e88cb0449f21073dee08b5",
+    "docs/current/followup-content-tables.md": "4217a04fd60ec098fc134e4fc50c7fd16d0fedfdf7adadb6f2ab8fa309881154",
+    "docs/current/dinosaur-acquisition-tables.md": "3fcae03a2d715b51852a8916f0080041e8f4753535e4746798a56162fab00ae7",
+    "docs/current/dinosaur-acquisition.md": "c7e62f23c01893a3515d9aba62e9756491c224a48a44230b96ac7d9487977efe",
+    "docs/current/great-figures.md": "f887d8de620f559b504c9b9f6c2e90c0f85aa20f824225720440c691624e0690",
+    "docs/current/production-and-services.md": "e9974c9679bb8c485da72c0a06e3ac9d991ac9a5bdd60efe0972f9e2f35284f0",
+    "docs/current/story-and-characters.md": "5495cdce429b534a0dc5c3a9b47cba448650ebd7da0b878cd16887eab79712f9",
+    "docs/current/park-progression.md": "e682d84e9f7941d3b913a486501c1240d461c0b361e7e10d1f13e033379a6f80",
+    "docs/current/park-progression-tables.md": "f8b3959605b4a1d2f8ee9f3285ac9af82f87d6bdd72869df6e7269df7442881d",
     "apps/client/public/assets/placeholders/triceratops.svg": "65ac6be5171bc0a0cdc45c350bdeae0c713c3a3f576229cde375fda7fd021eaf",
     "apps/client/public/assets/placeholders/stegosaurus.svg": "9c092dbdb92929fb146aa2b0917cc6e029ab4cd3347a8bdf964c8713aca32752",
     "apps/client/public/assets/placeholders/stegoceratops.svg": "4ca36f3af95a4961ced65b051ac9014b287dfc2cf88db66458cbfe4c4f14de1c",
@@ -57,7 +57,7 @@
       "actual_species": 81,
       "planned_species": 83,
       "additional_planned_species": 2,
-      "building_catalog": 52,
+      "building_catalog": 55,
       "major_building_profiles": 26,
       "major_building_levels": 650,
       "research_nodes": 72,
@@ -98,7 +98,7 @@
     "canonical_documents": [
       {
         "path": "docs/current/game-design.md",
-        "sha256": "76ccc67e7c71d0a3d471ab4b6b94d81e6fdd306604c4a1449eb2038150232a07",
+        "sha256": "0fec23ad7a4548be152ef4efd925757c7c015834710b80e3dcc8b44539d350d9",
         "role": "canonical",
         "headings": [
           {
@@ -129,55 +129,70 @@
           {
             "level": 2,
             "title": "4. 공간과 파크 운영",
-            "line": 64
+            "line": 66
           },
           {
             "level": 3,
-            "title": "금고와 탐험 연료",
-            "line": 81
+            "title": "전시 확장과 관람대 강화",
+            "line": 79
+          },
+          {
+            "level": 3,
+            "title": "위험 공룡 전시 준비",
+            "line": 99
+          },
+          {
+            "level": 3,
+            "title": "입장 진단에서 원인 찾기",
+            "line": 105
+          },
+          {
+            "level": 3,
+            "title": "금고와 탐험가 파견",
+            "line": 109
           },
           {
             "level": 2,
             "title": "5. 첫 10분",
-            "line": 87
+            "line": 115
           },
           {
             "level": 2,
             "title": "6. 첫 합성까지의 진행",
-            "line": 108
+            "line": 136
           },
           {
             "level": 2,
             "title": "7. 연구를 통한 확장과 시설 조작",
-            "line": 133
+            "line": 161
           },
           {
             "level": 2,
             "title": "8. 에셋",
-            "line": 156
+            "line": 186
           },
           {
             "level": 2,
             "title": "9. 현재 구현과 남은 일",
-            "line": 170
+            "line": 190
           },
           {
             "level": 2,
             "title": "10. 구현 순서와 완료 기준",
-            "line": 187
+            "line": 213
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 198
+            "line": 225
           }
         ],
         "book_chapter": "기본 게임과 성장 흐름",
-        "scope": "첫 플레이·육상 주행·첫 영웅 전시와 성향이 있는 반복 합성·대표 전시의 현재 범위"
+        "scope": "전시와 배치 효과, 입장 진단, 사파리와 관람 동선, 첫 플레이와 합성"
       },
       {
         "path": "docs/current/resources-and-production.md",
-        "sha256": "55eaa1541eb3fe3ee056e2b947583787e0770dd05e6e29bf0c6cbf21123a3b55",
+        "sha256": "c2b23f043c76c271a72e5b89d7d1339d1251fae6f35e2c6e0de8502657d8609d",
         "role": "canonical",
         "headings": [
           {
@@ -197,81 +212,81 @@
           },
           {
             "level": 2,
-            "title": "3. 골드·다이아·GP·탐험 연료",
+            "title": "3. 골드·다이아·GP",
             "line": 51
           },
           {
             "level": 3,
             "title": "금고와 입장료 실적",
-            "line": 62
+            "line": 61
           },
           {
             "level": 2,
             "title": "4. 품질·공룡 등급·시설 레벨",
-            "line": 78
+            "line": 77
           },
           {
             "level": 2,
             "title": "5. 생산 시설과 생산 규칙",
-            "line": 95
+            "line": 94
           },
           {
             "level": 3,
-            "title": "탐험 연료의 자동 회복과 생산 수령",
-            "line": 119
+            "title": "특수 원정 연료와 보급",
+            "line": 113
           },
           {
             "level": 2,
             "title": "6. 건설·업그레이드에서의 소비",
-            "line": 129
+            "line": 123
           },
           {
             "level": 3,
             "title": "건설자와 연구원의 병렬 작업",
-            "line": 149
+            "line": 143
           },
           {
             "level": 2,
             "title": "7. 공룡 돌봄과 운영 비용",
-            "line": 171
+            "line": 165
           },
           {
             "level": 2,
             "title": "8. 저장과 사용자에게 보여줄 정보",
-            "line": 189
+            "line": 183
           },
           {
             "level": 2,
             "title": "9. 공룡 알·원종·이벤트 아이템",
-            "line": 201
+            "line": 195
           },
           {
             "level": 2,
             "title": "10. 자원 분류와 운영 범위",
-            "line": 211
+            "line": 205
           },
           {
             "level": 2,
             "title": "11. 단계별 소개와 진행 막힘 방지",
-            "line": 228
+            "line": 221
           },
           {
             "level": 2,
             "title": "12. 구현 상태·이관·완료 기준",
-            "line": 243
+            "line": 235
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 255
+            "line": 249
           }
         ],
         "book_chapter": "자원과 생산",
-        "scope": "일반 자원과 연구 재료의 소유·수급·사용. 중급 연구 재료 세 종류를 공통 재료함에 저장"
+        "scope": "자원 수급과 사용, 지도에서 생산품 수확과 누른 위치의 수확량 표시, 합성 재료 품질과 실험 견적, 금고와 창고의 보관 한도"
       },
       {
         "path": "docs/current/balance.md",
-        "sha256": "009db7aef939f55251a377f25bebd53bdfcbf18b7c23f3a01c5bd7f143f41d47",
+        "sha256": "f625f4c3026d0fce6570d8eef1d3f03edb01b354338d7102dea3545fc17fedd8",
         "role": "canonical",
         "headings": [
           {
@@ -292,135 +307,150 @@
           {
             "level": 2,
             "title": "3. 최초 건설과 도입",
-            "line": 59
+            "line": 55
           },
           {
             "level": 2,
             "title": "4. 강화 비용과 시간 계산",
-            "line": 93
+            "line": 88
           },
           {
             "level": 2,
             "title": "5. 건물별 성능",
-            "line": 183
+            "line": 177
           },
           {
             "level": 2,
-            "title": "6. 생산 단가와 연료",
-            "line": 228
+            "title": "6. 생산 단가",
+            "line": 221
           },
           {
             "level": 2,
             "title": "7. 입장료와 전체 금고 한도",
-            "line": 248
+            "line": 236
+          },
+          {
+            "level": 3,
+            "title": "7.1 셔틀버스 구매와 운행",
+            "line": 271
+          },
+          {
+            "level": 3,
+            "title": "7.2 사파리 우리 비용",
+            "line": 289
           },
           {
             "level": 2,
             "title": "8. 진행 목표와 보존 계약",
-            "line": 278
+            "line": 293
           },
           {
             "level": 2,
             "title": "9. 검산 범위",
-            "line": 290
+            "line": 305
           },
           {
             "level": 2,
             "title": "10. 초반 목표 앵커",
-            "line": 296
+            "line": 311
           },
           {
             "level": 3,
             "title": "초반 목표 미션",
-            "line": 298
+            "line": 313
           },
           {
             "level": 3,
             "title": "초반 파크 경험치",
-            "line": 314
-          },
-          {
-            "level": 2,
-            "title": "11. 연구 재료 승급 비용",
             "line": 329
           },
           {
             "level": 2,
+            "title": "11. 연구 재료 승급 비용",
+            "line": 344
+          },
+          {
+            "level": 2,
             "title": "12. 건설자와 연구원 고용",
-            "line": 333
+            "line": 348
           },
           {
             "level": 2,
             "title": "13. 기술 연구 비용과 시간",
-            "line": 364
+            "line": 379
           },
           {
             "level": 2,
-            "title": "14. 신규60기술의 자원·시간 산정",
-            "line": 401
+            "title": "14. 신규59기술의 자원·시간 산정",
+            "line": 416
           },
           {
             "level": 2,
             "title": "15. 최종 연구시간·할인·도달 가능성",
-            "line": 559
+            "line": 573
           },
           {
             "level": 2,
             "title": "16. 실제 부지 확장과 특수 사육시설",
-            "line": 576
+            "line": 590
           },
           {
             "level": 3,
             "title": "16.1. 별도로 지불하는 토지 확장",
-            "line": 578
+            "line": 592
           },
           {
             "level": 3,
             "title": "16.2. 기존 카탈로그의 특수환경5종",
-            "line": 596
+            "line": 612
           },
           {
             "level": 3,
             "title": "16.3. 전시 안전과 보유의 분리",
-            "line": 624
+            "line": 640
+          },
+          {
+            "level": 3,
+            "title": "16.4. 익룡 돔의 공간 단계",
+            "line": 648
           },
           {
             "level": 2,
-            "title": "17. 수동 탐험의 준비비와 원종 목표",
-            "line": 632
+            "title": "17. 탐험가 파견의 준비비와 원종 목표",
+            "line": 673
           },
           {
             "level": 3,
             "title": "17.1. 기존 연구가 여는41개 재료 미션",
-            "line": 634
+            "line": 675
           },
           {
             "level": 3,
             "title": "17.2. 초기 해금 공백을 막는 기초 반복5개",
-            "line": 686
+            "line": 727
           },
           {
             "level": 3,
             "title": "17.3. 자연종 알 회수와 부화",
-            "line": 702
+            "line": 743
           },
           {
             "level": 3,
             "title": "17.4. 수령·실패·시스템 오류",
-            "line": 771
+            "line": 812
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 777
+            "line": 818
           }
         ],
         "book_chapter": "경제와 수치",
-        "scope": "시설·재료·비용의 수치 원천. 종별 인기도와 개체 매력도를 반영하는 입장 모델"
+        "scope": "운영·생산·건설·연구 수치, 금고, 셔틀버스와 사파리 우리 비용"
       },
       {
         "path": "docs/current/dna-and-collection.md",
-        "sha256": "968c01612cd8c887526c15287aee3b7b4856d1e013c46353929bfe82484da99c",
+        "sha256": "52eae44d31af9290ce96d998b276e2c5f5679152dd5e6023afe4737958e69324",
         "role": "canonical",
         "headings": [
           {
@@ -514,22 +544,42 @@
             "line": 273
           },
           {
+            "level": 2,
+            "title": "10. 새 개체를 얻고 전시하는 방법",
+            "line": 289
+          },
+          {
             "level": 3,
             "title": "반복 합성과 개체 능력치",
-            "line": 289
+            "line": 291
+          },
+          {
+            "level": 3,
+            "title": "지정 레시피와 새 하이브리드",
+            "line": 305
+          },
+          {
+            "level": 3,
+            "title": "새 하이브리드 실험",
+            "line": 309
+          },
+          {
+            "level": 3,
+            "title": "연구자료 획득과 재현",
+            "line": 330
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 303
+            "line": 336
           }
         ],
         "book_chapter": "공룡 획득과 합성",
-        "scope": "스테고케라톱스 첫 지정과 반복 합성 구현. 성향·개체 능력치·예상 입장과 전시 교체"
+        "scope": "지정 합성 15개와 부모 선택 실험, 등급별 재료 품질, 연구자료 등록과 재현"
       },
       {
         "path": "docs/current/buildings.md",
-        "sha256": "b3f08367a89d1ccbf82a08344db65b25492ceee936e08dcba4f0265dd3f270d6",
+        "sha256": "3d3d0d99b0305df54f8b4c83b6e8ef06e8bd1e9ff290b366cf76015893417280",
         "role": "canonical",
         "headings": [
           {
@@ -554,111 +604,141 @@
           },
           {
             "level": 2,
-            "title": "3. 주요 21종의 역할과 변화 구간",
+            "title": "3. 주요 20종의 역할과 변화 구간",
             "line": 46
+          },
+          {
+            "level": 3,
+            "title": "실외 서식지 울타리 강화",
+            "line": 89
           },
           {
             "level": 2,
             "title": "4. 시설과 기능의 통합 분류",
-            "line": 91
+            "line": 95
           },
           {
             "level": 3,
-            "title": "서식지 8종",
-            "line": 99
+            "title": "서식지 9종",
+            "line": 103
           },
           {
             "level": 3,
             "title": "연구 시설 6종",
-            "line": 114
+            "line": 119
           },
           {
             "level": 3,
             "title": "관람 시설 6종",
-            "line": 127
+            "line": 132
           },
           {
             "level": 3,
             "title": "편의 시설 12종",
-            "line": 140
+            "line": 145
           },
           {
             "level": 3,
-            "title": "생산과 저장 시설 8종",
-            "line": 159
+            "title": "생산과 저장 시설",
+            "line": 164
           },
           {
             "level": 3,
             "title": "운영 시설 6종",
-            "line": 174
+            "line": 180
           },
           {
             "level": 3,
             "title": "장식 6종",
-            "line": 185
+            "line": 191
           },
           {
             "level": 2,
             "title": "5. 첫 전시 시설과 확장 후보",
-            "line": 199
+            "line": 205
           },
           {
             "level": 3,
             "title": "금고·누적 입장료의 구분",
-            "line": 213
-          },
-          {
-            "level": 3,
-            "title": "탐험 연료의 구분",
-            "line": 219
+            "line": 218
           },
           {
             "level": 2,
             "title": "6. 초반부터 장기 성장까지의 도입 순서",
-            "line": 225
+            "line": 224
           },
           {
             "level": 2,
             "title": "7. 구현·이관과 보존 계약",
-            "line": 241
+            "line": 240
           },
           {
             "level": 2,
             "title": "8. 연구 해금 뒤의 실제 확장·사육",
-            "line": 274
+            "line": 272
           },
           {
             "level": 3,
             "title": "8.1 토지의 유료 확장과 입구 미리보기",
-            "line": 278
+            "line": 276
+          },
+          {
+            "level": 4,
+            "title": "중반 인접 필지 매입",
+            "line": 286
+          },
+          {
+            "level": 4,
+            "title": "대형 파크의 관람 교통",
+            "line": 294
+          },
+          {
+            "level": 4,
+            "title": "사파리 지프 투어",
+            "line": 302
+          },
+          {
+            "level": 4,
+            "title": "사파리 시범 관람",
+            "line": 321
+          },
+          {
+            "level": 4,
+            "title": "스테고사우루스 3D 관람",
+            "line": 327
           },
           {
             "level": 3,
             "title": "8.2 기존 특수환경5시설의 역할과 외형",
-            "line": 288
+            "line": 333
+          },
+          {
+            "level": 3,
+            "title": "서식지 블록과 익룡 돔 공간",
+            "line": 357
           },
           {
             "level": 3,
             "title": "8.3 호환 판정·격리·거대종",
-            "line": 312
+            "line": 371
           },
           {
             "level": 3,
             "title": "8.4 에셋·실행 상태",
-            "line": 416
+            "line": 475
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 422
+            "line": 481
           }
         ],
         "book_chapter": "건물 역할과 사육 호환",
-        "scope": "건물 53종 카탈로그, 첫 전시 시설 적용, 주요 26시설의 25레벨과 호환 설계"
+        "scope": "건물 역할과 강화, 실외 서식지 울타리와 부지, 셔틀버스와 사파리 설계·관람, 종별 전시 조건"
       },
       {
         "path": "docs/current/research-trees.md",
-        "sha256": "7d1389bcc51bef08e06cf80131afd8d4e8aa7abd5035713e3b4984d3926f868f",
+        "sha256": "c882185dc1555a64a78ec7cff4bc8b96b767915bb161b2b307db5016db8f3218",
         "role": "canonical",
         "headings": [
           {
@@ -674,75 +754,75 @@
           {
             "level": 3,
             "title": "항목 수·연구 횟수·선행 깊이의 구분",
-            "line": 25
+            "line": 27
           },
           {
             "level": 2,
             "title": "2. 연구소가 다음 단계를 여는 방식",
-            "line": 31
+            "line": 33
           },
           {
             "level": 2,
-            "title": "3. 72개 기술의 목적과 연결",
-            "line": 55
+            "title": "3. 69개 기술의 목적과 연결",
+            "line": 57
           },
           {
             "level": 3,
             "title": "운영: 18개",
-            "line": 60
+            "line": 62
           },
           {
             "level": 3,
             "title": "사육: 18개",
-            "line": 85
+            "line": 87
           },
           {
             "level": 3,
             "title": "탐험: 18개",
-            "line": 110
+            "line": 112
           },
           {
             "level": 3,
             "title": "유전: 18개",
-            "line": 135
+            "line": 134
           },
           {
             "level": 2,
             "title": "4. 권한과 콘텐츠의 실제 적용",
-            "line": 163
+            "line": 162
           },
           {
             "level": 2,
             "title": "5. 기본 연구 효과 수치",
-            "line": 172
+            "line": 171
           },
           {
             "level": 2,
             "title": "6. 기존 효과의 중첩과 새 효과의 경계",
-            "line": 195
+            "line": 192
           },
           {
             "level": 2,
             "title": "7. 시설·재료·연구의 목적",
-            "line": 217
+            "line": 213
           },
           {
             "level": 2,
             "title": "8. 단계별 노출과 남은 수치 설계",
-            "line": 232
+            "line": 229
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 240
+            "line": 237
           }
         ],
         "book_chapter": "연구트리 구조",
-        "scope": "4계열72기술/각3~5레벨·선행·연구소·원래14효과"
+        "scope": "4계열 기술과 탐험 해금, 연구소·시설 고도화·연구원, 초기 정형 확장과 중반 인접 필지 매입의 해금 구분"
       },
       {
         "path": "docs/current/research-effects.md",
-        "sha256": "b0da4b8f14b7bff84cfcbaaff6f7a998a4eac2269a1e379bd138928d911ade2b",
+        "sha256": "6ccefe4ed9ed382db81032f6d1b58064fce5e526ceebf721525af3e95fc6ba5b",
         "role": "canonical",
         "headings": [
           {
@@ -763,340 +843,335 @@
           {
             "level": 2,
             "title": "운영 계열",
-            "line": 147
+            "line": 145
           },
           {
             "level": 3,
             "title": "관람 동선",
-            "line": 151
+            "line": 149
           },
           {
             "level": 3,
             "title": "관람시설 설계",
-            "line": 173
+            "line": 171
           },
           {
             "level": 3,
             "title": "토지 개발",
-            "line": 195
+            "line": 193
           },
           {
             "level": 3,
             "title": "시설 고도화",
-            "line": 219
+            "line": 217
           },
           {
             "level": 3,
             "title": "공사 공법",
-            "line": 241
+            "line": 239
           },
           {
             "level": 3,
             "title": "생산 공정",
-            "line": 263
+            "line": 261
           },
           {
             "level": 3,
             "title": "일괄 생산",
-            "line": 287
+            "line": 285
           },
           {
             "level": 3,
             "title": "창고 적재",
-            "line": 309
+            "line": 307
           },
           {
             "level": 3,
             "title": "자재 규격화",
-            "line": 331
+            "line": 329
           },
           {
             "level": 3,
             "title": "물자 조달",
-            "line": 355
+            "line": 353
           },
           {
             "level": 3,
             "title": "금고 관리",
-            "line": 377
+            "line": 375
           },
           {
             "level": 3,
             "title": "건축 경제",
-            "line": 399
+            "line": 397
           },
           {
             "level": 3,
             "title": "부재중 운영",
-            "line": 421
+            "line": 419
           },
           {
             "level": 3,
             "title": "편의시설 개선",
-            "line": 443
+            "line": 441
           },
           {
             "level": 3,
             "title": "테마 전시 기획",
-            "line": 465
+            "line": 463
           },
           {
             "level": 2,
             "title": "사육 계열",
-            "line": 485
+            "line": 483
           },
           {
             "level": 3,
             "title": "영양 관리",
-            "line": 489
+            "line": 487
           },
           {
             "level": 3,
             "title": "교감 훈련",
-            "line": 513
+            "line": 511
           },
           {
             "level": 3,
             "title": "단체 급식",
-            "line": 537
+            "line": 535
           },
           {
             "level": 3,
             "title": "단체 교감",
-            "line": 559
+            "line": 557
           },
           {
             "level": 3,
             "title": "반복 부화 공정",
-            "line": 581
+            "line": 579
           },
           {
             "level": 3,
             "title": "부화 설비 확장",
-            "line": 605
+            "line": 603
           },
           {
             "level": 3,
             "title": "신생 개체 보육",
-            "line": 627
+            "line": 625
           },
           {
             "level": 3,
             "title": "건조 환경 사육",
-            "line": 649
+            "line": 647
           },
           {
             "level": 3,
             "title": "화산 환경 사육",
-            "line": 671
+            "line": 669
           },
           {
             "level": 3,
             "title": "극지 환경 사육",
-            "line": 693
+            "line": 691
           },
           {
             "level": 3,
             "title": "익룡 사육",
-            "line": 715
+            "line": 713
           },
           {
             "level": 3,
             "title": "해양 생물 사육",
-            "line": 737
+            "line": 735
           },
           {
             "level": 3,
             "title": "거대종 사육",
-            "line": 759
+            "line": 757
           },
           {
             "level": 3,
             "title": "집단 이동 관리",
-            "line": 781
+            "line": 779
           },
           {
             "level": 3,
             "title": "급식 계획",
-            "line": 803
+            "line": 801
           },
           {
             "level": 2,
             "title": "탐험 계열",
-            "line": 823
+            "line": 821
           },
           {
             "level": 3,
             "title": "현장 지도화",
-            "line": 827
+            "line": 825
           },
           {
             "level": 3,
             "title": "외곽 탐사로",
-            "line": 850
+            "line": 848
           },
           {
             "level": 3,
             "title": "심부 원정",
-            "line": 874
+            "line": 872
           },
           {
             "level": 3,
             "title": "중급 시료 조사",
-            "line": 897
+            "line": 895
           },
           {
             "level": 3,
             "title": "상급 시료 채취",
-            "line": 921
+            "line": 919
           },
           {
             "level": 3,
             "title": "동굴 지층 탐사",
-            "line": 945
+            "line": 943
           },
           {
             "level": 3,
             "title": "습지 수로 탐사",
-            "line": 968
+            "line": 966
           },
           {
             "level": 3,
             "title": "분화구 환경 분석",
-            "line": 991
+            "line": 989
           },
           {
             "level": 3,
             "title": "위험 흔적 판독",
-            "line": 1014
+            "line": 1012
           },
           {
             "level": 3,
             "title": "통제구역 조사",
-            "line": 1038
+            "line": 1036
           },
           {
             "level": 3,
             "title": "최상위 개체 추적",
-            "line": 1061
-          },
-          {
-            "level": 3,
-            "title": "원정 보급 계획",
-            "line": 1084
+            "line": 1059
           },
           {
             "level": 3,
             "title": "흔적 대조",
-            "line": 1110
+            "line": 1082
           },
           {
             "level": 3,
             "title": "조사 목표 선택",
-            "line": 1133
+            "line": 1105
           },
           {
             "level": 3,
             "title": "복합 단서 검증",
-            "line": 1157
+            "line": 1129
           },
           {
             "level": 2,
             "title": "유전 계열",
-            "line": 1179
+            "line": 1151
           },
           {
             "level": 3,
             "title": "일반 초식 원종 조사",
-            "line": 1183
+            "line": 1155
           },
           {
             "level": 3,
             "title": "고급 초식 원종 조사",
-            "line": 1207
+            "line": 1179
           },
           {
             "level": 3,
             "title": "희귀 초식 원종 조사",
-            "line": 1231
+            "line": 1203
           },
           {
             "level": 3,
             "title": "일반 육식 원종 조사",
-            "line": 1255
+            "line": 1227
           },
           {
             "level": 3,
             "title": "고급 육식 원종 조사",
-            "line": 1279
+            "line": 1251
           },
           {
             "level": 3,
             "title": "희귀 육식 원종 조사",
-            "line": 1303
+            "line": 1275
           },
           {
             "level": 3,
             "title": "영웅 원종 계통 조사",
-            "line": 1327
+            "line": 1299
           },
           {
             "level": 3,
             "title": "전설 원종 계통 조사",
-            "line": 1351
+            "line": 1323
           },
           {
             "level": 3,
             "title": "확장 하이브리드 설계",
-            "line": 1375
+            "line": 1347
           },
           {
             "level": 3,
             "title": "특수 복합 조합 설계",
-            "line": 1397
+            "line": 1369
           },
           {
             "level": 3,
             "title": "전설 조합 설계",
-            "line": 1419
+            "line": 1391
           },
           {
             "level": 3,
             "title": "합성 예산 관리",
-            "line": 1442
+            "line": 1414
           },
           {
             "level": 3,
             "title": "DNA 정량 배양",
-            "line": 1466
+            "line": 1438
           },
           {
             "level": 2,
             "title": "3. 공통 계산과 상한",
-            "line": 1488
+            "line": 1460
           },
           {
             "level": 2,
             "title": "4. 후속 콘텐츠와 보존",
-            "line": 1512
+            "line": 1483
           },
           {
             "level": 3,
             "title": "비육상17종과 변종2종의 획득 연결",
-            "line": 1514
+            "line": 1485
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 1527
+            "line": 1498
           }
         ],
         "book_chapter": "연구 상세 효과",
-        "scope": "신규58기술194레벨·41재료미션권한/보상·42원종목표·원안부모메타와최신DNA계획연결"
+        "scope": "기술별 효과와 재료·원종 파견 조건, 토지 개발의 초기 정형 확장 권한"
       },
       {
         "path": "docs/current/exploration-play.md",
-        "sha256": "0b251ebdcdae70ca5278c429e0fef63e96832434bc7c5725915a8ba017888f82",
+        "sha256": "459f27f3dd4ca3f0de6d17a164ea6b653eabd4c693280cd1fa72313f2698e40a",
         "role": "canonical",
         "headings": [
           {
@@ -1117,57 +1192,57 @@
           {
             "level": 3,
             "title": "플레이 길이",
-            "line": 34
+            "line": 38
           },
           {
             "level": 2,
             "title": "2. 육상 차량과 해상 보트",
-            "line": 46
+            "line": 50
           },
           {
             "level": 3,
             "title": "주행 속도와 회수량",
-            "line": 54
+            "line": 58
           },
           {
             "level": 3,
             "title": "반복 원정과 더 먼 구간",
-            "line": 58
+            "line": 62
           },
           {
             "level": 2,
             "title": "3. 충돌과 재개",
-            "line": 66
+            "line": 70
           },
           {
             "level": 2,
             "title": "4. 원종 알과 부모 확보 목표",
-            "line": 74
+            "line": 78
           },
           {
             "level": 3,
             "title": "수집과 전시의 구분",
-            "line": 82
+            "line": 86
           },
           {
             "level": 2,
             "title": "5. 성공과 보상 수령",
-            "line": 89
+            "line": 93
           },
           {
             "level": 2,
             "title": "6. 진행과 보존",
-            "line": 97
+            "line": 101
           },
           {
             "level": 2,
             "title": "7. 검증과 남은 구현",
-            "line": 109
+            "line": 113
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 115
+            "line": 119
           }
         ],
         "book_chapter": "육상 차량과 해상 보트 탐험",
@@ -1175,7 +1250,7 @@
       },
       {
         "path": "docs/current/building-upgrade-tables.md",
-        "sha256": "3af28c8f96dbb3ab683dc27bf567f2e6f7ceabf0245464cacbe5ff9d230e59ac",
+        "sha256": "07e46a98e62485a8ba6af600d2760e2f0c2ca48993a40ad1cdc0d292c3957331",
         "role": "generated_view",
         "headings": [
           {
@@ -1285,13 +1360,8 @@
           },
           {
             "level": 2,
-            "title": "탐험 연료 보급소",
-            "line": 729
-          },
-          {
-            "level": 2,
             "title": "검산 결과",
-            "line": 765
+            "line": 729
           }
         ],
         "book_chapter": "기존21종 강화 생성표",
@@ -1299,7 +1369,7 @@
       },
       {
         "path": "docs/current/research-cost-tables.md",
-        "sha256": "6ada7b9ad77fa85c39b8a1d70e9bc953127098684b805ff7bbf43f0b056ca36b",
+        "sha256": "89abc0a7fa88ee7ad81b90303f46fc788a39de2fce23da296d3522a2b64ef57c",
         "role": "generated_view",
         "headings": [
           {
@@ -1519,7 +1589,7 @@
           },
           {
             "level": 2,
-            "title": "탐험 18개 기술",
+            "title": "탐험 15개 기술",
             "line": 623
           },
           {
@@ -1584,133 +1654,118 @@
           },
           {
             "level": 3,
-            "title": "연료 저장 · `exp-tank`",
+            "title": "흔적 대조 · `exp-clue-comparison`",
             "line": 807
           },
           {
             "level": 3,
-            "title": "연료 회복 · `exp-recovery`",
+            "title": "조사 목표 선택 · `exp-objective-choice`",
             "line": 822
           },
           {
             "level": 3,
-            "title": "원정 보급 계획 · `exp-expedition-supply`",
-            "line": 839
-          },
-          {
-            "level": 3,
-            "title": "흔적 대조 · `exp-clue-comparison`",
-            "line": 856
-          },
-          {
-            "level": 3,
-            "title": "조사 목표 선택 · `exp-objective-choice`",
-            "line": 871
-          },
-          {
-            "level": 3,
             "title": "복합 단서 검증 · `exp-evidence-validation`",
-            "line": 886
+            "line": 837
           },
           {
             "level": 2,
             "title": "유전 18개 기술",
-            "line": 902
+            "line": 853
           },
           {
             "level": 3,
             "title": "일반 초식 원종 조사 · `gene-common-herbivore`",
-            "line": 904
+            "line": 855
           },
           {
             "level": 3,
             "title": "고급 초식 원종 조사 · `gene-uncommon-herbivore`",
-            "line": 919
+            "line": 870
           },
           {
             "level": 3,
             "title": "희귀 초식 원종 조사 · `gene-rare-herbivore`",
-            "line": 934
+            "line": 885
           },
           {
             "level": 3,
             "title": "일반 육식 원종 조사 · `gene-common-carnivore`",
-            "line": 949
+            "line": 900
           },
           {
             "level": 3,
             "title": "고급 육식 원종 조사 · `gene-uncommon-carnivore`",
-            "line": 964
+            "line": 915
           },
           {
             "level": 3,
             "title": "희귀 육식 원종 조사 · `gene-rare-carnivore`",
-            "line": 979
+            "line": 930
           },
           {
             "level": 3,
             "title": "고급 유전자 분석 · `gene-analysis`",
-            "line": 994
+            "line": 945
           },
           {
             "level": 3,
             "title": "영웅 원종 계통 조사 · `gene-epic-natural`",
-            "line": 1009
+            "line": 960
           },
           {
             "level": 3,
             "title": "전설 원종 계통 조사 · `gene-legend-natural`",
-            "line": 1024
+            "line": 975
           },
           {
             "level": 3,
             "title": "확장 하이브리드 설계 · `gene-combination-foundation`",
-            "line": 1039
+            "line": 990
           },
           {
             "level": 3,
             "title": "특수 복합 조합 설계 · `gene-combination-special`",
-            "line": 1054
+            "line": 1005
           },
           {
             "level": 3,
             "title": "전설 조합 설계 · `gene-combination-legendary`",
-            "line": 1069
+            "line": 1020
           },
           {
             "level": 3,
             "title": "배양 공정 · `gene-culture`",
-            "line": 1084
+            "line": 1035
           },
           {
             "level": 3,
             "title": "합성 예산 관리 · `gene-synthesis-budget`",
-            "line": 1101
+            "line": 1052
           },
           {
             "level": 3,
             "title": "DNA 정량 배양 · `gene-dna-quantification`",
-            "line": 1118
+            "line": 1069
           },
           {
             "level": 3,
             "title": "시료 보존 · `gene-preservation`",
-            "line": 1135
+            "line": 1086
           },
           {
             "level": 3,
             "title": "기술 연구 예산 관리 · `gene-study-budget`",
-            "line": 1152
+            "line": 1103
           },
           {
             "level": 3,
             "title": "기술 실험 절차 개선 · `gene-study-protocol`",
-            "line": 1169
+            "line": 1120
           },
           {
             "level": 2,
             "title": "재생성과 검산 범위",
-            "line": 1186
+            "line": 1137
           }
         ],
         "book_chapter": "연구비 생성표",
@@ -1718,7 +1773,7 @@
       },
       {
         "path": "docs/current/research-effect-tables.md",
-        "sha256": "cf532a9a38537bf42f67e1b24878d322f5623d17529c02c9f9cff28d6b4684d3",
+        "sha256": "231d3474704009a495c7806f87edf7437521d363c1e88cb0449f21073dee08b5",
         "role": "generated_view",
         "headings": [
           {
@@ -1749,297 +1804,292 @@
           {
             "level": 3,
             "title": "시설 고도화 · 최대 Lv.3",
-            "line": 74
+            "line": 76
           },
           {
             "level": 3,
             "title": "공사 공법 · 최대 Lv.3",
-            "line": 90
+            "line": 92
           },
           {
             "level": 3,
             "title": "생산 공정 · 최대 Lv.5",
-            "line": 106
+            "line": 108
           },
           {
             "level": 3,
             "title": "일괄 생산 · 최대 Lv.3",
-            "line": 124
+            "line": 126
           },
           {
             "level": 3,
             "title": "창고 적재 · 최대 Lv.3",
-            "line": 140
+            "line": 142
           },
           {
             "level": 3,
             "title": "자재 규격화 · 최대 Lv.5",
-            "line": 156
+            "line": 158
           },
           {
             "level": 3,
             "title": "물자 조달 · 최대 Lv.3",
-            "line": 174
+            "line": 176
           },
           {
             "level": 3,
             "title": "금고 관리 · 최대 Lv.3",
-            "line": 190
+            "line": 192
           },
           {
             "level": 3,
             "title": "건축 경제 · 최대 Lv.3",
-            "line": 206
+            "line": 208
           },
           {
             "level": 3,
             "title": "부재중 운영 · 최대 Lv.3",
-            "line": 222
+            "line": 224
           },
           {
             "level": 3,
             "title": "편의시설 개선 · 최대 Lv.3",
-            "line": 238
+            "line": 240
           },
           {
             "level": 3,
             "title": "테마 전시 기획 · 최대 Lv.3",
-            "line": 254
+            "line": 256
           },
           {
             "level": 2,
             "title": "사육",
-            "line": 271
-          },
-          {
-            "level": 3,
-            "title": "영양 관리 · 최대 Lv.5",
             "line": 273
           },
           {
             "level": 3,
+            "title": "영양 관리 · 최대 Lv.5",
+            "line": 275
+          },
+          {
+            "level": 3,
             "title": "교감 훈련 · 최대 Lv.5",
-            "line": 293
+            "line": 295
           },
           {
             "level": 3,
             "title": "단체 급식 · 최대 Lv.3",
-            "line": 313
+            "line": 315
           },
           {
             "level": 3,
             "title": "단체 교감 · 최대 Lv.3",
-            "line": 331
+            "line": 333
           },
           {
             "level": 3,
             "title": "반복 부화 공정 · 최대 Lv.5",
-            "line": 349
+            "line": 351
           },
           {
             "level": 3,
             "title": "부화 설비 확장 · 최대 Lv.3",
-            "line": 369
+            "line": 371
           },
           {
             "level": 3,
             "title": "신생 개체 보육 · 최대 Lv.3",
-            "line": 387
+            "line": 389
           },
           {
             "level": 3,
             "title": "건조 환경 사육 · 최대 Lv.3",
-            "line": 405
+            "line": 407
           },
           {
             "level": 3,
             "title": "화산 환경 사육 · 최대 Lv.3",
-            "line": 423
+            "line": 425
           },
           {
             "level": 3,
             "title": "극지 환경 사육 · 최대 Lv.3",
-            "line": 441
+            "line": 443
           },
           {
             "level": 3,
             "title": "익룡 사육 · 최대 Lv.3",
-            "line": 459
+            "line": 461
           },
           {
             "level": 3,
             "title": "해양 생물 사육 · 최대 Lv.3",
-            "line": 477
+            "line": 479
           },
           {
             "level": 3,
             "title": "거대종 사육 · 최대 Lv.3",
-            "line": 495
+            "line": 497
           },
           {
             "level": 3,
             "title": "집단 이동 관리 · 최대 Lv.3",
-            "line": 513
+            "line": 515
           },
           {
             "level": 3,
             "title": "급식 계획 · 최대 Lv.3",
-            "line": 531
+            "line": 533
           },
           {
             "level": 2,
             "title": "탐험",
-            "line": 550
-          },
-          {
-            "level": 3,
-            "title": "현장 지도화 · 최대 Lv.3",
             "line": 552
           },
           {
             "level": 3,
+            "title": "현장 지도화 · 최대 Lv.3",
+            "line": 554
+          },
+          {
+            "level": 3,
             "title": "외곽 탐사로 · 최대 Lv.5",
-            "line": 572
+            "line": 576
           },
           {
             "level": 3,
             "title": "심부 원정 · 최대 Lv.3",
-            "line": 592
+            "line": 598
           },
           {
             "level": 3,
             "title": "중급 시료 조사 · 최대 Lv.3",
-            "line": 612
+            "line": 620
           },
           {
             "level": 3,
             "title": "상급 시료 채취 · 최대 Lv.3",
-            "line": 634
+            "line": 644
           },
           {
             "level": 3,
             "title": "동굴 지층 탐사 · 최대 Lv.3",
-            "line": 656
+            "line": 668
           },
           {
             "level": 3,
             "title": "습지 수로 탐사 · 최대 Lv.3",
-            "line": 676
+            "line": 688
           },
           {
             "level": 3,
             "title": "분화구 환경 분석 · 최대 Lv.3",
-            "line": 696
+            "line": 708
           },
           {
             "level": 3,
             "title": "위험 흔적 판독 · 최대 Lv.3",
-            "line": 716
+            "line": 728
           },
           {
             "level": 3,
             "title": "통제구역 조사 · 최대 Lv.3",
-            "line": 738
+            "line": 744
           },
           {
             "level": 3,
             "title": "최상위 개체 추적 · 최대 Lv.3",
-            "line": 758
-          },
-          {
-            "level": 3,
-            "title": "원정 보급 계획 · 최대 Lv.5",
-            "line": 778
+            "line": 766
           },
           {
             "level": 3,
             "title": "흔적 대조 · 최대 Lv.3",
-            "line": 802
+            "line": 792
           },
           {
             "level": 3,
             "title": "조사 목표 선택 · 최대 Lv.3",
-            "line": 822
+            "line": 808
           },
           {
             "level": 3,
             "title": "복합 단서 검증 · 최대 Lv.3",
-            "line": 844
+            "line": 824
           },
           {
             "level": 2,
             "title": "유전",
-            "line": 867
+            "line": 847
           },
           {
             "level": 3,
             "title": "일반 초식 원종 조사 · 최대 Lv.3",
-            "line": 869
+            "line": 849
           },
           {
             "level": 3,
             "title": "고급 초식 원종 조사 · 최대 Lv.3",
-            "line": 887
+            "line": 867
           },
           {
             "level": 3,
             "title": "희귀 초식 원종 조사 · 최대 Lv.3",
-            "line": 905
+            "line": 885
           },
           {
             "level": 3,
             "title": "일반 육식 원종 조사 · 최대 Lv.3",
-            "line": 923
+            "line": 903
           },
           {
             "level": 3,
             "title": "고급 육식 원종 조사 · 최대 Lv.3",
-            "line": 941
+            "line": 921
           },
           {
             "level": 3,
             "title": "희귀 육식 원종 조사 · 최대 Lv.3",
-            "line": 959
+            "line": 939
           },
           {
             "level": 3,
             "title": "영웅 원종 계통 조사 · 최대 Lv.3",
-            "line": 977
+            "line": 957
           },
           {
             "level": 3,
             "title": "전설 원종 계통 조사 · 최대 Lv.3",
-            "line": 995
+            "line": 975
           },
           {
             "level": 3,
             "title": "확장 하이브리드 설계 · 최대 Lv.3",
-            "line": 1013
+            "line": 993
           },
           {
             "level": 3,
             "title": "특수 복합 조합 설계 · 최대 Lv.3",
-            "line": 1031
+            "line": 1011
           },
           {
             "level": 3,
             "title": "전설 조합 설계 · 최대 Lv.3",
-            "line": 1049
+            "line": 1029
           },
           {
             "level": 3,
             "title": "합성 예산 관리 · 최대 Lv.5",
-            "line": 1069
+            "line": 1049
           },
           {
             "level": 3,
             "title": "DNA 정량 배양 · 최대 Lv.5",
-            "line": 1089
+            "line": 1069
           },
           {
             "level": 2,
             "title": "생성·확인",
-            "line": 1109
+            "line": 1089
           }
         ],
         "book_chapter": "연구효과 생성표",
@@ -2047,7 +2097,7 @@
       },
       {
         "path": "docs/current/followup-content-tables.md",
-        "sha256": "723bdde998917a3ae093f3ed96a6c0f052301531dcdd9395052c7f65473e6390",
+        "sha256": "4217a04fd60ec098fc134e4fc50c7fd16d0fedfdf7adadb6f2ab8fa309881154",
         "role": "generated_view",
         "headings": [
           {
@@ -2063,57 +2113,62 @@
           {
             "level": 2,
             "title": "특수 사육시설의 25레벨",
-            "line": 21
+            "line": 23
           },
           {
             "level": 3,
             "title": "사막 서식지",
-            "line": 25
+            "line": 27
           },
           {
             "level": 3,
             "title": "화산 서식지",
-            "line": 57
+            "line": 59
           },
           {
             "level": 3,
             "title": "빙하 서식지",
-            "line": 89
+            "line": 91
           },
           {
             "level": 3,
             "title": "익룡 돔",
-            "line": 121
+            "line": 123
           },
           {
             "level": 3,
             "title": "해양관",
-            "line": 153
+            "line": 155
+          },
+          {
+            "level": 2,
+            "title": "익룡 돔의 공간 단계",
+            "line": 187
           },
           {
             "level": 2,
             "title": "재료 미션 준비비와 보상",
-            "line": 185
+            "line": 201
           },
           {
             "level": 2,
             "title": "원종·추가 부모 알 목표",
-            "line": 240
+            "line": 254
           },
           {
             "level": 2,
             "title": "후속·보완 합성 레시피",
-            "line": 300
+            "line": 314
           },
           {
             "level": 2,
             "title": "종별 기본 전시 경로",
-            "line": 321
+            "line": 335
           },
           {
             "level": 2,
             "title": "재료 확보 산술 예시",
-            "line": 411
+            "line": 425
           }
         ],
         "book_chapter": "확장과 후속콘텐츠 생성표",
@@ -2121,7 +2176,7 @@
       },
       {
         "path": "docs/current/story-progression.md",
-        "sha256": "3dc9475940e9e76f18f7b17b67332585d8062ccd981efccfa70b2b464cfc98a5",
+        "sha256": "7d40ce5bf2906d95cf490ce73923221eac43b7570320616b7070d7dedb195a9a",
         "role": "canonical",
         "headings": [
           {
@@ -2311,13 +2366,13 @@
           }
         ],
         "book_chapter": "스토리와 세계관",
-        "scope": "초반 18장면·후반 17장면 기획. 2장 안전 점검과 3장 첫 실험·전시는 게임에 적용"
+        "scope": "초반 대본, 첫 지정 합성 이후의 장면 조건과 에필로그"
       },
       {
         "path": "docs/current/dinosaur-acquisition-tables.md",
         "role": "generated_view",
         "scope": "83종 최초/반복 획득 경로·비육상17목표·첫 랩터·15레시피의 연결",
-        "sha256": "8eba323a5684ccbb29bd130fd7369d3f132e4fe1342ca66a73a783c637942bcd",
+        "sha256": "3fcae03a2d715b51852a8916f0080041e8f4753535e4746798a56162fab00ae7",
         "headings": [
           {
             "level": 1,
@@ -2354,8 +2409,8 @@
       {
         "path": "docs/current/dinosaur-acquisition.md",
         "role": "canonical",
-        "scope": "83종 최초/반복 획득 경로·비육상17목표·첫 랩터·15레시피의 연결",
-        "sha256": "1a76d557763a5e91265f56cb76054a6e1eb8f281c8886b2695bb658d137c82cb",
+        "scope": "기본 83종 최초·반복 획득 경로, 원종 목표, 지정 레시피와 실험 계통의 도감 등록",
+        "sha256": "c7e62f23c01893a3515d9aba62e9756491c224a48a44230b96ac7d9487977efe",
         "headings": [
           {
             "level": 1,
@@ -2370,32 +2425,32 @@
           {
             "level": 2,
             "title": "2. 자연종17종의 보완 알 목표",
-            "line": 19
+            "line": 21
           },
           {
             "level": 2,
             "title": "3. 시작 원종5종의 최초 획득과 재입수",
-            "line": 51
+            "line": 53
           },
           {
             "level": 3,
             "title": "첫 벨로시랩터 알 회수",
-            "line": 67
+            "line": 69
           },
           {
             "level": 2,
             "title": "4. 총수와 재수령 규칙",
-            "line": 75
+            "line": 77
           },
           {
             "level": 2,
             "title": "5. 모델과 생성표",
-            "line": 83
+            "line": 85
           },
           {
             "level": 2,
             "title": "변경 기록",
-            "line": 89
+            "line": 91
           }
         ]
       },
@@ -2403,7 +2458,7 @@
         "path": "docs/current/great-figures.md",
         "role": "canonical",
         "scope": "현행 통합 기획",
-        "sha256": "7b598c86fcf8ba96ddd34636bd223ea4891a1e94f2487b0900ecb8f884859a18",
+        "sha256": "f887d8de620f559b504c9b9f6c2e90c0f85aa20f824225720440c691624e0690",
         "headings": [
           {
             "level": 1,
@@ -2705,8 +2760,8 @@
       {
         "path": "docs/current/production-and-services.md",
         "role": "canonical",
-        "scope": "현행 통합 기획",
-        "sha256": "d4dbb06acfb8d9ef0880843e3b4a9b79ed0e7a9cd1e458a5686847fe14210718",
+        "scope": "승인된 2.5D 공룡과 시설 조형, 초반 공룡 4종과 파라 걷기, 파크 화면과 섬 지도, 2.5D 교통·사파리 동작과 별도 실시간 3D 시범, 시설 제작, 시즌과 교류",
+        "sha256": "e9974c9679bb8c485da72c0a06e3ac9d991ac9a5bdd60efe0972f9e2f35284f0",
         "headings": [
           {
             "level": 1,
@@ -2719,64 +2774,99 @@
             "line": 9
           },
           {
+            "level": 3,
+            "title": "파크 경계와 정문 길",
+            "line": 40
+          },
+          {
+            "level": 3,
+            "title": "파크 섬 지형과 확장 동선",
+            "line": 48
+          },
+          {
+            "level": 3,
+            "title": "섬 지형 제작과 검토",
+            "line": 71
+          },
+          {
             "level": 2,
             "title": "2. 음악과 사운드 제작",
-            "line": 28
+            "line": 85
           },
           {
             "level": 2,
             "title": "3. 에셋 제작과 파일 기준",
-            "line": 47
+            "line": 104
+          },
+          {
+            "level": 3,
+            "title": "사파리 공룡 동작의 제작 분량",
+            "line": 110
+          },
+          {
+            "level": 3,
+            "title": "스테고사우루스 실시간 3D 시험",
+            "line": 123
+          },
+          {
+            "level": 3,
+            "title": "실험 하이브리드 외형",
+            "line": 131
           },
           {
             "level": 3,
             "title": "플레이 흐름별 제작 순서",
-            "line": 53
+            "line": 137
+          },
+          {
+            "level": 3,
+            "title": "시설별 기본 외형",
+            "line": 151
           },
           {
             "level": 2,
             "title": "4. 시즌 운영과 이벤트",
-            "line": 78
-          },
-          {
-            "level": 2,
-            "title": "5. 시즌 생물과 인물 제작 목표",
-            "line": 96
-          },
-          {
-            "level": 2,
-            "title": "6. 친구 방문과 교류",
-            "line": 113
-          },
-          {
-            "level": 3,
-            "title": "공룡 경기와 기록 경쟁",
-            "line": 131
-          },
-          {
-            "level": 2,
-            "title": "7. 상점과 수익 모델",
-            "line": 142
-          },
-          {
-            "level": 2,
-            "title": "8. 기술 구조와 품질 기준",
-            "line": 161
-          },
-          {
-            "level": 2,
-            "title": "9. 기획 갱신과 변경 검증",
             "line": 180
           },
           {
             "level": 2,
-            "title": "적용 원천과 제작 입력",
+            "title": "5. 시즌 생물과 인물 제작 목표",
             "line": 198
           },
           {
             "level": 2,
+            "title": "6. 친구 방문과 교류",
+            "line": 215
+          },
+          {
+            "level": 3,
+            "title": "공룡 경기와 기록 경쟁",
+            "line": 233
+          },
+          {
+            "level": 2,
+            "title": "7. 상점과 수익 모델",
+            "line": 244
+          },
+          {
+            "level": 2,
+            "title": "8. 기술 구조와 품질 기준",
+            "line": 263
+          },
+          {
+            "level": 2,
+            "title": "9. 기획 갱신과 변경 검증",
+            "line": 282
+          },
+          {
+            "level": 2,
+            "title": "적용 원천과 제작 입력",
+            "line": 300
+          },
+          {
+            "level": 2,
             "title": "변경 기록",
-            "line": 202
+            "line": 304
           }
         ]
       },
@@ -2784,7 +2874,7 @@
         "path": "docs/current/story-and-characters.md",
         "role": "canonical",
         "scope": "본편35장면·27선택·3결말·인물22개·사이드6편·시즌4개20장 통합 세계관; 실제 후반 연결은 story-progression11절",
-        "sha256": "89a1fc78400c618b05f8c32312922a9d1ba90152cde8298977d2ea93a073e105",
+        "sha256": "5495cdce429b534a0dc5c3a9b47cba448650ebd7da0b878cd16887eab79712f9",
         "headings": [
           {
             "level": 1,
@@ -3222,8 +3312,8 @@
         "path": "docs/current/park-progression.md",
         "role": "canonical",
         "book_chapter": "파크 성장과 경험치",
-        "scope": "Lv.5→6 실제 플레이와 897 XP 수령, Park5~50 유한 45전환·180목표와 본편 4~6장 연결",
-        "sha256": "d4f89f794e6042836509fcd8abe26bb0a8e1fc211fd3f01543612fd3482791c8",
+        "scope": "Lv.15까지의 성장, 중반 필지 매입 시점의 밸런스 범위, 실험 합성 진입과 Lv.50까지의 목표 및 본편 연결",
+        "sha256": "e682d84e9f7941d3b913a486501c1240d461c0b361e7e10d1f13e033379a6f80",
         "headings": [
           {
             "level": 1,
@@ -3232,43 +3322,68 @@
           },
           {
             "level": 2,
-            "title": "첫 전시 뒤 파크 Lv.6까지",
+            "title": "첫 전시 뒤 파크 Lv.15까지",
             "line": 5
+          },
+          {
+            "level": 3,
+            "title": "파크 레벨 5에서 6까지",
+            "line": 7
+          },
+          {
+            "level": 3,
+            "title": "파크 레벨 6에서 7까지",
+            "line": 24
+          },
+          {
+            "level": 3,
+            "title": "파크 레벨 7에서 8까지",
+            "line": 36
+          },
+          {
+            "level": 3,
+            "title": "파크 레벨 8에서 15까지",
+            "line": 53
+          },
+          {
+            "level": 3,
+            "title": "Lv.15에서 열리는 현장과 이야기",
+            "line": 71
           },
           {
             "level": 2,
             "title": "1. 고정값과 도달 계산",
-            "line": 22
+            "line": 79
           },
           {
             "level": 2,
             "title": "2. 소유권·한 번 수령·이력 인정",
-            "line": 28
+            "line": 85
           },
           {
             "level": 2,
             "title": "3. 장기 운영과 보존 범위",
-            "line": 36
+            "line": 93
           },
           {
             "level": 2,
             "title": "4. Park·연구소·기술과 토지",
-            "line": 42
+            "line": 99
           },
           {
             "level": 2,
             "title": "5. 단계와 스토리 연결",
-            "line": 48
+            "line": 107
           },
           {
             "level": 2,
             "title": "6. 45전환의 선택지·정확 보상 원천",
-            "line": 69
+            "line": 128
           },
           {
             "level": 2,
             "title": "7. 정적 검증과 구현 경계",
-            "line": 123
+            "line": 184
           }
         ]
       },
@@ -3277,7 +3392,7 @@
         "role": "generated_view",
         "book_chapter": "파크 성장 목표표",
         "scope": "성장 정본에서 생성한45전환/180목표·누적공급·기존 권한/비용 연결의 읽기용 표",
-        "sha256": "014c3b960761651b91908c75f0fddd4ff96f1f685a4969473db30b0f890c2683",
+        "sha256": "f8b3959605b4a1d2f8ee9f3285ac9af82f87d6bdd72869df6e7269df7442881d",
         "headings": [
           {
             "level": 1,
@@ -3307,222 +3422,222 @@
           {
             "level": 2,
             "title": "Park7 → 8",
-            "line": 97
+            "line": 90
           },
           {
             "level": 2,
             "title": "Park8 → 9",
-            "line": 108
+            "line": 94
           },
           {
             "level": 2,
             "title": "Park9 → 10",
-            "line": 119
+            "line": 105
           },
           {
             "level": 2,
             "title": "Park10 → 11",
-            "line": 130
+            "line": 116
           },
           {
             "level": 2,
             "title": "Park11 → 12",
-            "line": 141
+            "line": 127
           },
           {
             "level": 2,
             "title": "Park12 → 13",
-            "line": 152
+            "line": 138
           },
           {
             "level": 2,
             "title": "Park13 → 14",
-            "line": 163
+            "line": 149
           },
           {
             "level": 2,
             "title": "Park14 → 15",
-            "line": 174
+            "line": 160
           },
           {
             "level": 2,
             "title": "Park15 → 16",
-            "line": 185
+            "line": 171
           },
           {
             "level": 2,
             "title": "Park16 → 17",
-            "line": 196
+            "line": 182
           },
           {
             "level": 2,
             "title": "Park17 → 18",
-            "line": 207
+            "line": 193
           },
           {
             "level": 2,
             "title": "Park18 → 19",
-            "line": 218
+            "line": 204
           },
           {
             "level": 2,
             "title": "Park19 → 20",
-            "line": 229
+            "line": 215
           },
           {
             "level": 2,
             "title": "Park20 → 21",
-            "line": 240
+            "line": 226
           },
           {
             "level": 2,
             "title": "Park21 → 22",
-            "line": 253
+            "line": 239
           },
           {
             "level": 2,
             "title": "Park22 → 23",
-            "line": 266
+            "line": 252
           },
           {
             "level": 2,
             "title": "Park23 → 24",
-            "line": 279
+            "line": 265
           },
           {
             "level": 2,
             "title": "Park24 → 25",
-            "line": 292
+            "line": 278
           },
           {
             "level": 2,
             "title": "Park25 → 26",
-            "line": 305
+            "line": 291
           },
           {
             "level": 2,
             "title": "Park26 → 27",
-            "line": 316
+            "line": 302
           },
           {
             "level": 2,
             "title": "Park27 → 28",
-            "line": 327
+            "line": 313
           },
           {
             "level": 2,
             "title": "Park28 → 29",
-            "line": 338
+            "line": 324
           },
           {
             "level": 2,
             "title": "Park29 → 30",
-            "line": 351
+            "line": 337
           },
           {
             "level": 2,
             "title": "Park30 → 31",
-            "line": 364
+            "line": 350
           },
           {
             "level": 2,
             "title": "Park31 → 32",
-            "line": 377
+            "line": 363
           },
           {
             "level": 2,
             "title": "Park32 → 33",
-            "line": 388
+            "line": 374
           },
           {
             "level": 2,
             "title": "Park33 → 34",
-            "line": 401
+            "line": 387
           },
           {
             "level": 2,
             "title": "Park34 → 35",
-            "line": 414
+            "line": 400
           },
           {
             "level": 2,
             "title": "Park35 → 36",
-            "line": 427
+            "line": 413
           },
           {
             "level": 2,
             "title": "Park36 → 37",
-            "line": 440
+            "line": 426
           },
           {
             "level": 2,
             "title": "Park37 → 38",
-            "line": 451
+            "line": 437
           },
           {
             "level": 2,
             "title": "Park38 → 39",
-            "line": 462
+            "line": 448
           },
           {
             "level": 2,
             "title": "Park39 → 40",
-            "line": 473
+            "line": 459
           },
           {
             "level": 2,
             "title": "Park40 → 41",
-            "line": 484
+            "line": 470
           },
           {
             "level": 2,
             "title": "Park41 → 42",
-            "line": 495
+            "line": 481
           },
           {
             "level": 2,
             "title": "Park42 → 43",
-            "line": 506
+            "line": 492
           },
           {
             "level": 2,
             "title": "Park43 → 44",
-            "line": 517
+            "line": 503
           },
           {
             "level": 2,
             "title": "Park44 → 45",
-            "line": 528
+            "line": 514
           },
           {
             "level": 2,
             "title": "Park45 → 46",
-            "line": 539
+            "line": 525
           },
           {
             "level": 2,
             "title": "Park46 → 47",
-            "line": 550
+            "line": 536
           },
           {
             "level": 2,
             "title": "Park47 → 48",
-            "line": 561
+            "line": 547
           },
           {
             "level": 2,
             "title": "Park48 → 49",
-            "line": 572
+            "line": 558
           },
           {
             "level": 2,
             "title": "Park49 → 50",
-            "line": 583
+            "line": 569
           },
           {
             "level": 2,
             "title": "원천 지문",
-            "line": 594
+            "line": 580
           }
         ]
       }
@@ -14974,7 +15089,7 @@
           "DESIGN.md",
           ".impeccable/"
         ],
-        "summary": "아이소메트릭 파크·화면 흐름·공룡/인물 표현·상태 전달은 제작/서비스 정본의 현행 화면 기준을 따른다.",
+        "summary": "공룡과 시설의 큰 형태가 기본 배율에서 읽히고 피부와 재질은 확대해 볼 수 있다. 가로 파크의 리더·건설 자원·수집·운영 표시를 모서리에 모으고, 따뜻한 반투명 바탕으로 지도를 넓게 보인다.",
         "status": "화면 설계와 실제 구현/보유 에셋 상태를 구분"
       },
       {
@@ -15034,7 +15149,7 @@
           "docs/dino_park_asset_buildings_characters.md",
           "docs/dino_park_asset_upgrades.md"
         ],
-        "summary": "공룡·건물/인물·컷신·아이템/환경·기믹·스킨·강화의 제작명세는 제작/서비스 정본을 따르며 실물 목록과 구별한다. 게임에 적용하는 오브젝트는 같은 시점과 공통 조명의 2.5D 투명 래스터를 쓰며, 실제 기능 단위로 제작해 배치 기준점과 가림을 검사한다. 플레이 흐름에서 필요한 화면과 상태를 확인하고 기존 게임 이미지를 골라 제작 요청을 작성한다. 게임 안에서 타일 정렬·가림·모바일 가독성을 검수한 뒤 매핑에 등록한다.",
+        "summary": "승인된 공룡 조형과 가로 파크 배치를 공통 시안으로 삼는다. 공룡·시설·인물·지형·HUD는 플레이 흐름에 필요한 순서대로 제작하고, 2:1 지도에서 기본 배율·확대·접지·가림을 검수한다.",
         "status": "동일 대상ID·바닥기준·상태별 파일을 사용; 제작계획이 실물은 아님"
       },
       {
@@ -15212,9 +15327,9 @@
         "guidebook_treatment": "대본과 실제 준비/완료 연결·위인 프로필을 현행 장에서 찾고 게임 적용/실측 상태를 별도로 표시한다."
       },
       {
-        "topic": "현재와 계획 종수",
-        "finding": "실제 카탈로그81, 기획83이며 신규 시노케라톱스·메갈로돈은 실제 데이터에 아직 없다.",
-        "guidebook_treatment": "전체83명세와 현재81구현을 분리 표기하고 신종2에기획추가라벨."
+        "topic": "자연종 파견과 도감",
+        "finding": "도감 83종을 수록한다. 시노케라톱스와 메갈로돈을 포함한 68종의 지정 알 목표는 탐험가 파견 지도로 연결한다. 후반 목표에는 종별 연구 완료가 필요하다.",
+        "guidebook_treatment": "8장의 지역별 스팟에서 파견 조건을 확인하고, 83종 획득표에서 종별 출발 비용과 부화 시간을 확인한다. 깊은 바다 8곳과 장거리 7목표에 한해 연료를 쓴다."
       },
       {
         "topic": "원안 개체 스탯",
@@ -15233,7 +15348,7 @@
       },
       {
         "topic": "모든 수치",
-        "finding": "650건물레벨·252연구행·83종·15합성·46재료/69알조회목표·180성장목표는 개별 조회가 필요하다.",
+        "finding": "650건물레벨·252연구행·기본83종·지정15합성·46재료/69알조회목표·180성장목표는 개별 조회한다. 실험 합성 견적은 부모와 결과 등급을 선택해 확인한다.",
         "guidebook_treatment": "개별 프로필/기술/목표표와 가나다·영문·ID 색인을 연결하고 원천과 실제 Word 전사를 검증한다."
       },
       {
@@ -19293,7 +19408,7 @@
     ],
     "checks_performed": [
       "현행20문서의 실제 파일SHA와 코드블록 밖 모든 heading/줄번호를 재추출했다.",
-      "성장 정본의 45전환·180목표 및 후반17장면을 확인하고, Lv.5→6 실제 경로와 전체 성장표를 구분했다.",
+      "성장 정본의 45전환·180목표 및 후반17장면을 확인하고, Lv.5→8 실제 경로와 전체 성장표를 구분했다.",
       "기존83종·69알조회/68반복·15합성 및72기술/252행·26시설/650행 수록 계수를 기존 정적 모델과 대조했다.",
       "기존 실제 에셋/연구 이미지 목록과255색인 후보는 보존했다."
     ],
@@ -19303,5 +19418,5 @@
       "첫 전시 뒤 스테고케라톱스의 반복 재료 원정·합성·대표 전시 비교를 연결했다. 다른 종의 합성과 경기 콘텐츠는 설계 범위다."
     ]
   },
-  "review_note": "2026-11-18: 83종 획득 완결 범위를 원천과 대조. 추가17목표·변종2레시피·첫 랩터 선택 경로를 연결하고 기존 위인/서사·경제 수치 보존. 기획과 실제 게임 적용을 구별.\n2026-11-18: 성장 정본/생성표를 등록해 현행20문서의 역할·헤딩 줄·SHA를 재추출했다. 180목표/45전환·17장면/6장 분기완료 뒤 개인 합성 및 현행83/69/15 수록 계수를 검토하고 낡은 별도 구버전/전체XP미정 설명을 갱신했다. 기존 원문 이력·기술/수치 내용은 유지한다.\n2026-11-19: 첫 이구아노돈 이후의 육상 주행·원종 준비·중급 재료·스테고케라톱스 합성·전시를 코드와 격리 검증 기록에 대조했다. 관련 기획 원문 5개의 제목 줄과 SHA를 갱신하고 실제 사용한 임시 SVG 5종을 확인했다.\n2026-11-19: 반복 재료 수급·성향별 능력치·대표 전시와 기존 정원 계산을 실제 API와 검증 경로에 대조했다. 합성과 입장 수요의 담당 원천을 갱신했다.\n2026-11-19 플레이 가이드 전환. 심층 원정, 신규 변종과 하이브리드 수집, 공룡 경기, 래스터 스프라이트 제작의 담당 문서와 열람 위치를 대조했다.\n2026-11-19 첫 전시 뒤 성장 목표 4개, 보상 897 XP씩, 실제 연구·원정 경로, 에셋 요청·검수 절차를 담당 원천과 대조했다."
+  "review_note": "2026-11-18: 83종 획득 완결 범위를 원천과 대조. 추가17목표·변종2레시피·첫 랩터 선택 경로를 연결하고 기존 위인/서사·경제 수치 보존. 기획과 실제 게임 적용을 구별.\n2026-11-18: 성장 정본/생성표를 등록해 현행20문서의 역할·헤딩 줄·SHA를 재추출했다. 180목표/45전환·17장면/6장 분기완료 뒤 개인 합성 및 현행83/69/15 수록 계수를 검토하고 낡은 별도 구버전/전체XP미정 설명을 갱신했다. 기존 원문 이력·기술/수치 내용은 유지한다.\n2026-11-19: 첫 이구아노돈 이후의 육상 주행·원종 준비·중급 재료·스테고케라톱스 합성·전시를 코드와 격리 검증 기록에 대조했다. 관련 기획 원문 5개의 제목 줄과 SHA를 갱신하고 실제 사용한 임시 SVG 5종을 확인했다.\n2026-11-19: 반복 재료 수급·성향별 능력치·대표 전시와 기존 정원 계산을 실제 API와 검증 경로에 대조했다. 합성과 입장 수요의 담당 원천을 갱신했다.\n2026-11-19 플레이 가이드 전환. 심층 원정, 신규 변종과 하이브리드 수집, 공룡 경기, 래스터 스프라이트 제작의 담당 문서와 열람 위치를 대조했다.\n2026-11-19 첫 전시 뒤 성장 목표 4개, 보상 897 XP씩, 실제 연구·원정 경로, 에셋 요청·검수 절차를 담당 원천과 대조했다.\n2026-11-23: 파크 Lv.15 이후 실험 합성 견적과 연구자료 재현, 야시장 거래를 실험·거래·탐험 담당 문서에 대조했다. 기본 83종과 지정 15개 레시피를 조회하고 새 계통은 합성 후 도감에서 확인하도록 연결했다.\n2026-11-23: 깊은 바다 및 지정 장거리 원정의 연료, 일반 파견의 골드 준비비, 단일 단계 보급소를 현행 원천과 대조했다.\n2026-11-23: 서식지 블록 설계와 익룡 돔의 다섯 공간 단계가 기존 강화·사육·관람 기준과 연결되는지 확인했다.\n2026-11-24: 셔틀버스 구매·배차와 운행비, 먼 전시 만족도, 후속 사파리 지프 투어를 건물·운영·밸런스 원천에 대조했다. 부지 매입 규칙과 기존 파크 성장 XP를 함께 확인했다.\n2026-11-24: 15초 사파리 시범 관람의 중재와 꼬리 반격, 지프 따라가기와 편집용 리그·게임 에셋 분량을 현행 제작 문서에 대조했다.\n승인된 공룡 조형 시안과 파크의 스테고케라톱스·이구아노돈을 기준으로 명시하고 당시 게임에 적용된 파라 대기·걷기 외형을 확인했다.\n2026-11-25 스테고사우루스 실시간 3D 관람의 조작, 공용 조형 기준과 물가·그림자 제작 범위를 정본에 반영했다.\n2026-11-25 스테고사우루스 실시간 모델의 조형·색과 물가 조명, 가로 화면 확대 동작 및 최종 GLB 수치를 대조했다.\n2026-11-25 스테고사우루스 실시간 시범의 캐릭터 얼굴과 골판, 최종 GLB 수치를 대조했다.\n2026-11-25 승인된 2.5D 조형 시안, 초반 네 종의 대기 이미지와 파라 걷기 여섯 장을 대조했다.\n2026-11-25: 보유 부지의 사파리 우리와 지프 관람을 현재 전시·부지·비용·에셋 원천에 맞췄다. 저마다의 정차 지점에서 수풀과 물가에 따라 보이는 개체를 확인하는 절차를 건물과 부지 장에 연결했다.\n2026-11-25: 새 육식 우리의 면적과 차량 출입문을 통과하는 지프 관람 절차를 반영했다."
 }

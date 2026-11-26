@@ -1,4 +1,10 @@
 import { ResourcesService } from './resources.service';
+import { MaterialQuality, ResearchMaterial } from '@dino-park/shared';
+import {
+  FUEL_DEPOT_TYPE_ID,
+  RESEARCH_STORAGE_ID,
+  getResearchFacilityUpgrade,
+} from '@dino-park/game-data';
 import { BuildingService } from '../building/building.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ParkOperationsService } from '../park/park-operations.service';
@@ -51,7 +57,7 @@ const patch = (target: object, data: Record<string, unknown>) => {
 function fixture() {
   let state = {
     park: { ...world(), id: 'park', userId: 'user', level: 3, exp: 0 },
-    currency: { gold: 10000 },
+    currency: { gold: 10000, explorationEnergy: 30, energyLastRechargedAt: new Date(AT) },
     inventory: [] as Stock[],
     jobs: [] as Job[],
     transactions: [] as Record<string, unknown>[],
@@ -70,6 +76,9 @@ function fixture() {
     },
     currency: {
       findUniqueOrThrow: jest.fn(async () => state.currency),
+      update: jest.fn(async ({ data }: { data: Record<string, unknown> }) =>
+        patch(state.currency, data),
+      ),
       updateMany: jest.fn(
         async ({ where, data }: { where: Where; data: Record<string, unknown> }) => {
           if (state.currency.gold < (where.gold?.gte ?? 0)) return { count: 0 };
@@ -162,6 +171,16 @@ function fixture() {
       ),
     },
     building: {
+      findMany: jest.fn(async () => state.park.buildings),
+      create: jest.fn(async ({ data }) => {
+        const facility = {
+          ...building(`building-${state.nextId++}`, data.typeId, data.positionX, data.positionY),
+          ...data,
+          createdAt: new Date(),
+        };
+        state.park.buildings.push(facility);
+        return facility;
+      }),
       findFirst: jest.fn(
         async ({ where }: { where: Where }) =>
           state.park.buildings.find(
@@ -208,31 +227,25 @@ function fixture() {
       return run;
     }),
   };
-  const operations = {
-    settleInTransaction: jest.fn(async () => {
-      for (const facility of state.park.buildings) {
-        if (facility.completesAt && facility.completesAt.getTime() <= Date.now()) {
-          facility.status = 'ACTIVE';
-          facility.completesAt = null;
-        }
+  const prismaService = prisma as unknown as PrismaService;
+  const operations = new ParkOperationsService(prismaService);
+  jest.spyOn(operations, 'settleInTransaction').mockImplementation(async () => {
+    for (const facility of state.park.buildings) {
+      if (facility.completesAt && facility.completesAt.getTime() <= Date.now()) {
+        facility.status = 'ACTIVE';
+        facility.completesAt = null;
       }
-    }),
-  };
-  const service = new ResourcesService(
-    prisma as unknown as PrismaService,
-    operations as unknown as ParkOperationsService,
-  );
-  const buildings = new BuildingService(
-    prisma as unknown as PrismaService,
-    operations as unknown as ParkOperationsService,
-    service,
-  );
-  const stock = (material: string, amount: number) =>
+    }
+    return { visitors: 0, gross: 0, maintenance: 0, elapsedHours: 0, settledAt: new Date() };
+  });
+  const service = new ResourcesService(prismaService, operations);
+  const buildings = new BuildingService(prismaService, operations, service);
+  const stock = (material: string, amount: number, quality = 0) =>
     state.inventory.push({
       id: `stock-${state.nextId++}`,
       parkId: 'park',
       material,
-      quality: 0,
+      quality,
       amount,
     });
   return { service, buildings, tx, state: () => state, stock };
@@ -253,6 +266,52 @@ describe('ordinary resources and production transactions', () => {
     expect(f.state().inventory).toHaveLength(1);
     expect(f.state().inventory[0].quality).toBe(0);
     expect(f.state().transactions).toHaveLength(1);
+  });
+
+  it('converts three same-quality materials into one and consumes each quality request once', async () => {
+    const f = fixture();
+    f.state().heroClaimedAt = new Date(AT);
+    f.stock(ResearchMaterial.DNA, 9, MaterialQuality.LOW);
+    f.stock(ResearchMaterial.CATALYST, 5, MaterialQuality.LOW);
+    const middle = {
+      material: ResearchMaterial.DNA,
+      fromQuality: MaterialQuality.LOW as const,
+      quantity: 3,
+      requestId: 'research-middle',
+    };
+    await Promise.all([
+      f.service.upgradeQuality('user', middle),
+      f.service.upgradeQuality('user', middle),
+    ]);
+    const result = await f.service.upgradeQuality('user', {
+      ...middle,
+      fromQuality: MaterialQuality.MIDDLE,
+      quantity: 1,
+      requestId: 'research-high',
+    });
+    expect(result.gold).toBe(9700);
+    expect(result.researchMaterials?.filter((item) => item.amount > 0)).toEqual([
+      { material: ResearchMaterial.CATALYST, quality: MaterialQuality.LOW, amount: 5 },
+      { material: ResearchMaterial.DNA, quality: MaterialQuality.HIGH, amount: 1 },
+    ]);
+    expect(f.state().transactions).toHaveLength(2);
+  });
+
+  it('keeps quality stock intact when a player cannot afford the conversion', async () => {
+    const f = fixture();
+    f.state().heroClaimedAt = new Date(AT);
+    f.state().currency.gold = 49;
+    f.stock(ResearchMaterial.DNA, 3, MaterialQuality.LOW);
+    await expect(
+      f.service.upgradeQuality('user', {
+        material: ResearchMaterial.DNA,
+        fromQuality: MaterialQuality.LOW,
+        quantity: 1,
+        requestId: 'unaffordable-quality',
+      }),
+    ).rejects.toThrow('골드가 부족');
+    expect(f.state().inventory).toMatchObject([{ quality: MaterialQuality.LOW, amount: 3 }]);
+    expect(f.state().transactions).toEqual([]);
   });
   it('starts one selected three-lot job once and serializes two starts at one facility', async () => {
     const f = fixture();
@@ -303,6 +362,79 @@ describe('ordinary resources and production transactions', () => {
     expect(received.inventory[0].amount).toBe(90);
     expect(f.state().currency.gold).toBe(9400);
   });
+  it('builds the depot at Lv.2, queues fuel on a full tank and preserves the full batch until room is available', async () => {
+    const f = fixture();
+    f.state().park.level = 2;
+    const depot = await f.buildings.construct('user', FUEL_DEPOT_TYPE_ID, 14, 3);
+    expect(depot.completesAt?.getTime()).toBe(AT + 60_000);
+    expect(f.state().currency.gold).toBe(9000);
+    await expect(f.service.startProduction('user', depot.id, 1)).rejects.toThrow('완공된');
+
+    jest.setSystemTime(AT + 60_000);
+    await f.service.startProduction('user', depot.id, 2);
+    const { id } = f.state().jobs[0];
+    expect(f.state().jobs[0]).toMatchObject({ material: 'fuel', quantity: 10, costGold: 600 });
+    expect(f.state().jobs[0].readyAt.getTime()).toBe(AT + 1_260_000);
+    await expect(f.service.claimProduction('user', id)).rejects.toThrow('아직 생산 중');
+
+    jest.setSystemTime(AT + 1_260_000);
+    const ready = await f.service.getResources('user');
+    expect(ready.fuel).toEqual({ amount: 30, capacity: 30, nextRechargeAt: null });
+    expect(ready.facilities.find(({ typeId }) => typeId === FUEL_DEPOT_TYPE_ID)?.job).toMatchObject(
+      { ready: true, claimBlocked: true, quantity: 10 },
+    );
+    await expect(f.service.claimProduction('user', id)).rejects.toThrow('보급소에 보관');
+    expect(f.state().jobs[0].claimedAt).toBeNull();
+
+    f.state().currency.explorationEnergy = 20;
+    f.state().currency.energyLastRechargedAt = new Date();
+    const [first, retry] = await Promise.all([
+      f.service.claimProduction('user', id),
+      f.service.claimProduction('user', id),
+    ]);
+    expect(first.fuel.amount).toBe(30);
+    expect(retry.fuel.amount).toBe(30);
+    expect(f.state().currency.gold).toBe(8400);
+    expect(
+      f.state().transactions.filter(({ currencyType }) => currencyType === 'fuel'),
+    ).toHaveLength(1);
+    expect(f.state().inventory).toEqual([]);
+    expect(first.inventory.map(({ material }) => material)).not.toContain('fuel');
+  });
+
+  it('buys only fuel that fits after natural recovery with exactly one debit on request replay', async () => {
+    const f = fixture();
+    f.state().currency.explorationEnergy = 25;
+    jest.setSystemTime(AT + 900_000);
+    expect((await f.service.getResources('user')).fuel).toEqual({
+      amount: 26,
+      capacity: 30,
+      nextRechargeAt: new Date(AT + 1_200_000).toISOString(),
+    });
+    await expect(f.service.purchase('user', 'fuel', 5, 'too-much')).rejects.toThrow('남은 공간');
+    const [first, retry] = await Promise.all([
+      f.service.purchase('user', 'fuel', 4, 'fuel-receipt'),
+      f.service.purchase('user', 'fuel', 4, 'fuel-receipt'),
+    ]);
+    expect(first.fuel.amount).toBe(30);
+    expect(retry.fuel.amount).toBe(30);
+    expect(f.state().currency.gold).toBe(9600);
+    expect(f.state().transactions).toEqual([expect.objectContaining({ amount: -400 })]);
+    expect(f.state().inventory).toEqual([]);
+  });
+
+  it('preserves existing fuel above the cap and prevents a new gold top-up', async () => {
+    const f = fixture();
+    f.state().currency.explorationEnergy = 39;
+    expect((await f.service.getResources('user')).fuel).toEqual({
+      amount: 39,
+      capacity: 30,
+      nextRechargeAt: null,
+    });
+    await expect(f.service.purchase('user', 'fuel', 1)).rejects.toThrow('남은 공간');
+    expect(f.state().currency).toMatchObject({ gold: 10000, explorationEnergy: 39 });
+  });
+
   it('rejects foreign facilities/jobs, unsupported resources, fractional inputs and overflowing purchases without spending', async () => {
     const f = fixture();
     await expect(f.service.startProduction('user', 'someone-elses-factory', 1)).rejects.toThrow(
@@ -459,6 +591,32 @@ describe('ordinary resources and production transactions', () => {
     await expect(f.buildings.upgrade('platform', 'user', 3)).resolves.toMatchObject({
       level: 3,
       goldSpent: 4000,
+    });
+  });
+
+  it('uses completed warehouse capacity for larger purchases and raises it at the upgrade boundary', async () => {
+    const { service, state } = fixture();
+    const before = getResearchFacilityUpgrade(RESEARCH_STORAGE_ID, 1)!.effect;
+    const after = getResearchFacilityUpgrade(RESEARCH_STORAGE_ID, 2)!.effect;
+    const finish = AT + 60_000;
+    state().currency.gold = 100_000;
+    state().park.buildings.push({
+      ...building('warehouse', RESEARCH_STORAGE_ID, 2, 2),
+      level: 2,
+      status: 'UPGRADING',
+      completesAt: new Date(finish),
+    });
+
+    await expect(service.purchase('user', 'wood', before)).resolves.toMatchObject({
+      capacityPerMaterial: before,
+    });
+    await expect(service.purchase('user', 'wood', 1)).rejects.toThrow('보관 한도');
+    jest.setSystemTime(finish);
+    await expect(service.purchase('user', 'wood', after - before)).resolves.toMatchObject({
+      capacityPerMaterial: after,
+      inventory: expect.arrayContaining([
+        { material: 'wood', name: '목재', amount: after, buyPrice: 20 },
+      ]),
     });
   });
 });

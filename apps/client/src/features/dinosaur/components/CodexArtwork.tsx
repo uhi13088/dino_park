@@ -1,4 +1,5 @@
 import { DinosaurCategory, type DinosaurCodexEntry } from '@dino-park/shared';
+import { dinosaurRasterArtwork, hybridArtworkUrl } from '@/game/parkArtwork';
 
 export function CodexArtwork({
   entry,
@@ -7,10 +8,11 @@ export function CodexArtwork({
   entry: DinosaurCodexEntry;
   silhouette?: boolean;
 }) {
+  const imageUrl = dinosaurRasterArtwork.get(entry.speciesId)?.path ?? entry.imageUrl;
   return (
     <div className={`codex-art ${silhouette ? 'is-silhouette' : ''}`} aria-hidden="true">
-      {entry.imageUrl ? (
-        <img src={entry.imageUrl} alt="" loading="lazy" width="120" height="108" />
+      {imageUrl ? (
+        <img src={hybridArtworkUrl(imageUrl)} alt="" loading="lazy" width="120" height="108" />
       ) : (
         <svg
           viewBox="0 0 64 64"

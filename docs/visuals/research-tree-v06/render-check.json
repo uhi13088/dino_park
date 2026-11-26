@@ -1,9 +1,9 @@
 {
   "source": "docs/current/research-trees.md",
-  "sourceSha256": "a4e12adec11c28fc9608b014500124dd2acbb1e39163d8660b643d24edd61eb7",
-  "nodeCount": 72,
-  "edgeCount": 65,
-  "rootCount": 8,
+  "sourceSha256": "e6454cd919a84f55be159fe48cd81f7a58dfae9cf455ff400817d9748e42eb60",
+  "nodeCount": 69,
+  "edgeCount": 63,
+  "rootCount": 7,
   "accountState": false,
   "requiredFirstLab": {
     "ops-entry": 1,
@@ -54,9 +54,6 @@
     "exp-risk-reading": 5,
     "exp-ruin-containment": 15,
     "exp-apex-tracking": 25,
-    "exp-tank": 1,
-    "exp-recovery": 5,
-    "exp-expedition-supply": 15,
     "exp-clue-comparison": 1,
     "exp-objective-choice": 10,
     "exp-evidence-validation": 20,
@@ -105,14 +102,13 @@
     },
     {
       "key": "exp",
-      "nodes": 18,
-      "edges": 16,
+      "nodes": 15,
+      "edges": 14,
       "columns": [
-        3,
-        7,
-        5,
         2,
-        1
+        7,
+        4,
+        2
       ]
     },
     {

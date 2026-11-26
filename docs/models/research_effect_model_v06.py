@@ -54,7 +54,7 @@ STRUCTURED = {node_id: {**definition, "levels": LEVELS[node_id]} for node_id, de
 
 
 def all_effects():
-    """Return all 72 definitions, retaining each structured rank's original unit."""
+    """Return all active definitions, retaining each structured rank's original unit."""
     scalar = {node_id: {"id": node_id, "kind": "preserved_scalar", "source_type": "tech:effects",
                        "levels": [{"level": rank, "value": F(row[f"Lv.{rank}"]),
                                    "unit": row["효과"], "effect": row["효과"], "unlocks": [], "contract": {}}
@@ -111,16 +111,14 @@ def material_capacity(warehouse_level, storage_rank=0):
     return int(building.primary("warehouse", warehouse_level) * (1 + ratio("ops-storage", storage_rank)))
 
 
-def batch_lots(batch_rank=0, *, fuel=False):
-    return int(building.P["max_lots"] if fuel else value("ops-batch", batch_rank, building.P["max_lots"]))
+def batch_lots(batch_rank=0):
+    return int(value("ops-batch", batch_rank, building.P["max_lots"]))
 
 
 def production(building_id, building_level, lots, processing_rank=0, batch_rank=0):
-    fuel = building_id == "fueldepot"
-    assert 1 <= lots <= batch_lots(batch_rank, fuel=fuel)
+    assert 1 <= lots <= batch_lots(batch_rank)
     result = dict(building.production(building_id, building_level, lots))
-    if not fuel:
-        result["seconds"] = building.ceil(result["seconds"] * (1 - ratio("ops-processing", processing_rank)))
+    result["seconds"] = building.ceil(result["seconds"] * (1 - ratio("ops-processing", processing_rank)))
     return result
 
 
@@ -156,19 +154,18 @@ def upkeep_ratio(security_level=0, upkeep_rank=0, isolation_rank=0, environment_
     return result
 
 
-def visitor_rate(base_demand, gate_level, platforms, restroom_level=0, foodcourt_level=0,
-                 entry_rank=0, marketing_rank=0, flow_rank=0, comfort_rank=0,
+def visitor_rate(base_demand, gate_level, occupied_zones, foodcourt_level=0,
+                 entry_rank=0, marketing_rank=0, flow_rank=0,
                  theme_program_rank=0, *, theme_eligible=False):
     """Illustrative rate algebra; callers supply an already validated demand."""
     food = F(0) if not foodcourt_level else building.primary("foodcourt", foodcourt_level) / 100
     theme = ratio("ops-exhibitions", theme_program_rank) if theme_eligible else F(0)
     demand = F(base_demand) * (1 + food + ratio("ops-marketing", marketing_rank) + theme)
     gate = building.primary("gate", gate_level) * (1 + ratio("ops-entry", entry_rank))
-    restroom = 0 if not restroom_level else int(building.primary("restroom", restroom_level) * (1 + ratio("ops-comfort", comfort_rank)))
-    capacity = building.P["base_capacity"] + sum(building.primary("platform", n) for n in platforms) + restroom
+    capacity = building.exhibit_capacity(occupied_zones)
     seconds = value("ops-flow", flow_rank, building.P["visit_seconds"])
     viewing = capacity * 60 / seconds
-    return {"demand": demand, "gate": gate, "viewing_per_minute": viewing,
+    return {"demand": demand, "gate": gate, "exhibit_per_minute": viewing,
             "visitors_per_minute": min(demand, gate, viewing), "physical_capacity": capacity}
 
 
@@ -196,16 +193,3 @@ def synthesis_dna(base, result_id, quantification_rank=0, legendary_rank=0, *, f
 def failure_refund(actual_spend, percent, *, stabilized=False):
     assert actual_spend >= 0 and 0 <= percent <= 100
     return actual_spend if stabilized else int(F(actual_spend) * F(percent) / 100)
-
-
-def expedition_fuel(permission, supply_rank=0):
-    assert permission["kind"] == "mission_permission"
-    base = permission["base_fuel"]
-    if not supply_rank:
-        return base
-    row = level("exp-expedition-supply", supply_rank)
-    contract = row["contract"]
-    if permission["id"] not in contract["affected_mission_ids"]:
-        return base
-    option = contract["permissions"][0]
-    return max(option["minimum_fuel"], base - int(row["value"]))

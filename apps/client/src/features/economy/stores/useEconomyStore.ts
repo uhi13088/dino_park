@@ -18,18 +18,12 @@ interface EconomyState {
   gold: number;
   diamond: number;
   dna: number;
-  explorationEnergy: number;
-  maxExplorationEnergy: number;
-  energyRechargeTime: Date | null;
 
   // 재화 업데이트
-  setCurrency: (
-    currency: Partial<Pick<EconomyState, 'gold' | 'diamond' | 'dna' | 'explorationEnergy'>>,
-  ) => void;
+  setCurrency: (currency: Partial<Pick<EconomyState, 'gold' | 'diamond' | 'dna'>>) => void;
   addGold: (amount: number) => void;
   addDiamond: (amount: number) => void;
   addDna: (amount: number) => void;
-  useEnergy: (amount: number) => boolean;
 
   // 거래 내역
   transactions: Transaction[];
@@ -59,9 +53,6 @@ const initialState = {
   gold: 10000,
   diamond: 100,
   dna: 0,
-  explorationEnergy: 30,
-  maxExplorationEnergy: 30,
-  energyRechargeTime: null,
   transactions: [],
   transactionFilter: 'all' as TransactionFilter,
   offlineReward: null,
@@ -91,15 +82,6 @@ export const useEconomyStore = create<EconomyState>()(
         set((state) => ({
           dna: Math.max(0, state.dna + amount),
         })),
-
-      useEnergy: (amount) => {
-        const state = get();
-        if (state.explorationEnergy >= amount) {
-          set({ explorationEnergy: state.explorationEnergy - amount });
-          return true;
-        }
-        return false;
-      },
 
       // 거래 내역
       setTransactions: (transactions) => set({ transactions }),
@@ -153,7 +135,6 @@ export const CURRENCY_CONFIG: Record<string, { icon: string; color: string; name
   gold: { icon: '🪙', color: 'text-yellow-500', name: '골드' },
   diamond: { icon: '💎', color: 'text-blue-500', name: '다이아' },
   dna: { icon: '🧬', color: 'text-purple-500', name: 'DNA' },
-  explorationEnergy: { icon: '⚡', color: 'text-orange-500', name: '에너지' },
   seasonPoint: { icon: '🏆', color: 'text-amber-500', name: '시즌 포인트' },
   greatFigurePoint: { icon: '⭐', color: 'text-indigo-500', name: '위인 포인트' },
 };

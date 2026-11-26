@@ -1,0 +1,447 @@
+[
+  {
+    "stage": 8,
+    "targetLevel": 9,
+    "labPreparation": 4,
+    "goals": [
+      {
+        "id": "facility",
+        "rewardXp": 2111,
+        "alternatives": [
+          {
+            "kind": "building",
+            "typeId": "research-dna-lab",
+            "level": 4,
+            "name": "DNA 연구소"
+          },
+          {
+            "kind": "building",
+            "typeId": "production-feed-factory",
+            "level": 2,
+            "name": "사료 공장"
+          }
+        ]
+      },
+      {
+        "id": "research",
+        "rewardXp": 2111,
+        "alternatives": [
+          {
+            "kind": "research",
+            "technologyId": "gene-analysis",
+            "level": 1
+          },
+          {
+            "kind": "research",
+            "technologyId": "care-isolation",
+            "level": 1
+          }
+        ]
+      },
+      {
+        "id": "field",
+        "rewardXp": 2111,
+        "alternatives": [
+          {
+            "kind": "dispatch",
+            "missionId": "gene-target-gallimimus",
+            "reward": "egg"
+          },
+          {
+            "kind": "dispatch",
+            "missionId": "mission.mineral-cave.basic-stabilizer.v1",
+            "reward": "material"
+          }
+        ]
+      },
+      {
+        "id": "operation",
+        "rewardXp": 2111,
+        "alternatives": [
+          {
+            "kind": "paid",
+            "amount": 1600
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "stage": 9,
+    "targetLevel": 10,
+    "labPreparation": 5,
+    "goals": [
+      {
+        "id": "facility",
+        "rewardXp": 2609,
+        "alternatives": [
+          {
+            "kind": "building",
+            "typeId": "research-dna-lab",
+            "level": 5,
+            "name": "DNA 연구소"
+          }
+        ]
+      },
+      {
+        "id": "research",
+        "rewardXp": 2609,
+        "alternatives": [
+          {
+            "kind": "research",
+            "technologyId": "ops-land",
+            "level": 1
+          },
+          {
+            "kind": "research",
+            "technologyId": "gene-common-herbivore",
+            "level": 1
+          }
+        ]
+      },
+      {
+        "id": "field",
+        "rewardXp": 2609,
+        "alternatives": [
+          {
+            "kind": "dispatch",
+            "missionId": "natural-target-dimorphodon",
+            "reward": "egg"
+          },
+          {
+            "kind": "dispatch",
+            "missionId": "mission.primal-swamp.basic-culture.v1",
+            "reward": "material"
+          }
+        ]
+      },
+      {
+        "id": "operation",
+        "rewardXp": 2612,
+        "alternatives": [
+          {
+            "kind": "paid",
+            "amount": 2500
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "stage": 10,
+    "targetLevel": 11,
+    "labPreparation": 6,
+    "goals": [
+      {
+        "id": "facility",
+        "rewardXp": 3154,
+        "alternatives": [
+          {
+            "kind": "building",
+            "typeId": "research-dna-lab",
+            "level": 6,
+            "name": "DNA 연구소"
+          },
+          {
+            "kind": "building",
+            "typeId": "production-warehouse",
+            "level": 3,
+            "name": "창고"
+          }
+        ]
+      },
+      {
+        "id": "research",
+        "rewardXp": 3154,
+        "alternatives": [
+          {
+            "kind": "research",
+            "technologyId": "ops-engineering",
+            "level": 1
+          },
+          {
+            "kind": "research",
+            "technologyId": "care-adaptation",
+            "level": 2
+          }
+        ]
+      },
+      {
+        "id": "field",
+        "rewardXp": 3154,
+        "alternatives": [
+          {
+            "kind": "owned",
+            "speciesId": "gallimimus"
+          },
+          {
+            "kind": "owned",
+            "speciesId": "ankylosaurus"
+          }
+        ]
+      },
+      {
+        "id": "operation",
+        "rewardXp": 3157,
+        "alternatives": [
+          {
+            "kind": "paid",
+            "amount": 3600
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "stage": 11,
+    "targetLevel": 12,
+    "labPreparation": 7,
+    "goals": [
+      {
+        "id": "facility",
+        "rewardXp": 3745,
+        "alternatives": [
+          {
+            "kind": "building",
+            "typeId": "research-dna-lab",
+            "level": 7,
+            "name": "DNA 연구소"
+          },
+          {
+            "kind": "building",
+            "typeId": "visitor-viewing-platform",
+            "level": 3,
+            "name": "관람대"
+          }
+        ]
+      },
+      {
+        "id": "research",
+        "rewardXp": 3745,
+        "alternatives": [
+          {
+            "kind": "research",
+            "technologyId": "gene-common-herbivore",
+            "level": 2
+          }
+        ]
+      },
+      {
+        "id": "field",
+        "rewardXp": 3745,
+        "alternatives": [
+          {
+            "kind": "dispatch",
+            "missionId": "gene-target-ankylosaurus",
+            "reward": "egg"
+          },
+          {
+            "kind": "dispatch",
+            "missionId": "mission.primal-swamp.repeat-reedbank-survey.v1",
+            "reward": "material"
+          }
+        ]
+      },
+      {
+        "id": "operation",
+        "rewardXp": 3745,
+        "alternatives": [
+          {
+            "kind": "paid",
+            "amount": 4900
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "stage": 12,
+    "targetLevel": 13,
+    "labPreparation": 8,
+    "goals": [
+      {
+        "id": "facility",
+        "rewardXp": 4380,
+        "alternatives": [
+          {
+            "kind": "building",
+            "typeId": "research-dna-lab",
+            "level": 8,
+            "name": "DNA 연구소"
+          },
+          {
+            "kind": "building",
+            "typeId": "operation-security-center",
+            "level": 3,
+            "name": "보안센터"
+          }
+        ]
+      },
+      {
+        "id": "research",
+        "rewardXp": 4380,
+        "alternatives": [
+          {
+            "kind": "research",
+            "technologyId": "ops-processing",
+            "level": 1
+          },
+          {
+            "kind": "research",
+            "technologyId": "care-adaptation",
+            "level": 3
+          }
+        ]
+      },
+      {
+        "id": "field",
+        "rewardXp": 4380,
+        "alternatives": [
+          {
+            "kind": "dispatch",
+            "missionId": "gene-target-carnotaurus",
+            "reward": "egg"
+          },
+          {
+            "kind": "dispatch",
+            "missionId": "gene-target-coelophysis",
+            "reward": "egg"
+          }
+        ]
+      },
+      {
+        "id": "operation",
+        "rewardXp": 4380,
+        "alternatives": [
+          {
+            "kind": "paid",
+            "amount": 6400
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "stage": 13,
+    "targetLevel": 14,
+    "labPreparation": 9,
+    "goals": [
+      {
+        "id": "facility",
+        "rewardXp": 5059,
+        "alternatives": [
+          {
+            "kind": "building",
+            "typeId": "research-dna-lab",
+            "level": 9,
+            "name": "DNA 연구소"
+          },
+          {
+            "kind": "building",
+            "typeId": "production-feed-factory",
+            "level": 3,
+            "name": "사료 공장"
+          }
+        ]
+      },
+      {
+        "id": "research",
+        "rewardXp": 5059,
+        "alternatives": [
+          {
+            "kind": "research",
+            "technologyId": "care-incubation",
+            "level": 1
+          },
+          {
+            "kind": "research",
+            "technologyId": "ops-entry",
+            "level": 2
+          }
+        ]
+      },
+      {
+        "id": "field",
+        "rewardXp": 5059,
+        "alternatives": [
+          {
+            "kind": "dispatch",
+            "missionId": "gene-target-corythosaurus",
+            "reward": "egg"
+          },
+          {
+            "kind": "dispatch",
+            "missionId": "gene-target-dracorex",
+            "reward": "egg"
+          }
+        ]
+      },
+      {
+        "id": "operation",
+        "rewardXp": 5059,
+        "alternatives": [
+          {
+            "kind": "paid",
+            "amount": 8100
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "stage": 14,
+    "targetLevel": 15,
+    "labPreparation": 10,
+    "goals": [
+      {
+        "id": "facility",
+        "rewardXp": 5780,
+        "alternatives": [
+          {
+            "kind": "building",
+            "typeId": "research-dna-lab",
+            "level": 10,
+            "name": "DNA 연구소"
+          }
+        ]
+      },
+      {
+        "id": "research",
+        "rewardXp": 5780,
+        "alternatives": [
+          {
+            "kind": "research",
+            "technologyId": "gene-common-carnivore",
+            "level": 2
+          }
+        ]
+      },
+      {
+        "id": "field",
+        "rewardXp": 5780,
+        "alternatives": [
+          {
+            "kind": "dispatch",
+            "missionId": "gene-target-pachycephalosaurus",
+            "reward": "egg"
+          },
+          {
+            "kind": "dispatch",
+            "missionId": "mission.abandoned-lab.repeat-wall-store-survey.v1",
+            "reward": "material"
+          }
+        ]
+      },
+      {
+        "id": "operation",
+        "rewardXp": 5783,
+        "alternatives": [
+          {
+            "kind": "paid",
+            "amount": 10000
+          }
+        ]
+      }
+    ]
+  }
+]

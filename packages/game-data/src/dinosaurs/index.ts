@@ -30,11 +30,11 @@ const SPACE_REQUIRED = {
 };
 
 /**
- * 전체 공룡 데이터 (82종)
+ * 전체 공룡 데이터 (83종)
  */
 export const DINOSAUR_DATA: DinosaurSpecies[] = [
   // ============================================
-  // 초식 공룡 (25종)
+  // 초식 공룡
   // ============================================
 
   // === 커먼 초식 (8종) ===
@@ -410,6 +410,23 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       effect: { dangerWarning: 1 },
     },
     description: '뒤로 솟은 볏이 특징. 큰 소리로 의사소통한다.',
+  },
+  {
+    id: 'sinoceratops',
+    name: 'Sinoceratops',
+    nameKo: '시노케라톱스',
+    category: DinosaurCategory.HERBIVORE,
+    rarity: Rarity.UNCOMMON,
+    size: DinosaurSize.LARGE,
+    stats: { baseRevenue: 0, popularity: 14, maintenanceCost: 30, space: 1 },
+    habitat: ['grassland', 'forest'],
+    hatchTime: HATCH_TIME[Rarity.UNCOMMON],
+    unlockCondition: {
+      type: 'exploration',
+      value: 'parent-target-sinoceratops',
+      description: '확장 하이브리드 설계 Lv.3 완료 후 화석 계곡의 각룡 둥지 조사',
+    },
+    description: '넓은 프릴이 특징인 대형 초식공룡으로, 알로사이노 합성의 원종이다.',
   },
   {
     id: 'ouranosaurus',
@@ -1662,7 +1679,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
   },
 
   // ============================================
-  // 해양 파충류 (10종)
+  // 해양 생물 (11종)
   // ============================================
 
   // === 커먼 해양 (2종) ===
@@ -1679,7 +1696,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       maintenanceCost: 18,
       space: SPACE_REQUIRED[DinosaurSize.MEDIUM],
     },
-    habitat: ['aquarium', 'marine-hall'],
+    habitat: ['aquarium', 'marine-hall', 'marine-aquarium'],
     hatchTime: HATCH_TIME[Rarity.COMMON],
     unlockCondition: {
       type: 'exploration',
@@ -1707,7 +1724,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       maintenanceCost: 14,
       space: SPACE_REQUIRED[DinosaurSize.SMALL],
     },
-    habitat: ['aquarium'],
+    habitat: ['aquarium', 'marine-aquarium'],
     hatchTime: HATCH_TIME[Rarity.COMMON],
     unlockCondition: { type: 'exploration', value: 'coastal', description: '해안 탐험' },
     passive: {
@@ -1733,7 +1750,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       maintenanceCost: 28,
       space: SPACE_REQUIRED[DinosaurSize.LARGE],
     },
-    habitat: ['marine-hall'],
+    habitat: ['marine-hall', 'marine-aquarium'],
     hatchTime: HATCH_TIME[Rarity.UNCOMMON],
     unlockCondition: {
       type: 'exploration',
@@ -1761,7 +1778,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       maintenanceCost: 32,
       space: SPACE_REQUIRED[DinosaurSize.LARGE],
     },
-    habitat: ['marine-hall'],
+    habitat: ['marine-hall', 'marine-aquarium'],
     hatchTime: HATCH_TIME[Rarity.UNCOMMON],
     unlockCondition: { type: 'exploration', value: 'deep-sea', description: '심해 탐험' },
     passive: {
@@ -1785,7 +1802,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
       maintenanceCost: 30,
       space: SPACE_REQUIRED[DinosaurSize.LARGE],
     },
-    habitat: ['marine-hall'],
+    habitat: ['marine-hall', 'marine-aquarium'],
     hatchTime: HATCH_TIME[Rarity.UNCOMMON],
     unlockCondition: { type: 'exploration', value: 'uncommon-egg', description: '언커먼 알' },
     passive: {
@@ -1797,7 +1814,7 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     description: '목이 가장 긴 해양 파충류. 우아하게 헤엄친다.',
   },
 
-  // === 레어 해양 (3종) ===
+  // === 레어 해양 (4종) ===
   {
     id: 'mosasaurus',
     name: 'Mosasaurus',
@@ -1875,6 +1892,24 @@ export const DINOSAUR_DATA: DinosaurSpecies[] = [
     description: '머리로 먹이를 기절시키는 모사사우루스류의 친척.',
   },
 
+  {
+    id: 'megalodon',
+    name: 'Megalodon',
+    nameKo: '메갈로돈',
+    category: DinosaurCategory.MARINE,
+    rarity: Rarity.RARE,
+    size: DinosaurSize.GIANT,
+    stats: { baseRevenue: 0, popularity: 40, maintenanceCost: 75, space: 1 },
+    habitat: ['marine-aquarium'],
+    hatchTime: HATCH_TIME[Rarity.RARE],
+    unlockCondition: {
+      type: 'exploration',
+      value: 'parent-target-megalodon',
+      description: '전설 조합 설계 Lv.2 완료 후 깊은 바다의 외해 단층 조사',
+    },
+    description:
+      '깊은 바다에서 흔적을 찾을 수 있는 거대 해양 원종으로, 메가로돈 렉스 합성에 필요하다.',
+  },
   // === 에픽 해양 (1종) ===
   {
     id: 'shonisaurus',

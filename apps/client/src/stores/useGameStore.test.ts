@@ -19,7 +19,6 @@ describe('useGameStore', () => {
       expect(state.showGrid).toBe(false);
       expect(state.gold).toBe(10000);
       expect(state.diamond).toBe(100);
-      expect(state.explorationEnergy).toBe(30);
     });
   });
 
@@ -142,11 +141,6 @@ describe('useGameStore', () => {
     it('should set diamond', () => {
       useGameStore.getState().setDiamond(500);
       expect(useGameStore.getState().diamond).toBe(500);
-    });
-
-    it('should set exploration energy', () => {
-      useGameStore.getState().setExplorationEnergy(25);
-      expect(useGameStore.getState().explorationEnergy).toBe(25);
     });
   });
 

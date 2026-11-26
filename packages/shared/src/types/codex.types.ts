@@ -34,6 +34,7 @@ export interface SynthesisRecipe {
 }
 
 export interface DinosaurCodexEntry {
+  experimental?: boolean;
   speciesId: string;
   name: string;
   nameKo: string;

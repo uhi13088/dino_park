@@ -67,6 +67,7 @@ def cell_borders(cell,padding=40):
 
 def make_table(doc,b):
  t=doc.add_table(rows=1,cols=len(b['headers']));t.autofit=False;t.alignment=WD_TABLE_ALIGNMENT.CENTER
+ text_style_id=doc.styles['Table Text'].style_id
  weights=b.get('widths') or [1]*len(b['headers']);total=sum(weights)
  for i,w in enumerate(weights):t.columns[i].width=Mm(174*w/total)
  spacious=b.get('variant')=='research';allrows=[b['headers'],*b['rows']]
@@ -76,6 +77,7 @@ def make_table(doc,b):
  if len(b['rows'])>=3:
   if content.block_height({**b,'type':'table','rows':b['rows'][:2]})<=140:keep_rows.add(1)
   if content.block_height({**b,'type':'table','rows':b['rows'][-2:]})<=140:keep_rows.add(len(allrows)-2)
+ if b.get('keep_rows'):keep_rows.update(range(len(allrows)-1))
  for ri,values in enumerate(allrows):
   cells=t.rows[0].cells if ri==0 else t.add_row().cells
   trpr=cells[0]._tc.getparent().get_or_add_trPr();trpr.append(OxmlElement('w:cantSplit'))
@@ -84,7 +86,7 @@ def make_table(doc,b):
   for ci,value in enumerate(values):
    cell=cells[ci];cell.width=Mm(174*weights[ci]/total);cell.vertical_alignment=WD_CELL_VERTICAL_ALIGNMENT.CENTER;cell_borders(cell,padding)
    shade=OxmlElement('w:shd');shade.set(qn('w:fill'),NAVY if ri==0 else ('E5ECEF' if major else (LIGHT if ri%2==0 else 'FFFFFF')));cell._tc.get_or_add_tcPr().append(shade)
-   p=cell.paragraphs[0];p.style='Table Text'
+   p=cell.paragraphs[0];p._p.style=text_style_id
    if ri in keep_rows:p.paragraph_format.keep_with_next=True
    short=ci==0 and (weights[ci]<1 or b['headers'][ci] in ('Lv','등급','표시'))
    numeric=ri>0 and bool(re.fullmatch(r'[0-9,./%× →-]+',str(value)))
@@ -103,7 +105,7 @@ def paragraph_text(doc,text,*,style='Normal',page=None):
   p.paragraph_format.left_indent=Mm(6);p.paragraph_format.right_indent=Mm(5)
   r=p.add_run(dialogue[1]+'  ');r.bold=True
   p.add_run(dialogue[3].lstrip());return p
- leads=['진입과 목표:', '완료와 다음:', '선택과 결과:', '상태 ', '목적 ', '선행 ', '획득 ', '전시 ', '부모로 사용하는 합성 ', '인기도 ', '특성 원안 ', '서사 흐름 ', '현재 위인 식별 ', '구분 ', '역할 ', '대사 ', '보유 효과 ', '배정 효과 ', '영입 ', '성장 구간 ', '적용 ', '관계 ', '해금 ', '실제 보유 부모 ']
+ leads=['진입과 목표:', '완료와 다음:', '선택과 결과:', '우리 짓기 ', '공룡 옮기기 ', '코스 저장 ', '지프 관람 ', '상태 ', '목적 ', '선행 ', '획득 ', '전시 ', '부모로 사용하는 합성 ', '인기도 ', '특성 원안 ', '서사 흐름 ', '현재 위인 식별 ', '구분 ', '역할 ', '대사 ', '보유 효과 ', '배정 효과 ', '영입 ', '성장 구간 ', '적용 ', '관계 ', '해금 ', '실제 보유 부모 ']
  for lead in leads:
   if text.startswith(lead):
    p.add_run(lead.rstrip()+('  ' if not lead.endswith(':') else ' ')).bold=True;p.add_run(text[len(lead):].lstrip());break
@@ -216,12 +218,13 @@ def front_link(doc,label,target,numbers,*,chapter=False):
 QUICK_GROUPS = [
  ('첫 플레이와 성장',[
   ('시작 리더와 재건 목표','production-direction'),('첫 스테고케라톱스 합성 레시피','recipe-stegoceratops'),
-  ('첫 전시 뒤 파크 Lv.6까지','park-growth-walkthrough'),('중후반 스토리 진행 조건','story-current-section-11')]),
+  ('첫 전시 뒤 파크 Lv.15까지','park-growth-walkthrough'),('중후반 스토리 진행 조건','story-current-section-11')]),
  ('파크 운영과 확장',[
   ('자원 획득과 사용처','resources'),('첫 7일과 장기 운영 수급','operation-balance'),
-  ('건물별 25레벨 강화표','nav-facilities'),('계열별 연구 효과와 비용','nav-research-items')]),
+  ('건물별 25레벨 강화표','nav-facilities'),('계열별 연구 효과와 비용','nav-research-items'),
+  ('사파리 우리와 지프 관람','park-safari-jeep')]),
  ('탐험과 공룡 수집',[
-  ('육상 차량과 해상 보트 탐험','expedition-play'),('원종 알 목표와 재입수','egg-targets'),
+  ('탐험가 파견 스팟 80곳','nav-scout-spots'),('하이브리드 실험과 연구자료','experimental-hybrids'),
   ('공룡 83종 전체 획득표','acquisition-table'),('결과 공룡별 합성 레시피','nav-recipes')]),
  ('이야기와 교류',[
   ('프롤로그부터 3장까지 이야기','story-current-section-0'),('위인 영입과 성장','figure-rules'),
@@ -409,7 +412,7 @@ def save_docx(pages,numbers,path=None):
     p=paragraph_text(doc,block['text'],style='Caption' if kind=='source' else ('Profile Meta' if profile else 'Normal'),page=page)
     next_block=blocks[block_index+1] if block_index+1<len(blocks) else {}
     before_acquisition=next_block.get('acquisition_route')=='first' and block.get('keep_group','').startswith('dino-profile-')
-    if profile or before_acquisition or (short_intro and block_index<first_data):p.paragraph_format.keep_with_next=True
+    if block.get('keep_with_next') or profile or before_acquisition or (short_intro and block_index<first_data):p.paragraph_format.keep_with_next=True
     if kind=='source':
      p.paragraph_format.space_before=Pt(4)
      keep_source_with_content(p)
@@ -419,10 +422,84 @@ def save_docx(pages,numbers,path=None):
 
 def inputs():
  candidates=set()
- for pattern in ['docs/current/*.md','docs/dino_park_*.md','docs/assets/*.md','packages/game-data/src/**/*.ts','packages/shared/src/**/*.ts', 'docs/models/*v06*','docs/guidebook/*.py','docs/guidebook/*.mjs','docs/guidebook/artwork/*.png','docs/guidebook/editorial/*.json','apps/client/public/assets/placeholders/*.svg','apps/client/public/assets/buildings/viewing-platform*.webp','docs/visuals/research-tree-v06/*.png']:
+ for pattern in ['docs/current/*.md','docs/dino_park_*.md','docs/assets/*.md','packages/game-data/src/**/*.ts','packages/shared/src/**/*.ts', 'docs/models/*v06*','docs/guidebook/*.py','docs/guidebook/*.mjs','docs/guidebook/artwork/*.png','docs/guidebook/editorial/*.json','apps/client/public/assets/placeholders/*.svg','apps/client/public/assets/buildings/viewing-platform*.webp','apps/client/public/assets/dinosaurs/*/idle.webp','apps/client/public/assets/ui/park-hud/*.webp','docs/visuals/research-tree-v06/*.png']:
   candidates.update(p for p in ROOT.glob(pattern) if p.is_file())
+ candidates.update(p for p in (ROOT/'apps/client/public/assets/safari-encounter').iterdir() if p.is_file() and p.suffix in {'.glb','.mp3','.webp'})
+ candidates.update(p for p in (ROOT/'docs/assets/reference/safari-encounter').iterdir() if p.is_file() and p.suffix in {'.blend','.py'})
+ for name in ('character-direction.webp','stegosaurus-character-direction.webp'):
+  candidates.add(ROOT/'docs/assets/reference'/name)
+ candidates.update((ROOT/'apps/client/public/assets/dinosaurs/parasaurolophus').glob('walk-*.webp'))
+ dinosaur_sources=ROOT/'apps/client/src/assets/images/dinosaurs'
+ for path in ('herbivore/parasaurolophus/idle-source.png',
+              'herbivore/parasaurolophus/walk-sheet-source.png',
+              'herbivore/iguanodon/idle-source.png',
+              'herbivore/triceratops/idle-source.png',
+              'hybrid/stegoceratops/idle-source.png',
+              'herbivore/stegosaurus/idle-source.png',
+              'carnivore/tyrannosaurus-rex/idle-source.png'):
+  candidates.add(dinosaur_sources/path)
  for path in ['TASK.md','CLAUDE.md','docs/README.md','docs/guidebook/README.md']:
   if (ROOT/path).exists():candidates.add(ROOT/path)
+ for path in ('apps/client/src/game/parkArtwork.ts','apps/client/src/game/buildingRasterManifest.json',
+              'apps/client/src/game/engine/GameEngine.ts','apps/client/src/game/engine/IslandWorld.ts',
+              'apps/client/src/game/engine/IsometricGrid.ts','apps/client/src/game/engine/ParkScenery.ts',
+              'apps/client/src/game/engine/DinosaurShadow.ts',
+              'apps/client/src/game/engine/ParkShuttles.ts',
+              'apps/client/src/game/engine/ParkSafariScenery.ts',
+              'apps/client/src/features/park/pages/ParkPage.tsx',
+              'apps/client/src/features/park/pages/ParkSafariPage.tsx',
+              'apps/client/src/features/park/pages/ParkSafariPage.css',
+              'apps/client/src/features/park/pages/SafariMap.tsx',
+              'apps/client/src/features/park/pages/drawSafariPark.ts',
+              'apps/client/src/features/park/pages/safariEditor.ts',
+              'apps/client/src/App.tsx',
+              'apps/client/src/api/queries/safari.ts',
+              'apps/client/src/features/park/pages/SafariPreviewPage.tsx',
+              'apps/client/src/features/park/pages/SafariPreview.css',
+              'apps/client/src/features/park/pages/StegosaurusRealtimePage.tsx',
+              'apps/client/src/features/park/pages/StegosaurusRealtimePage.css',
+              'apps/client/src/features/park/pages/ParkHud.css',
+              'apps/client/src/features/park/components/ParkHud.tsx',
+              'apps/client/src/features/park/components/ParkHarvestMarkers.tsx',
+              'apps/client/src/features/park/components/ParkHarvestFeedback.css',
+              'apps/client/src/features/park/components/useParkHarvest.tsx',
+              'apps/client/src/features/park/components/useParkMapPin.ts',
+              'apps/client/src/features/park/components/ParkPanel.tsx',
+              'apps/client/src/features/park/components/ResourcePanel.tsx',
+              'apps/client/src/features/park/components/ParkMeadowLink.tsx',
+              'apps/client/src/features/park/components/ParkOperationsPanel.tsx',
+              'apps/client/src/features/park/components/ParkShuttlePanel.tsx',
+              'apps/client/public/assets/vehicles/shuttle-front.webp',
+              'apps/client/public/assets/vehicles/shuttle-back.webp',
+              'apps/server/src/modules/park/park-shuttle.logic.ts',
+              'apps/server/src/modules/park/park-shuttle.service.ts',
+              'apps/server/src/modules/park/park-safari.service.ts',
+              'apps/server/src/modules/park/park-safari-state.ts',
+              'apps/client/src/game/safari/safariEncounter.ts',
+              'apps/client/src/game/safari/drawSafariEncounter.ts',
+              'apps/client/src/game/safari/StegosaurusRealtimeScene.ts',
+              'apps/client/public/assets/buildings/safari-security-pylon.webp',
+              'apps/client/src/assets/images/buildings/habitats/safari-security-pylon/pylon-source.png',
+              'apps/client/src/features/exploration/pages/ExplorationPage.tsx',
+              'apps/client/src/assets/README.md'):
+  candidates.add(ROOT/path)
+ exterior=ROOT/'apps/client/src/game/engine/ParkExterior.ts'
+ environment_paths={ROOT/'apps/client/public'/url.lstrip('/')
+                    for url in re.findall(r'/assets/environment/[a-z0-9-]+\.webp',exterior.read_text())}
+ assert environment_paths and all(path.is_file() for path in environment_paths)
+ candidates.update({exterior,*environment_paths})
+ artwork=content.park_artwork_preview()
+ base_art=artwork['buildings']
+ base_paths={ROOT/'apps/client/public'/url.lstrip('/') for url in base_art.values()}
+ assert len(base_art)==len(base_paths)==49 and all(path.is_file() and path.suffix=='.webp' for path in base_paths)
+ candidates.update(base_paths)
+ fence_art=artwork['habitatFences']
+ fence_paths={ROOT/'apps/client/public'/url.lstrip('/') for url in fence_art.values()}
+ assert len(fence_art)==len(fence_paths)==7 and fence_art.keys()<=base_art.keys()
+ assert not (base_paths & fence_paths) and all(path.is_file() and path.suffix=='.webp' for path in fence_paths)
+ candidates.update(fence_paths)
+ candidates.add(ROOT/'packages/game-data/src/research/progression.generated.json')
+ candidates.add(ROOT/'packages/game-data/src/research/park-growth.generated.json')
  # Include the sources explicitly referenced by editorial summaries.
  for f in (HERE/'editorial').glob('*.json'):
   data=json.loads(f.read_text());candidates.update(ROOT/p for p in data['source_sha256'])
